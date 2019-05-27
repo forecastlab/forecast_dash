@@ -7,7 +7,7 @@ class MyApp(MultiPageApp):
 
         return [
             Route(Index, "index", "/"),
-            Route(Series, "series", "/series"),
+            Route(Series, "series", "/series/"),
         ]
 
 server = Flask(__name__)

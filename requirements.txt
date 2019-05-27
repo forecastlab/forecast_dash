@@ -1,3 +1,4 @@
 dash
 dash-multi
+gunicorn
 pandas

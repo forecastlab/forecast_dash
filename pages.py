@@ -213,7 +213,7 @@ class Index(dash.Dash):
             showcase_list = []
 
             for item_title in showcase_item_titles:
-                showcase_list.append(html.Div(html.A([dcc.Graph(id=item_title, figure=get_thumbnail_figure(item_title), config={'displayModeBar': False, 'staticPlot': True})], href=f"/series?title={item_title}"), className="six columns"))
+                showcase_list.append(html.Div(html.A([dcc.Graph(id=item_title, figure=get_thumbnail_figure(item_title), config={'displayModeBar': False, 'staticPlot': False})], href=f"/series?title={item_title}"), className="six columns"))
 
             showcase_div = html.Div(showcase_list, className='row')
 

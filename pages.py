@@ -11,6 +11,7 @@ import json
 from collections import defaultdict
 import functools
 import operator
+from flask_caching import Cache
 
 header = [
     html.A("Home", href="/"),
@@ -201,6 +202,12 @@ class Index(dash.Dash):
             "Australian Underemployment"
         ]
 
+        self.cache = Cache(self.server, config = {
+                           'CACHE_TYPE': 'filesystem',
+                           'CACHE_DIR': 'cache-directory'
+                           })
+        
+        @self.cache.memoize(timeout=3600)
         def layout_func():
 
             showcase_list = []

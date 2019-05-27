@@ -238,9 +238,15 @@ class Series(dash.Dash):
             html.Div(id="dynamic_content"),
         ])
 
+        self.cache = Cache(self.server, config = {
+                           'CACHE_TYPE': 'filesystem',
+                           'CACHE_DIR': 'cache-directory'
+                           })
+            
         @self.callback(
             Output('dynamic_content', 'children'),
             [Input('url', 'href')])
+        @self.cache.memoize(timeout=3600)
         def display_value(value):
             # Put this in to avoid an Exception due to weird Location component
             # behaviour

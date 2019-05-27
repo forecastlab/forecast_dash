@@ -1,0 +1,21 @@
+[
+  {
+    "title": "Australian GDP",
+    "url": "http://ausmacrodata.org/Data/5206.0/gdpcpcknaasaq.csv",
+    "frequency": "Q",
+    "tags": [
+      "Australia",
+      "Economic"
+    ]
+  },
+  {
+    "title": "Australian Underemployment",
+    "url": "http://ausmacrodata.org/Data/6202.0/urpupassam.csv",
+    "frequency": "MS",
+    "tags": [
+      "Australia",
+      "Economic"
+    ]
+  }
+]
+

@@ -7,8 +7,6 @@ from dash.exceptions import PreventUpdate
 import dash
 import pickle
 import json
-import functools
-import operator
 import dash_bootstrap_components as dbc
 from abc import ABC, abstractmethod
 import re
@@ -247,7 +245,7 @@ def get_series_data(title):
 class BootstrapApp(dash.Dash, ABC):
     def __init__(self, name, server, url_base_pathname):
 
-        external_stylesheets = [dbc.themes.BOOTSTRAP,]
+        external_stylesheets = [dbc.themes.BOOTSTRAP]
 
         super().__init__(
             name=name,
@@ -484,7 +482,9 @@ class Filter(BootstrapApp):
                                 dbc.Col(
                                     [
                                         html.H4("Search results"),
-                                        dcc.Loading(html.Div(id="filter_results"),)
+                                        dcc.Loading(
+                                            html.Div(id="filter_results")
+                                        ),
                                     ],
                                     md=9,
                                 ),
@@ -555,7 +555,9 @@ class Filter(BootstrapApp):
 
             print(values)
 
-            state = urlencode(dict(zip(value_component_ids + values_component_ids, values)))
+            state = urlencode(
+                dict(zip(value_component_ids + values_component_ids, values))
+            )
 
             print(state)
 
@@ -564,7 +566,7 @@ class Filter(BootstrapApp):
         @self.callback(
             Output("filter_results", "children"),
             [Input(i, "value") for i in value_component_ids]
-            + [Input(i, "values") for i in values_component_ids]
+            + [Input(i, "values") for i in values_component_ids],
         )
         def filter_results(name, tags):
 
@@ -587,19 +589,17 @@ class Filter(BootstrapApp):
             if name == "":
                 list_filter_matches.append(set(series_dicts.keys()))
             else:
-                matched_series_names = self.match_names(
-                    name, series_dicts
-                )
+                matched_series_names = self.match_names(name, series_dicts)
                 list_filter_matches.append(set(matched_series_names))
             if tags == "":
                 list_filter_matches.append(set(series_dicts.keys()))
             else:
-                matched_series_names = self.match_tags(
-                    tags, series_dicts
-                )
+                matched_series_names = self.match_tags(tags, series_dicts)
                 list_filter_matches.append(set(matched_series_names))
 
-            unique_series_titles = list(sorted(set.intersection(*list_filter_matches)))
+            unique_series_titles = list(
+                sorted(set.intersection(*list_filter_matches))
+            )
 
             results_list = []
 

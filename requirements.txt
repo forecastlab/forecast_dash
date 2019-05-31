@@ -1,4 +1,6 @@
+black
 dash
+dash-bootstrap-components
 dash-multi
 Flask-Caching
 gunicorn

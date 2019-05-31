@@ -1,14 +1,19 @@
 from flask import Flask
 from multipage import Route, MultiPageApp
-from pages import Index, Series
+from pages import Index, Series, Filter, Methodology, About
+
 
 class MyApp(MultiPageApp):
     def get_routes(self):
 
         return [
             Route(Index, "index", "/"),
+            Route(Filter, "filter", "/filter/"),
             Route(Series, "series", "/series/"),
+            Route(Methodology, "methodology", "/methodology/"),
+            Route(About, "about", "/about/"),
         ]
+
 
 server = Flask(__name__)
 

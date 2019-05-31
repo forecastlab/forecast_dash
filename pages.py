@@ -247,7 +247,7 @@ def get_series_data(title):
 class BootstrapApp(dash.Dash, ABC):
     def __init__(self, name, server, url_base_pathname):
 
-        external_stylesheets = [dbc.themes.BOOTSTRAP]
+        external_stylesheets = [dbc.themes.BOOTSTRAP,]
 
         super().__init__(
             name=name,
@@ -484,7 +484,7 @@ class Filter(BootstrapApp):
                                 dbc.Col(
                                     [
                                         html.H4("Search results"),
-                                        html.Div(id="filter_results"),
+                                        dcc.Loading(html.Div(id="filter_results"),)
                                     ],
                                     md=9,
                                 ),

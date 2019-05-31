@@ -2,16 +2,17 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
-from urllib.parse import urlparse, parse_qsl
+from urllib.parse import urlparse, parse_qsl, urlencode
 from dash.exceptions import PreventUpdate
 import dash
 import pickle
 import json
-from collections import defaultdict
 import functools
 import operator
 import dash_bootstrap_components as dbc
 from abc import ABC, abstractmethod
+import re
+import ast
 
 header = [
     dbc.NavbarSimple(
@@ -402,7 +403,31 @@ class Series(BootstrapApp):
                 raise PreventUpdate
 
 
-import re
+def apply_default_value(params):
+    def wrapper(func):
+        def apply_value(*args, **kwargs):
+            if "id" in kwargs and kwargs["id"] in params:
+
+                # For inputs that accept value vs values
+                if "value" in kwargs:
+                    key = "value"
+                    try:
+                        kwargs[key] = ast.literal_eval(params[kwargs["id"]])
+                    except Exception:
+                        kwargs[key] = params[kwargs["id"]]
+                else:
+                    key = "values"
+                    # It will either be a comma seperated string or a list-like
+                    try:
+                        kwargs[key] = ast.literal_eval(params[kwargs["id"]])
+                    except Exception:
+                        kwargs[key] = params[kwargs["id"]].split(",")
+
+            return func(*args, **kwargs)
+
+        return apply_value
+
+    return wrapper
 
 
 class Filter(BootstrapApp):
@@ -423,12 +448,15 @@ class Filter(BootstrapApp):
 
         return matched_series_names
 
-    def match_tags(self, tag_input, series_dicts):
+    def match_tags(self, tags, series_dicts):
         # This doesn't need to be an instance method
 
         matched_series_names = []
 
-        tags = set(tag_input.split(","))
+        if type(tags) == str:
+            tags = tags.split(",")
+
+        tags = set(tags)
 
         for data_source_dict in series_dicts.values():
 
@@ -437,90 +465,9 @@ class Filter(BootstrapApp):
 
         return matched_series_names
 
-    def search_results(self, parse_result):
-
-        # Searching by AND-ing conditions together
-
-        # Search
-        # - names
-        # - tags
-
-        data_sources_json_file = open("data_sources.json")
-        series_list = json.load(data_sources_json_file)
-        data_sources_json_file.close()
-
-        series_dicts = {}
-
-        for series_dict in series_list:
-            series_dicts[series_dict["title"]] = series_dict
-
-        list_filter_matches = []
-
-        if parse_result:
-            if "name" in parse_result:
-                matched_series_names = self.match_names(
-                    parse_result["name"], series_dicts
-                )
-                list_filter_matches.append(matched_series_names)
-
-            if "tags" in parse_result:
-                matched_series_names = self.match_tags(
-                    parse_result["tags"], series_dicts
-                )
-                list_filter_matches.append(matched_series_names)
-
-            unique_series_titles = set(
-                functools.reduce(operator.iconcat, list_filter_matches, [])
-            )
-
-            unique_series_titles = list(sorted(unique_series_titles))
-        else:
-            unique_series_titles = list(series_dicts.keys())
-
-        unique_series_titles = list(sorted(unique_series_titles))
-
-        results_list = []
-
-        for item_title in unique_series_titles:
-            series_data = get_series_data(item_title)
-            thumbnail_figure = get_thumbnail_figure(series_data)
-
-            results_list.append(
-                html.Div(
-                    [
-                        html.A(
-                            [
-                                html.H5(item_title),
-                                dcc.Graph(
-                                    id=item_title,
-                                    figure=thumbnail_figure,
-                                    config={
-                                        "displayModeBar": False,
-                                        "staticPlot": True,
-                                    },
-                                    className="six columns",
-                                ),
-                            ],
-                            href=f"/series?title={item_title}",
-                        ),
-                        html.Hr(),
-                    ]
-                )
-            )
-
-        if len(unique_series_titles) > 0:
-            results = [
-                html.P(
-                    f"{len(unique_series_titles)} result{'s' if len(unique_series_titles) > 1 else ''} found"
-                ),
-                html.Div(results_list),
-            ]
-        else:
-            results = [html.P("No results found")]
-
-        return results
-
     def setup(self):
+
+        self.config.suppress_callback_exceptions = True
 
         self.title = "Filter"
 
@@ -533,46 +480,11 @@ class Filter(BootstrapApp):
                         html.H3("Filter"),
                         dbc.Row(
                             [
-                                dbc.Col(
-                                    [
-                                        dbc.FormGroup(
-                                            [
-                                                dbc.Label("Name"),
-                                                dbc.Input(
-                                                    placeholder="Name of a series...",
-                                                    type="text",
-                                                ),
-                                                dbc.FormText(
-                                                    "Type something in the box above"
-                                                ),
-                                            ]
-                                        ),
-                                        dbc.FormGroup(
-                                            [
-                                                dbc.Label("Tags"),
-                                                dbc.Checklist(
-                                                    options=[
-                                                        {
-                                                            "label": "Option 1",
-                                                            "value": 1,
-                                                        },
-                                                        {
-                                                            "label": "Option 2",
-                                                            "value": 2,
-                                                        },
-                                                    ],
-                                                    values=[],
-                                                    id="checklist-input",
-                                                ),
-                                            ]
-                                        ),
-                                    ],
-                                    md=3,
-                                ),
+                                dbc.Col(id="filter_panel", md=3),
                                 dbc.Col(
                                     [
                                         html.H4("Search results"),
-                                        html.Div(id="search_results"),
+                                        html.Div(id="filter_results"),
                                     ],
                                     md=9,
                                 ),
@@ -583,8 +495,42 @@ class Filter(BootstrapApp):
             ]
         )
 
+        def filter_panel_children(params):
+
+            children = [
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Name"),
+                        apply_default_value(params)(dbc.Input)(
+                            id="name",
+                            placeholder="Name of a series...",
+                            type="text",
+                            value="",
+                        ),
+                        dbc.FormText("Type something in the box above"),
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Tags"),
+                        apply_default_value(params)(dbc.Checklist)(
+                            options=[
+                                {"label": "Australia", "value": "Australia"},
+                                {"label": "USA", "value": "USA"},
+                                {"label": "Economic", "value": "Economic"},
+                                {"label": "Financial", "value": "Financial"},
+                            ],
+                            values=[],
+                            id="tags",
+                        ),
+                    ]
+                ),
+            ]
+
+            return children
+
         @self.callback(
-            Output("search_results", "children"), [Input("url", "href")]
+            Output("filter_panel", "children"), [Input("url", "href")]
         )
         def display_value(value):
             # Put this in to avoid an Exception due to weird Location component
@@ -594,7 +540,107 @@ class Filter(BootstrapApp):
 
             parse_result = parse_state(value)
 
-            return self.search_results(parse_result)
+            return filter_panel_children(parse_result)
+
+        value_component_ids = ["name"]
+
+        values_component_ids = ["tags"]
+
+        @self.callback(
+            Output("url", "search"),
+            inputs=[Input(i, "value") for i in value_component_ids]
+            + [Input(i, "values") for i in values_component_ids],
+        )
+        def update_url_state(*values):
+
+            print(values)
+
+            state = urlencode(dict(zip(value_component_ids + values_component_ids, values)))
+
+            print(state)
+
+            return f"?{state}"
+
+        @self.callback(
+            Output("filter_results", "children"),
+            [Input(i, "value") for i in value_component_ids]
+            + [Input(i, "values") for i in values_component_ids]
+        )
+        def filter_results(name, tags):
+
+            # Searching by AND-ing conditions together
+
+            # Search
+            # - names
+            # - tags
+
+            data_sources_json_file = open("data_sources.json")
+            series_list = json.load(data_sources_json_file)
+            data_sources_json_file.close()
+
+            series_dicts = {}
+
+            for series_dict in series_list:
+                series_dicts[series_dict["title"]] = series_dict
+
+            list_filter_matches = []
+            if name == "":
+                list_filter_matches.append(set(series_dicts.keys()))
+            else:
+                matched_series_names = self.match_names(
+                    name, series_dicts
+                )
+                list_filter_matches.append(set(matched_series_names))
+            if tags == "":
+                list_filter_matches.append(set(series_dicts.keys()))
+            else:
+                matched_series_names = self.match_tags(
+                    tags, series_dicts
+                )
+                list_filter_matches.append(set(matched_series_names))
+
+            unique_series_titles = list(sorted(set.intersection(*list_filter_matches)))
+
+            results_list = []
+
+            for item_title in unique_series_titles:
+                series_data = get_series_data(item_title)
+                thumbnail_figure = get_thumbnail_figure(series_data)
+
+                results_list.append(
+                    html.Div(
+                        [
+                            html.A(
+                                [
+                                    html.H5(item_title),
+                                    dcc.Graph(
+                                        id=item_title,
+                                        figure=thumbnail_figure,
+                                        config={
+                                            "displayModeBar": False,
+                                            "staticPlot": True,
+                                        },
+                                        className="six columns",
+                                    ),
+                                ],
+                                href=f"/series?title={item_title}",
+                            ),
+                            html.Hr(),
+                        ]
+                    )
+                )
+
+            if len(unique_series_titles) > 0:
+                results = [
+                    html.P(
+                        f"{len(unique_series_titles)} result{'s' if len(unique_series_titles) > 1 else ''} found"
+                    ),
+                    html.Div(results_list),
+                ]
+            else:
+                results = [html.P("No results found")]
+
+            return results
 
 
 class MarkdownApp(BootstrapApp):

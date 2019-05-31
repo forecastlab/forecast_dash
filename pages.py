@@ -133,9 +133,7 @@ def get_forecast_plot_data(series_df, forecast_df):
         y=forecast_df["FORECAST"],
         name="Forecast",
         mode="lines+markers",
-        line = dict(
-            dash="2px"
-        )
+        line=dict(dash="2px"),
     )
 
     data = [line_history, error_95, error_75, error_50, line_forecast]
@@ -145,7 +143,7 @@ def get_forecast_plot_data(series_df, forecast_df):
 
 def get_thumbnail_figure(data_dict):
 
-    series_df = data_dict["series_df"].iloc[-16:,:]
+    series_df = data_dict["series_df"].iloc[-16:, :]
     forecast_df = data_dict["forecast_df"]
 
     data = get_forecast_plot_data(series_df, forecast_df)
@@ -168,8 +166,7 @@ def get_thumbnail_figure(data_dict):
         # yaxis=dict(
         #     range=[6, 10]
         # ),
-
-        showlegend=False
+        showlegend=False,
     )
 
     return go.Figure(data, layout)
@@ -286,21 +283,24 @@ class Index(BootstrapApp):
                 series_data = get_series_data(item_title)
                 thumbnail_figure = get_thumbnail_figure(series_data)
                 showcase_list.append(
-
-                    dbc.Col([
-                        html.A(
-                            [
-                                dcc.Graph(
-                                    id=item_title,
-                                    figure=thumbnail_figure,
-                                    config={
-                                        "displayModeBar": False,
-                                        "staticPlot": False,
-                                    },
-                                )
-                            ],
-                            href=f"/series?title={item_title}",)
-                        ], md=6)
+                    dbc.Col(
+                        [
+                            html.A(
+                                [
+                                    dcc.Graph(
+                                        id=item_title,
+                                        figure=thumbnail_figure,
+                                        config={
+                                            "displayModeBar": False,
+                                            "staticPlot": False,
+                                        },
+                                    )
+                                ],
+                                href=f"/series?title={item_title}",
+                            )
+                        ],
+                        md=6,
+                    )
                 )
 
             showcase_div = dbc.Row(showcase_list, className="row")
@@ -309,7 +309,16 @@ class Index(BootstrapApp):
                 header
                 + [
                     dcc.Location(id="url", refresh=False),
-                    dbc.Container([html.H2("Popular Series", style={'text-align': "center"}, className="mt-3"), showcase_div]),
+                    dbc.Container(
+                        [
+                            html.H2(
+                                "Popular Series",
+                                style={"text-align": "center"},
+                                className="mt-3",
+                            ),
+                            showcase_div,
+                        ]
+                    ),
                 ]
             )
 
@@ -392,11 +401,11 @@ class Series(BootstrapApp):
             else:
                 raise PreventUpdate
 
+
 import re
 
+
 class Filter(BootstrapApp):
-
-
     def match_names(self, name_input, series_dicts):
         # This doesn't need to be an instance method
 
@@ -406,9 +415,11 @@ class Filter(BootstrapApp):
 
         for data_source_dict in series_dicts.values():
 
-            re_results = re.search(name_terms, data_source_dict['title'], re.IGNORECASE)
+            re_results = re.search(
+                name_terms, data_source_dict["title"], re.IGNORECASE
+            )
             if re_results is not None:
-                matched_series_names.append(data_source_dict['title'])
+                matched_series_names.append(data_source_dict["title"])
 
         return matched_series_names
 
@@ -421,8 +432,8 @@ class Filter(BootstrapApp):
 
         for data_source_dict in series_dicts.values():
 
-            if tags.issubset(set(data_source_dict['tags'])):
-                matched_series_names.append(data_source_dict['title'])
+            if tags.issubset(set(data_source_dict["tags"])):
+                matched_series_names.append(data_source_dict["title"])
 
         return matched_series_names
 
@@ -441,21 +452,25 @@ class Filter(BootstrapApp):
         series_dicts = {}
 
         for series_dict in series_list:
-            series_dicts[series_dict['title']] = series_dict
+            series_dicts[series_dict["title"]] = series_dict
 
         list_filter_matches = []
 
         if "name" in parse_result:
-            matched_series_names = self.match_names(parse_result['name'], series_dicts)
+            matched_series_names = self.match_names(
+                parse_result["name"], series_dicts
+            )
             list_filter_matches.append(matched_series_names)
 
         if "tags" in parse_result:
-            matched_series_names = self.match_tags(parse_result['tags'], series_dicts)
+            matched_series_names = self.match_tags(
+                parse_result["tags"], series_dicts
+            )
             list_filter_matches.append(matched_series_names)
 
         unique_series_titles = set(
-                functools.reduce(operator.iconcat, list_filter_matches, [])
-            )
+            functools.reduce(operator.iconcat, list_filter_matches, [])
+        )
 
         unique_series_titles = list(sorted(unique_series_titles))
 
@@ -479,24 +494,24 @@ class Filter(BootstrapApp):
                                         "staticPlot": True,
                                     },
                                     className="six columns",
-                                )
+                                ),
                             ],
                             href=f"/series?title={item_title}",
                         ),
                         html.Hr(),
-                    ],
+                    ]
                 )
             )
 
         if len(unique_series_titles) > 0:
             results = [
-                html.P(f"{len(unique_series_titles)} result{'s' if len(unique_series_titles) > 1 else ''} found"),
-                html.Div(results_list)
+                html.P(
+                    f"{len(unique_series_titles)} result{'s' if len(unique_series_titles) > 1 else ''} found"
+                ),
+                html.Div(results_list),
             ]
         else:
-            results = [
-                html.P("No results found")
-            ]
+            results = [html.P("No results found")]
 
         return results
 
@@ -508,47 +523,58 @@ class Filter(BootstrapApp):
             header
             + [
                 dcc.Location(id="url", refresh=False),
-
-                dbc.Container([
-                    html.H3("Filter"),
-                    dbc.Row(
-                        [
-                            dbc.Col(
-                                [
-                                    dbc.FormGroup(
-                                        [
-                                            dbc.Label("Name"),
-                                            dbc.Input(placeholder="Name of a series...", type="text"),
-                                            dbc.FormText("Type something in the box above"),
-                                        ]
-                                    ),
-
-                                    dbc.FormGroup(
-                                        [
-                                            dbc.Label("Tags"),
-                                            dbc.Checklist(
-                                                options=[
-                                                    {"label": "Option 1", "value": 1},
-                                                    {"label": "Option 2", "value": 2},
-                                                ],
-                                                values=[],
-                                                id="checklist-input",
-                                            ),
-                                        ]
-                                    )
-                                ]
-                                , md=3),
-                            dbc.Col(
-                                [
-                                    html.H4("Search results"),
-                                    html.Div(id="search_results"),
-                                ]
-                                , md=9)
-                        ]
-                    )
-
-                ]),
-
+                dbc.Container(
+                    [
+                        html.H3("Filter"),
+                        dbc.Row(
+                            [
+                                dbc.Col(
+                                    [
+                                        dbc.FormGroup(
+                                            [
+                                                dbc.Label("Name"),
+                                                dbc.Input(
+                                                    placeholder="Name of a series...",
+                                                    type="text",
+                                                ),
+                                                dbc.FormText(
+                                                    "Type something in the box above"
+                                                ),
+                                            ]
+                                        ),
+                                        dbc.FormGroup(
+                                            [
+                                                dbc.Label("Tags"),
+                                                dbc.Checklist(
+                                                    options=[
+                                                        {
+                                                            "label": "Option 1",
+                                                            "value": 1,
+                                                        },
+                                                        {
+                                                            "label": "Option 2",
+                                                            "value": 2,
+                                                        },
+                                                    ],
+                                                    values=[],
+                                                    id="checklist-input",
+                                                ),
+                                            ]
+                                        ),
+                                    ],
+                                    md=3,
+                                ),
+                                dbc.Col(
+                                    [
+                                        html.H4("Search results"),
+                                        html.Div(id="search_results"),
+                                    ],
+                                    md=9,
+                                ),
+                            ]
+                        ),
+                    ]
+                ),
             ]
         )
 
@@ -564,6 +590,7 @@ class Filter(BootstrapApp):
             parse_result = parse_state(value)
 
             return self.search_results(parse_result)
+
 
 class MarkdownApp(BootstrapApp):
     @property
@@ -751,7 +778,8 @@ class About(BootstrapApp):
                                 )
                             ]
                         ),
-                    ], className="mb-5"
+                    ],
+                    className="mb-5",
                 ),
             ]
         )

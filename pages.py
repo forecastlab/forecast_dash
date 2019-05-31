@@ -456,21 +456,26 @@ class Filter(BootstrapApp):
 
         list_filter_matches = []
 
-        if "name" in parse_result:
-            matched_series_names = self.match_names(
-                parse_result["name"], series_dicts
-            )
-            list_filter_matches.append(matched_series_names)
+        if parse_result:
+            if "name" in parse_result:
+                matched_series_names = self.match_names(
+                    parse_result["name"], series_dicts
+                )
+                list_filter_matches.append(matched_series_names)
 
-        if "tags" in parse_result:
-            matched_series_names = self.match_tags(
-                parse_result["tags"], series_dicts
-            )
-            list_filter_matches.append(matched_series_names)
+            if "tags" in parse_result:
+                matched_series_names = self.match_tags(
+                    parse_result["tags"], series_dicts
+                )
+                list_filter_matches.append(matched_series_names)
 
-        unique_series_titles = set(
-            functools.reduce(operator.iconcat, list_filter_matches, [])
-        )
+            unique_series_titles = set(
+                functools.reduce(operator.iconcat, list_filter_matches, [])
+            )
+
+            unique_series_titles = list(sorted(unique_series_titles))
+        else:
+            unique_series_titles = list(series_dicts.keys())
 
         unique_series_titles = list(sorted(unique_series_titles))
 

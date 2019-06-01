@@ -311,6 +311,7 @@ class Index(BootstrapApp):
 
 
 class Series(BootstrapApp):
+
     def _serve_series(self, title):
 
         series_data = get_series_data(title)
@@ -362,7 +363,16 @@ class Series(BootstrapApp):
             ]
         )
 
-        return [html.H3(f"Series > {title}"), series_graph, table]
+        return [
+            dbc.Nav([
+                html.Ol([
+                    html.Li(html.A("Home", href="/"), className="breadcrumb-item"),
+                    html.Li(f"Series: {title}", className="breadcrumb-item active")
+                ], className="breadcrumb")
+            ]),
+            html.H3(),
+            series_graph, table
+        ]
 
     def setup(self):
 
@@ -375,7 +385,9 @@ class Series(BootstrapApp):
                 dbc.Container(
                     [
                         dbc.Row(
-                            [dbc.Col([html.Div(id="dynamic_content")], md=12)]
+                            [
+                                dbc.Col([html.Div(id="dynamic_content")
+                            ], md=12)]
                         )
                     ]
                 ),
@@ -479,7 +491,7 @@ class Filter(BootstrapApp):
                                 dbc.Col(id="filter_panel", md=3),
                                 dbc.Col(
                                     [
-                                        html.H4("Search results"),
+                                        html.H4("Results"),
                                         dcc.Loading(
                                             html.Div(id="filter_results")
                                         ),
@@ -627,9 +639,7 @@ class Filter(BootstrapApp):
             if len(unique_series_titles) > 0:
                 results = [
                     html.P(
-                        f"{len(unique_series_titles)}"
-                        f"result{'s' if len(unique_series_titles) > 1 else ''}"
-                        f"found"
+                        f"{len(unique_series_titles)} result{'s' if len(unique_series_titles) > 1 else ''} found"
                     ),
                     html.Div(results_list),
                 ]

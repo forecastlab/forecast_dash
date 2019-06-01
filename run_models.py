@@ -21,10 +21,10 @@ with open("data_sources.json") as data_sources_json_file:
         # Generate forecast
         forecast_len = 8
 
-        AR = 1
-        I = 0
-        MA = 0
-        model = ARIMA(series_df["value"], order=(AR, I, MA))
+        AR_term = 1
+        i_term = 0
+        MA_term = 0
+        model = ARIMA(series_df["value"], order=(AR_term, i_term, MA_term))
         arima_results = model.fit(disp=False)
         forecast, std_dev, _ = arima_results.forecast(steps=forecast_len)
 

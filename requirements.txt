@@ -3,5 +3,6 @@ dash
 dash-bootstrap-components
 dash-multi
 Flask-Caching
+flake8
 gunicorn
 pandas

@@ -150,21 +150,6 @@ def get_thumbnail_figure(data_dict):
     layout = go.Layout(
         title=data_dict["data_source_dict"]["title"] + " Forecast",
         height=480,
-        # xaxis=dict(
-        #     range=[
-        #         series_df["date"]
-        #         .iloc[-16]
-        #         .to_pydatetime(),  # Recent point in history
-        #         forecast_df.index[-1].to_pydatetime(),  # End of forecast range
-        #     ],
-        # ),
-        # yaxis=dict(
-        #     fixedrange=False,  # Will disable all zooming and movement controls if True
-        #     autorange=True,
-        # ),
-        # yaxis=dict(
-        #     range=[6, 10]
-        # ),
         showlegend=False,
     )
 
@@ -228,7 +213,8 @@ def get_series_figure(data_dict):
             ),
         ),
         yaxis=dict(
-            fixedrange=True,  # Will disable all zooming and movement controls if True
+            # Will disable all zooming and movement controls if True
+            fixedrange=True,
             autorange=True,
         ),
     )
@@ -311,7 +297,7 @@ class Index(BootstrapApp):
                     dbc.Container(
                         [
                             html.H2(
-                                "Popular Series",
+                                "Featured",
                                 style={"text-align": "center"},
                                 className="mt-3",
                             ),
@@ -345,7 +331,7 @@ class Series(BootstrapApp):
                 "displaylogo": False,
             },
         )
- 
+
         dataframe = series_data["forecast_df"]
 
         table = dbc.Table(
@@ -376,7 +362,7 @@ class Series(BootstrapApp):
             ]
         )
 
-        return [html.H3(f"Series > {title}"),series_graph, table]
+        return [html.H3(f"Series > {title}"), series_graph, table]
 
     def setup(self):
 
@@ -388,15 +374,11 @@ class Series(BootstrapApp):
                 dcc.Location(id="url", refresh=False),
                 dbc.Container(
                     [
-                        dbc.Row([
-                            dbc.Col([
-
-                                html.Div(id="dynamic_content"),
-                            ], md=12)
-                        ])
+                        dbc.Row(
+                            [dbc.Col([html.Div(id="dynamic_content")], md=12)]
+                        )
                     ]
-                )
-
+                ),
             ]
         )
 
@@ -569,13 +551,9 @@ class Filter(BootstrapApp):
         )
         def update_url_state(*values):
 
-            print(values)
-
             state = urlencode(
                 dict(zip(value_component_ids + values_component_ids, values))
             )
-
-            print(state)
 
             return f"?{state}"
 
@@ -649,7 +627,9 @@ class Filter(BootstrapApp):
             if len(unique_series_titles) > 0:
                 results = [
                     html.P(
-                        f"{len(unique_series_titles)} result{'s' if len(unique_series_titles) > 1 else ''} found"
+                        f"{len(unique_series_titles)}"
+                        f"result{'s' if len(unique_series_titles) > 1 else ''}"
+                        f"found"
                     ),
                     html.Div(results_list),
                 ]
@@ -693,9 +673,12 @@ class Methodology(MarkdownApp):
 
 **This page is under construction.**
 
-It will contain the description of the models and other aspects of the methodology used to forecast the time series.
+It will contain the description of the models and other aspects of the
+methodology used to forecast the time series.
 
-While we are busy with this document, we recommend “Forecasting: Principles and Practice” textbook freely available at [otexts.com/fpp2/](https://otexts.com/fpp2/)
+While we are busy with this document, we recommend “Forecasting: Principles
+and Practice” textbook freely available at
+[otexts.com/fpp2/](https://otexts.com/fpp2/)
     """
 
 

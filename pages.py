@@ -345,32 +345,38 @@ class Series(BootstrapApp):
                 "displaylogo": False,
             },
         )
-
+ 
         dataframe = series_data["forecast_df"]
 
-        table = html.Table(
+        table = dbc.Table(
             # Header
             [
-                html.Tr(
-                    [html.Th("Date")]
-                    + [html.Th(col) for col in dataframe.columns]
+                html.Thead(
+                    html.Tr(
+                        [html.Th("Date")]
+                        + [html.Th(col) for col in dataframe.columns]
+                    )
                 )
             ]
             +
             # Body
             [
-                html.Tr(
-                    [html.Td(dataframe.index[i])]
-                    + [
-                        html.Td(dataframe.iloc[i][col])
-                        for col in dataframe.columns
+                html.Tbody(
+                    [
+                        html.Tr(
+                            [html.Td(dataframe.index[i])]
+                            + [
+                                html.Td(dataframe.iloc[i][col].round(4))
+                                for col in dataframe.columns
+                            ]
+                        )
+                        for i in range(1, len(dataframe))
                     ]
                 )
-                for i in range(len(dataframe))
             ]
         )
 
-        return [html.H3("Series"), series_graph, table]
+        return [html.H3(f"Series > {title}"),series_graph, table]
 
     def setup(self):
 
@@ -380,7 +386,17 @@ class Series(BootstrapApp):
             header
             + [
                 dcc.Location(id="url", refresh=False),
-                html.Div(id="dynamic_content"),
+                dbc.Container(
+                    [
+                        dbc.Row([
+                            dbc.Col([
+
+                                html.Div(id="dynamic_content"),
+                            ], md=12)
+                        ])
+                    ]
+                )
+
             ]
         )
 

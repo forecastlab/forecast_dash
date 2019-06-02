@@ -370,7 +370,7 @@ class Series(BootstrapApp):
                     html.Li(html.A("Home", href="/"), className="breadcrumb-item"),
                     html.Li(f"Series: {title}", className="breadcrumb-item active")
                 ], className="breadcrumb")
-            ]),
+            ],navbar=True),
             html.H3(),
             series_graph, table
         ]

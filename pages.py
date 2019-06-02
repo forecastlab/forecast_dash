@@ -75,6 +75,7 @@ header = [
         brand_external_link=True,
         color="dark",
         dark=True,
+        expand="lg",
     )
 ]
 

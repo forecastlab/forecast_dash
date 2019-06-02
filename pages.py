@@ -284,7 +284,8 @@ class Index(BootstrapApp):
                                 href=f"/series?title={item_title}",
                             )
                         ],
-                        md=6,
+                        lg=6,
+                        sm=12,
                     )
                 )
 
@@ -387,7 +388,7 @@ class Series(BootstrapApp):
                         dbc.Row(
                             [
                                 dbc.Col([html.Div(id="dynamic_content")
-                            ], md=12)]
+                            ], lg=12)]
                         )
                     ]
                 ),
@@ -488,7 +489,7 @@ class Filter(BootstrapApp):
                         html.H3("Filter"),
                         dbc.Row(
                             [
-                                dbc.Col(id="filter_panel", md=3),
+                                dbc.Col(id="filter_panel", lg=3, sm=3),
                                 dbc.Col(
                                     [
                                         html.H4("Results"),
@@ -496,7 +497,7 @@ class Filter(BootstrapApp):
                                             html.Div(id="filter_results")
                                         ),
                                     ],
-                                    md=9,
+                                    lg=9, sm=9,
                                 ),
                             ]
                         ),
@@ -720,7 +721,7 @@ class About(BootstrapApp):
                                             ]
                                         ),
                                     ],
-                                    md=12,
+                                    lg=12,
                                 )
                             ]
                         ),
@@ -733,7 +734,7 @@ class About(BootstrapApp):
                                             "The Business Forecast Lab was established in ...."
                                         ),
                                     ],
-                                    md=12,
+                                    lg=12,
                                 )
                             ]
                         ),
@@ -757,7 +758,7 @@ class About(BootstrapApp):
                                                             height="200px",
                                                         )
                                                     ],
-                                                    md=2,
+                                                    lg=2,
                                                 ),
                                                 dbc.Col(
                                                     [
@@ -769,7 +770,7 @@ class About(BootstrapApp):
                                                             href="https://business.sydney.edu.au/staff/andrey.vasnev",
                                                         ),
                                                     ],
-                                                    md=9,
+                                                    lg=9,
                                                 ),
                                             ]
                                         ),
@@ -785,7 +786,7 @@ class About(BootstrapApp):
                                                             height="200px",
                                                         )
                                                     ],
-                                                    md=2,
+                                                    lg=2,
                                                 ),
                                                 dbc.Col(
                                                     [
@@ -800,7 +801,7 @@ class About(BootstrapApp):
                                                             href="https://business.sydney.edu.au/staff/richard.gerlach",
                                                         ),
                                                     ],
-                                                    md=9,
+                                                    lg=9,
                                                 ),
                                             ]
                                         ),
@@ -814,7 +815,7 @@ class About(BootstrapApp):
                                                             height="200px",
                                                         )
                                                     ],
-                                                    md=2,
+                                                    lg=2,
                                                 ),
                                                 dbc.Col(
                                                     [
@@ -829,12 +830,12 @@ class About(BootstrapApp):
                                                             href="https://business.sydney.edu.au/staff/chao.wang",
                                                         ),
                                                     ],
-                                                    md=9,
+                                                    lg=9,
                                                 ),
                                             ]
                                         ),
                                     ],
-                                    md=12,
+                                    lg=12,
                                 )
                             ]
                         ),

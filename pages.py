@@ -312,7 +312,6 @@ class Index(BootstrapApp):
 
 
 class Series(BootstrapApp):
-
     def _serve_series(self, title):
 
         series_data = get_series_data(title)
@@ -365,14 +364,27 @@ class Series(BootstrapApp):
         )
 
         return [
-            dbc.Nav([
-                html.Ol([
-                    html.Li(html.A("Home", href="/"), className="breadcrumb-item"),
-                    html.Li(f"Series: {title}", className="breadcrumb-item active")
-                ], className="breadcrumb")
-            ],navbar=True),
+            dbc.Nav(
+                [
+                    html.Ol(
+                        [
+                            html.Li(
+                                html.A("Home", href="/"),
+                                className="breadcrumb-item",
+                            ),
+                            html.Li(
+                                f"Series: {title}",
+                                className="breadcrumb-item active",
+                            ),
+                        ],
+                        className="breadcrumb",
+                    )
+                ],
+                navbar=True,
+            ),
             html.H3(),
-            series_graph, table
+            series_graph,
+            table,
         ]
 
     def setup(self):
@@ -386,9 +398,7 @@ class Series(BootstrapApp):
                 dbc.Container(
                     [
                         dbc.Row(
-                            [
-                                dbc.Col([html.Div(id="dynamic_content")
-                            ], lg=12)]
+                            [dbc.Col([html.Div(id="dynamic_content")], lg=12)]
                         )
                     ]
                 ),
@@ -497,7 +507,8 @@ class Filter(BootstrapApp):
                                             html.Div(id="filter_results")
                                         ),
                                     ],
-                                    lg=9, sm=9,
+                                    lg=9,
+                                    sm=9,
                                 ),
                             ]
                         ),

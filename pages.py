@@ -389,7 +389,6 @@ class Series(BootstrapApp):
                 ],
                 navbar=True,
             ),
-            html.H3(),
             series_graph,
             table,
         ]
@@ -503,7 +502,24 @@ class Filter(BootstrapApp):
                 dcc.Location(id="url", refresh=False),
                 dbc.Container(
                     [
-                        html.H3("Filter"),
+                        dbc.Nav(
+                            [
+                                html.Ol(
+                                    [
+                                        html.Li(
+                                            html.A("Home", href="/"),
+                                            className="breadcrumb-item",
+                                        ),
+                                        html.Li(
+                                            f"Filter",
+                                            className="breadcrumb-item active",
+                                        ),
+                                    ],
+                                    className="breadcrumb",
+                                )
+                            ],
+                            navbar=True,
+                        ),
                         dbc.Row(
                             [
                                 dbc.Col(id="filter_panel", lg=3, sm=3),
@@ -527,6 +543,7 @@ class Filter(BootstrapApp):
         def filter_panel_children(params):
 
             children = [
+                html.H4("Filters"),
                 dbc.FormGroup(
                     [
                         dbc.Label("Name"),
@@ -688,7 +705,27 @@ class MarkdownApp(BootstrapApp):
             header
             + [
                 dcc.Location(id="url", refresh=False),
-                dbc.Container([dcc.Markdown(type(self).markdown)]),
+                dbc.Container([
+                    dbc.Nav(
+                        [
+                            html.Ol(
+                                [
+                                    html.Li(
+                                        html.A("Home", href="/"),
+                                        className="breadcrumb-item",
+                                    ),
+                                    html.Li(
+                                        f"{self.title}",
+                                        className="breadcrumb-item active",
+                                    ),
+                                ],
+                                className="breadcrumb",
+                            )
+                        ],
+                        navbar=True,
+                    ),
+                    dcc.Markdown(type(self).markdown)
+                ]),
             ]
         )
 
@@ -723,6 +760,24 @@ class About(BootstrapApp):
                 dcc.Location(id="url", refresh=False),
                 dbc.Container(
                     [
+                        dbc.Nav(
+                            [
+                                html.Ol(
+                                    [
+                                        html.Li(
+                                            html.A("Home", href="/"),
+                                            className="breadcrumb-item",
+                                        ),
+                                        html.Li(
+                                            f"About",
+                                            className="breadcrumb-item active",
+                                        ),
+                                    ],
+                                    className="breadcrumb",
+                                )
+                            ],
+                            navbar=True,
+                        ),
                         dbc.Row(
                             [
                                 dbc.Col(

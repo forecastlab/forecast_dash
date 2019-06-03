@@ -540,7 +540,7 @@ class Filter(BootstrapApp):
             ]
         )
 
-        def filter_panel_children(params):
+        def filter_panel_children(params, tags):
 
             children = [
                 html.H4("Filters"),
@@ -560,12 +560,11 @@ class Filter(BootstrapApp):
                     [
                         dbc.Label("Tags"),
                         apply_default_value(params)(dbc.Checklist)(
-                            options=[
-                                {"label": "Australia", "value": "Australia"},
-                                {"label": "USA", "value": "USA"},
-                                {"label": "Economic", "value": "Economic"},
-                                {"label": "Financial", "value": "Financial"},
-                            ],
+                            options=[ {'label': t, "value": t } for t in tags],
+                                # {"label": "Australia", "value": "Australia"},
+                                # {"label": "USA", "value": "USA"},
+                                # {"label": "Economic", "value": "Economic"},
+                                # {"label": "Financial", "value": "Financial"},
                             values=[],
                             id="tags",
                         ),
@@ -586,7 +585,18 @@ class Filter(BootstrapApp):
 
             parse_result = parse_state(value)
 
-            return filter_panel_children(parse_result)
+            data_sources_json_file = open("data_sources.json")
+            series_list = json.load(data_sources_json_file)
+            data_sources_json_file.close()
+
+            all_tags = []
+
+            for series_dict in series_list:
+                all_tags.extend(series_dict['tags'])
+
+            all_tags = sorted(set(all_tags))
+
+            return filter_panel_children(parse_result, all_tags)
 
         value_component_ids = ["name"]
 

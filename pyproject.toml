@@ -9,6 +9,7 @@ exclude = '''
   | \.mypy_cache
   | \.tox
   | venv
+  | venv_mbp
   | _build
   | buck-out
   | build

@@ -152,12 +152,8 @@ def get_thumbnail_figure(data_dict):
         title=data_dict["data_source_dict"]["title"] + " Forecast",
         height=480,
         showlegend=False,
-        xaxis=dict(
-            fixedrange=True,
-        ),
-        yaxis=dict(
-            fixedrange=True,
-        ),
+        xaxis=dict(fixedrange=True),
+        yaxis=dict(fixedrange=True),
     )
 
     return go.Figure(data, layout)
@@ -560,11 +556,7 @@ class Filter(BootstrapApp):
                     [
                         dbc.Label("Tags"),
                         apply_default_value(params)(dbc.Checklist)(
-                            options=[ {'label': t, "value": t } for t in tags],
-                                # {"label": "Australia", "value": "Australia"},
-                                # {"label": "USA", "value": "USA"},
-                                # {"label": "Economic", "value": "Economic"},
-                                # {"label": "Financial", "value": "Financial"},
+                            options=[{"label": t, "value": t} for t in tags],
                             values=[],
                             id="tags",
                         ),
@@ -592,7 +584,7 @@ class Filter(BootstrapApp):
             all_tags = []
 
             for series_dict in series_list:
-                all_tags.extend(series_dict['tags'])
+                all_tags.extend(series_dict["tags"])
 
             all_tags = sorted(set(all_tags))
 
@@ -715,27 +707,29 @@ class MarkdownApp(BootstrapApp):
             header
             + [
                 dcc.Location(id="url", refresh=False),
-                dbc.Container([
-                    dbc.Nav(
-                        [
-                            html.Ol(
-                                [
-                                    html.Li(
-                                        html.A("Home", href="/"),
-                                        className="breadcrumb-item",
-                                    ),
-                                    html.Li(
-                                        f"{self.title}",
-                                        className="breadcrumb-item active",
-                                    ),
-                                ],
-                                className="breadcrumb",
-                            )
-                        ],
-                        navbar=True,
-                    ),
-                    dcc.Markdown(type(self).markdown)
-                ]),
+                dbc.Container(
+                    [
+                        dbc.Nav(
+                            [
+                                html.Ol(
+                                    [
+                                        html.Li(
+                                            html.A("Home", href="/"),
+                                            className="breadcrumb-item",
+                                        ),
+                                        html.Li(
+                                            f"{self.title}",
+                                            className="breadcrumb-item active",
+                                        ),
+                                    ],
+                                    className="breadcrumb",
+                                )
+                            ],
+                            navbar=True,
+                        ),
+                        dcc.Markdown(type(self).markdown),
+                    ]
+                ),
             ]
         )
 

@@ -152,6 +152,12 @@ def get_thumbnail_figure(data_dict):
         title=data_dict["data_source_dict"]["title"] + " Forecast",
         height=480,
         showlegend=False,
+        xaxis=dict(
+            fixedrange=True,
+        ),
+        yaxis=dict(
+            fixedrange=True,
+        ),
     )
 
     return go.Figure(data, layout)

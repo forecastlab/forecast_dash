@@ -135,11 +135,9 @@ def get_forecast_plot_data(series_df, forecast_df):
         name="Forecast",
         mode="lines+markers",
         line=dict(color="rgb(0,0,0)", dash="2px"),
-
-
     )
 
-    data = [line_history, error_95, error_75, error_50, line_forecast]
+    data = [error_95, error_75, error_50, line_forecast, line_history]
 
     return data
 
@@ -148,29 +146,28 @@ def get_forecast_shapes(forecast_df):
 
     shapes = [
         {
-            'type': 'rect',
+            "type": "rect",
             # x-reference is assigned to the x-values
-            'xref': 'x',
+            "xref": "x",
             # y-reference is assigned to the plot paper [0,1]
-            'yref': 'paper',
-            'x0': forecast_df.index[0],
-            'y0': 0,
-            'x1': forecast_df.index[-1],
-            'y1': 1,
-            'fillcolor': 'rgba(0,0,0)',
-            'opacity': 0.1,
-            'line': {
-                'width': 0,
-            },
+            "yref": "paper",
+            "x0": forecast_df.index[0],
+            "y0": 0,
+            "x1": forecast_df.index[-1],
+            "y1": 1,
+            "fillcolor": "rgba(0,0,0)",
+            "opacity": 0.1,
+            "line": {"width": 0},
             "layer": "below",
-        },
+        }
     ]
 
     return shapes
 
+
 def get_thumbnail_figure(data_dict):
 
-    series_df = data_dict["series_df"].iloc[-16:, :]
+    series_df = data_dict["downloaded_dict"]["series_df"].iloc[-16:, :]
     forecast_df = data_dict["forecast_df"]
 
     data = get_forecast_plot_data(series_df, forecast_df)
@@ -190,7 +187,7 @@ def get_thumbnail_figure(data_dict):
 
 def get_series_figure(data_dict):
 
-    series_df = data_dict["series_df"]
+    series_df = data_dict["downloaded_dict"]["series_df"]
     forecast_df = data_dict["forecast_df"]
 
     data = get_forecast_plot_data(series_df, forecast_df)
@@ -418,6 +415,34 @@ class Series(BootstrapApp):
             ),
             series_graph,
             table,
+            dbc.ListGroup(
+                [
+                    dbc.ListGroupItem(
+                        [
+                            dbc.ListGroupItemHeading("Forecast Updated At"),
+                            dbc.ListGroupItemText(
+                                series_data["forecasted_at"]
+                            ),
+                        ]
+                    ),
+                    dbc.ListGroupItem(
+                        [
+                            dbc.ListGroupItemHeading("Data Collected At"),
+                            dbc.ListGroupItemText(
+                                series_data["downloaded_dict"]["downloaded_at"]
+                            ),
+                        ]
+                    ),
+                    dbc.ListGroupItem(
+                        [
+                            dbc.ListGroupItemHeading("Data Source"),
+                            dbc.ListGroupItemText(
+                                series_data["data_source_dict"]["url"]
+                            ),
+                        ]
+                    ),
+                ]
+            ),
         ]
 
     def setup(self):
@@ -608,6 +633,7 @@ class Filter(BootstrapApp):
 
             parse_result = parse_state(value)
 
+            # Dynamically load tags
             data_sources_json_file = open("data_sources.json")
             series_list = json.load(data_sources_json_file)
             data_sources_json_file.close()

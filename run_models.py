@@ -4,6 +4,7 @@ from statsmodels.tsa.arima_model import ARIMA
 from scipy.stats import norm
 import pickle
 import numpy as np
+import datetime
 
 with open("data_sources.json") as data_sources_json_file:
 
@@ -13,10 +14,12 @@ with open("data_sources.json") as data_sources_json_file:
 
         print(data_source_dict["title"])
 
-        # Read local CSV that we downloaded earlier
-        series_df = pd.read_csv(
-            f"downloads/{data_source_dict['title']}.csv", parse_dates=["date"]
-        )
+        # Read local pickle that we created earlier
+        f = open(f"downloads/{data_source_dict['title']}.pkl", "rb")
+        downloaded_dict = pickle.load(f)
+        f.close()
+
+        series_df = downloaded_dict["series_df"]
 
         # Generate forecast
         forecast_len = 8
@@ -70,7 +73,8 @@ with open("data_sources.json") as data_sources_json_file:
 
         data = {
             "data_source_dict": data_source_dict,
-            "series_df": series_df,
+            "downloaded_dict": downloaded_dict,
+            "forecasted_at": datetime.datetime.now(),
             "forecast_df": forecast_df,
         }
 

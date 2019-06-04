@@ -94,6 +94,7 @@ def get_forecast_plot_data(series_df, forecast_df):
         y=series_df["value"],
         name="Historical",
         mode="lines+markers",
+        line=dict(color="rgb(226, 87, 78)"),
     )
 
     forecast_error_x = list(forecast_df.index) + list(
@@ -105,7 +106,7 @@ def get_forecast_plot_data(series_df, forecast_df):
         x=forecast_error_x,
         y=list(forecast_df["UB_50"]) + list(reversed(forecast_df["LB_50"])),
         fill="tozeroy",
-        fillcolor="rgba(0,100,80,0.2)",
+        fillcolor="rgb(226, 87, 78)",
         line=dict(color="rgba(255,255,255,0)"),
         name="50% CI",
     )
@@ -114,7 +115,7 @@ def get_forecast_plot_data(series_df, forecast_df):
         x=forecast_error_x,
         y=list(forecast_df["UB_75"]) + list(reversed(forecast_df["LB_75"])),
         fill="tozeroy",
-        fillcolor="rgba(0,176,246,0.2)",
+        fillcolor="rgb(234, 130, 112)",
         line=dict(color="rgba(255,255,255,0)"),
         name="75% CI",
     )
@@ -123,7 +124,7 @@ def get_forecast_plot_data(series_df, forecast_df):
         x=forecast_error_x,
         y=list(forecast_df["UB_95"]) + list(reversed(forecast_df["LB_95"])),
         fill="tozeroy",
-        fillcolor="rgba(231,107,243,0.2)",
+        fillcolor="rgb(243, 179, 160)",
         line=dict(color="rgba(255,255,255,0)"),
         name="95% CI",
     )
@@ -133,7 +134,9 @@ def get_forecast_plot_data(series_df, forecast_df):
         y=forecast_df["FORECAST"],
         name="Forecast",
         mode="lines+markers",
-        line=dict(dash="2px"),
+        line=dict(color="rgb(0,0,0)", dash="2px"),
+
+
     )
 
     data = [line_history, error_95, error_75, error_50, line_forecast]
@@ -141,12 +144,37 @@ def get_forecast_plot_data(series_df, forecast_df):
     return data
 
 
+def get_forecast_shapes(forecast_df):
+
+    shapes = [
+        {
+            'type': 'rect',
+            # x-reference is assigned to the x-values
+            'xref': 'x',
+            # y-reference is assigned to the plot paper [0,1]
+            'yref': 'paper',
+            'x0': forecast_df.index[0],
+            'y0': 0,
+            'x1': forecast_df.index[-1],
+            'y1': 1,
+            'fillcolor': 'rgba(0,0,0)',
+            'opacity': 0.1,
+            'line': {
+                'width': 0,
+            },
+            "layer": "below",
+        },
+    ]
+
+    return shapes
+
 def get_thumbnail_figure(data_dict):
 
     series_df = data_dict["series_df"].iloc[-16:, :]
     forecast_df = data_dict["forecast_df"]
 
     data = get_forecast_plot_data(series_df, forecast_df)
+    shapes = get_forecast_shapes(forecast_df)
 
     layout = go.Layout(
         title=data_dict["data_source_dict"]["title"] + " Forecast",
@@ -154,6 +182,7 @@ def get_thumbnail_figure(data_dict):
         showlegend=False,
         xaxis=dict(fixedrange=True),
         yaxis=dict(fixedrange=True),
+        shapes=shapes,
     )
 
     return go.Figure(data, layout)
@@ -165,6 +194,7 @@ def get_series_figure(data_dict):
     forecast_df = data_dict["forecast_df"]
 
     data = get_forecast_plot_data(series_df, forecast_df)
+    shapes = get_forecast_shapes(forecast_df)
 
     time_difference_forecast_to_start = (
         forecast_df.index[-1].to_pydatetime()
@@ -220,6 +250,7 @@ def get_series_figure(data_dict):
             fixedrange=True,
             autorange=True,
         ),
+        shapes=shapes,
     )
 
     return go.Figure(data, layout)

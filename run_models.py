@@ -21,6 +21,11 @@ with open("data_sources.json") as data_sources_json_file:
 
         series_df = downloaded_dict["series_df"]
 
+        # Hack to align to the end of the quarter
+        if data_source_dict["frequency"] == "Q":
+            offset = pd.offsets.QuarterEnd()
+            series_df["date"] = series_df["date"] + offset
+
         # Generate forecast
         forecast_len = 8
 

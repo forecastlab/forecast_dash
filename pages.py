@@ -94,7 +94,7 @@ def get_forecast_plot_data(series_df, forecast_df):
         y=series_df["value"],
         name="Historical",
         mode="lines+markers",
-        line=dict(color="rgb(226, 87, 78)"),
+        line=dict(color="rgb(0, 0, 0)"),
     )
 
     forecast_error_x = list(forecast_df.index) + list(
@@ -134,7 +134,7 @@ def get_forecast_plot_data(series_df, forecast_df):
         y=forecast_df["FORECAST"],
         name="Forecast",
         mode="lines+markers",
-        line=dict(color="rgb(0,0,0)", dash="2px"),
+        line=dict(color="rgb(91, 91, 91)", dash="2px"),
     )
 
     data = [error_95, error_75, error_50, line_forecast, line_history]

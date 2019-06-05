@@ -306,10 +306,7 @@ class Index(BootstrapApp):
                                     dcc.Graph(
                                         id=item_title,
                                         figure=thumbnail_figure,
-                                        config={
-                                            "displayModeBar": False,
-                                            "staticPlot": False,
-                                        },
+                                        config={"displayModeBar": False},
                                     )
                                 ],
                                 href=f"/series?title={item_title}",
@@ -723,10 +720,7 @@ class Filter(BootstrapApp):
                                     dcc.Graph(
                                         id=item_title,
                                         figure=thumbnail_figure,
-                                        config={
-                                            "displayModeBar": False,
-                                            "staticPlot": True,
-                                        },
+                                        config={"displayModeBar": False},
                                         className="six columns",
                                     ),
                                 ],

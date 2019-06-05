@@ -1,2 +1,2 @@
-black  --config pyproject.toml ./
+black --config pyproject.toml ./
 flake8

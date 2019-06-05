@@ -6,3 +6,5 @@ Flask-Caching
 flake8
 gunicorn
 pandas
+rpy2
+scikit-learn

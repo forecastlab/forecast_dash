@@ -90,7 +90,7 @@ def parse_state(url):
 def get_forecast_plot_data(series_df, forecast_df):
 
     line_history = go.Scatter(
-        x=series_df["date"],
+        x=series_df.index,
         y=series_df["value"],
         name="Historical",
         mode="lines+markers",
@@ -131,10 +131,10 @@ def get_forecast_plot_data(series_df, forecast_df):
 
     line_forecast = go.Scatter(
         x=forecast_df.index,
-        y=forecast_df["FORECAST"],
+        y=forecast_df["forecast"],
         name="Forecast",
-        mode="lines+markers",
-        line=dict(color="rgb(91, 91, 91)", dash="2px"),
+        mode="lines",
+        line=dict(color="rgb(0,0,0)", dash="2px"),
     )
 
     data = [error_95, error_75, error_50, line_forecast, line_history]
@@ -174,7 +174,7 @@ def get_thumbnail_figure(data_dict):
     shapes = get_forecast_shapes(forecast_df)
 
     layout = go.Layout(
-        title=data_dict["data_source_dict"]["title"] + " Forecast",
+        title=data_dict["data_source_dict"]["title"],
         height=480,
         showlegend=False,
         xaxis=dict(fixedrange=True),
@@ -195,7 +195,7 @@ def get_series_figure(data_dict):
 
     time_difference_forecast_to_start = (
         forecast_df.index[-1].to_pydatetime()
-        - series_df["date"][0].to_pydatetime()
+        - series_df.index[0].to_pydatetime()
     )
 
     layout = go.Layout(
@@ -205,9 +205,9 @@ def get_series_figure(data_dict):
             fixedrange=True,
             type="date",
             range=[
-                series_df["date"]
-                .iloc[-16]
-                .to_pydatetime(),  # Recent point in history
+                series_df.index[
+                    -16
+                ].to_pydatetime(),  # Recent point in history
                 forecast_df.index[-1].to_pydatetime(),  # End of forecast range
             ],
             rangeselector=dict(
@@ -237,7 +237,7 @@ def get_series_figure(data_dict):
             rangeslider=dict(
                 visible=True,
                 range=[
-                    series_df["date"][0].to_pydatetime(),
+                    series_df.index[0].to_pydatetime(),
                     forecast_df.index[-1].to_pydatetime(),
                 ],
             ),
@@ -417,6 +417,12 @@ class Series(BootstrapApp):
             table,
             dbc.ListGroup(
                 [
+                    dbc.ListGroupItem(
+                        [
+                            dbc.ListGroupItemHeading("Model Used"),
+                            dbc.ListGroupItemText(series_data["model_used"]),
+                        ]
+                    ),
                     dbc.ListGroupItem(
                         [
                             dbc.ListGroupItemHeading("Forecast Updated At"),

@@ -16,6 +16,7 @@ with open("data_sources.json") as data_sources_json_file:
             data_source_dict["url"],
             usecols=["date", "value"],
             parse_dates=["date"],
+            index_col="date",
         )
 
         data = {

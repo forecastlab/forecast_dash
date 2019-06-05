@@ -363,32 +363,8 @@ class Series(BootstrapApp):
 
         dataframe = series_data["forecast_df"]
 
-        table = dbc.Table(
-            # Header
-            [
-                html.Thead(
-                    html.Tr(
-                        [html.Th("Date")]
-                        + [html.Th(col) for col in dataframe.columns]
-                    )
-                )
-            ]
-            +
-            # Body
-            [
-                html.Tbody(
-                    [
-                        html.Tr(
-                            [html.Td(dataframe.index[i])]
-                            + [
-                                html.Td(dataframe.iloc[i][col].round(4))
-                                for col in dataframe.columns
-                            ]
-                        )
-                        for i in range(1, len(dataframe))
-                    ]
-                )
-            ]
+        table = dbc.Table.from_dataframe(
+            dataframe.round(4), index=True, index_label="Date"
         )
 
         return [

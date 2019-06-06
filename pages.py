@@ -11,6 +11,7 @@ import dash_bootstrap_components as dbc
 from abc import ABC, abstractmethod
 import re
 import ast
+from functools import wraps
 
 header = [
     dbc.NavbarSimple(
@@ -338,92 +339,23 @@ class Index(BootstrapApp):
 
         self.layout = layout_func
 
+def location_ignore_null(inputs, location_id):
+    def accept_func(func):
+        @wraps(func)
+        def wrapper(*args):
+            input_names = [item.component_id for item in inputs]
+            kwargs_dict = dict(zip(input_names, args))
+
+            if kwargs_dict[location_id] is None:
+                raise PreventUpdate
+
+            return func(*args)
+
+        return wrapper
+
+    return accept_func
 
 class Series(BootstrapApp):
-    def _serve_series(self, title):
-
-        series_data = get_series_data(title)
-        series_figure = get_series_figure(series_data)
-
-        series_graph = dcc.Graph(
-            figure=series_figure,
-            config={
-                "modeBarButtonsToRemove": [
-                    "sendDataToCloud",
-                    "autoScale2d",
-                    "hoverClosestCartesian",
-                    "hoverCompareCartesian",
-                    "lasso2d",
-                    "select2d",
-                    "toggleSpikelines",
-                ],
-                "displaylogo": False,
-            },
-        )
-
-        dataframe = series_data["forecast_df"]
-
-        table = dbc.Table.from_dataframe(
-            dataframe.round(4), index=True, index_label="Date"
-        )
-
-        return [
-            dbc.Nav(
-                [
-                    html.Ol(
-                        [
-                            html.Li(
-                                html.A("Home", href="/"),
-                                className="breadcrumb-item",
-                            ),
-                            html.Li(
-                                f"Series: {title}",
-                                className="breadcrumb-item active",
-                            ),
-                        ],
-                        className="breadcrumb",
-                    )
-                ],
-                navbar=True,
-            ),
-            series_graph,
-            table,
-            dbc.ListGroup(
-                [
-                    dbc.ListGroupItem(
-                        [
-                            dbc.ListGroupItemHeading("Model Used"),
-                            dbc.ListGroupItemText(series_data["model_used"]),
-                        ]
-                    ),
-                    dbc.ListGroupItem(
-                        [
-                            dbc.ListGroupItemHeading("Forecast Updated At"),
-                            dbc.ListGroupItemText(
-                                series_data["forecasted_at"]
-                            ),
-                        ]
-                    ),
-                    dbc.ListGroupItem(
-                        [
-                            dbc.ListGroupItemHeading("Data Collected At"),
-                            dbc.ListGroupItemText(
-                                series_data["downloaded_dict"]["downloaded_at"]
-                            ),
-                        ]
-                    ),
-                    dbc.ListGroupItem(
-                        [
-                            dbc.ListGroupItemHeading("Data Source"),
-                            dbc.ListGroupItemText(
-                                series_data["data_source_dict"]["url"]
-                            ),
-                        ]
-                    ),
-                ]
-            ),
-        ]
-
     def setup(self):
 
         self.title = "Series"
@@ -434,29 +366,157 @@ class Series(BootstrapApp):
                 dcc.Location(id="url", refresh=False),
                 dbc.Container(
                     [
-                        dbc.Row(
-                            [dbc.Col([html.Div(id="dynamic_content")], lg=12)]
-                        )
+                        # NAVBAR
+                        dbc.Nav(
+                            [
+                                html.Ol(
+                                    [
+                                        html.Li(
+                                            html.A("Home", href="/"),
+                                            className="breadcrumb-item",
+                                        ),
+                                        html.Li(
+                                            id="breadcrumb",
+                                            className="breadcrumb-item active",
+                                        ),
+                                    ],
+                                    className="breadcrumb",
+                                )
+                            ],
+                            navbar=True,
+                        ),
+                        dcc.Loading(
+                            [
+                                dbc.Row([dbc.Col(id="series_graph", lg=12)]),
+                                dbc.Row(
+                                    [
+                                        dbc.Col(id="meta_data_list", lg=6),
+                                        dbc.Col(id="forecast_table", lg=6),
+                                    ]
+                                ),
+                            ]
+                        ),
                     ]
                 ),
             ]
         )
 
-        @self.callback(
-            Output("dynamic_content", "children"), [Input("url", "href")]
-        )
-        def display_value(value):
-            # Put this in to avoid an Exception due to weird Location component
-            # behaviour
-            if value is None:
-                raise PreventUpdate
+        def series_input(inputs, location_id="url"):
+            def accept_func(func):
+                @wraps(func)
+                def wrapper(*args):
+                    input_names = [item.component_id for item in inputs]
+                    kwargs_dict = dict(zip(input_names, args))
 
-            parse_result = parse_state(value)
+                    parse_result = parse_state(kwargs_dict[location_id])
 
-            if "title" in parse_result:
-                return self._serve_series(parse_result["title"])
-            else:
-                raise PreventUpdate
+                    if "title" in parse_result:
+                        title = parse_result["title"]
+                        series_data_dict = get_series_data(title)
+                        return func(series_data_dict)
+                    else:
+                        raise PreventUpdate
+
+                return wrapper
+
+            return accept_func
+
+        inputs = [Input("url", "href")]
+
+        @self.callback(Output("breadcrumb", "children"), inputs)
+        @location_ignore_null(inputs, location_id="url")
+        @series_input(inputs, location_id="url")
+        def update_breadcrumb(series_data_dict):
+
+            return series_data_dict["data_source_dict"]["title"]
+
+        @self.callback(Output("series_graph", "children"), inputs)
+        @location_ignore_null(inputs, location_id="url")
+        @series_input(inputs, location_id="url")
+        def update_series_graph(series_data_dict):
+
+            series_figure = get_series_figure(series_data_dict)
+
+            series_graph = dcc.Graph(
+                figure=series_figure,
+                config={
+                    "modeBarButtonsToRemove": [
+                        "sendDataToCloud",
+                        "autoScale2d",
+                        "hoverClosestCartesian",
+                        "hoverCompareCartesian",
+                        "lasso2d",
+                        "select2d",
+                        "toggleSpikelines",
+                    ],
+                    "displaylogo": False,
+                },
+            )
+
+            return series_graph
+
+        @self.callback(Output("meta_data_list", "children"), inputs)
+        @location_ignore_null(inputs, location_id="url")
+        @series_input(inputs, location_id="url")
+        def update_meta_data_list(series_data_dict):
+
+            return dbc.ListGroup(
+                [
+                    dbc.ListGroupItem(
+                        [
+                            dbc.ListGroupItemHeading("Model Used"),
+                            dbc.ListGroupItemText(
+                                series_data_dict["model_used"]
+                            ),
+                        ]
+                    ),
+                    dbc.ListGroupItem(
+                        [
+                            dbc.ListGroupItemHeading("Forecast Updated At"),
+                            dbc.ListGroupItemText(
+                                series_data_dict["forecasted_at"]
+                            ),
+                        ]
+                    ),
+                    dbc.ListGroupItem(
+                        [
+                            dbc.ListGroupItemHeading("Data Collected At"),
+                            dbc.ListGroupItemText(
+                                series_data_dict["downloaded_dict"][
+                                    "downloaded_at"
+                                ]
+                            ),
+                        ]
+                    ),
+                    dbc.ListGroupItem(
+                        [
+                            dbc.ListGroupItemHeading("Data Source"),
+                            dbc.ListGroupItemText(
+                                series_data_dict["data_source_dict"]["url"]
+                            ),
+                        ]
+                    ),
+                ]
+            )
+
+        @self.callback(Output("forecast_table", "children"), inputs)
+        @location_ignore_null(inputs, location_id="url")
+        @series_input(inputs, location_id="url")
+        def update_forecast_table(series_data_dict):
+
+            dataframe = series_data_dict["forecast_df"]
+
+            column_name_map = {"forecast": "Forecast"}
+
+            table = dbc.Table.from_dataframe(
+                dataframe.rename(column_name_map, axis=1)[
+                    ["LB_50", "UB_50"]
+                ].round(4),
+                index=True,
+                index_label="Date",
+            )
+
+            return table
 
 
 def apply_default_value(params):

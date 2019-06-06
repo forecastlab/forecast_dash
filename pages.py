@@ -339,6 +339,7 @@ class Index(BootstrapApp):
 
         self.layout = layout_func
 
+
 def location_ignore_null(inputs, location_id):
     def accept_func(func):
         @wraps(func)
@@ -354,6 +355,7 @@ def location_ignore_null(inputs, location_id):
         return wrapper
 
     return accept_func
+
 
 class Series(BootstrapApp):
     def setup(self):
@@ -386,13 +388,44 @@ class Series(BootstrapApp):
                             navbar=True,
                         ),
                         dcc.Loading(
+                            dbc.Row([dbc.Col(id="series_graph", lg=12)])
+                        ),
+                        dbc.Row(
                             [
-                                dbc.Row([dbc.Col(id="series_graph", lg=12)]),
-                                dbc.Row(
+                                dbc.Col(
+                                    dcc.Loading(html.Div(id="meta_data_list")),
+                                    lg=6,
+                                ),
+                                dbc.Col(
                                     [
-                                        dbc.Col(id="meta_data_list", lg=6),
-                                        dbc.Col(id="forecast_table", lg=6),
-                                    ]
+                                        dcc.Dropdown(
+                                            options=[
+                                                {
+                                                    "label": "Forecast",
+                                                    "value": "Forecast",
+                                                },
+                                                {
+                                                    "label": "50% CI",
+                                                    "value": "CI_50",
+                                                },
+                                                {
+                                                    "label": "75% CI",
+                                                    "value": "CI_75",
+                                                },
+                                                {
+                                                    "label": "95% CI",
+                                                    "value": "CI_95",
+                                                },
+                                            ],
+                                            value="Forecast",
+                                            clearable=False,
+                                            id="forecast_table_selector",
+                                        ),
+                                        dcc.Loading(
+                                            html.Div(id="forecast_table")
+                                        ),
+                                    ],
+                                    lg=6,
                                 ),
                             ]
                         ),
@@ -413,7 +446,9 @@ class Series(BootstrapApp):
                     if "title" in parse_result:
                         title = parse_result["title"]
                         series_data_dict = get_series_data(title)
-                        return func(series_data_dict)
+
+                        del kwargs_dict[location_id]
+                        return func(series_data_dict, **kwargs_dict)
                     else:
                         raise PreventUpdate
 
@@ -499,10 +534,23 @@ class Series(BootstrapApp):
                 ]
             )
 
-        @self.callback(Output("forecast_table", "children"), inputs)
+        @self.callback(
+            Output("forecast_table", "children"),
+            inputs + [Input("forecast_table_selector", "value")],
+        )
         @location_ignore_null(inputs, location_id="url")
-        @series_input(inputs, location_id="url")
-        def update_forecast_table(series_data_dict):
+        @series_input(
+            inputs + [Input("forecast_table_selector", "value")],
+            location_id="url",
+        )
+        def update_forecast_table(series_data_dict, **kwargs):
+
+            selected_column_map = {
+                "Forecast": ["Forecast"],
+                "CI_50": ["LB_50", "UB_50"],
+                "CI_75": ["LB_75", "UB_75"],
+                "CI_95": ["LB_95", "UB_95"],
+            }
 
             dataframe = series_data_dict["forecast_df"]
 
@@ -510,7 +558,7 @@ class Series(BootstrapApp):
 
             table = dbc.Table.from_dataframe(
                 dataframe.rename(column_name_map, axis=1)[
-                    ["LB_50", "UB_50"]
+                    selected_column_map[kwargs["forecast_table_selector"]]
                 ].round(4),
                 index=True,
                 index_label="Date",

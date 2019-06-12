@@ -285,10 +285,10 @@ class Index(BootstrapApp):
         self.title = "Business Forecast Lab"
 
         showcase_item_titles = [
-            "Australian GDP",
-            "Australian Underemployment",
+            "Australian GDP Growth",
             "Australian Inflation (CPI)",
             "Australian Unemployment",
+            "Australian Underemployment",
         ]
 
         def layout_func():

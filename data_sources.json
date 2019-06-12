@@ -1,6 +1,6 @@
 [
   {
-    "title": "Australian GDP",
+    "title": "Australian GDP Growth",
     "url": "http://ausmacrodata.org/Data/5206.0/gdpcpcknaasaq.csv",
     "frequency": "Q",
     "tags": [

@@ -11,8 +11,6 @@ services:
       - 80
     volumes:
       - ./dash:/dash
-    depends_on:
-      - nginx
 
   nginx:
     image: nginx:latest

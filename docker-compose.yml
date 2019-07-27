@@ -11,6 +11,8 @@ services:
       - 80
     volumes:
       - ./dash:/dash
+      - ./data:/data
+      - ./shared_config:/shared_config
 
   nginx:
     image: nginx:latest

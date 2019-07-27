@@ -175,7 +175,11 @@ def get_thumbnail_figure(data_dict):
     shapes = get_forecast_shapes(forecast_df)
 
     layout = go.Layout(
-        title=data_dict["data_source_dict"]["title"],
+        title={
+            'text': data_dict["data_source_dict"]["title"],
+            'xanchor': 'auto',
+        },
+
         height=480,
         showlegend=False,
         xaxis=dict(fixedrange=True),
@@ -255,7 +259,7 @@ def get_series_figure(data_dict):
 
 
 def get_series_data(title):
-    f = open(f"forecasts/{title}.pkl", "rb")
+    f = open(f"../data/forecasts/{title}.pkl", "rb")
     data_dict = pickle.load(f)
     return data_dict
 
@@ -721,7 +725,7 @@ class Filter(BootstrapApp):
             parse_result = parse_state(value)
 
             # Dynamically load tags
-            data_sources_json_file = open("data_sources.json")
+            data_sources_json_file = open("../shared_config/data_sources.json")
             series_list = json.load(data_sources_json_file)
             data_sources_json_file.close()
 

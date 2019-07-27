@@ -4,13 +4,15 @@ services:
 
   gunicorn:
     build:
-      context: app
+      context: dash
       dockerfile: ./Dockerfile
     command: gunicorn -b 0.0.0.0:80 app:server
     expose:
       - 80
     volumes:
-      - ./app:/app
+      - ./dash:/dash
+    depends_on:
+      - nginx
 
   nginx:
     image: nginx:latest

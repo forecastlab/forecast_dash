@@ -36,9 +36,7 @@ class ARIMA(ForecastModel):
         AR_term = 1
         i_term = 0
         MA_term = 0
-        self.model = smARIMA(
-            series_df["value"], order=(AR_term, i_term, MA_term)
-        )
+        self.model = smARIMA(y, order=(AR_term, i_term, MA_term))
         self.arima_results = self.model.fit(disp=False)
 
     def predict(self, time_steps, levels):

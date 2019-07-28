@@ -1,4 +1,4 @@
-FROM nginx:latest
+FROM nginx
 
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
@@ -9,4 +9,8 @@ RUN apt-get update
 
 RUN apt-get -y install certbot python-certbot-nginx -t stretch-backports
 
+RUN nginx
+
 RUN certbot --nginx --non-interactive --agree-tos -m stephen.tierney@sydney.edu.au -d business-forecast-lab.com -d www.business-forecast-lab.com
+
+RUN nginx -s stop

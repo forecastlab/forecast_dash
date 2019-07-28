@@ -12,6 +12,7 @@ from rpy2.robjects import pandas2ri
 from rpy2.robjects.packages import importr
 import argparse
 
+
 class ForecastModel(ABC):
     @abstractmethod
     def description(self):
@@ -78,7 +79,9 @@ class AutoARIMA(ForecastModel):
 
         r_forecast_dict = dict(
             self.forecast_lib.forecast(
-                self.fit_results, h=1, level=robjects.IntVector(kwargs["levels"])
+                self.fit_results,
+                h=1,
+                level=robjects.IntVector(kwargs["levels"]),
             ).items()
         )
 
@@ -103,7 +106,14 @@ class AutoARIMA(ForecastModel):
         return forecast_dict
 
 
-def forecast_to_df(data_source_dict, forecast_dict, first_value, first_time, forecast_len, levels):
+def forecast_to_df(
+    data_source_dict,
+    forecast_dict,
+    first_value,
+    first_time,
+    forecast_len,
+    levels,
+):
 
     forecast_df = pd.DataFrame(forecast_dict)
 
@@ -133,6 +143,7 @@ def train_test_split(series, test_steps):
 
     return train_set, test_set
 
+
 def run_models(sources_path, download_dir_path, forecast_dir_path):
 
     with open(sources_path) as data_sources_json_file:
@@ -144,7 +155,9 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
             print(data_source_dict["title"])
 
             # Read local pickle that we created earlier
-            f = open(f"{download_dir_path}/{data_source_dict['title']}.pkl", "rb")
+            f = open(
+                f"{download_dir_path}/{data_source_dict['title']}.pkl", "rb"
+            )
             downloaded_dict = pickle.load(f)
             f.close()
 
@@ -198,7 +211,12 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
             first_time = series_df.index[-1]
 
             forecast_df = forecast_to_df(
-                data_source_dict, forecast_dict, first_value, first_time, forecast_len, levels=levels
+                data_source_dict,
+                forecast_dict,
+                first_value,
+                first_time,
+                forecast_len,
+                levels=levels,
             )
 
             # Store forecast and related
@@ -210,41 +228,44 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                 "model_used": best_model.description(),
             }
 
-            f = open(f"{forecast_dir_path}/{data_source_dict['title']}.pkl", "wb")
+            f = open(
+                f"{forecast_dir_path}/{data_source_dict['title']}.pkl", "wb"
+            )
             pickle.dump(data, f)
             f.close()
+
 
 if __name__ == "__main__":
 
     args_dict = {
-        's': {
-            'help': "sources file path",
-            'default': "../shared_config/data_sources.json",
-            'kw': "sources_path"
+        "s": {
+            "help": "sources file path",
+            "default": "../shared_config/data_sources.json",
+            "kw": "sources_path",
         },
-        'd': {
-            'help': "download directory path",
-            'default': "../data/downloads",
-            'kw': "download_dir_path"
+        "d": {
+            "help": "download directory path",
+            "default": "../data/downloads",
+            "kw": "download_dir_path",
         },
-        'f': {
-            'help': "forecast directory path",
-            'default': "../data/forecasts",
-            "kw": "forecast_dir_path"
-        }
+        "f": {
+            "help": "forecast directory path",
+            "default": "../data/forecasts",
+            "kw": "forecast_dir_path",
+        },
     }
 
     parser = argparse.ArgumentParser()
 
-    for k,v in args_dict.items():
+    for k, v in args_dict.items():
         parser.add_argument(f"--{k}", help=v["help"])
 
     input_args = vars(parser.parse_args())
 
     final_kwargs = {}
     for k, v in args_dict.items():
-        final_kwargs[v['kw']] = input_args[k] if input_args[k] else v['default']
+        final_kwargs[v["kw"]] = (
+            input_args[k] if input_args[k] else v["default"]
+        )
 
     run_models(**final_kwargs)
-
-

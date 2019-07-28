@@ -3,6 +3,7 @@ import pandas as pd
 import pickle
 import datetime
 
+
 def download_data(sources_path, download_dir_path):
 
     with open(sources_path) as data_sources_json_file:
@@ -26,11 +27,12 @@ def download_data(sources_path, download_dir_path):
                 "downloaded_at": datetime.datetime.now(),
             }
 
-            f = open(f"{download_dir_path}/{data_source_dict['title']}.pkl", "wb")
+            f = open(
+                f"{download_dir_path}/{data_source_dict['title']}.pkl", "wb"
+            )
             pickle.dump(data, f)
             f.close()
 
+
 if __name__ == "__main__":
     download_data("../shared_config/data_sources.json", "../data/downloads")
-
-

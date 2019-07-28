@@ -176,10 +176,9 @@ def get_thumbnail_figure(data_dict):
 
     layout = go.Layout(
         title={
-            'text': data_dict["data_source_dict"]["title"],
-            'xanchor': 'auto',
+            "text": data_dict["data_source_dict"]["title"],
+            "xanchor": "auto",
         },
-
         height=480,
         showlegend=False,
         xaxis=dict(fixedrange=True),

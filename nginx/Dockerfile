@@ -1,17 +1,29 @@
 FROM nginx
 
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+#COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
 # Set up certbot
 COPY ./backports.list /etc/apt/sources.list.d/backports.list
 
 RUN apt-get update
 
+RUN apt-get install -y procps
+
 RUN apt-get -y install certbot python-certbot-nginx -t stretch-backports
 
-#RUN nginx -g 'daemon on;'
+#RUN ls -all etc/init.d/
 
-RUN service nginx start
+#RUN nohup nginx -g 'daemon off;'
+
+#RUN service nginx start
+#
+#RUN tail -f /var/log/nginx/error.log
+
+#RUN nginx -t
+
+#RUN service nginx reload
+
+#RUN ps aux | grep nginx
 
 #RUN ls -all /var/log/nginx/
 
@@ -21,7 +33,7 @@ RUN service nginx start
 #
 #RUN service nginx status
 
-RUN certbot --nginx --non-interactive --agree-tos -m stephen.tierney@sydney.edu.au -d business-forecast-lab.com -d www.business-forecast-lab.com
+#RUN certbot --nginx --non-interactive --agree-tos -m stephen.tierney@sydney.edu.au -d business-forecast-lab.com -d www.business-forecast-lab.com
 
 #RUN nginx -s stop
 

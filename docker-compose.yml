@@ -5,7 +5,7 @@ services:
   gunicorn:
     build:
       context: dash
-#      dockerfile: ./Dockerfile
+      dockerfile: ./Dockerfile
     command: gunicorn -b 0.0.0.0:80 app:server
     expose:
       - 80
@@ -13,22 +13,32 @@ services:
       - ./dash:/dash
       - ./data:/data
       - ./shared_config:/shared_config
+    networks:
+      - web
+      - default
+    labels:
+      - traefik.backend=my-awesome-app-events
+      - traefik.docker.network=web
+      - traefik.frontend.rule=Host:business-forecast-lab.com
+      - traefik.enable=true
+      - traefik.port=80
 
-#  nginx:
-#    image: nginx:latest
-#    ports:
-#      - 80:80
-#    volumes:
-#      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-#    depends_on:
-#      - gunicorn
-
-
-  nginx:
-    build:
-      context: nginx
-      dockerfile: ./Dockerfile
+  traefik:
+    image: traefik:alpine
     ports:
       - 80:80
+      - 443:443
+    networks:
+      - web
+      - default
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik/traefik.toml:/traefik.toml
+      - ./traefik/acme.json:/acme.json
     depends_on:
       - gunicorn
+
+
+networks:
+  web:
+    external: true

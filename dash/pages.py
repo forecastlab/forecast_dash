@@ -703,7 +703,7 @@ class Filter(BootstrapApp):
                         dbc.Label("Tags"),
                         apply_default_value(params)(dbc.Checklist)(
                             options=[{"label": t, "value": t} for t in tags],
-                            values=[],
+                            value=[],
                             id="tags",
                         ),
                     ]
@@ -767,7 +767,7 @@ class Filter(BootstrapApp):
             # - names
             # - tags
 
-            data_sources_json_file = open("data_sources.json")
+            data_sources_json_file = open("../shared_config/data_sources.json")
             series_list = json.load(data_sources_json_file)
             data_sources_json_file.close()
 
@@ -777,12 +777,14 @@ class Filter(BootstrapApp):
                 series_dicts[series_dict["title"]] = series_dict
 
             list_filter_matches = []
+
             if name == "":
                 list_filter_matches.append(set(series_dicts.keys()))
             else:
                 matched_series_names = self.match_names(name, series_dicts)
                 list_filter_matches.append(set(matched_series_names))
-            if tags == "":
+
+            if not tags:
                 list_filter_matches.append(set(series_dicts.keys()))
             else:
                 matched_series_names = self.match_tags(tags, series_dicts)

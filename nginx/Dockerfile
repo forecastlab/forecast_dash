@@ -9,9 +9,9 @@ RUN apt-get update
 
 RUN apt-get -y install certbot python-certbot-nginx -t stretch-backports
 
-RUN nginx
+#RUN nginx -g 'daemon on;'
 
-#RUN service nginx start
+RUN service nginx start
 
 #RUN ls -all /var/log/nginx/
 
@@ -23,7 +23,7 @@ RUN nginx
 
 RUN certbot --nginx --non-interactive --agree-tos -m stephen.tierney@sydney.edu.au -d business-forecast-lab.com -d www.business-forecast-lab.com
 
-RUN nginx -s stop
+#RUN nginx -s stop
 
 #
 #RUN service nginx stop

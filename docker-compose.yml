@@ -14,11 +14,21 @@ services:
       - ./data:/data
       - ./shared_config:/shared_config
 
+#  nginx:
+#    image: nginx:latest
+#    ports:
+#      - 80:80
+#    volumes:
+#      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+#    depends_on:
+#      - gunicorn
+
+
   nginx:
-    image: nginx:latest
+    build:
+      context: nginx
+      dockerfile: ./Dockerfile
     ports:
       - 80:80
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - gunicorn

@@ -1,2 +1,2 @@
-app/Procfile
-app/requirements.txt
+dash/Procfile
+dash/requirements.txt

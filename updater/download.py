@@ -3,7 +3,6 @@ import pandas as pd
 import pickle
 import datetime
 
-
 def download_data(sources_path, download_dir_path):
 
     with open(sources_path) as data_sources_json_file:

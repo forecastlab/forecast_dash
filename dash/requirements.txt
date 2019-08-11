@@ -1,10 +1,6 @@
-black
 dash
 dash-bootstrap-components
 dash-multi
 Flask-Caching
-flake8
 gunicorn
 pandas
-rpy2
-scikit-learn

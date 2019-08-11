@@ -2,6 +2,15 @@ version: "3"
 
 services:
 
+  updater:
+    build:
+      context: updater
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./updater:/updater
+      - ./data:/data
+      - ./shared_config:/shared_config
+
   gunicorn:
     build:
       context: dash
@@ -22,6 +31,8 @@ services:
       - traefik.frontend.rule=Host:business-forecast-lab.com
       - traefik.enable=true
       - traefik.port=80
+    depends_on:
+      - updater
 
   traefik:
     image: traefik:alpine

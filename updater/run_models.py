@@ -1,16 +1,18 @@
-import json
-import pandas as pd
-from statsmodels.tsa.arima_model import ARIMA as smARIMA
-from scipy.stats import norm
-import pickle
-import numpy as np
+import argparse
 import datetime
-from abc import ABC, abstractmethod
-from sklearn.metrics import mean_squared_error
+import json
+import pickle
+from abc import ABC
+from abc import abstractmethod
+
+import numpy as np
+import pandas as pd
 import rpy2.robjects as robjects
 from rpy2.robjects import pandas2ri
 from rpy2.robjects.packages import importr
-import argparse
+from scipy.stats import norm
+from sklearn.metrics import mean_squared_error
+from statsmodels.tsa.arima_model import ARIMA as smARIMA
 
 
 class ForecastModel(ABC):
@@ -56,24 +58,26 @@ class ARIMA(ForecastModel):
         return forecast_dict
 
 
-class AutoARIMA(ForecastModel):
+class RForecastModel(ForecastModel, ABC):
+    @property
+    @classmethod
+    @abstractmethod
+    def forecast_model_name(cls):
+        pass
+
     def __init__(self):
         # Import the R library
         self.forecast_lib = importr("forecast")
         pandas2ri.activate()
 
     def description(self):
-        # arma = dict(self.fit_results.items())["arma"]
-
-        # AR, MA, SAR, SMA, Period, I, SI
-        # 0,   1,   2,   3,      4, 5, 6
-        # https://stat.ethz.ch/R-manual/R-devel/library/stats/html/arima.html
-        # return f"ARIMA({arma[0]}, {arma[5]}, {arma[1]})({arma[2]}, {arma[6]}, {arma[3]})"
-
         return self.method
 
     def fit(self, y, **kwargs):
-        self.fit_results = self.forecast_lib.auto_arima(y)
+
+        self.fit_results = getattr(
+            self.forecast_lib, type(self).forecast_model_name
+        )(y)
 
         r_forecast_dict = dict(
             self.forecast_lib.forecast(
@@ -104,45 +108,12 @@ class AutoARIMA(ForecastModel):
         return forecast_dict
 
 
-class ETS(ForecastModel):
-    def __init__(self):
-        # Import the R library
-        self.forecast_lib = importr("forecast")
-        pandas2ri.activate()
+class AutoARIMA(RForecastModel):
+    forecast_model_name = "auto_arima"
 
-    def description(self):
-        return self.method
 
-    def fit(self, y, **kwargs):
-        self.fit_results = self.forecast_lib.ets(y)
-
-        r_forecast_dict = dict(
-            self.forecast_lib.forecast(
-                self.fit_results,
-                h=1,
-                level=robjects.IntVector(kwargs["levels"]),
-            ).items()
-        )
-
-        self.method = r_forecast_dict["method"][0]
-
-    def predict(self, time_steps, levels):
-
-        r_forecast_dict = dict(
-            self.forecast_lib.forecast(
-                self.fit_results,
-                h=time_steps,
-                level=robjects.IntVector(levels),
-            ).items()
-        )
-
-        forecast_dict = {"forecast": r_forecast_dict["mean"]}
-
-        for i in range(len(levels)):
-            forecast_dict[f"LB_{levels[i]}"] = r_forecast_dict["lower"][:, i]
-            forecast_dict[f"UB_{levels[i]}"] = r_forecast_dict["upper"][:, i]
-
-        return forecast_dict
+class ETS(RForecastModel):
+    forecast_model_name = "ets"
 
 
 def forecast_to_df(

@@ -104,6 +104,47 @@ class AutoARIMA(ForecastModel):
         return forecast_dict
 
 
+class ETS(ForecastModel):
+    def __init__(self):
+        # Import the R library
+        self.forecast_lib = importr("forecast")
+        pandas2ri.activate()
+
+    def description(self):
+        return self.method
+
+    def fit(self, y, **kwargs):
+        self.fit_results = self.forecast_lib.ets(y)
+
+        r_forecast_dict = dict(
+            self.forecast_lib.forecast(
+                self.fit_results,
+                h=1,
+                level=robjects.IntVector(kwargs["levels"]),
+            ).items()
+        )
+
+        self.method = r_forecast_dict["method"][0]
+
+    def predict(self, time_steps, levels):
+
+        r_forecast_dict = dict(
+            self.forecast_lib.forecast(
+                self.fit_results,
+                h=time_steps,
+                level=robjects.IntVector(levels),
+            ).items()
+        )
+
+        forecast_dict = {"forecast": r_forecast_dict["mean"]}
+
+        for i in range(len(levels)):
+            forecast_dict[f"LB_{levels[i]}"] = r_forecast_dict["lower"][:, i]
+            forecast_dict[f"UB_{levels[i]}"] = r_forecast_dict["upper"][:, i]
+
+        return forecast_dict
+
+
 def forecast_to_df(
     data_source_dict,
     forecast_dict,
@@ -174,7 +215,7 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                 series_df["value"], forecast_len
             )
 
-            model_class_list = [AutoARIMA]
+            model_class_list = [AutoARIMA, ETS]
 
             metric_list = []
 

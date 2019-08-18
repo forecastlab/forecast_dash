@@ -604,11 +604,11 @@ def apply_default_value(params):
 
     return wrapper
 
+
 class Stats(BootstrapApp):
     def setup(self):
 
         self.title = "Statistics"
-
 
         def layout_func():
 
@@ -623,14 +623,15 @@ class Stats(BootstrapApp):
                     series_dict["title"]
                 ] = get_forecast_data(series_dict["title"])
 
-
             chosen_methods = []
             for series_title, forecast_data in forecast_series_dicts.items():
                 chosen_methods.append(forecast_data["model_class"])
 
             stats_raw = pd.DataFrame({"Method": chosen_methods})
 
-            counts = pd.DataFrame(stats_raw["Method"].value_counts().rename("Total"))
+            counts = pd.DataFrame(
+                stats_raw["Method"].value_counts().rename("Total")
+            )
             counts["Proportion"] = counts["Total"] / counts["Total"].sum()
 
             return html.Div(
@@ -639,21 +640,17 @@ class Stats(BootstrapApp):
                     dcc.Location(id="url", refresh=False),
                     dbc.Container(
                         [
-                            html.H2(
-                                "Statistics",
-                            ),
-
+                            html.H2("Statistics"),
                             dbc.Table.from_dataframe(
-                                counts,
-                                index=True,
-                                index_label="Method",
-                            )
+                                counts, index=True, index_label="Method"
+                            ),
                         ]
                     ),
                 ]
             )
 
         self.layout = layout_func
+
 
 class Filter(BootstrapApp):
     def setup(self):
@@ -917,6 +914,7 @@ class Filter(BootstrapApp):
                 results = [html.P("No results found")]
 
             return results
+
 
 class MarkdownApp(BootstrapApp):
     @property

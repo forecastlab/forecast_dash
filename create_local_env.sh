@@ -1,5 +1,7 @@
 venv_name=venv
 
-virtualenv -p python3 $venv_name
+virtualenv --always-copy -p python3 $venv_name
 source $venv_name/bin/activate
-pip install -r app/requirements.txt
+pip install -r dash/requirements.txt
+pip install -r updater/requirements.txt
+pip install -r requirements_build.txt

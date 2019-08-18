@@ -1,17 +1,19 @@
+import ast
+import json
+import pickle
+import re
+from abc import ABC, abstractmethod
+from functools import wraps
+from urllib.parse import urlparse, parse_qsl, urlencode
+
+import dash
+import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+import pandas as pd
 import plotly.graph_objs as go
-from urllib.parse import urlparse, parse_qsl, urlencode
+from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
-import dash
-import pickle
-import json
-import dash_bootstrap_components as dbc
-from abc import ABC, abstractmethod
-import re
-import ast
-from functools import wraps
 
 header = [
     dbc.NavbarSimple(
@@ -63,6 +65,9 @@ header = [
                 dbc.NavLink("Filter", href="/filter", external_link=True)
             ),
             dbc.NavItem(
+                dbc.NavLink("Stats", href="/stats", external_link=True)
+            ),
+            dbc.NavItem(
                 dbc.NavLink(
                     "Methodology", href="/methodology", external_link=True
                 )
@@ -79,6 +84,19 @@ header = [
         expand="lg",
     )
 ]
+
+
+def dash_kwarg(inputs):
+    def accept_func(func):
+        @wraps(func)
+        def wrapper(*args):
+            input_names = [item.component_id for item in inputs]
+            kwargs_dict = dict(zip(input_names, args))
+            return func(**kwargs_dict)
+
+        return wrapper
+
+    return accept_func
 
 
 def parse_state(url):
@@ -257,7 +275,7 @@ def get_series_figure(data_dict):
     return go.Figure(data, layout)
 
 
-def get_series_data(title):
+def get_forecast_data(title):
     f = open(f"../data/forecasts/{title}.pkl", "rb")
     data_dict = pickle.load(f)
     return data_dict
@@ -300,7 +318,7 @@ class Index(BootstrapApp):
 
             for item_title in showcase_item_titles:
 
-                series_data = get_series_data(item_title)
+                series_data = get_forecast_data(item_title)
                 thumbnail_figure = get_thumbnail_figure(series_data)
                 showcase_list.append(
                     dbc.Col(
@@ -448,7 +466,7 @@ class Series(BootstrapApp):
 
                     if "title" in parse_result:
                         title = parse_result["title"]
-                        series_data_dict = get_series_data(title)
+                        series_data_dict = get_forecast_data(title)
 
                         del kwargs_dict[location_id]
                         return func(series_data_dict, **kwargs_dict)
@@ -504,7 +522,7 @@ class Series(BootstrapApp):
                         [
                             dbc.ListGroupItemHeading("Model Used"),
                             dbc.ListGroupItemText(
-                                series_data_dict["model_used"]
+                                series_data_dict["model_detail"]
                             ),
                         ]
                     ),
@@ -574,21 +592,11 @@ def apply_default_value(params):
     def wrapper(func):
         def apply_value(*args, **kwargs):
             if "id" in kwargs and kwargs["id"] in params:
-
-                # For inputs that accept value vs values
-                if "value" in kwargs:
-                    key = "value"
-                    try:
-                        kwargs[key] = ast.literal_eval(params[kwargs["id"]])
-                    except Exception:
-                        kwargs[key] = params[kwargs["id"]]
-                else:
-                    key = "values"
-                    # It will either be a comma seperated string or a list-like
-                    try:
-                        kwargs[key] = ast.literal_eval(params[kwargs["id"]])
-                    except Exception:
-                        kwargs[key] = params[kwargs["id"]].split(",")
+                key = "value"
+                try:
+                    kwargs[key] = ast.literal_eval(params[kwargs["id"]])
+                except Exception:
+                    kwargs[key] = params[kwargs["id"]]
 
             return func(*args, **kwargs)
 
@@ -596,42 +604,58 @@ def apply_default_value(params):
 
     return wrapper
 
+class Stats(BootstrapApp):
+    def setup(self):
+
+        self.title = "Statistics"
+
+
+        def layout_func():
+
+            data_sources_json_file = open("../shared_config/data_sources.json")
+            source_series_list = json.load(data_sources_json_file)
+            data_sources_json_file.close()
+
+            forecast_series_dicts = {}
+
+            for series_dict in source_series_list:
+                forecast_series_dicts[
+                    series_dict["title"]
+                ] = get_forecast_data(series_dict["title"])
+
+
+            chosen_methods = []
+            for series_title, forecast_data in forecast_series_dicts.items():
+                chosen_methods.append(forecast_data["model_class"])
+
+            stats_raw = pd.DataFrame({"Method": chosen_methods})
+
+            counts = pd.DataFrame(stats_raw["Method"].value_counts().rename("Total"))
+            counts["Proportion"] = counts["Total"] / counts["Total"].sum()
+
+            return html.Div(
+                header
+                + [
+                    dcc.Location(id="url", refresh=False),
+                    dbc.Container(
+                        [
+                            html.H2(
+                                "Statistics",
+                            ),
+
+                            dbc.Table.from_dataframe(
+                                counts,
+                                index=True,
+                                index_label="Method",
+                            )
+                        ]
+                    ),
+                ]
+            )
+
+        self.layout = layout_func
 
 class Filter(BootstrapApp):
-    def match_names(self, name_input, series_dicts):
-        # This doesn't need to be an instance method
-
-        matched_series_names = []
-
-        name_terms = "|".join(name_input.split(" "))
-
-        for data_source_dict in series_dicts.values():
-
-            re_results = re.search(
-                name_terms, data_source_dict["title"], re.IGNORECASE
-            )
-            if re_results is not None:
-                matched_series_names.append(data_source_dict["title"])
-
-        return matched_series_names
-
-    def match_tags(self, tags, series_dicts):
-        # This doesn't need to be an instance method
-
-        matched_series_names = []
-
-        if type(tags) == str:
-            tags = tags.split(",")
-
-        tags = set(tags)
-
-        for data_source_dict in series_dicts.values():
-
-            if tags.issubset(set(data_source_dict["tags"])):
-                matched_series_names.append(data_source_dict["title"])
-
-        return matched_series_names
-
     def setup(self):
 
         self.config.suppress_callback_exceptions = True
@@ -682,7 +706,7 @@ class Filter(BootstrapApp):
             ]
         )
 
-        def filter_panel_children(params, tags):
+        def filter_panel_children(params, tags, methods):
 
             children = [
                 html.H4("Filters"),
@@ -708,6 +732,18 @@ class Filter(BootstrapApp):
                         ),
                     ]
                 ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Method"),
+                        apply_default_value(params)(dbc.Checklist)(
+                            options=[
+                                {"label": m, "value": m} for m in methods
+                            ],
+                            value=[],
+                            id="methods",
+                        ),
+                    ]
+                ),
             ]
 
             return children
@@ -715,11 +751,8 @@ class Filter(BootstrapApp):
         @self.callback(
             Output("filter_panel", "children"), [Input("url", "href")]
         )
+        @location_ignore_null([Input("url", "href")], "url")
         def display_value(value):
-            # Put this in to avoid an Exception due to weird Location component
-            # behaviour
-            if value is None:
-                raise PreventUpdate
 
             parse_result = parse_state(value)
 
@@ -735,92 +768,145 @@ class Filter(BootstrapApp):
 
             all_tags = sorted(set(all_tags))
 
-            return filter_panel_children(parse_result, all_tags)
+            # Dynamically load methods
+            stats = get_forecast_data("statistics")
+            all_methods = stats["models_used"]
 
-        value_component_ids = ["name"]
+            return filter_panel_children(parse_result, all_tags, all_methods)
 
-        values_component_ids = ["tags"]
+        component_ids = ["name", "tags", "methods"]
 
         @self.callback(
             Output("url", "search"),
-            inputs=[Input(i, "value") for i in value_component_ids]
-            + [Input(i, "values") for i in values_component_ids],
+            inputs=[Input(i, "value") for i in component_ids],
         )
         def update_url_state(*values):
 
-            state = urlencode(
-                dict(zip(value_component_ids + values_component_ids, values))
-            )
+            state = urlencode(dict(zip(component_ids, values)))
 
             return f"?{state}"
 
+        def match_names(forecast_dicts, name_input):
+            # This doesn't need to be an instance method
+
+            matched_series_names = []
+
+            name_terms = "|".join(name_input.split(" "))
+
+            for series_title, forecast_dict in forecast_dicts.items():
+
+                re_results = re.search(name_terms, series_title, re.IGNORECASE)
+                if re_results is not None:
+                    matched_series_names.append(series_title)
+
+            return matched_series_names
+
+        def match_tags(forecast_dicts, tags):
+            # This doesn't need to be an instance method
+
+            matched_series_names = []
+
+            if type(tags) == str:
+                tags = tags.split(",")
+
+            tags = set(tags)
+
+            for series_title, forecast_dict in forecast_dicts.items():
+                series_tags = forecast_dict["data_source_dict"]["tags"]
+
+                if tags.issubset(set(series_tags)):
+                    matched_series_names.append(series_title)
+
+            return matched_series_names
+
+        def match_methods(forecast_dicts, methods):
+            # This doesn't need to be an instance method
+
+            matched_series_names = []
+
+            if type(methods) == str:
+                methods = methods.split(",")
+
+            methods = set(methods)
+
+            for series_title, forecast_dict in forecast_dicts.items():
+
+                if forecast_dict["model_class"] in methods:
+                    matched_series_names.append(series_title)
+
+            return matched_series_names
+
         @self.callback(
             Output("filter_results", "children"),
-            [Input(i, "value") for i in value_component_ids]
-            + [Input(i, "values") for i in values_component_ids],
+            [Input(i, "value") for i in component_ids],
         )
-        def filter_results(name, tags):
+        @dash_kwarg([Input(i, "value") for i in component_ids])
+        def filter_results(**kwargs):
 
-            # Searching by AND-ing conditions together
+            print(kwargs)
 
-            # Search
-            # - names
-            # - tags
+            # Filtering by AND-ing conditions together
 
             data_sources_json_file = open("../shared_config/data_sources.json")
-            series_list = json.load(data_sources_json_file)
+            source_series_list = json.load(data_sources_json_file)
             data_sources_json_file.close()
 
-            series_dicts = {}
+            forecast_series_dicts = {}
 
-            for series_dict in series_list:
-                series_dicts[series_dict["title"]] = series_dict
+            for series_dict in source_series_list:
+                forecast_series_dicts[
+                    series_dict["title"]
+                ] = get_forecast_data(series_dict["title"])
+
+            filters = {
+                "name": match_names,
+                "tags": match_tags,
+                "methods": match_methods,
+            }
 
             list_filter_matches = []
 
-            if name == "":
-                list_filter_matches.append(set(series_dicts.keys()))
-            else:
-                matched_series_names = self.match_names(name, series_dicts)
-                list_filter_matches.append(set(matched_series_names))
-
-            if not tags:
-                list_filter_matches.append(set(series_dicts.keys()))
-            else:
-                matched_series_names = self.match_tags(tags, series_dicts)
-                list_filter_matches.append(set(matched_series_names))
+            for filter_key, filter_fn in filters.items():
+                if not kwargs[filter_key] or kwargs[filter_key] == "":
+                    list_filter_matches.append(
+                        set(forecast_series_dicts.keys())
+                    )
+                else:
+                    matched_series_names = filter_fn(
+                        forecast_series_dicts, kwargs[filter_key]
+                    )
+                    list_filter_matches.append(set(matched_series_names))
 
             unique_series_titles = list(
                 sorted(set.intersection(*list_filter_matches))
             )
 
-            results_list = []
-
-            for item_title in unique_series_titles:
-                series_data = get_series_data(item_title)
-                thumbnail_figure = get_thumbnail_figure(series_data)
-
-                results_list.append(
-                    html.Div(
-                        [
-                            html.A(
-                                [
-                                    html.H5(item_title),
-                                    dcc.Graph(
-                                        id=item_title,
-                                        figure=thumbnail_figure,
-                                        config={"displayModeBar": False},
-                                        className="six columns",
-                                    ),
-                                ],
-                                href=f"/series?title={item_title}",
-                            ),
-                            html.Hr(),
-                        ]
-                    )
-                )
-
             if len(unique_series_titles) > 0:
+
+                results_list = []
+
+                for item_title in unique_series_titles:
+                    series_data = forecast_series_dicts[item_title]
+                    thumbnail_figure = get_thumbnail_figure(series_data)
+
+                    results_list.append(
+                        html.Div(
+                            [
+                                html.A(
+                                    [
+                                        html.H5(item_title),
+                                        dcc.Graph(
+                                            figure=thumbnail_figure,
+                                            config={"displayModeBar": False},
+                                        ),
+                                    ],
+                                    href=f"/series?title={item_title}",
+                                ),
+                                html.Hr(),
+                            ]
+                        )
+                    )
+
                 results = [
                     html.P(
                         f"{len(unique_series_titles)} result{'s' if len(unique_series_titles) > 1 else ''} found"
@@ -831,7 +917,6 @@ class Filter(BootstrapApp):
                 results = [html.P("No results found")]
 
             return results
-
 
 class MarkdownApp(BootstrapApp):
     @property

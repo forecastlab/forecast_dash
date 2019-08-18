@@ -28,6 +28,11 @@ class ForecastModel(ABC):
     def predict(self, time_steps, levels):
         pass
 
+    @staticmethod
+    @abstractmethod
+    def name():
+        pass
+
 
 class ARIMA(ForecastModel):
     def description(self):
@@ -56,6 +61,10 @@ class ARIMA(ForecastModel):
             )
 
         return forecast_dict
+
+    @staticmethod
+    def name():
+        return "ARIMA"
 
 
 class RForecastModel(ForecastModel, ABC):
@@ -111,9 +120,17 @@ class RForecastModel(ForecastModel, ABC):
 class AutoARIMA(RForecastModel):
     forecast_model_name = "auto_arima"
 
+    @staticmethod
+    def name():
+        return "Auto ARIMA"
+
 
 class ETS(RForecastModel):
     forecast_model_name = "ets"
+
+    @staticmethod
+    def name():
+        return "ETS"
 
 
 def forecast_to_df(
@@ -235,7 +252,8 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                 "downloaded_dict": downloaded_dict,
                 "forecasted_at": datetime.datetime.now(),
                 "forecast_df": forecast_df,
-                "model_used": best_model.description(),
+                "model_class": best_model.name(),
+                "model_detail": best_model.description(),
             }
 
             f = open(
@@ -243,6 +261,14 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
             )
             pickle.dump(data, f)
             f.close()
+
+        # Save statistics
+        print("Generating Statistics")
+        data = {"models_used": [m.name() for m in model_class_list]}
+
+        f = open(f"{forecast_dir_path}/statistics.pkl", "wb")
+        pickle.dump(data, f)
+        f.close()
 
 
 if __name__ == "__main__":

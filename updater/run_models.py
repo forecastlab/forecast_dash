@@ -10,12 +10,19 @@ import pandas as pd
 import rpy2.robjects as robjects
 from rpy2.robjects import pandas2ri
 from rpy2.robjects.packages import importr
-from scipy.stats import norm
 from sklearn.metrics import mean_squared_error
-from statsmodels.tsa.arima_model import ARIMA as smARIMA
+
+forecast_len = 8
+levels = [50, 75, 95]
 
 
 class ForecastModel(ABC):
+    @property
+    @staticmethod
+    @abstractmethod
+    def name():
+        pass
+
     @abstractmethod
     def description(self):
         pass
@@ -27,51 +34,19 @@ class ForecastModel(ABC):
     @abstractmethod
     def predict(self, time_steps, levels):
         pass
-
-    @staticmethod
-    @abstractmethod
-    def name():
-        pass
-
-
-class ARIMA(ForecastModel):
-    def description(self):
-        return "ARIMA (1, 0, 0)"
-
-    def fit(self, y, **kwargs):
-
-        AR_term = 1
-        i_term = 0
-        MA_term = 0
-        self.model = smARIMA(y, order=(AR_term, i_term, MA_term))
-        self.arima_results = self.model.fit(disp=False)
-
-    def predict(self, time_steps, levels):
-
-        forecast, std_dev, _ = self.arima_results.forecast(steps=time_steps)
-
-        forecast_dict = {"forecast": forecast}
-
-        for level in levels:
-            forecast_dict[f"LB_{level}"] = (
-                forecast + norm.ppf((1 - level / 100) / 2) * std_dev
-            )
-            forecast_dict[f"UB_{level}"] = (
-                forecast - norm.ppf((1 - level / 100) / 2) * std_dev
-            )
-
-        return forecast_dict
-
-    @staticmethod
-    def name():
-        return "ARIMA"
 
 
 class RForecastModel(ForecastModel, ABC):
     @property
-    @classmethod
+    @staticmethod
     @abstractmethod
-    def forecast_model_name(cls):
+    def forecast_model_name():
+        pass
+
+    @property
+    @staticmethod
+    @abstractmethod
+    def forecast_model_params():
         pass
 
     def __init__(self):
@@ -86,7 +61,7 @@ class RForecastModel(ForecastModel, ABC):
 
         self.fit_results = getattr(
             self.forecast_lib, type(self).forecast_model_name
-        )(y)
+        )(y, **type(self).forecast_model_params)
 
         r_forecast_dict = dict(
             self.forecast_lib.forecast(
@@ -117,20 +92,44 @@ class RForecastModel(ForecastModel, ABC):
         return forecast_dict
 
 
-class AutoARIMA(RForecastModel):
-    forecast_model_name = "auto_arima"
+class RSimple(RForecastModel):
+    name = "Simple Exponential Smoothing (ZNN)"
 
-    @staticmethod
-    def name():
-        return "Auto ARIMA"
-
-
-class ETS(RForecastModel):
     forecast_model_name = "ets"
 
-    @staticmethod
-    def name():
-        return "ETS"
+    forecast_model_params = {"model": "ZNN"}
+
+
+class RHolt(RForecastModel):
+    name = "Holt-Winters (ZNN)"
+
+    forecast_model_name = "ets"
+
+    forecast_model_params = {"model": "ZZN"}
+
+
+class RDamped(RForecastModel):
+    name = "Damped (ZZN, Damped)"
+
+    forecast_model_name = "ets"
+
+    forecast_model_params = {"model": "ZZN", "damped": True}
+
+
+class RTheta(RForecastModel):
+    name = "Theta"
+
+    forecast_model_name = "thetaf"
+
+    forecast_model_params = {"level": robjects.IntVector(levels)}
+
+
+class RAutoARIMA(RForecastModel):
+    name = "Auto ARIMA"
+
+    forecast_model_name = "auto_arima"
+
+    forecast_model_params = {}
 
 
 def forecast_to_df(
@@ -195,15 +194,12 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                 offset = pd.offsets.QuarterEnd()
                 series_df.index = series_df.index + offset
 
-            forecast_len = 8
-            levels = [50, 75, 95]
-
             # Form train-validation sets
             train_set, validation_set = train_test_split(
                 series_df["value"], forecast_len
             )
 
-            model_class_list = [AutoARIMA, ETS]
+            model_class_list = [RAutoARIMA, RSimple, RHolt, RDamped, RTheta]
 
             metric_list = []
 
@@ -252,8 +248,8 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                 "downloaded_dict": downloaded_dict,
                 "forecasted_at": datetime.datetime.now(),
                 "forecast_df": forecast_df,
-                "model_class": best_model.name(),
-                "model_detail": best_model.description(),
+                "model_name": best_model.name,
+                "model_description": best_model.description(),
             }
 
             f = open(
@@ -264,7 +260,7 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
 
         # Save statistics
         print("Generating Statistics")
-        data = {"models_used": [m.name() for m in model_class_list]}
+        data = {"models_used": [m.name for m in model_class_list]}
 
         f = open(f"{forecast_dir_path}/statistics.pkl", "wb")
         pickle.dump(data, f)

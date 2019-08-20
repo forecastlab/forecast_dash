@@ -10,6 +10,7 @@ import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
+import numpy as np
 import pandas as pd
 import plotly.graph_objs as go
 from dash.dependencies import Input, Output
@@ -84,6 +85,32 @@ header = [
         expand="lg",
     )
 ]
+
+
+def breadcrumb_layout(crumbs):
+
+    return dbc.Nav(
+        [
+            html.Ol(
+                [
+                    html.Li(
+                        html.A(crumb[0], href=crumb[1]),
+                        className="breadcrumb-item",
+                    )
+                    for crumb in crumbs[:-1]
+                ]
+                + [
+                    html.Li(
+                        crumbs[-1][0],
+                        id="breadcrumb",
+                        className="breadcrumb-item active",
+                    )
+                ],
+                className="breadcrumb",
+            )
+        ],
+        navbar=True,
+    )
 
 
 def dash_kwarg(inputs):
@@ -389,25 +416,7 @@ class Series(BootstrapApp):
                 dcc.Location(id="url", refresh=False),
                 dbc.Container(
                     [
-                        # NAVBAR
-                        dbc.Nav(
-                            [
-                                html.Ol(
-                                    [
-                                        html.Li(
-                                            html.A("Home", href="/"),
-                                            className="breadcrumb-item",
-                                        ),
-                                        html.Li(
-                                            id="breadcrumb",
-                                            className="breadcrumb-item active",
-                                        ),
-                                    ],
-                                    className="breadcrumb",
-                                )
-                            ],
-                            navbar=True,
-                        ),
+                        breadcrumb_layout([("Home", "/"), ("Series", "")]),
                         dcc.Loading(
                             dbc.Row([dbc.Col(id="series_graph", lg=12)])
                         ),
@@ -520,9 +529,19 @@ class Series(BootstrapApp):
                 [
                     dbc.ListGroupItem(
                         [
-                            dbc.ListGroupItemHeading("Model Used"),
+                            dbc.ListGroupItemHeading("Model"),
                             dbc.ListGroupItemText(
-                                series_data_dict["model_detail"]
+                                [
+                                    html.P(series_data_dict["model_name"]),
+                                    html.P(
+                                        series_data_dict["model_description"]
+                                    ),
+                                ]
+                            )
+                            if series_data_dict["model_name"]
+                            != series_data_dict["model_description"]
+                            else dbc.ListGroupItemText(
+                                [html.P(series_data_dict["model_name"])]
                             ),
                         ]
                     ),
@@ -530,7 +549,9 @@ class Series(BootstrapApp):
                         [
                             dbc.ListGroupItemHeading("Forecast Updated At"),
                             dbc.ListGroupItemText(
-                                series_data_dict["forecasted_at"]
+                                series_data_dict["forecasted_at"].strftime(
+                                    "%Y-%m-%d %H:%M:%S"
+                                )
                             ),
                         ]
                     ),
@@ -540,7 +561,7 @@ class Series(BootstrapApp):
                             dbc.ListGroupItemText(
                                 series_data_dict["downloaded_dict"][
                                     "downloaded_at"
-                                ]
+                                ].strftime("%Y-%m-%d %H:%M:%S")
                             ),
                         ]
                     ),
@@ -548,7 +569,16 @@ class Series(BootstrapApp):
                         [
                             dbc.ListGroupItemHeading("Data Source"),
                             dbc.ListGroupItemText(
-                                series_data_dict["data_source_dict"]["url"]
+                                [
+                                    html.A(
+                                        series_data_dict["data_source_dict"][
+                                            "url"
+                                        ],
+                                        href=series_data_dict[
+                                            "data_source_dict"
+                                        ]["url"],
+                                    )
+                                ]
                             ),
                         ]
                     ),
@@ -577,12 +607,14 @@ class Series(BootstrapApp):
 
             column_name_map = {"forecast": "Forecast"}
 
+            dataframe = dataframe.rename(column_name_map, axis=1)[
+                selected_column_map[kwargs["forecast_table_selector"]]
+            ].round(4)
+
+            dataframe.index = dataframe.index.strftime("%Y-%m-%d %H:%M:%S")
+
             table = dbc.Table.from_dataframe(
-                dataframe.rename(column_name_map, axis=1)[
-                    selected_column_map[kwargs["forecast_table_selector"]]
-                ].round(4),
-                index=True,
-                index_label="Date",
+                dataframe, index=True, index_label="Date"
             )
 
             return table
@@ -612,6 +644,9 @@ class Stats(BootstrapApp):
 
         def layout_func():
 
+            stats = get_forecast_data("statistics")
+            all_methods = stats["models_used"]
+
             data_sources_json_file = open("../shared_config/data_sources.json")
             source_series_list = json.load(data_sources_json_file)
             data_sources_json_file.close()
@@ -625,14 +660,35 @@ class Stats(BootstrapApp):
 
             chosen_methods = []
             for series_title, forecast_data in forecast_series_dicts.items():
-                chosen_methods.append(forecast_data["model_class"])
+                chosen_methods.append(forecast_data["model_name"])
 
             stats_raw = pd.DataFrame({"Method": chosen_methods})
 
+            unchosen_methods = list(set(all_methods) - set(chosen_methods))
+            unchosen_counts = pd.Series(
+                data=np.zeros(len(unchosen_methods)),
+                index=unchosen_methods,
+                name="Total",
+            )
+
             counts = pd.DataFrame(
-                stats_raw["Method"].value_counts().rename("Total")
+                stats_raw["Method"]
+                .value_counts()
+                .rename("Total")
+                .append(unchosen_counts)
             )
             counts["Proportion"] = counts["Total"] / counts["Total"].sum()
+
+            table = dbc.Table.from_dataframe(
+                counts, index=True, index_label="Method"
+            )
+
+            # Apply URLS to index
+            for row in table.children[1].children:
+                state = urlencode({"methods": [row.children[0].children]})
+                row.children[0].children = html.A(
+                    row.children[0].children, href=f"/filter/?{state}"
+                )
 
             return html.Div(
                 header
@@ -640,10 +696,11 @@ class Stats(BootstrapApp):
                     dcc.Location(id="url", refresh=False),
                     dbc.Container(
                         [
-                            html.H2("Statistics"),
-                            dbc.Table.from_dataframe(
-                                counts, index=True, index_label="Method"
+                            breadcrumb_layout(
+                                [("Home", "/"), (f"{self.title}", "")]
                             ),
+                            html.H2("Statistics"),
+                            table,
                         ]
                     ),
                 ]
@@ -665,24 +722,7 @@ class Filter(BootstrapApp):
                 dcc.Location(id="url", refresh=False),
                 dbc.Container(
                     [
-                        dbc.Nav(
-                            [
-                                html.Ol(
-                                    [
-                                        html.Li(
-                                            html.A("Home", href="/"),
-                                            className="breadcrumb-item",
-                                        ),
-                                        html.Li(
-                                            f"Filter",
-                                            className="breadcrumb-item active",
-                                        ),
-                                    ],
-                                    className="breadcrumb",
-                                )
-                            ],
-                            navbar=True,
-                        ),
+                        breadcrumb_layout([("Home", "/"), ("Filter", "")]),
                         dbc.Row(
                             [
                                 dbc.Col(id="filter_panel", lg=3, sm=3),
@@ -828,7 +868,7 @@ class Filter(BootstrapApp):
 
             for series_title, forecast_dict in forecast_dicts.items():
 
-                if forecast_dict["model_class"] in methods:
+                if forecast_dict["model_name"] in methods:
                     matched_series_names.append(series_title)
 
             return matched_series_names
@@ -839,8 +879,6 @@ class Filter(BootstrapApp):
         )
         @dash_kwarg([Input(i, "value") for i in component_ids])
         def filter_results(**kwargs):
-
-            print(kwargs)
 
             # Filtering by AND-ing conditions together
 
@@ -938,23 +976,8 @@ class MarkdownApp(BootstrapApp):
                 dcc.Location(id="url", refresh=False),
                 dbc.Container(
                     [
-                        dbc.Nav(
-                            [
-                                html.Ol(
-                                    [
-                                        html.Li(
-                                            html.A("Home", href="/"),
-                                            className="breadcrumb-item",
-                                        ),
-                                        html.Li(
-                                            f"{self.title}",
-                                            className="breadcrumb-item active",
-                                        ),
-                                    ],
-                                    className="breadcrumb",
-                                )
-                            ],
-                            navbar=True,
+                        breadcrumb_layout(
+                            [("Home", "/"), (f"{self.title}", "")]
                         ),
                         dcc.Markdown(type(self).markdown),
                     ]
@@ -993,23 +1016,8 @@ class About(BootstrapApp):
                 dcc.Location(id="url", refresh=False),
                 dbc.Container(
                     [
-                        dbc.Nav(
-                            [
-                                html.Ol(
-                                    [
-                                        html.Li(
-                                            html.A("Home", href="/"),
-                                            className="breadcrumb-item",
-                                        ),
-                                        html.Li(
-                                            f"About",
-                                            className="breadcrumb-item active",
-                                        ),
-                                    ],
-                                    className="breadcrumb",
-                                )
-                            ],
-                            navbar=True,
+                        breadcrumb_layout(
+                            [("Home", "/"), (f"{self.title}", "")]
                         ),
                         dbc.Row(
                             [

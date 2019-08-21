@@ -35,6 +35,7 @@ class ForecastModel(ABC):
     def predict(self, time_steps, levels):
         pass
 
+
 class RForecastModel(ForecastModel, ABC):
     @property
     @staticmethod
@@ -97,6 +98,7 @@ class RNaive(RForecastModel):
     forecast_model_name = "naive"
 
     forecast_model_params = {"level": robjects.IntVector(levels)}
+
 
 class RSimple(RForecastModel):
     name = "Simple Exponential Smoothing (ZNN)"
@@ -205,7 +207,14 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                 series_df["value"], forecast_len
             )
 
-            model_class_list = [RNaive, RAutoARIMA, RSimple, RHolt, RDamped, RTheta]
+            model_class_list = [
+                RNaive,
+                RAutoARIMA,
+                RSimple,
+                RHolt,
+                RDamped,
+                RTheta,
+            ]
 
             metric_list = []
 

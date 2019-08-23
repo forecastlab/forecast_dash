@@ -2,142 +2,29 @@ import argparse
 import datetime
 import json
 import pickle
-from abc import ABC
-from abc import abstractmethod
 
 import numpy as np
 import pandas as pd
-import rpy2.robjects as robjects
 from rpy2.robjects import pandas2ri
-from rpy2.robjects.packages import importr
 from sklearn.metrics import mean_squared_error
+from sklearn.utils.validation import indexable, _num_samples
 
+from models import RNaive, RAutoARIMA, RSimple, RHolt, RDamped, RTheta
+
+pandas2ri.activate()
+
+p_to_use = 1
 forecast_len = 8
-levels = [50, 75, 95]
+level = [50, 75, 95]
 
-
-class ForecastModel(ABC):
-    @property
-    @staticmethod
-    @abstractmethod
-    def name():
-        pass
-
-    @abstractmethod
-    def description(self):
-        pass
-
-    @abstractmethod
-    def fit(self, y, **kwargs):
-        pass
-
-    @abstractmethod
-    def predict(self, time_steps, levels):
-        pass
-
-
-class RForecastModel(ForecastModel, ABC):
-    @property
-    @staticmethod
-    @abstractmethod
-    def forecast_model_name():
-        pass
-
-    @property
-    @staticmethod
-    @abstractmethod
-    def forecast_model_params():
-        pass
-
-    def __init__(self):
-        # Import the R library
-        self.forecast_lib = importr("forecast")
-        pandas2ri.activate()
-
-    def description(self):
-        return self.method
-
-    def fit(self, y, **kwargs):
-
-        self.fit_results = getattr(
-            self.forecast_lib, type(self).forecast_model_name
-        )(y, **type(self).forecast_model_params)
-
-        r_forecast_dict = dict(
-            self.forecast_lib.forecast(
-                self.fit_results,
-                h=1,
-                level=robjects.IntVector(kwargs["levels"]),
-            ).items()
-        )
-
-        self.method = r_forecast_dict["method"][0]
-
-    def predict(self, time_steps, levels):
-
-        r_forecast_dict = dict(
-            self.forecast_lib.forecast(
-                self.fit_results,
-                h=time_steps,
-                level=robjects.IntVector(levels),
-            ).items()
-        )
-
-        forecast_dict = {"forecast": r_forecast_dict["mean"]}
-
-        for i in range(len(levels)):
-            forecast_dict[f"LB_{levels[i]}"] = r_forecast_dict["lower"][:, i]
-            forecast_dict[f"UB_{levels[i]}"] = r_forecast_dict["upper"][:, i]
-
-        return forecast_dict
-
-
-class RNaive(RForecastModel):
-    name = "Naive"
-
-    forecast_model_name = "naive"
-
-    forecast_model_params = {"level": robjects.IntVector(levels)}
-
-
-class RSimple(RForecastModel):
-    name = "Simple Exponential Smoothing (ZNN)"
-
-    forecast_model_name = "ets"
-
-    forecast_model_params = {"model": "ZNN"}
-
-
-class RHolt(RForecastModel):
-    name = "Holt-Winters (ZNN)"
-
-    forecast_model_name = "ets"
-
-    forecast_model_params = {"model": "ZZN"}
-
-
-class RDamped(RForecastModel):
-    name = "Damped (ZZN, Damped)"
-
-    forecast_model_name = "ets"
-
-    forecast_model_params = {"model": "ZZN", "damped": True}
-
-
-class RTheta(RForecastModel):
-    name = "Theta"
-
-    forecast_model_name = "thetaf"
-
-    forecast_model_params = {"level": robjects.IntVector(levels)}
-
-
-class RAutoARIMA(RForecastModel):
-    name = "Auto ARIMA"
-
-    forecast_model_name = "auto_arima"
-
-    forecast_model_params = {}
+model_class_list = [
+    RNaive,
+    RAutoARIMA,  # RAutoARIMA is very slow!
+    RSimple,
+    RHolt,
+    RDamped,
+    RTheta,
+]
 
 
 def forecast_to_df(
@@ -148,7 +35,6 @@ def forecast_to_df(
     forecast_len,
     levels,
 ):
-
     forecast_df = pd.DataFrame(forecast_dict)
 
     first_row = {"forecast": first_value}
@@ -170,16 +56,69 @@ def forecast_to_df(
     return final_forecast_df
 
 
-def train_test_split(series, test_steps):
+class TimeSeriesRollingSplit:
+    def __init__(self, h=1, p_to_use=1):
 
-    train_set = series.iloc[:-test_steps]
-    test_set = series.iloc[-test_steps:]
+        self.h = h
+        self.p_to_use = p_to_use
 
-    return train_set, test_set
+    def split(self, X, y=None, groups=None):
+        """Generate indices to split data into training and test set.
+
+        Parameters
+        ----------
+        X : array-like, shape (n_samples, n_features)
+            Training data, where n_samples is the number of samples
+            and n_features is the number of features.
+
+        y : array-like, shape (n_samples,)
+            Always ignored, exists for compatibility.
+
+        groups : array-like, with shape (n_samples,)
+            Always ignored, exists for compatibility.
+
+        Yields
+        ------
+        train : ndarray
+            The training set indices for that split.
+        test : ndarray
+            The testing set indices for that split.
+
+        """
+
+        X, y, groups = indexable(X, y, groups)
+
+        n_samples = _num_samples(X)
+        indices = np.arange(n_samples)
+
+        h = self.h
+
+        min_position = np.maximum(h, int(n_samples * (1 - self.p_to_use)))
+
+        positions = np.flip(np.arange(min_position, n_samples - h))
+
+        for position in positions:
+
+            yield (indices[:position], indices[position : position + h])
+
+
+def cross_val_score(model, y, cv, scorer, fit_params={}):
+
+    errors = []
+
+    for train_index, test_index in cv.split(y):
+        y_train, y_test = y[train_index], y[test_index]
+
+        model.fit(y_train, **fit_params)
+
+        model_predictions = model.predict()
+
+        errors.append(scorer(y_test, model_predictions))
+
+    return np.mean(errors)
 
 
 def run_models(sources_path, download_dir_path, forecast_dir_path):
-
     with open(sources_path) as data_sources_json_file:
 
         data_sources_list = json.load(data_sources_json_file)
@@ -202,48 +141,29 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                 offset = pd.offsets.QuarterEnd()
                 series_df.index = series_df.index + offset
 
-            # Form train-validation sets
-            train_set, validation_set = train_test_split(
-                series_df["value"], forecast_len
-            )
-
-            model_class_list = [
-                RNaive,
-                RAutoARIMA,
-                RSimple,
-                RHolt,
-                RDamped,
-                RTheta,
-            ]
-
             metric_list = []
+            cv = TimeSeriesRollingSplit(h=forecast_len, p_to_use=p_to_use)
+            init_params = {"h": forecast_len, "level": level}
+            y = series_df["value"]
 
             # Train a whole bunch-o models on the training set
             # and evaluate them on the validation set
             for model_class in model_class_list:
 
-                model = model_class()
-
-                model.fit(train_set, levels=levels)
-
-                model_predictions = model.predict(
-                    len(validation_set), levels=levels
-                )
+                model = model_class(**init_params)
 
                 metric_list.append(
-                    mean_squared_error(
-                        validation_set, model_predictions["forecast"]
-                    )
+                    cross_val_score(model, y, cv, mean_squared_error)
                 )
 
             best_model_class = model_class_list[np.argmin(metric_list)]
 
             # Retrain best model on full data
-            best_model = best_model_class()
-            best_model.fit(series_df["value"], levels=levels)
+            best_model = best_model_class(**init_params)
+            best_model.fit(y)
 
             # Generate final forecast using best model
-            forecast_dict = best_model.predict(forecast_len, levels=levels)
+            forecast_dict = best_model.predict_withci()
 
             first_value = series_df["value"].iloc[-1]
             first_time = series_df.index[-1]
@@ -254,7 +174,7 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                 first_value,
                 first_time,
                 forecast_len,
-                levels=levels,
+                levels=level,
             )
 
             # Store forecast and related

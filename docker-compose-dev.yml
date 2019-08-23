@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+
+  updater:
+    build:
+      context: updater
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./updater:/updater
+      - ./data:/data
+      - ./shared_config:/shared_config
+
+  gunicorn:
+    build:
+      context: dash
+      dockerfile: ./Dockerfile
+    command: gunicorn -b 0.0.0.0:80 app:server
+    ports:
+      - 80:80
+    volumes:
+      - ./dash:/dash
+      - ./data:/data
+      - ./shared_config:/shared_config
+    networks:
+      - web
+      - default
+    depends_on:
+      - updater
+
+networks:
+  web:
+    external: true

@@ -91,9 +91,10 @@ class RModel(ForecastModel, ABC):
         return forecast_dict
 
 
-# Some methods in R-forecast produce immediate forecasts
+# Some methods in R-forecast produce immediate forecasts: the R call is
+# <model_name>( y, <model_params> ) .
+# Examples are forecast::naive, rwf, holt .
 # https://otexts.com/fpp2/the-forecast-package-in-r.html
-# e.g. naive, rwf, holt
 class RDirectForecastModel(RModel):
     def get_r_forecast_dict(self):
         return dict(
@@ -109,6 +110,8 @@ class RDirectForecastModel(RModel):
         super().fit(y)
 
 
+# Models for which the R call is forecast( <model_name>( y, <model_params> ) ) .
+# Examples are forecast::ets and forecast::auto.arima .
 class RForecastModel(RModel):
     def get_r_forecast_dict(self):
         return dict(

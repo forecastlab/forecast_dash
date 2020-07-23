@@ -1,9 +1,29 @@
 # Creating a Local Development Environment
 
+For most local development it is not necessary to set up docker. 
 Use the following script to create a python virtual environment and install
 the required dependencies 
 
     ./create_local_env.sh
+
+This only needs to be done once. Make sure you are working in that virtual
+environment.
+
+    source venv/bin/activate
+
+# Run the dash app
+From the dash/ directory
+    python app.py
+and direct your browser to http://0.0.0.0:5000/ .
+
+# Run the updater
+From the updater/ directory
+    python download.py
+to fetch new data.
+    R -f requirements.R
+to install new R packages and
+    python update.py
+to run the models.
 
 # Local build
 

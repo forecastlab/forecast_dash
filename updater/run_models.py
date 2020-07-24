@@ -9,7 +9,7 @@ from rpy2.robjects import pandas2ri
 from sklearn.metrics import mean_squared_error
 from sklearn.utils.validation import indexable, _num_samples
 
-from models import RNaive, RAutoARIMA, RSimple, RHolt, RDamped, RTheta
+from models import RNaive, RNaive2, RAutoARIMA, RSimple, RHolt, RDamped, RTheta
 
 pandas2ri.activate()
 
@@ -19,11 +19,12 @@ level = [50, 75, 95]
 
 model_class_list = [
     RNaive,
-#    RAutoARIMA,  # RAutoARIMA is very slow!
+    RAutoARIMA,  # RAutoARIMA is very slow!
     RSimple,
-#    RHolt,
-#    RDamped,
-#    RTheta,
+    RHolt,
+    RDamped,
+    RTheta,
+    RNaive2,
 ]
 
 

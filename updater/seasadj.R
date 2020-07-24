@@ -34,18 +34,18 @@ SeasonalityTest <- function(input, ppy){
 }
 
 #Used to estimate the statistical benchmarks of the M4 competition
-naive2 <- function(input, fh = 10, level = c(80,95)){
-    ppy <- frequency(input)
-    ST <- (ppy>1) && SeasonalityTest(input,ppy)
+naive2 <- function(y, h = 10, level = c(80,95)){
+    ppy <- frequency(y)
+    ST <- (ppy>1) && SeasonalityTest(y,ppy)
     if (ST){
-        Dec <- decompose(input,type=type)
-        seasadj <- input/Dec$seasonal
-        SIout <- head(rep(Dec$seasonal[1:ppy], fh), fh)
+        Dec <- decompose(y,type=type)
+        seasadj <- y/Dec$seasonal
+        SIout <- head(rep(Dec$seasonal[1:ppy], h), h)
     }else{
-        seasadj <- input
-        SIout <- rep(1, fh)
+        seasadj <- y
+        SIout <- rep(1, h)
     }
-    fc <- naive(seasadj, h=fh, level=level)
+    fc <- naive(seasadj, h=h, level=level)
     return( list( mean = fc$mean*SIout,
                   upper = fc$upper*SIout,
                   lower = fc$lower*SIout) )

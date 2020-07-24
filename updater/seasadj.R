@@ -46,7 +46,8 @@ naive2 <- function(y, h = 10, level = c(80,95)){
         SIout <- rep(1, h)
     }
     fc <- naive(seasadj, h=h, level=level)
-    return( list( mean = fc$mean*SIout,
+    return( list( method = "Seasonally Adjusted Naive",
+                  mean = fc$mean*SIout,
                   upper = fc$upper*SIout,
                   lower = fc$lower*SIout) )
 }

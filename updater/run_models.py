@@ -151,7 +151,7 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
             # and evaluate them on the validation set
             for model_class in model_class_list:
 
-                print('-', model_class.name)
+                print("-", model_class.name)
                 model = model_class(**init_params)
 
                 metric_list.append(

@@ -709,6 +709,51 @@ class Stats(BootstrapApp):
         self.layout = layout_func
 
 
+def match_names(forecast_dicts, name_input):
+    matched_series_names = []
+
+    name_terms = "|".join(name_input.split(" "))
+
+    for series_title, forecast_dict in forecast_dicts.items():
+
+        re_results = re.search(name_terms, series_title, re.IGNORECASE)
+        if re_results is not None:
+            matched_series_names.append(series_title)
+
+    return matched_series_names
+
+def match_tags(forecast_dicts, tags):
+    matched_series_names = []
+
+    if type(tags) == str:
+        tags = tags.split(",")
+
+    tags = set(tags)
+
+    for series_title, forecast_dict in forecast_dicts.items():
+        series_tags = forecast_dict["data_source_dict"]["tags"]
+
+        if tags.issubset(set(series_tags)):
+            matched_series_names.append(series_title)
+
+    return matched_series_names
+
+def match_methods(forecast_dicts, methods):
+    matched_series_names = []
+
+    if type(methods) == str:
+        methods = methods.split(",")
+
+    methods = set(methods)
+
+    for series_title, forecast_dict in forecast_dicts.items():
+
+        if forecast_dict["model_name"] in methods:
+            matched_series_names.append(series_title)
+
+    return matched_series_names
+
+
 class Filter(BootstrapApp):
     def setup(self):
 
@@ -822,56 +867,6 @@ class Filter(BootstrapApp):
             state = urlencode(dict(zip(component_ids, values)))
 
             return f"?{state}"
-
-        def match_names(forecast_dicts, name_input):
-            # This doesn't need to be an instance method
-
-            matched_series_names = []
-
-            name_terms = "|".join(name_input.split(" "))
-
-            for series_title, forecast_dict in forecast_dicts.items():
-
-                re_results = re.search(name_terms, series_title, re.IGNORECASE)
-                if re_results is not None:
-                    matched_series_names.append(series_title)
-
-            return matched_series_names
-
-        def match_tags(forecast_dicts, tags):
-            # This doesn't need to be an instance method
-
-            matched_series_names = []
-
-            if type(tags) == str:
-                tags = tags.split(",")
-
-            tags = set(tags)
-
-            for series_title, forecast_dict in forecast_dicts.items():
-                series_tags = forecast_dict["data_source_dict"]["tags"]
-
-                if tags.issubset(set(series_tags)):
-                    matched_series_names.append(series_title)
-
-            return matched_series_names
-
-        def match_methods(forecast_dicts, methods):
-            # This doesn't need to be an instance method
-
-            matched_series_names = []
-
-            if type(methods) == str:
-                methods = methods.split(",")
-
-            methods = set(methods)
-
-            for series_title, forecast_dict in forecast_dicts.items():
-
-                if forecast_dict["model_name"] in methods:
-                    matched_series_names.append(series_title)
-
-            return matched_series_names
 
         @self.callback(
             Output("filter_results", "children"),

@@ -710,6 +710,9 @@ class Stats(BootstrapApp):
 
 
 def match_names(forecast_dicts, name_input):
+    if not name_input or name_input == "":
+        return set(forecast_dicts.keys())       
+    
     matched_series_names = []
 
     name_terms = "|".join(name_input.split(" "))
@@ -720,9 +723,12 @@ def match_names(forecast_dicts, name_input):
         if re_results is not None:
             matched_series_names.append(series_title)
 
-    return matched_series_names
+    return set(matched_series_names)
 
 def match_tags(forecast_dicts, tags):
+    if not tags or tags == "":
+        return set(forecast_dicts.keys())       
+    
     matched_series_names = []
 
     if type(tags) == str:
@@ -736,9 +742,12 @@ def match_tags(forecast_dicts, tags):
         if tags.issubset(set(series_tags)):
             matched_series_names.append(series_title)
 
-    return matched_series_names
+    return set(matched_series_names)
 
 def match_methods(forecast_dicts, methods):
+    if not methods or methods == "":
+        return set(forecast_dicts.keys())       
+    
     matched_series_names = []
 
     if type(methods) == str:
@@ -751,7 +760,7 @@ def match_methods(forecast_dicts, methods):
         if forecast_dict["model_name"] in methods:
             matched_series_names.append(series_title)
 
-    return matched_series_names
+    return set(matched_series_names)
 
 
 class Filter(BootstrapApp):
@@ -897,15 +906,10 @@ class Filter(BootstrapApp):
             list_filter_matches = []
 
             for filter_key, filter_fn in filters.items():
-                if not kwargs[filter_key] or kwargs[filter_key] == "":
-                    list_filter_matches.append(
-                        set(forecast_series_dicts.keys())
-                    )
-                else:
-                    matched_series_names = filter_fn(
-                        forecast_series_dicts, kwargs[filter_key]
-                    )
-                    list_filter_matches.append(set(matched_series_names))
+                matched_series_names = filter_fn(
+                    forecast_series_dicts, kwargs[filter_key]
+                )
+                list_filter_matches.append(matched_series_names)
 
             unique_series_titles = list(
                 sorted(set.intersection(*list_filter_matches))

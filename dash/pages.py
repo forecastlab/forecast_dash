@@ -360,7 +360,7 @@ class Index(BootstrapApp):
                                         config={"displayModeBar": False},
                                     )
                                 ],
-                                href=f"/series?title={item_title}",
+                                href=f"/series?title={item_title}&model={model_name}",
                             )
                         ],
                         lg=6,
@@ -479,8 +479,10 @@ class Series(BootstrapApp):
                         title = parse_result["title"]
                         series_data_dict = get_forecast_data(title)
 
+                        model_name = parse_result["model"]
+                        
                         del kwargs_dict[location_id]
-                        return func(series_data_dict, **kwargs_dict)
+                        return func(series_data_dict, model_name, **kwargs_dict)
                     else:
                         raise PreventUpdate
 
@@ -493,16 +495,16 @@ class Series(BootstrapApp):
         @self.callback(Output("breadcrumb", "children"), inputs)
         @location_ignore_null(inputs, location_id="url")
         @series_input(inputs, location_id="url")
-        def update_breadcrumb(series_data_dict):
+        def update_breadcrumb(series_data_dict, model_name):
 
-            return series_data_dict["data_source_dict"]["title"]
+            return series_data_dict["data_source_dict"]["title"] + " - " + model_name
 
         @self.callback(Output("series_graph", "children"), inputs)
         @location_ignore_null(inputs, location_id="url")
         @series_input(inputs, location_id="url")
-        def update_series_graph(series_data_dict):
+        def update_series_graph(series_data_dict, model_name):
 
-            series_figure = get_series_figure(series_data_dict)
+            series_figure = get_series_figure(series_data_dict, model_name)
 
             series_graph = dcc.Graph(
                 figure=series_figure,
@@ -525,8 +527,9 @@ class Series(BootstrapApp):
         @self.callback(Output("meta_data_list", "children"), inputs)
         @location_ignore_null(inputs, location_id="url")
         @series_input(inputs, location_id="url")
-        def update_meta_data_list(series_data_dict):
+        def update_meta_data_list(series_data_dict, model_name):
 
+            model_description = series_data_dict["all_forecasts"][model_name]["model_description"]
             return dbc.ListGroup(
                 [
                     dbc.ListGroupItem(
@@ -534,16 +537,13 @@ class Series(BootstrapApp):
                             dbc.ListGroupItemHeading("Model"),
                             dbc.ListGroupItemText(
                                 [
-                                    html.P(series_data_dict["model_name"]),
-                                    html.P(
-                                        series_data_dict["model_description"]
-                                    ),
+                                    html.P(model_name),
+                                    html.P(model_description)
                                 ]
                             )
-                            if series_data_dict["model_name"]
-                            != series_data_dict["model_description"]
+                            if model_name != model_description
                             else dbc.ListGroupItemText(
-                                [html.P(series_data_dict["model_name"])]
+                                [html.P(model_name)]
                             ),
                         ]
                     ),
@@ -596,7 +596,7 @@ class Series(BootstrapApp):
             inputs + [Input("forecast_table_selector", "value")],
             location_id="url",
         )
-        def update_forecast_table(series_data_dict, **kwargs):
+        def update_forecast_table(series_data_dict, model_name, **kwargs):
 
             selected_column_map = {
                 "Forecast": ["Forecast"],
@@ -605,7 +605,7 @@ class Series(BootstrapApp):
                 "CI_95": ["LB_95", "UB_95"],
             }
 
-            dataframe = series_data_dict["forecast_df"]
+            dataframe = series_data_dict["all_forecasts"][model_name]["forecast_df"]
 
             column_name_map = {"forecast": "Forecast"}
 

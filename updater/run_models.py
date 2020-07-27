@@ -19,10 +19,10 @@ level = [50, 75, 95]
 
 model_class_list = [
     RNaive,
-    RAutoARIMA,  # RAutoARIMA is very slow!
+    #    RAutoARIMA,  # RAutoARIMA is very slow!
     RSimple,
-    RHolt,
-    RDamped,
+    #    RHolt,
+    #    RDamped,
     RTheta,
 ]
 
@@ -146,9 +146,14 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
             init_params = {"h": forecast_len, "level": level}
             y = series_df["value"]
 
+            all_forecasts = {}
+
             # Train a whole bunch-o models on the training set
             # and evaluate them on the validation set
             for model_class in model_class_list:
+
+                print("-", model_class.name)
+                forecasted_at = datetime.datetime.now()
 
                 model = model_class(**init_params)
 
@@ -177,14 +182,22 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                 levels=level,
             )
 
+            model_name = best_model.name
+            model_description = best_model.description()
+            cv_score = np.min(metric_list)
+
+            all_forecasts[f"{model_name}"] = {
+                "model_description": model_description,
+                "cv_score": cv_score,
+                "forecast_df": forecast_df,
+            }
+
             # Store forecast and related
             data = {
                 "data_source_dict": data_source_dict,
                 "downloaded_dict": downloaded_dict,
-                "forecasted_at": datetime.datetime.now(),
-                "forecast_df": forecast_df,
-                "model_name": best_model.name,
-                "model_description": best_model.description(),
+                "forecasted_at": forecasted_at,
+                "all_forecasts": all_forecasts,
             }
 
             f = open(

@@ -211,17 +211,18 @@ def get_forecast_shapes(forecast_df):
     return shapes
 
 
-def get_thumbnail_figure(data_dict):
+def get_thumbnail_figure(data_dict, model_name = "Naive"):
 
     series_df = data_dict["downloaded_dict"]["series_df"].iloc[-16:, :]
-    forecast_df = data_dict["forecast_df"]
+    forecast_df = data_dict["all_forecasts"][model_name]["forecast_df"]
 
     data = get_forecast_plot_data(series_df, forecast_df)
     shapes = get_forecast_shapes(forecast_df)
 
+    title = data_dict["data_source_dict"]["title"] + " - " + model_name
     layout = go.Layout(
         title={
-            "text": data_dict["data_source_dict"]["title"],
+            "text": title,
             "xanchor": "auto",
         },
         height=480,
@@ -234,10 +235,10 @@ def get_thumbnail_figure(data_dict):
     return go.Figure(data, layout)
 
 
-def get_series_figure(data_dict):
+def get_series_figure(data_dict, model_name = "Naive"):
 
     series_df = data_dict["downloaded_dict"]["series_df"]
-    forecast_df = data_dict["forecast_df"]
+    forecast_df = data_dict["all_forecasts"][model_name]["forecast_df"]
 
     data = get_forecast_plot_data(series_df, forecast_df)
     shapes = get_forecast_shapes(forecast_df)
@@ -247,8 +248,9 @@ def get_series_figure(data_dict):
         - series_df.index[0].to_pydatetime()
     )
 
+    title = data_dict["data_source_dict"]["title"] + " - " + model_name
     layout = go.Layout(
-        title=data_dict["data_source_dict"]["title"] + " Forecast",
+        title=title,
         height=720,
         xaxis=dict(
             fixedrange=True,
@@ -332,21 +334,21 @@ class Index(BootstrapApp):
 
         self.title = "Business Forecast Lab"
 
-        showcase_item_titles = [
-            "Australian GDP Growth",
-            "Australian Inflation (CPI)",
-            "Australian Unemployment",
-            "Australian Underemployment",
-        ]
+        showcase_item_titles = {
+            "Australian GDP Growth": "Simple Exponential Smoothing (ZNN)",
+            "Australian Inflation (CPI)": "Naive",
+            "Australian Unemployment": "Damped (ZZN, Damped)",
+            "Australian Underemployment": "Theta",
+        }
 
         def layout_func():
 
             showcase_list = []
 
-            for item_title in showcase_item_titles:
+            for item_title, model_name in showcase_item_titles.items():
 
                 series_data = get_forecast_data(item_title)
-                thumbnail_figure = get_thumbnail_figure(series_data)
+                thumbnail_figure = get_thumbnail_figure(series_data, model_name)
                 showcase_list.append(
                     dbc.Col(
                         [
@@ -660,7 +662,8 @@ class Stats(BootstrapApp):
 
             chosen_methods = []
             for series_title, forecast_data in forecast_series_dicts.items():
-                chosen_methods.append(forecast_data["model_name"])
+                for model_name in all_methods:
+                    chosen_methods.append(model_name)
 
             stats_raw = pd.DataFrame({"Method": chosen_methods})
 

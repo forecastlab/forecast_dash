@@ -211,19 +211,17 @@ def get_forecast_shapes(forecast_df):
     return shapes
 
 
-def get_thumbnail_figure(data_dict):
+def get_thumbnail_figure(data_dict, model_name):
 
     series_df = data_dict["downloaded_dict"]["series_df"].iloc[-16:, :]
-    forecast_df = data_dict["forecast_df"]
+    forecast_df = data_dict["all_forecasts"][model_name]["forecast_df"]
 
     data = get_forecast_plot_data(series_df, forecast_df)
     shapes = get_forecast_shapes(forecast_df)
 
+    title = data_dict["data_source_dict"]["title"] + " - " + model_name
     layout = go.Layout(
-        title={
-            "text": data_dict["data_source_dict"]["title"],
-            "xanchor": "auto",
-        },
+        title={"text": title, "xanchor": "auto"},
         height=480,
         showlegend=False,
         xaxis=dict(fixedrange=True),
@@ -234,10 +232,10 @@ def get_thumbnail_figure(data_dict):
     return go.Figure(data, layout)
 
 
-def get_series_figure(data_dict):
+def get_series_figure(data_dict, model_name):
 
     series_df = data_dict["downloaded_dict"]["series_df"]
-    forecast_df = data_dict["forecast_df"]
+    forecast_df = data_dict["all_forecasts"][model_name]["forecast_df"]
 
     data = get_forecast_plot_data(series_df, forecast_df)
     shapes = get_forecast_shapes(forecast_df)
@@ -247,8 +245,9 @@ def get_series_figure(data_dict):
         - series_df.index[0].to_pydatetime()
     )
 
+    title = data_dict["data_source_dict"]["title"] + " - " + model_name
     layout = go.Layout(
-        title=data_dict["data_source_dict"]["title"] + " Forecast",
+        title=title,
         height=720,
         xaxis=dict(
             fixedrange=True,
@@ -332,21 +331,23 @@ class Index(BootstrapApp):
 
         self.title = "Business Forecast Lab"
 
-        showcase_item_titles = [
-            "Australian GDP Growth",
-            "Australian Inflation (CPI)",
-            "Australian Unemployment",
-            "Australian Underemployment",
-        ]
+        showcase_item_titles = {
+            "Australian GDP Growth": "Simple Exponential Smoothing (ZNN)",
+            "Australian Inflation (CPI)": "Naive",
+            "Australian Unemployment": "Damped (ZZN, Damped)",
+            "Australian Underemployment": "Theta",
+        }
 
         def layout_func():
 
             showcase_list = []
 
-            for item_title in showcase_item_titles:
+            for item_title, model_name in showcase_item_titles.items():
 
                 series_data = get_forecast_data(item_title)
-                thumbnail_figure = get_thumbnail_figure(series_data)
+                thumbnail_figure = get_thumbnail_figure(
+                    series_data, model_name
+                )
                 showcase_list.append(
                     dbc.Col(
                         [
@@ -358,7 +359,7 @@ class Index(BootstrapApp):
                                         config={"displayModeBar": False},
                                     )
                                 ],
-                                href=f"/series?title={item_title}",
+                                href=f"/series?title={item_title}&model={model_name}",
                             )
                         ],
                         lg=6,
@@ -473,12 +474,16 @@ class Series(BootstrapApp):
 
                     parse_result = parse_state(kwargs_dict[location_id])
 
-                    if "title" in parse_result:
+                    if "title" in parse_result and "model" in parse_result:
                         title = parse_result["title"]
                         series_data_dict = get_forecast_data(title)
 
+                        model_name = parse_result["model"]
+
                         del kwargs_dict[location_id]
-                        return func(series_data_dict, **kwargs_dict)
+                        return func(
+                            series_data_dict, model_name, **kwargs_dict
+                        )
                     else:
                         raise PreventUpdate
 
@@ -491,16 +496,20 @@ class Series(BootstrapApp):
         @self.callback(Output("breadcrumb", "children"), inputs)
         @location_ignore_null(inputs, location_id="url")
         @series_input(inputs, location_id="url")
-        def update_breadcrumb(series_data_dict):
+        def update_breadcrumb(series_data_dict, model_name):
 
-            return series_data_dict["data_source_dict"]["title"]
+            return (
+                series_data_dict["data_source_dict"]["title"]
+                + " - "
+                + model_name
+            )
 
         @self.callback(Output("series_graph", "children"), inputs)
         @location_ignore_null(inputs, location_id="url")
         @series_input(inputs, location_id="url")
-        def update_series_graph(series_data_dict):
+        def update_series_graph(series_data_dict, model_name):
 
-            series_figure = get_series_figure(series_data_dict)
+            series_figure = get_series_figure(series_data_dict, model_name)
 
             series_graph = dcc.Graph(
                 figure=series_figure,
@@ -523,26 +532,21 @@ class Series(BootstrapApp):
         @self.callback(Output("meta_data_list", "children"), inputs)
         @location_ignore_null(inputs, location_id="url")
         @series_input(inputs, location_id="url")
-        def update_meta_data_list(series_data_dict):
+        def update_meta_data_list(series_data_dict, model_name):
 
+            model_description = series_data_dict["all_forecasts"][model_name][
+                "model_description"
+            ]
             return dbc.ListGroup(
                 [
                     dbc.ListGroupItem(
                         [
                             dbc.ListGroupItemHeading("Model"),
                             dbc.ListGroupItemText(
-                                [
-                                    html.P(series_data_dict["model_name"]),
-                                    html.P(
-                                        series_data_dict["model_description"]
-                                    ),
-                                ]
+                                [html.P(model_name), html.P(model_description)]
                             )
-                            if series_data_dict["model_name"]
-                            != series_data_dict["model_description"]
-                            else dbc.ListGroupItemText(
-                                [html.P(series_data_dict["model_name"])]
-                            ),
+                            if model_name != model_description
+                            else dbc.ListGroupItemText([html.P(model_name)]),
                         ]
                     ),
                     dbc.ListGroupItem(
@@ -594,7 +598,7 @@ class Series(BootstrapApp):
             inputs + [Input("forecast_table_selector", "value")],
             location_id="url",
         )
-        def update_forecast_table(series_data_dict, **kwargs):
+        def update_forecast_table(series_data_dict, model_name, **kwargs):
 
             selected_column_map = {
                 "Forecast": ["Forecast"],
@@ -603,7 +607,9 @@ class Series(BootstrapApp):
                 "CI_95": ["LB_95", "UB_95"],
             }
 
-            dataframe = series_data_dict["forecast_df"]
+            dataframe = series_data_dict["all_forecasts"][model_name][
+                "forecast_df"
+            ]
 
             column_name_map = {"forecast": "Forecast"}
 
@@ -660,7 +666,8 @@ class Stats(BootstrapApp):
 
             chosen_methods = []
             for series_title, forecast_data in forecast_series_dicts.items():
-                chosen_methods.append(forecast_data["model_name"])
+                for model_name in all_methods:
+                    chosen_methods.append(model_name)
 
             stats_raw = pd.DataFrame({"Method": chosen_methods})
 
@@ -709,20 +716,26 @@ class Stats(BootstrapApp):
         self.layout = layout_func
 
 
-def match_names(forecast_dicts, name_input):
+def match_names(series_dicts, name_input):
+    if not name_input or name_input == "":
+        return set(series_dicts.keys())
+
     matched_series_names = []
 
     name_terms = "|".join(name_input.split(" "))
 
-    for series_title, forecast_dict in forecast_dicts.items():
-
+    for series_title, series_dict in series_dicts.items():
         re_results = re.search(name_terms, series_title, re.IGNORECASE)
         if re_results is not None:
             matched_series_names.append(series_title)
 
-    return matched_series_names
+    return set(matched_series_names)
 
-def match_tags(forecast_dicts, tags):
+
+def match_tags(series_dicts, tags):
+    if not tags or tags == "":
+        return set(series_dicts.keys())
+
     matched_series_names = []
 
     if type(tags) == str:
@@ -730,28 +743,23 @@ def match_tags(forecast_dicts, tags):
 
     tags = set(tags)
 
-    for series_title, forecast_dict in forecast_dicts.items():
-        series_tags = forecast_dict["data_source_dict"]["tags"]
+    for series_title, series_dict in series_dicts.items():
+        series_tags = series_dict["data_source_dict"]["tags"]
 
         if tags.issubset(set(series_tags)):
             matched_series_names.append(series_title)
 
-    return matched_series_names
+    return set(matched_series_names)
 
-def match_methods(forecast_dicts, methods):
-    matched_series_names = []
+
+def match_methods(all_methods, methods):
+    if not methods or methods == "":
+        return set(all_methods)
 
     if type(methods) == str:
         methods = methods.split(",")
 
-    methods = set(methods)
-
-    for series_title, forecast_dict in forecast_dicts.items():
-
-        if forecast_dict["model_name"] in methods:
-            matched_series_names.append(series_title)
-
-    return matched_series_names
+    return set.intersection(set(methods), set(all_methods))
 
 
 class Filter(BootstrapApp):
@@ -888,36 +896,35 @@ class Filter(BootstrapApp):
                     series_dict["title"]
                 ] = get_forecast_data(series_dict["title"])
 
-            filters = {
-                "name": match_names,
-                "tags": match_tags,
-                "methods": match_methods,
-            }
+            filters = {"name": match_names, "tags": match_tags}
 
             list_filter_matches = []
 
             for filter_key, filter_fn in filters.items():
-                if not kwargs[filter_key] or kwargs[filter_key] == "":
-                    list_filter_matches.append(
-                        set(forecast_series_dicts.keys())
-                    )
-                else:
-                    matched_series_names = filter_fn(
-                        forecast_series_dicts, kwargs[filter_key]
-                    )
-                    list_filter_matches.append(set(matched_series_names))
+                matched_series_names = filter_fn(
+                    forecast_series_dicts, kwargs[filter_key]
+                )
+                list_filter_matches.append(matched_series_names)
 
             unique_series_titles = list(
                 sorted(set.intersection(*list_filter_matches))
             )
 
-            if len(unique_series_titles) > 0:
+            stats = get_forecast_data("statistics")
+            all_methods = stats["models_used"]
+            matched_methods = match_methods(all_methods, kwargs["methods"])
 
-                results_list = []
+            if len(unique_series_titles) == 0:
+                return [html.P("No results found")]
 
-                for item_title in unique_series_titles:
+            results_list = []
+
+            for item_title in unique_series_titles:
+                for model_name in matched_methods:
                     series_data = forecast_series_dicts[item_title]
-                    thumbnail_figure = get_thumbnail_figure(series_data)
+                    thumbnail_figure = get_thumbnail_figure(
+                        series_data, model_name
+                    )
 
                     results_list.append(
                         html.Div(
@@ -930,22 +937,19 @@ class Filter(BootstrapApp):
                                             config={"displayModeBar": False},
                                         ),
                                     ],
-                                    href=f"/series?title={item_title}",
+                                    href=f"/series?title={item_title}&model={model_name}",
                                 ),
                                 html.Hr(),
                             ]
                         )
                     )
 
-                results = [
-                    html.P(
-                        f"{len(unique_series_titles)} result{'s' if len(unique_series_titles) > 1 else ''} found"
-                    ),
-                    html.Div(results_list),
-                ]
-            else:
-                results = [html.P("No results found")]
-
+            results = [
+                html.P(
+                    f"{len(results_list)} result{'s' if len(results_list) > 1 else ''} found"
+                ),
+                html.Div(results_list),
+            ]
             return results
 
 

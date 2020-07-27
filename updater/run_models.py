@@ -22,7 +22,7 @@ model_class_list = [
     #    RAutoARIMA,  # RAutoARIMA is very slow!
     RSimple,
     #    RHolt,
-    #    RDamped,
+    RDamped,
     RTheta,
 ]
 

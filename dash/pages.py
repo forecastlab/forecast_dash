@@ -221,10 +221,7 @@ def get_thumbnail_figure(data_dict, model_name):
 
     title = data_dict["data_source_dict"]["title"] + " - " + model_name
     layout = go.Layout(
-        title={
-            "text": title,
-            "xanchor": "auto",
-        },
+        title={"text": title, "xanchor": "auto"},
         height=480,
         showlegend=False,
         xaxis=dict(fixedrange=True),
@@ -348,7 +345,9 @@ class Index(BootstrapApp):
             for item_title, model_name in showcase_item_titles.items():
 
                 series_data = get_forecast_data(item_title)
-                thumbnail_figure = get_thumbnail_figure(series_data, model_name)
+                thumbnail_figure = get_thumbnail_figure(
+                    series_data, model_name
+                )
                 showcase_list.append(
                     dbc.Col(
                         [
@@ -480,9 +479,11 @@ class Series(BootstrapApp):
                         series_data_dict = get_forecast_data(title)
 
                         model_name = parse_result["model"]
-                        
+
                         del kwargs_dict[location_id]
-                        return func(series_data_dict, model_name, **kwargs_dict)
+                        return func(
+                            series_data_dict, model_name, **kwargs_dict
+                        )
                     else:
                         raise PreventUpdate
 
@@ -497,7 +498,11 @@ class Series(BootstrapApp):
         @series_input(inputs, location_id="url")
         def update_breadcrumb(series_data_dict, model_name):
 
-            return series_data_dict["data_source_dict"]["title"] + " - " + model_name
+            return (
+                series_data_dict["data_source_dict"]["title"]
+                + " - "
+                + model_name
+            )
 
         @self.callback(Output("series_graph", "children"), inputs)
         @location_ignore_null(inputs, location_id="url")
@@ -529,22 +534,19 @@ class Series(BootstrapApp):
         @series_input(inputs, location_id="url")
         def update_meta_data_list(series_data_dict, model_name):
 
-            model_description = series_data_dict["all_forecasts"][model_name]["model_description"]
+            model_description = series_data_dict["all_forecasts"][model_name][
+                "model_description"
+            ]
             return dbc.ListGroup(
                 [
                     dbc.ListGroupItem(
                         [
                             dbc.ListGroupItemHeading("Model"),
                             dbc.ListGroupItemText(
-                                [
-                                    html.P(model_name),
-                                    html.P(model_description)
-                                ]
+                                [html.P(model_name), html.P(model_description)]
                             )
                             if model_name != model_description
-                            else dbc.ListGroupItemText(
-                                [html.P(model_name)]
-                            ),
+                            else dbc.ListGroupItemText([html.P(model_name)]),
                         ]
                     ),
                     dbc.ListGroupItem(
@@ -605,7 +607,9 @@ class Series(BootstrapApp):
                 "CI_95": ["LB_95", "UB_95"],
             }
 
-            dataframe = series_data_dict["all_forecasts"][model_name]["forecast_df"]
+            dataframe = series_data_dict["all_forecasts"][model_name][
+                "forecast_df"
+            ]
 
             column_name_map = {"forecast": "Forecast"}
 
@@ -714,8 +718,8 @@ class Stats(BootstrapApp):
 
 def match_names(series_dicts, name_input):
     if not name_input or name_input == "":
-        return set(series_dicts.keys())       
-    
+        return set(series_dicts.keys())
+
     matched_series_names = []
 
     name_terms = "|".join(name_input.split(" "))
@@ -727,10 +731,11 @@ def match_names(series_dicts, name_input):
 
     return set(matched_series_names)
 
+
 def match_tags(series_dicts, tags):
     if not tags or tags == "":
-        return set(series_dicts.keys())       
-    
+        return set(series_dicts.keys())
+
     matched_series_names = []
 
     if type(tags) == str:
@@ -746,16 +751,15 @@ def match_tags(series_dicts, tags):
 
     return set(matched_series_names)
 
+
 def match_methods(all_methods, methods):
     if not methods or methods == "":
         return set(all_methods)
-    
-    matched = []
 
     if type(methods) == str:
         methods = methods.split(",")
 
-    return set.intersection( set(methods), set(all_methods) )
+    return set.intersection(set(methods), set(all_methods))
 
 
 class Filter(BootstrapApp):
@@ -892,10 +896,7 @@ class Filter(BootstrapApp):
                     series_dict["title"]
                 ] = get_forecast_data(series_dict["title"])
 
-            filters = {
-                "name": match_names,
-                "tags": match_tags,
-            }
+            filters = {"name": match_names, "tags": match_tags}
 
             list_filter_matches = []
 
@@ -911,17 +912,19 @@ class Filter(BootstrapApp):
 
             stats = get_forecast_data("statistics")
             all_methods = stats["models_used"]
-            matched_methods = match_methods( all_methods, kwargs["methods"] )
-            
-            if len(unique_series_titles) ==  0:
-                return [html.P("No results found")]       
+            matched_methods = match_methods(all_methods, kwargs["methods"])
+
+            if len(unique_series_titles) == 0:
+                return [html.P("No results found")]
 
             results_list = []
 
             for item_title in unique_series_titles:
                 for model_name in matched_methods:
                     series_data = forecast_series_dicts[item_title]
-                    thumbnail_figure = get_thumbnail_figure(series_data, model_name)
+                    thumbnail_figure = get_thumbnail_figure(
+                        series_data, model_name
+                    )
 
                     results_list.append(
                         html.Div(

@@ -141,7 +141,6 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                 offset = pd.offsets.QuarterEnd()
                 series_df.index = series_df.index + offset
 
-            metric_list = []
             cv = TimeSeriesRollingSplit(h=forecast_len, p_to_use=p_to_use)
             init_params = {"h": forecast_len, "level": level}
             y = series_df["value"]
@@ -156,41 +155,32 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                 forecasted_at = datetime.datetime.now()
 
                 model = model_class(**init_params)
+                cv_score = cross_val_score(model, y, cv, mean_squared_error)
 
-                metric_list.append(
-                    cross_val_score(model, y, cv, mean_squared_error)
+                model.fit(y)
+                model_name = model.name
+                model_description = model.description()
+
+                # Generate final forecast using best model
+                forecast_dict = model.predict_withci()
+
+                first_value = series_df["value"].iloc[-1]
+                first_time = series_df.index[-1]
+
+                forecast_df = forecast_to_df(
+                    data_source_dict,
+                    forecast_dict,
+                    first_value,
+                    first_time,
+                    forecast_len,
+                    levels=level,
                 )
 
-            best_model_class = model_class_list[np.argmin(metric_list)]
-
-            # Retrain best model on full data
-            best_model = best_model_class(**init_params)
-            best_model.fit(y)
-
-            # Generate final forecast using best model
-            forecast_dict = best_model.predict_withci()
-
-            first_value = series_df["value"].iloc[-1]
-            first_time = series_df.index[-1]
-
-            forecast_df = forecast_to_df(
-                data_source_dict,
-                forecast_dict,
-                first_value,
-                first_time,
-                forecast_len,
-                levels=level,
-            )
-
-            model_name = best_model.name
-            model_description = best_model.description()
-            cv_score = np.min(metric_list)
-
-            all_forecasts[f"{model_name}"] = {
-                "model_description": model_description,
-                "cv_score": cv_score,
-                "forecast_df": forecast_df,
-            }
+                all_forecasts[model_name] = {
+                    "model_description": model_description,
+                    "cv_score": cv_score,
+                    "forecast_df": forecast_df,
+                }
 
             # Store forecast and related
             data = {

@@ -712,25 +712,24 @@ class Stats(BootstrapApp):
         self.layout = layout_func
 
 
-def match_names(forecast_dicts, name_input):
+def match_names(series_dicts, name_input):
     if not name_input or name_input == "":
-        return set(forecast_dicts.keys())       
+        return set(series_dicts.keys())       
     
     matched_series_names = []
 
     name_terms = "|".join(name_input.split(" "))
 
-    for series_title, forecast_dict in forecast_dicts.items():
-
+    for series_title, series_dict in series_dicts.items():
         re_results = re.search(name_terms, series_title, re.IGNORECASE)
         if re_results is not None:
             matched_series_names.append(series_title)
 
     return set(matched_series_names)
 
-def match_tags(forecast_dicts, tags):
+def match_tags(series_dicts, tags):
     if not tags or tags == "":
-        return set(forecast_dicts.keys())       
+        return set(series_dicts.keys())       
     
     matched_series_names = []
 
@@ -739,31 +738,24 @@ def match_tags(forecast_dicts, tags):
 
     tags = set(tags)
 
-    for series_title, forecast_dict in forecast_dicts.items():
-        series_tags = forecast_dict["data_source_dict"]["tags"]
+    for series_title, series_dict in series_dicts.items():
+        series_tags = series_dict["data_source_dict"]["tags"]
 
         if tags.issubset(set(series_tags)):
             matched_series_names.append(series_title)
 
     return set(matched_series_names)
 
-def match_methods(forecast_dicts, methods):
+def match_methods(all_methods, methods):
     if not methods or methods == "":
-        return set(forecast_dicts.keys())       
+        return set(all_methods)
     
-    matched_series_names = []
+    matched = []
 
     if type(methods) == str:
         methods = methods.split(",")
 
-    methods = set(methods)
-
-    for series_title, forecast_dict in forecast_dicts.items():
-
-        if forecast_dict["model_name"] in methods:
-            matched_series_names.append(series_title)
-
-    return set(matched_series_names)
+    return set.intersection( set(methods), set(all_methods) )
 
 
 class Filter(BootstrapApp):
@@ -903,7 +895,6 @@ class Filter(BootstrapApp):
             filters = {
                 "name": match_names,
                 "tags": match_tags,
-                "methods": match_methods,
             }
 
             list_filter_matches = []
@@ -918,36 +909,41 @@ class Filter(BootstrapApp):
                 sorted(set.intersection(*list_filter_matches))
             )
 
+            stats = get_forecast_data("statistics")
+            all_methods = stats["models_used"]
+            matched_methods = match_methods( all_methods, kwargs["methods"] )
+            
             if len(unique_series_titles) ==  0:
                 return [html.P("No results found")]       
 
             results_list = []
 
             for item_title in unique_series_titles:
-                series_data = forecast_series_dicts[item_title]
-                thumbnail_figure = get_thumbnail_figure(series_data)
+                for method in matched_methods:
+                    series_data = forecast_series_dicts[item_title]
+                    thumbnail_figure = get_thumbnail_figure(series_data, method)
 
-                results_list.append(
-                    html.Div(
-                        [
-                            html.A(
-                                [
-                                    html.H5(item_title),
-                                    dcc.Graph(
-                                        figure=thumbnail_figure,
-                                        config={"displayModeBar": False},
-                                    ),
-                                ],
-                                href=f"/series?title={item_title}",
-                            ),
-                            html.Hr(),
-                        ]
+                    results_list.append(
+                        html.Div(
+                            [
+                                html.A(
+                                    [
+                                        html.H5(item_title),
+                                        dcc.Graph(
+                                            figure=thumbnail_figure,
+                                            config={"displayModeBar": False},
+                                        ),
+                                    ],
+                                    href=f"/series?title={item_title}",
+                                ),
+                                html.Hr(),
+                            ]
+                        )
                     )
-                )
 
             results = [
                 html.P(
-                    f"{len(unique_series_titles)} result{'s' if len(unique_series_titles) > 1 else ''} found"
+                    f"{len(results_list)} result{'s' if len(results_list) > 1 else ''} found"
                 ),
                 html.Div(results_list),
             ]

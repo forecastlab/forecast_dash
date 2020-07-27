@@ -10,14 +10,9 @@
 #  f7 <- Theta.classic(input=des_input, fh=fh)$mean*SIout #Theta
 #  f8 <- (f4+f5+f6)/3 #Comb
 
-library(forecast) #Requires v8.2
+library( "forecast" ) #Requires v8.2
 
-# Some example data
-# p <- presidents
-# p[ is.na(p) ] <- 0.0
-# SeasonalityTest( p, 4 )
-
-#Used to determine whether a time series is seasonal
+# Check the acf to see whether any seasonality is present.
 SeasonalityTest <- function(input, ppy){
     tcrit <- 1.645
     if (length(input)<3*ppy){
@@ -33,12 +28,30 @@ SeasonalityTest <- function(input, ppy){
     return(test_seasonal)
 }
 
-#Used to estimate the statistical benchmarks of the M4 competition
-naive2 <- function(y, h = 10, level = c(80,95)){
-    ppy <- frequency(y)
+# Python passes y as a vector for which frequency(y) == 1.
+# Try to reconstruct the frequency from the timestamps.
+# Adapted from
+# https://stackoverflow.com/questions/19217729/check-the-frequency-of-time-series-data
+guess_period <- function(x) { 
+  average_period <- as.double( mean(diff(x)), units="days" )
+  difference <- abs(log( average_period / c( 1, 7/5, 30, 91, 365 ) ) )
+  freq <- c( 7, 5, 12, 4, 1 )
+  freq[ which.min( difference ) ]
+}
+
+# The Naive2 statistical benchmark of the M4 competition
+# 
+naive2 <- function(y, h = 10, level = c(80,95)) {
+
+    ppy <- guess_period( as.Date( names(y) ) )
+    #print( paste( "ppy:", ppy ) )
+
     ST <- (ppy>1) && SeasonalityTest(y,ppy)
+    #print( paste( "ST:", ST ) )
+
     if (ST){
-        Dec <- decompose(y,type=type)
+        y <- ts(y, frequency=ppy)
+        Dec <- decompose(y, type="multiplicative")
         seasadj <- y/Dec$seasonal
         SIout <- head(rep(Dec$seasonal[1:ppy], h), h)
     }else{
@@ -47,6 +60,7 @@ naive2 <- function(y, h = 10, level = c(80,95)){
     }
     fc <- naive(seasadj, h=h, level=level)
     return( list( method = "Seasonally Adjusted Naive",
+                  seasadj = ST,
                   mean = fc$mean*SIout,
                   upper = fc$upper*SIout,
                   lower = fc$lower*SIout) )

@@ -918,41 +918,39 @@ class Filter(BootstrapApp):
                 sorted(set.intersection(*list_filter_matches))
             )
 
-            if len(unique_series_titles) > 0:
+            if len(unique_series_titles) ==  0:
+                return [html.P("No results found")]       
 
-                results_list = []
+            results_list = []
 
-                for item_title in unique_series_titles:
-                    series_data = forecast_series_dicts[item_title]
-                    thumbnail_figure = get_thumbnail_figure(series_data)
+            for item_title in unique_series_titles:
+                series_data = forecast_series_dicts[item_title]
+                thumbnail_figure = get_thumbnail_figure(series_data)
 
-                    results_list.append(
-                        html.Div(
-                            [
-                                html.A(
-                                    [
-                                        html.H5(item_title),
-                                        dcc.Graph(
-                                            figure=thumbnail_figure,
-                                            config={"displayModeBar": False},
-                                        ),
-                                    ],
-                                    href=f"/series?title={item_title}",
-                                ),
-                                html.Hr(),
-                            ]
-                        )
+                results_list.append(
+                    html.Div(
+                        [
+                            html.A(
+                                [
+                                    html.H5(item_title),
+                                    dcc.Graph(
+                                        figure=thumbnail_figure,
+                                        config={"displayModeBar": False},
+                                    ),
+                                ],
+                                href=f"/series?title={item_title}",
+                            ),
+                            html.Hr(),
+                        ]
                     )
+                )
 
-                results = [
-                    html.P(
-                        f"{len(unique_series_titles)} result{'s' if len(unique_series_titles) > 1 else ''} found"
-                    ),
-                    html.Div(results_list),
-                ]
-            else:
-                results = [html.P("No results found")]
-
+            results = [
+                html.P(
+                    f"{len(unique_series_titles)} result{'s' if len(unique_series_titles) > 1 else ''} found"
+                ),
+                html.Div(results_list),
+            ]
             return results
 
 

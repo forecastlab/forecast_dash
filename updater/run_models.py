@@ -9,7 +9,7 @@ from rpy2.robjects import pandas2ri
 from sklearn.metrics import mean_squared_error
 from sklearn.utils.validation import indexable, _num_samples
 
-from models import RNaive, RAutoARIMA, RSimple, RHolt, RDamped, RTheta
+from models import RNaive, RNaive2, RAutoARIMA, RSimple, RHolt, RDamped, RTheta
 
 pandas2ri.activate()
 
@@ -24,6 +24,7 @@ model_class_list = [
     RHolt,
     RDamped,
     RTheta,
+    RNaive2,
 ]
 
 
@@ -152,15 +153,14 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
             for model_class in model_class_list:
 
                 print("-", model_class.name)
-                forecasted_at = datetime.datetime.now()
-
                 model = model_class(**init_params)
                 cv_score = cross_val_score(model, y, cv, mean_squared_error)
 
                 model.fit(y)
                 model_name = model.name
                 model_description = model.description()
-
+                forecasted_at = datetime.datetime.now()
+                
                 # Generate final forecast using best model
                 forecast_dict = model.predict_withci()
 

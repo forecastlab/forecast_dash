@@ -50,8 +50,18 @@ class RModel(ForecastModel, ABC):
 
         self.r_level = robjects.IntVector(level)
 
-        # Import the R library
-        self.forecast_lib = importr("forecast")
+        # Import the R sources
+        if type(self).r_forecast_lib.endswith(".R"):
+            self.forecast_lib = robjects.r.source(type(self).r_forecast_lib)
+            self.forecast_func = getattr(
+                robjects.r, type(self).r_forecast_model_name
+            )
+        else:
+            # Import the R library
+            self.forecast_lib = importr(type(self).r_forecast_lib)
+            self.forecast_func = getattr(
+                self.forecast_lib, type(self).r_forecast_model_name
+            )
 
     def description(self):
         return self.method
@@ -98,9 +108,7 @@ class RModel(ForecastModel, ABC):
 class RDirectForecastModel(RModel):
     def get_r_forecast_dict(self):
         return dict(
-            getattr(self.forecast_lib, type(self).r_forecast_model_name)(
-                y=self.y, h=self.h, level=self.r_level
-            ).items()
+            self.forecast_func(y=self.y, h=self.h, level=self.r_level).items()
         )
 
     def fit(self, y):
@@ -124,9 +132,7 @@ class RForecastModel(RModel):
 
         fit_params = {"y": y, **type(self).forecast_model_params}
 
-        self.fit_results = getattr(
-            self.forecast_lib, type(self).r_forecast_model_name
-        )(**fit_params)
+        self.fit_results = self.forecast_func(**fit_params)
 
         super().fit(y)
 
@@ -134,17 +140,31 @@ class RForecastModel(RModel):
 class RNaive(RDirectForecastModel):
     name = "Naive"
 
+    r_forecast_lib = "forecast"
+
     r_forecast_model_name = "naive"
+
+
+class RNaive2(RDirectForecastModel):
+    name = "Seasonally Adjusted Naive"
+
+    r_forecast_lib = "seasadj.R"
+
+    r_forecast_model_name = "naive2"
 
 
 class RTheta(RDirectForecastModel):
     name = "Theta"
+
+    r_forecast_lib = "forecast"
 
     r_forecast_model_name = "thetaf"
 
 
 class RSimple(RForecastModel):
     name = "Simple Exponential Smoothing (ZNN)"
+
+    r_forecast_lib = "forecast"
 
     r_forecast_model_name = "ets"
 
@@ -154,6 +174,8 @@ class RSimple(RForecastModel):
 class RHolt(RForecastModel):
     name = "Holt-Winters (ZNN)"
 
+    r_forecast_lib = "forecast"
+
     r_forecast_model_name = "ets"
 
     forecast_model_params = {"model": "ZZN"}
@@ -162,6 +184,8 @@ class RHolt(RForecastModel):
 class RDamped(RForecastModel):
     name = "Damped (ZZN, Damped)"
 
+    r_forecast_lib = "forecast"
+
     r_forecast_model_name = "ets"
 
     forecast_model_params = {"model": "ZZN", "damped": True}
@@ -169,5 +193,7 @@ class RDamped(RForecastModel):
 
 class RAutoARIMA(RForecastModel):
     name = "Auto ARIMA"
+
+    r_forecast_lib = "forecast"
 
     r_forecast_model_name = "auto_arima"

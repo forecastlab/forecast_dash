@@ -211,7 +211,7 @@ def get_forecast_shapes(forecast_df):
     return shapes
 
 
-def get_thumbnail_figure(data_dict, model_name = "Naive"):
+def get_thumbnail_figure(data_dict, model_name):
 
     series_df = data_dict["downloaded_dict"]["series_df"].iloc[-16:, :]
     forecast_df = data_dict["all_forecasts"][model_name]["forecast_df"]
@@ -235,7 +235,7 @@ def get_thumbnail_figure(data_dict, model_name = "Naive"):
     return go.Figure(data, layout)
 
 
-def get_series_figure(data_dict, model_name = "Naive"):
+def get_series_figure(data_dict, model_name):
 
     series_df = data_dict["downloaded_dict"]["series_df"]
     forecast_df = data_dict["all_forecasts"][model_name]["forecast_df"]
@@ -475,7 +475,7 @@ class Series(BootstrapApp):
 
                     parse_result = parse_state(kwargs_dict[location_id])
 
-                    if "title" in parse_result:
+                    if "title" in parse_result and "model" in parse_result:
                         title = parse_result["title"]
                         series_data_dict = get_forecast_data(title)
 
@@ -919,9 +919,9 @@ class Filter(BootstrapApp):
             results_list = []
 
             for item_title in unique_series_titles:
-                for method in matched_methods:
+                for model_name in matched_methods:
                     series_data = forecast_series_dicts[item_title]
-                    thumbnail_figure = get_thumbnail_figure(series_data, method)
+                    thumbnail_figure = get_thumbnail_figure(series_data, model_name)
 
                     results_list.append(
                         html.Div(
@@ -934,7 +934,7 @@ class Filter(BootstrapApp):
                                             config={"displayModeBar": False},
                                         ),
                                     ],
-                                    href=f"/series?title={item_title}",
+                                    href=f"/series?title={item_title}&model={model_name}",
                                 ),
                                 html.Hr(),
                             ]

@@ -9,7 +9,7 @@ from rpy2.robjects import pandas2ri
 from sklearn.metrics import mean_squared_error
 from sklearn.utils.validation import indexable, _num_samples
 
-from models import RNaive, RAutoARIMA, RSimple, RHolt, RDamped, RTheta
+from models import RNaive, RNaive2, RAutoARIMA, RSimple, RHolt, RDamped, RTheta
 
 pandas2ri.activate()
 
@@ -24,6 +24,7 @@ model_class_list = [
     RHolt,
     RDamped,
     RTheta,
+    RNaive2,
 ]
 
 
@@ -150,6 +151,7 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
             # and evaluate them on the validation set
             for model_class in model_class_list:
 
+                print("-", model_class.name)
                 model = model_class(**init_params)
 
                 metric_list.append(

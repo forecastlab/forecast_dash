@@ -210,19 +210,21 @@ def get_forecast_shapes(forecast_df):
 
     return shapes
 
+
 def select_best_model(data_dict):
 
     # Extract ( model_name, cv_score ) for each model.
     all_models = []
     all_cv_scores = []
     for model_name, forecast_df in data_dict["all_forecasts"].items():
-        all_models.append( model_name )
-        all_cv_scores.append( forecast_df["cv_score"] )
+        all_models.append(model_name)
+        all_cv_scores.append(forecast_df["cv_score"])
 
     # Select the best model.
-    model_name = all_models[ np.argmin( all_cv_scores ) ]
-          
+    model_name = all_models[np.argmin(all_cv_scores)]
+
     return model_name
+
 
 def get_thumbnail_figure(data_dict):
 
@@ -235,10 +237,7 @@ def get_thumbnail_figure(data_dict):
 
     title = data_dict["data_source_dict"]["title"] + " - " + model_name
     layout = go.Layout(
-        title={
-            "text": title,
-            "xanchor": "auto",
-        },
+        title={"text": title, "xanchor": "auto"},
         height=480,
         showlegend=False,
         xaxis=dict(fixedrange=True),
@@ -429,20 +428,10 @@ class Series(BootstrapApp):
         stats = get_forecast_data("statistics")
         all_methods = stats["models_used"]
 
-        model_select_options = [
-            {
-                "label": "Auto best method",
-                "value": "Best",
-            }
-        ]
+        model_select_options = [{"label": "Auto best method", "value": "Best"}]
         for model in all_methods:
-            model_select_options.append(
-                {
-                    "label": model,
-                    "value": model,
-                }
-            )                
-        
+            model_select_options.append({"label": model, "value": model})
+
         self.layout = html.Div(
             header
             + [
@@ -456,14 +445,16 @@ class Series(BootstrapApp):
                         dbc.Row(
                             [
                                 dbc.Col(
-                                    [                                     
+                                    [
                                         dcc.RadioItems(
                                             options=model_select_options,
                                             value="Best",
                                             labelStyle={"display": "block"},
                                             id="model_selector",
-                                        ),                                      
-                                        dcc.Loading(html.Div(id="meta_data_list")),
+                                        ),
+                                        dcc.Loading(
+                                            html.Div(id="meta_data_list")
+                                        ),
                                     ],
                                     lg=6,
                                 ),
@@ -517,7 +508,7 @@ class Series(BootstrapApp):
                     if "title" in parse_result:
                         title = parse_result["title"]
                         series_data_dict = get_forecast_data(title)
-                        
+
                         del kwargs_dict[location_id]
                         return func(series_data_dict, **kwargs_dict)
                     else:
@@ -538,19 +529,18 @@ class Series(BootstrapApp):
 
         @self.callback(
             Output("series_graph", "children"),
-            inputs + [Input("model_selector", "value")]
+            inputs + [Input("model_selector", "value")],
         )
         @location_ignore_null(inputs, location_id="url")
         @series_input(
-            inputs + [Input("model_selector", "value")],
-            location_id="url"
+            inputs + [Input("model_selector", "value")], location_id="url"
         )
         def update_series_graph(series_data_dict, **kwargs):
 
             model_name = kwargs["model_selector"]
             if model_name == "Best":
-                model_name = select_best_model( series_data_dict )
-            
+                model_name = select_best_model(series_data_dict)
+
             series_figure = get_series_figure(series_data_dict, model_name)
 
             series_graph = dcc.Graph(
@@ -573,29 +563,28 @@ class Series(BootstrapApp):
 
         @self.callback(
             Output("meta_data_list", "children"),
-            inputs + [Input("model_selector", "value")]
+            inputs + [Input("model_selector", "value")],
         )
         @location_ignore_null(inputs, location_id="url")
         @series_input(
-            inputs + [Input("model_selector", "value")],
-            location_id="url"
+            inputs + [Input("model_selector", "value")], location_id="url"
         )
         def update_meta_data_list(series_data_dict, **kwargs):
 
             model_name = kwargs["model_selector"]
             if model_name == "Best":
-                model_name = select_best_model( series_data_dict )
-            
+                model_name = select_best_model(series_data_dict)
+
             model_description = series_data_dict["all_forecasts"][model_name][
                 "model_description"
             ]
             if model_description == model_name:
                 model_description = ""
-            
+
             model_cv_score = series_data_dict["all_forecasts"][model_name][
                 "cv_score"
             ]
-            
+
             return dbc.ListGroup(
                 [
                     dbc.ListGroupItem(
@@ -605,9 +594,9 @@ class Series(BootstrapApp):
                                 [
                                     html.P(model_name),
                                     html.P(model_description),
-                                    html.P("CV score: %f" % model_cv_score)
+                                    html.P("CV score: %f" % model_cv_score),
                                 ]
-                            )
+                            ),
                         ]
                     ),
                     dbc.ListGroupItem(
@@ -652,13 +641,19 @@ class Series(BootstrapApp):
 
         @self.callback(
             Output("forecast_table", "children"),
-            inputs + [Input("forecast_table_selector", "value"),
-                      Input("model_selector", "value")]
+            inputs
+            + [
+                Input("forecast_table_selector", "value"),
+                Input("model_selector", "value"),
+            ],
         )
         @location_ignore_null(inputs, location_id="url")
         @series_input(
-            inputs + [Input("forecast_table_selector", "value"),
-                      Input("model_selector", "value")],
+            inputs
+            + [
+                Input("forecast_table_selector", "value"),
+                Input("model_selector", "value"),
+            ],
             location_id="url",
         )
         def update_forecast_table(series_data_dict, **kwargs):
@@ -672,9 +667,11 @@ class Series(BootstrapApp):
 
             model_name = kwargs["model_selector"]
             if model_name == "Best":
-                model_name = select_best_model( series_data_dict )
-            
-            dataframe = series_data_dict["all_forecasts"][model_name]["forecast_df"]
+                model_name = select_best_model(series_data_dict)
+
+            dataframe = series_data_dict["all_forecasts"][model_name][
+                "forecast_df"
+            ]
 
             column_name_map = {"forecast": "Forecast"}
 
@@ -783,8 +780,8 @@ class Stats(BootstrapApp):
 
 def match_names(forecast_dicts, name_input):
     if not name_input or name_input == "":
-        return set(forecast_dicts.keys())       
-    
+        return set(forecast_dicts.keys())
+
     matched_series_names = []
 
     name_terms = "|".join(name_input.split(" "))
@@ -797,10 +794,11 @@ def match_names(forecast_dicts, name_input):
 
     return set(matched_series_names)
 
+
 def match_tags(forecast_dicts, tags):
     if not tags or tags == "":
-        return set(forecast_dicts.keys())       
-    
+        return set(forecast_dicts.keys())
+
     matched_series_names = []
 
     if type(tags) == str:
@@ -816,10 +814,11 @@ def match_tags(forecast_dicts, tags):
 
     return set(matched_series_names)
 
+
 def match_methods(forecast_dicts, methods):
     if not methods or methods == "":
-        return set(forecast_dicts.keys())       
-    
+        return set(forecast_dicts.keys())
+
     matched_series_names = []
 
     if type(methods) == str:

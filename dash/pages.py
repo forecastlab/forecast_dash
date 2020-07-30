@@ -251,8 +251,6 @@ def get_thumbnail_figure(data_dict):
 
 def get_series_figure(data_dict, model_name):
 
-    if model_name is None:
-        model_name = select_best_model(data_dict)
     series_df = data_dict["downloaded_dict"]["series_df"]
     forecast_df = data_dict["all_forecasts"][model_name]["forecast_df"]
 
@@ -519,10 +517,9 @@ class Series(BootstrapApp):
                     if "title" in parse_result:
                         title = parse_result["title"]
                         series_data_dict = get_forecast_data(title)
-                        model_name = select_best_model( series_data_dict )
                         
                         del kwargs_dict[location_id]
-                        return func(series_data_dict, model_name, **kwargs_dict)
+                        return func(series_data_dict, **kwargs_dict)
                     else:
                         raise PreventUpdate
 
@@ -535,7 +532,7 @@ class Series(BootstrapApp):
         @self.callback(Output("breadcrumb", "children"), inputs)
         @location_ignore_null(inputs, location_id="url")
         @series_input(inputs, location_id="url")
-        def update_breadcrumb(series_data_dict, model_name):
+        def update_breadcrumb(series_data_dict):
 
             return series_data_dict["data_source_dict"]["title"]
 
@@ -548,7 +545,7 @@ class Series(BootstrapApp):
             inputs + [Input("model_selector", "value")],
             location_id="url"
         )
-        def update_series_graph(series_data_dict, model_name, **kwargs):
+        def update_series_graph(series_data_dict, **kwargs):
 
             model_name = kwargs["model_selector"]
             if model_name == "Best":
@@ -583,7 +580,7 @@ class Series(BootstrapApp):
             inputs + [Input("model_selector", "value")],
             location_id="url"
         )
-        def update_meta_data_list(series_data_dict, model_name, **kwargs):
+        def update_meta_data_list(series_data_dict, **kwargs):
 
             model_name = kwargs["model_selector"]
             if model_name == "Best":
@@ -664,7 +661,7 @@ class Series(BootstrapApp):
                       Input("model_selector", "value")],
             location_id="url",
         )
-        def update_forecast_table(series_data_dict, model_name, **kwargs):
+        def update_forecast_table(series_data_dict, **kwargs):
 
             selected_column_map = {
                 "Forecast": ["Forecast"],

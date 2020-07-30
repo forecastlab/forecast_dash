@@ -428,6 +428,23 @@ class Series(BootstrapApp):
 
         self.title = "Series"
 
+        stats = get_forecast_data("statistics")
+        all_methods = stats["models_used"]
+        
+        model_select_options = [
+            {
+                "label": "Auto best method",
+                "value": "Best",
+            }
+        ]
+        for model in all_methods:
+            model_select_options.append(
+                {
+                    "label": model,
+                    "value": model,
+                }
+            )                
+        
         self.layout = html.Div(
             header
             + [
@@ -441,7 +458,15 @@ class Series(BootstrapApp):
                         dbc.Row(
                             [
                                 dbc.Col(
-                                    dcc.Loading(html.Div(id="meta_data_list")),
+                                    [
+                                        dcc.Dropdown(
+                                            options=model_select_options,
+                                            value="Best",
+                                            clearable=False,
+                                            id="model_selector",
+                                        ),                                      
+                                        dcc.Loading(html.Div(id="meta_data_list")),
+                                    ],
                                     lg=6,
                                 ),
                                 dbc.Col(

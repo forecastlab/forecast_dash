@@ -430,7 +430,7 @@ class Series(BootstrapApp):
 
         stats = get_forecast_data("statistics")
         all_methods = stats["models_used"]
-        
+
         model_select_options = [
             {
                 "label": "Auto best method",
@@ -537,7 +537,7 @@ class Series(BootstrapApp):
         @series_input(inputs, location_id="url")
         def update_breadcrumb(series_data_dict, model_name):
 
-            return series_data_dict["data_source_dict"]["title"] + " = " + model_name
+            return series_data_dict["data_source_dict"]["title"]
 
         @self.callback(Output("series_graph", "children"), inputs)
         @location_ignore_null(inputs, location_id="url")
@@ -564,11 +564,24 @@ class Series(BootstrapApp):
 
             return series_graph
 
-        @self.callback(Output("meta_data_list", "children"), inputs)
+        @self.callback(
+            Output("meta_data_list", "children"),
+            inputs + [Input("model_selector", "value")]
+        )
         @location_ignore_null(inputs, location_id="url")
-        @series_input(inputs, location_id="url")
-        def update_meta_data_list(series_data_dict, model_name):
+        @series_input(
+            inputs + [Input("model_selector", "value")],
+            location_id="url"
+        )
+        def update_meta_data_list(series_data_dict, model_name, **kwargs):
 
+            model_name = kwargs["model_selector"]
+            print( "Selected:", model_name )
+            #print( series_data_dict["all_forecasts"] )
+
+            if model_name == "Best":
+                model_name = select_best_model( series_data_dict )
+            
             model_description = series_data_dict["all_forecasts"][model_name][
                 "model_description"
             ]
@@ -588,10 +601,6 @@ class Series(BootstrapApp):
                                     html.P("CV score: %f" % model_cv_score)
                                 ]
                             )
-                            if model_name != model_description
-                            else dbc.ListGroupItemText(
-                                [html.P(model_name)]
-                            ),
                         ]
                     ),
                     dbc.ListGroupItem(

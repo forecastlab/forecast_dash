@@ -458,11 +458,11 @@ class Series(BootstrapApp):
                         dbc.Row(
                             [
                                 dbc.Col(
-                                    [
-                                        dcc.Dropdown(
+                                    [                                     
+                                        dcc.RadioItems(
                                             options=model_select_options,
                                             value="Best",
-                                            clearable=False,
+                                            labelStyle={"display": "block"},
                                             id="model_selector",
                                         ),                                      
                                         dcc.Loading(html.Div(id="meta_data_list")),

@@ -655,11 +655,13 @@ class Series(BootstrapApp):
 
         @self.callback(
             Output("forecast_table", "children"),
-            inputs + [Input("forecast_table_selector", "value")],
+            inputs + [Input("forecast_table_selector", "value"),
+                      Input("model_selector", "value")]
         )
         @location_ignore_null(inputs, location_id="url")
         @series_input(
-            inputs + [Input("forecast_table_selector", "value")],
+            inputs + [Input("forecast_table_selector", "value"),
+                      Input("model_selector", "value")],
             location_id="url",
         )
         def update_forecast_table(series_data_dict, model_name, **kwargs):
@@ -671,6 +673,10 @@ class Series(BootstrapApp):
                 "CI_95": ["LB_95", "UB_95"],
             }
 
+            model_name = kwargs["model_selector"]
+            if model_name == "Best":
+                model_name = select_best_model( series_data_dict )
+            
             dataframe = series_data_dict["all_forecasts"][model_name]["forecast_df"]
 
             column_name_map = {"forecast": "Forecast"}

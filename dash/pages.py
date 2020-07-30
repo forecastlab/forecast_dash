@@ -539,11 +539,21 @@ class Series(BootstrapApp):
 
             return series_data_dict["data_source_dict"]["title"]
 
-        @self.callback(Output("series_graph", "children"), inputs)
+        @self.callback(
+            Output("series_graph", "children"),
+            inputs + [Input("model_selector", "value")]
+        )
         @location_ignore_null(inputs, location_id="url")
-        @series_input(inputs, location_id="url")
-        def update_series_graph(series_data_dict, model_name):
+        @series_input(
+            inputs + [Input("model_selector", "value")],
+            location_id="url"
+        )
+        def update_series_graph(series_data_dict, model_name, **kwargs):
 
+            model_name = kwargs["model_selector"]
+            if model_name == "Best":
+                model_name = select_best_model( series_data_dict )
+            
             series_figure = get_series_figure(series_data_dict, model_name)
 
             series_graph = dcc.Graph(
@@ -576,15 +586,15 @@ class Series(BootstrapApp):
         def update_meta_data_list(series_data_dict, model_name, **kwargs):
 
             model_name = kwargs["model_selector"]
-            print( "Selected:", model_name )
-            #print( series_data_dict["all_forecasts"] )
-
             if model_name == "Best":
                 model_name = select_best_model( series_data_dict )
             
             model_description = series_data_dict["all_forecasts"][model_name][
                 "model_description"
             ]
+            if model_description == model_name:
+                model_description = ""
+            
             model_cv_score = series_data_dict["all_forecasts"][model_name][
                 "cv_score"
             ]

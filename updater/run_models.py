@@ -19,10 +19,10 @@ level = [50, 75, 95]
 
 model_class_list = [
     RNaive,
-    #    RAutoARIMA,  # RAutoARIMA is very slow!
+    RAutoARIMA,  # RAutoARIMA is very slow!
     RSimple,
-    #    RHolt,
-    #    RDamped,
+    RHolt,
+    RDamped,
     RTheta,
     RNaive2,
 ]

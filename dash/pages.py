@@ -572,6 +572,9 @@ class Series(BootstrapApp):
             model_description = series_data_dict["all_forecasts"][model_name][
                 "model_description"
             ]
+            model_cv_score = series_data_dict["all_forecasts"][model_name][
+                "cv_score"
+            ]
             
             return dbc.ListGroup(
                 [
@@ -581,7 +584,8 @@ class Series(BootstrapApp):
                             dbc.ListGroupItemText(
                                 [
                                     html.P(model_name),
-                                    html.P(model_description)
+                                    html.P(model_description),
+                                    html.P("CV score: %f" % model_cv_score)
                                 ]
                             )
                             if model_name != model_description

@@ -210,18 +210,34 @@ def get_forecast_shapes(forecast_df):
 
     return shapes
 
+def select_best_model(data_dict):
+
+    # Extract ( model_name, cv_score ) for each model.
+    all_models = []
+    all_cv_scores = []
+    for model_name, forecast_df in data_dict["all_forecasts"].items():
+        all_models.append( model_name )
+        all_cv_scores.append( forecast_df["cv_score"] )
+
+    # Select the best model.
+    model_name = all_models[ np.argmin( all_cv_scores ) ]
+          
+    return model_name
 
 def get_thumbnail_figure(data_dict):
 
+    model_name = select_best_model(data_dict)
+        
     series_df = data_dict["downloaded_dict"]["series_df"].iloc[-16:, :]
-    forecast_df = data_dict["forecast_df"]
+    forecast_df = data_dict["all_forecasts"][model_name]["forecast_df"]
 
     data = get_forecast_plot_data(series_df, forecast_df)
     shapes = get_forecast_shapes(forecast_df)
 
+    title = data_dict["data_source_dict"]["title"] + " - " + model_name
     layout = go.Layout(
         title={
-            "text": data_dict["data_source_dict"]["title"],
+            "text": title,
             "xanchor": "auto",
         },
         height=480,
@@ -660,7 +676,8 @@ class Stats(BootstrapApp):
 
             chosen_methods = []
             for series_title, forecast_data in forecast_series_dicts.items():
-                chosen_methods.append(forecast_data["model_name"])
+                model_name = select_best_model(forecast_data)
+                chosen_methods.append(model_name)
 
             stats_raw = pd.DataFrame({"Method": chosen_methods})
 

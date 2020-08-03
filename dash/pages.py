@@ -711,8 +711,8 @@ class Stats(BootstrapApp):
 
 def match_names(forecast_dicts, name_input):
     if not name_input or name_input == "":
-        return set(forecast_dicts.keys())       
-    
+        return set(forecast_dicts.keys())
+
     matched_series_names = []
 
     name_terms = "|".join(name_input.split(" "))
@@ -725,10 +725,11 @@ def match_names(forecast_dicts, name_input):
 
     return set(matched_series_names)
 
+
 def match_tags(forecast_dicts, tags):
     if not tags or tags == "":
-        return set(forecast_dicts.keys())       
-    
+        return set(forecast_dicts.keys())
+
     matched_series_names = []
 
     if type(tags) == str:
@@ -744,10 +745,11 @@ def match_tags(forecast_dicts, tags):
 
     return set(matched_series_names)
 
+
 def match_methods(forecast_dicts, methods):
     if not methods or methods == "":
-        return set(forecast_dicts.keys())       
-    
+        return set(forecast_dicts.keys())
+
     matched_series_names = []
 
     if type(methods) == str:

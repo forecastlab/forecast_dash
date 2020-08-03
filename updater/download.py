@@ -13,7 +13,6 @@ import datetime
 
 
 class DataSource(ABC):
-
     def __init__(self, download_path, title, url, frequency, tags):
         self.download_path = download_path
         self.title = title
@@ -63,9 +62,9 @@ class Fred(DataSource):
             api_key = kf.readline().strip()
 
         # To do: api_key should regex match [0-9a-f]{32}
-        if not api_key: 
-            raise ValueError( f"Please add a FRED API key to {api_key_file} ." ) 
-            
+        if not api_key:
+            raise ValueError(f"Please add a FRED API key to {api_key_file} .")
+
         self.url += "&api_key=" + api_key
 
         try:

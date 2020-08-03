@@ -56,8 +56,9 @@ class AusMacroData(DataSource):
 
 class Fred(DataSource):
 
-    # Based on https://github.com/mortada/fredapi/blob/master/fredapi/fred.py
+    # Thanks to https://github.com/mortada/fredapi/blob/master/fredapi/fred.py
 
+    # Static variables - one key file shared amongst all instances.
     api_key_file = "../shared_config/fred_api_key"
     with open(api_key_file, "r") as kf:
         api_key = kf.readline().strip()

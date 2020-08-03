@@ -14,11 +14,10 @@ import datetime
 
 class DataSource(ABC):
 
-    def __init__(self, download_path, title, url, url_opts, frequency, tags):
+    def __init__(self, download_path, title, url, frequency, tags):
         self.download_path = download_path
         self.title = title
         self.url = url
-        self.url_opts = url_opts
         self.frequency = frequency
         self.tags = tags
 
@@ -67,10 +66,10 @@ class Fred(DataSource):
         if not api_key: 
             raise ValueError( f"Please add a FRED API key to {api_key_file} ." ) 
             
-        self.url_opts += "&api_key=" + api_key
+        self.url += "&api_key=" + api_key
 
         try:
-            response = url_request.urlopen(self.url + self.url_opts)
+            response = url_request.urlopen(self.url)
             root = ET.fromstring(response.read())
         except url_error.HTTPError as exc:
             root = ET.fromstring(exc.read())

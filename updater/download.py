@@ -14,9 +14,8 @@ import datetime
 
 class DataSource(ABC):
 
-    download_dir_path = "../data/downloads"
-
-    def __init__(self, title, url, url_opts, frequency, tags):
+    def __init__(self, download_path, title, url, url_opts, frequency, tags):
+        self.download_path = download_path
         self.title = title
         self.url = url
         self.url_opts = url_opts
@@ -32,7 +31,7 @@ class DataSource(ABC):
             "downloaded_at": datetime.datetime.now(),
         }
 
-        f = open(f"{self.download_dir_path}/{self.title}.pkl", "wb")
+        f = open(f"{self.download_path}/{self.title}.pkl", "wb")
         pickle.dump(data, f)
         f.close()
 
@@ -58,17 +57,17 @@ class Fred(DataSource):
 
     # Thanks to https://github.com/mortada/fredapi/blob/master/fredapi/fred.py
 
-    # Static variables - one key file shared amongst all instances.
-    api_key_file = "../shared_config/fred_api_key"
-    with open(api_key_file, "r") as kf:
-        api_key = kf.readline().strip()
-        
-    if not api_key:
-        raise ValueError( f"Please add a FRED API key to {api_key_file} ." ) 
-       
     def download(self):
 
-        self.url_opts += "&api_key=" + self.api_key
+        api_key_file = "../shared_config/fred_api_key"
+        with open(api_key_file, "r") as kf:
+            api_key = kf.readline().strip()
+
+        # To do: api_key should regex match [0-9a-f]{32}
+        if not api_key: 
+            raise ValueError( f"Please add a FRED API key to {api_key_file} ." ) 
+            
+        self.url_opts += "&api_key=" + api_key
 
         try:
             response = url_request.urlopen(self.url + self.url_opts)
@@ -92,7 +91,7 @@ class Fred(DataSource):
         return df
 
 
-def download_data(sources_path):
+def download_data(sources_path, download_path):
 
     with open(sources_path) as data_sources_json_file:
 
@@ -103,10 +102,12 @@ def download_data(sources_path):
             all_source_classes = {"AusMacroData": AusMacroData, "Fred": Fred}
 
             source_class = all_source_classes[data_source_dict.pop("source")]
+            data_source_dict["download_path"] = download_path
+
             source = source_class(**data_source_dict)
 
             source.fetch()
 
 
 if __name__ == "__main__":
-    download_data("../shared_config/data_sources.json")
+    download_data("../shared_config/data_sources.json", "../data/downloads")

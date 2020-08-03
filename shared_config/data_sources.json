@@ -1,41 +1,24 @@
 [
-  {
-    "title": "Australian GDP Growth",
-    "url": "http://ausmacrodata.org/Data/5206.0/gdpcpcknaasaq.csv",
-    "frequency": "Q",
-    "tags": [
-      "Australia",
-      "Economic"
-    ]
-  },
-  {
-    "title": "Australian Inflation (CPI)",
-    "url": "http://ausmacrodata.org/Data/6401.0/eegrsrsiaisxseslr.csv",
-    "frequency": "Q",
-    "tags": [
-      "Australia",
-      "Economic"
-    ]
-  },
-  {
-    "title": "Australian Unemployment",
-    "url": "http://ausmacrodata.org/Data/6202.0/urplfssasam.csv",
-    "frequency": "MS",
-    "tags": [
-      "Australia",
-      "Economic"
-    ]
-  },
-  {
-    "title": "Australian Underemployment",
-    "url": "http://ausmacrodata.org/Data/6202.0/urpupassam.csv",
-    "frequency": "MS",
-    "tags": [
-      "Australia",
-      "Economic"
-    ]
-  }
+    {
+	"title": "US CPI",
+	"source": "Fred",
+	"url": "https://api.stlouisfed.org/fred/series/observations",
+	"url_opts": "?series_id=CPIAUCSL",
+	"frequency": "MS",
+	"tags": [
+	    "US",
+	    "Economic"
+	]
+    },
+    {
+	"title": "Australian GDP Growth",
+	"source": "AusMacroData",
+	"url": "http://ausmacrodata.org/Data/5206.0/gdpcpcknaasaq.csv",
+	"url_opts": "",
+	"frequency": "Q",
+	"tags": [
+	    "Australia",
+	    "Economic"
+	]
+    }
 ]
-
-
-

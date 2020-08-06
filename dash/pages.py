@@ -932,13 +932,21 @@ class Filter(BootstrapApp):
 
             return children
 
+        component_ids = ["name", "tags", "methods"]
+        listlike_component_ids = ["tags", "methods"]
+
+
         @self.callback(
             Output("filter_panel", "children"), [Input("url", "href")]
         )
         @location_ignore_null([Input("url", "href")], "url")
         def display_value(value):
-
             parse_result = parse_state(value)
+
+            # Convert comma seperated strings into a list of strings
+            for k in listlike_component_ids:
+                if k in parse_result and type(parse_result[k]) is str:
+                    parse_result[k] = parse_result[k].split(",")
 
             # Dynamically load tags
             data_sources_json_file = open("../shared_config/data_sources.json")
@@ -958,15 +966,17 @@ class Filter(BootstrapApp):
 
             return filter_panel_children(parse_result, all_tags, all_methods)
 
-        component_ids = ["name", "tags", "methods"]
+
 
         @self.callback(
             Output("url", "search"),
             inputs=[Input(i, "value") for i in component_ids],
         )
-        def update_url_state(*values):
+        @dash_kwarg([Input(i, "value") for i in component_ids])
+        def update_url_state(**kwargs):
 
-            state = urlencode(dict(zip(component_ids, values)))
+
+            state = urlencode(kwargs)
 
             return f"?{state}"
 

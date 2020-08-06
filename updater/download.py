@@ -121,6 +121,8 @@ def download_data(sources_path, download_path):
 
         pool.starmap(download_data_source, [(data_source_dict, download_path) for data_source_dict in data_sources_list])
 
+        pool.close()
+        pool.join()
 
 if __name__ == "__main__":
     download_data("../shared_config/data_sources.json", "../data/downloads")

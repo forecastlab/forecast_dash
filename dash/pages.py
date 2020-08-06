@@ -211,19 +211,33 @@ def get_forecast_shapes(forecast_df):
     return shapes
 
 
+def select_best_model(data_dict):
+
+    # Extract ( model_name, cv_score ) for each model.
+    all_models = []
+    all_cv_scores = []
+    for model_name, forecast_df in data_dict["all_forecasts"].items():
+        all_models.append(model_name)
+        all_cv_scores.append(forecast_df["cv_score"])
+
+    # Select the best model.
+    model_name = all_models[np.argmin(all_cv_scores)]
+
+    return model_name
+
+
 def get_thumbnail_figure(data_dict):
 
+    model_name = select_best_model(data_dict)
     series_df = data_dict["downloaded_dict"]["series_df"].iloc[-16:, :]
-    forecast_df = data_dict["forecast_df"]
+    forecast_df = data_dict["all_forecasts"][model_name]["forecast_df"]
 
     data = get_forecast_plot_data(series_df, forecast_df)
     shapes = get_forecast_shapes(forecast_df)
 
+    title = data_dict["data_source_dict"]["title"] + " - " + model_name
     layout = go.Layout(
-        title={
-            "text": data_dict["data_source_dict"]["title"],
-            "xanchor": "auto",
-        },
+        title={"text": title, "xanchor": "auto"},
         height=480,
         showlegend=False,
         xaxis=dict(fixedrange=True),
@@ -234,10 +248,10 @@ def get_thumbnail_figure(data_dict):
     return go.Figure(data, layout)
 
 
-def get_series_figure(data_dict):
+def get_series_figure(data_dict, model_name):
 
     series_df = data_dict["downloaded_dict"]["series_df"]
-    forecast_df = data_dict["forecast_df"]
+    forecast_df = data_dict["all_forecasts"][model_name]["forecast_df"]
 
     data = get_forecast_plot_data(series_df, forecast_df)
     shapes = get_forecast_shapes(forecast_df)
@@ -247,8 +261,9 @@ def get_series_figure(data_dict):
         - series_df.index[0].to_pydatetime()
     )
 
+    title = data_dict["data_source_dict"]["title"] + " - " + model_name
     layout = go.Layout(
-        title=data_dict["data_source_dict"]["title"] + " Forecast",
+        title=title,
         height=720,
         xaxis=dict(
             fixedrange=True,
@@ -423,33 +438,45 @@ class Series(BootstrapApp):
                         dbc.Row(
                             [
                                 dbc.Col(
-                                    dcc.Loading(html.Div(id="meta_data_list")),
+                                    [
+                                        dbc.FormGroup(
+                                            dcc.Dropdown(
+                                                id="model_selector",
+                                                clearable=False,
+                                            ),
+                                        ),
+                                        dcc.Loading(
+                                            html.Div(id="meta_data_list")
+                                        ),
+                                    ],
                                     lg=6,
                                 ),
                                 dbc.Col(
                                     [
-                                        dcc.Dropdown(
-                                            options=[
-                                                {
-                                                    "label": "Forecast",
-                                                    "value": "Forecast",
-                                                },
-                                                {
-                                                    "label": "50% CI",
-                                                    "value": "CI_50",
-                                                },
-                                                {
-                                                    "label": "75% CI",
-                                                    "value": "CI_75",
-                                                },
-                                                {
-                                                    "label": "95% CI",
-                                                    "value": "CI_95",
-                                                },
-                                            ],
-                                            value="Forecast",
-                                            clearable=False,
-                                            id="forecast_table_selector",
+                                        dbc.FormGroup(
+                                            dcc.Dropdown(
+                                                options=[
+                                                    {
+                                                        "label": "Forecast",
+                                                        "value": "Forecast",
+                                                    },
+                                                    {
+                                                        "label": "50% CI",
+                                                        "value": "CI_50",
+                                                    },
+                                                    {
+                                                        "label": "75% CI",
+                                                        "value": "CI_75",
+                                                    },
+                                                    {
+                                                        "label": "95% CI",
+                                                        "value": "CI_95",
+                                                    },
+                                                ],
+                                                value="Forecast",
+                                                clearable=False,
+                                                id="forecast_table_selector",
+                                            ),
                                         ),
                                         dcc.Loading(
                                             html.Div(id="forecast_table")
@@ -495,12 +522,19 @@ class Series(BootstrapApp):
 
             return series_data_dict["data_source_dict"]["title"]
 
-        @self.callback(Output("series_graph", "children"), inputs)
+        @self.callback(
+            Output("series_graph", "children"),
+            inputs + [Input("model_selector", "value")],
+        )
         @location_ignore_null(inputs, location_id="url")
-        @series_input(inputs, location_id="url")
-        def update_series_graph(series_data_dict):
+        @series_input(
+            inputs + [Input("model_selector", "value")], location_id="url"
+        )
+        def update_series_graph(series_data_dict, **kwargs):
 
-            series_figure = get_series_figure(series_data_dict)
+            model_name = kwargs["model_selector"]
+
+            series_figure = get_series_figure(series_data_dict, model_name)
 
             series_graph = dcc.Graph(
                 figure=series_figure,
@@ -520,28 +554,70 @@ class Series(BootstrapApp):
 
             return series_graph
 
-        @self.callback(Output("meta_data_list", "children"), inputs)
+        @self.callback(
+            [
+                Output("model_selector", "options"),
+                Output("model_selector", "value"),
+            ],
+            inputs,
+        )
         @location_ignore_null(inputs, location_id="url")
         @series_input(inputs, location_id="url")
-        def update_meta_data_list(series_data_dict):
+        def update_model_selector(series_data_dict):
+
+            best_model_name = select_best_model(series_data_dict)
+            model_select_options = [
+                {
+                    "label": f"Best Model - {best_model_name}",
+                    "value": best_model_name,
+                }
+            ]
+
+            stats = get_forecast_data("statistics")
+            all_methods = stats["models_used"]
+
+            model_select_options.extend(
+                [
+                    {"label": model_name, "value": model_name}
+                    for model_name in all_methods
+                ]
+            )
+
+            return model_select_options, best_model_name
+
+        @self.callback(
+            Output("meta_data_list", "children"),
+            inputs + [Input("model_selector", "value")],
+        )
+        @location_ignore_null(inputs, location_id="url")
+        @series_input(
+            inputs + [Input("model_selector", "value")], location_id="url"
+        )
+        def update_meta_data_list(series_data_dict, **kwargs):
+
+            model_name = kwargs["model_selector"]
+
+            model_description = series_data_dict["all_forecasts"][model_name][
+                "model_description"
+            ]
+            if model_description == model_name:
+                model_description = ""
+
+            model_cv_score = series_data_dict["all_forecasts"][model_name][
+                "cv_score"
+            ]
 
             return dbc.ListGroup(
                 [
                     dbc.ListGroupItem(
                         [
-                            dbc.ListGroupItemHeading("Model"),
+                            dbc.ListGroupItemHeading("Model Details"),
                             dbc.ListGroupItemText(
                                 [
-                                    html.P(series_data_dict["model_name"]),
-                                    html.P(
-                                        series_data_dict["model_description"]
-                                    ),
+                                    html.P(model_name),
+                                    html.P(model_description),
+                                    html.P("CV score: %f" % model_cv_score),
                                 ]
-                            )
-                            if series_data_dict["model_name"]
-                            != series_data_dict["model_description"]
-                            else dbc.ListGroupItemText(
-                                [html.P(series_data_dict["model_name"])]
                             ),
                         ]
                     ),
@@ -587,11 +663,19 @@ class Series(BootstrapApp):
 
         @self.callback(
             Output("forecast_table", "children"),
-            inputs + [Input("forecast_table_selector", "value")],
+            inputs
+            + [
+                Input("forecast_table_selector", "value"),
+                Input("model_selector", "value"),
+            ],
         )
         @location_ignore_null(inputs, location_id="url")
         @series_input(
-            inputs + [Input("forecast_table_selector", "value")],
+            inputs
+            + [
+                Input("forecast_table_selector", "value"),
+                Input("model_selector", "value"),
+            ],
             location_id="url",
         )
         def update_forecast_table(series_data_dict, **kwargs):
@@ -603,7 +687,11 @@ class Series(BootstrapApp):
                 "CI_95": ["LB_95", "UB_95"],
             }
 
-            dataframe = series_data_dict["forecast_df"]
+            model_name = kwargs["model_selector"]
+
+            dataframe = series_data_dict["all_forecasts"][model_name][
+                "forecast_df"
+            ]
 
             column_name_map = {"forecast": "Forecast"}
 
@@ -660,7 +748,8 @@ class Stats(BootstrapApp):
 
             chosen_methods = []
             for series_title, forecast_data in forecast_series_dicts.items():
-                chosen_methods.append(forecast_data["model_name"])
+                model_name = select_best_model(forecast_data)
+                chosen_methods.append(model_name)
 
             stats_raw = pd.DataFrame({"Method": chosen_methods})
 
@@ -759,7 +848,7 @@ def match_methods(forecast_dicts, methods):
 
     for series_title, forecast_dict in forecast_dicts.items():
 
-        if forecast_dict["model_name"] in methods:
+        if select_best_model(forecast_dict) in methods:
             matched_series_names.append(series_title)
 
     return set(matched_series_names)

@@ -11,6 +11,7 @@ import pandas as pd
 import pickle
 import datetime
 
+from multiprocessing.dummy import Pool as ThreadPool
 
 class DataSource(ABC):
     def __init__(self, download_path, title, url, frequency, tags):
@@ -88,6 +89,27 @@ class Fred(DataSource):
         #print(df)
         return df
 
+supported_data_sources = {
+    "AusMacroData": AusMacroData,
+    "Fred": Fred
+}
+
+def download_data_source(data_source_dict, download_path):
+
+    if "source" not in data_source_dict:
+        raise ValueError(f"No source found for {data_source_dict['title']}")
+
+    if data_source_dict["source"] not in supported_data_sources:
+        raise ValueError(f"Source {data_source_dict['source']} is not supported")
+
+    # Pop because init of DataSource does not accept source
+    source_class = supported_data_sources[data_source_dict.pop("source")]
+    data_source_dict["download_path"] = download_path
+
+    source = source_class(**data_source_dict)
+
+    source.fetch()
+
 
 def download_data(sources_path, download_path):
 
@@ -95,16 +117,9 @@ def download_data(sources_path, download_path):
 
         data_sources_list = json.load(data_sources_json_file)
 
-        for data_source_dict in data_sources_list:
+        pool = ThreadPool(8)
 
-            all_source_classes = {"AusMacroData": AusMacroData, "Fred": Fred}
-
-            source_class = all_source_classes[data_source_dict.pop("source")]
-            data_source_dict["download_path"] = download_path
-
-            source = source_class(**data_source_dict)
-
-            source.fetch()
+        pool.starmap(download_data_source, [(data_source_dict, download_path) for data_source_dict in data_sources_list])
 
 
 if __name__ == "__main__":

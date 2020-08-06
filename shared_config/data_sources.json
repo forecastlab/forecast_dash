@@ -1,6 +1,7 @@
 [
   {
     "title": "Australian GDP Growth",
+    "source": "AusMacroData",
     "url": "http://ausmacrodata.org/Data/5206.0/gdpcpcknaasaq.csv",
     "frequency": "Q",
     "tags": [
@@ -10,6 +11,7 @@
   },
   {
     "title": "Australian Inflation (CPI)",
+    "source": "AusMacroData",
     "url": "http://ausmacrodata.org/Data/6401.0/eegrsrsiaisxseslr.csv",
     "frequency": "Q",
     "tags": [
@@ -19,6 +21,7 @@
   },
   {
     "title": "Australian Unemployment",
+    "source": "AusMacroData",
     "url": "http://ausmacrodata.org/Data/6202.0/urplfssasam.csv",
     "frequency": "MS",
     "tags": [
@@ -28,14 +31,32 @@
   },
   {
     "title": "Australian Underemployment",
+    "source": "AusMacroData",
     "url": "http://ausmacrodata.org/Data/6202.0/urpupassam.csv",
     "frequency": "MS",
     "tags": [
       "Australia",
       "Economic"
     ]
-  }
+  },
+  {
+    "title": "US GDP Growth",
+    "source": "Fred",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=CPGDPAI",
+    "frequency": "Q",
+    "tags": [
+      "US",
+      "Economic"
+    ]
+  },
+  {
+    "title": "US Unemployment",
+    "source": "Fred",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=UNRATE",
+    "frequency": "MS",
+    "tags": [
+      "US",
+      "Economic"
+    ]
+  }  
 ]
-
-
-

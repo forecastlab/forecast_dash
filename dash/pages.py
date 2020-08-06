@@ -30,7 +30,7 @@ header = [
                     dbc.DropdownMenuItem(
                         html.A(
                             "US Economic Indicators",
-                            href="/filter?tags=USA,Economic",
+                            href="/filter?tags=US,Economic",
                         )
                     ),
                 ],
@@ -53,7 +53,7 @@ header = [
                         [
                             html.A(
                                 "US Financial Indicators",
-                                href="/filter?tags=USA,Financial",
+                                href="/filter?tags=US,Financial",
                             )
                         ]
                     ),
@@ -352,6 +352,8 @@ class Index(BootstrapApp):
             "Australian Inflation (CPI)",
             "Australian Unemployment",
             "Australian Underemployment",
+            "US GDP Growth",
+            "US Unemployment",
         ]
 
         def layout_func():

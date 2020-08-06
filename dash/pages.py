@@ -352,6 +352,8 @@ class Index(BootstrapApp):
             "Australian Inflation (CPI)",
             "Australian Unemployment",
             "Australian Underemployment",
+            "US GDP Growth",
+            "US Unemployment",
         ]
 
         def layout_func():

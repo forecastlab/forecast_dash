@@ -848,7 +848,7 @@ def match_methods(forecast_dicts, methods):
 
     for series_title, forecast_dict in forecast_dicts.items():
 
-        if forecast_dict["model_name"] in methods:
+        if select_best_model(forecast_dict) in methods:
             matched_series_names.append(series_title)
 
     return set(matched_series_names)

@@ -2,6 +2,6 @@
 
 git reset --hard HEAD
 git pull
-chmod 600 traefik/acme.json
+touch shared_config/acme.json & chmod 600 shared_config/acme.json
 docker-compose down
 docker-compose up -d

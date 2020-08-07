@@ -47,7 +47,7 @@ class AusMacroData(DataSource):
             parse_dates=["date"],
             index_col="date",
         )
-        #print(df)
+        # print(df)
         return df
 
 
@@ -85,7 +85,37 @@ class Fred(DataSource):
 
         df = pd.DataFrame(values, index=dates, columns=["value"])
         df.index.name = "date"
-        #print(df)
+        # print(df)
+        return df
+
+
+class Ons(DataSource):
+    def download(self):
+
+        try:
+            # ONS currently rejects requests that use the default User-Agent
+            # (python-urllib/3.x.y). Set the header manually to pretend to be
+            # a 'real' browser.
+            req = url_request.Request(
+                self.url, headers={"User-Agent": "Mozilla/5.0"}
+            )
+            response = url_request.urlopen(req)
+            data = json.loads(response.read())
+        except url_error.HTTPError as err:
+            raise ValueError(err.reason)
+
+        if not data:
+            raise ValueError("Failed to retrieve any data.")
+
+        dates = []
+        values = []
+        for el in data["months"]:
+            dates.append(pd.to_datetime(el["date"], format="%Y %b"))
+            values.append(float(el["value"]))
+
+        df = pd.DataFrame(values, index=dates, columns=["value"])
+        df.index.name = "date"
+        # print(df)
         return df
 
 
@@ -97,7 +127,11 @@ def download_data(sources_path, download_path):
 
         for data_source_dict in data_sources_list:
 
-            all_source_classes = {"AusMacroData": AusMacroData, "Fred": Fred}
+            all_source_classes = {
+                "AusMacroData": AusMacroData,
+                "Fred": Fred,
+                "Ons": Ons,
+            }
 
             source_class = all_source_classes[data_source_dict.pop("source")]
             data_source_dict["download_path"] = download_path

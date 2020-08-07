@@ -354,6 +354,8 @@ class Index(BootstrapApp):
             "Australian Underemployment",
             "US GDP Growth",
             "US Unemployment",
+            "UK RPI",
+            "UK Unemployment",
         ]
 
         def layout_func():

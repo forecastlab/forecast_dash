@@ -235,7 +235,7 @@ def get_thumbnail_figure(data_dict):
     data = get_forecast_plot_data(series_df, forecast_df)
     shapes = get_forecast_shapes(forecast_df)
 
-    title = data_dict["data_source_dict"]["title"] + " - " + model_name
+    title = data_dict["data_source_dict"]["title"]
     layout = go.Layout(
         title={"text": title, "xanchor": "auto"},
         height=480,
@@ -261,7 +261,7 @@ def get_series_figure(data_dict, model_name):
         - series_df.index[0].to_pydatetime()
     )
 
-    title = data_dict["data_source_dict"]["title"] + " - " + model_name
+    title = data_dict["data_source_dict"]["title"]
     layout = go.Layout(
         title=title,
         height=720,

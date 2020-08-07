@@ -354,7 +354,7 @@ class Index(BootstrapApp):
             "Australian Underemployment",
             "US GDP Growth",
             "US Unemployment",
-            "UK RPI",
+            "UK Inflation (RPI)",
             "UK Unemployment",
         ]
 

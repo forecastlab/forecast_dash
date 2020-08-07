@@ -33,6 +33,12 @@ header = [
                             href="/filter?tags=US,Economic",
                         )
                     ),
+                    dbc.DropdownMenuItem(
+                        html.A(
+                            "UK Economic Indicators",
+                            href="/filter?tags=UK,Economic",
+                        )
+                    ),
                 ],
                 nav=True,
                 in_navbar=True,
@@ -54,6 +60,14 @@ header = [
                             html.A(
                                 "US Financial Indicators",
                                 href="/filter?tags=US,Financial",
+                            )
+                        ]
+                    ),
+                    dbc.DropdownMenuItem(
+                        [
+                            html.A(
+                                "UK Financial Indicators",
+                                href="/filter?tags=UK,Financial",
                             )
                         ]
                     ),

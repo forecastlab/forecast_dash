@@ -9,7 +9,7 @@ from rpy2.robjects import pandas2ri
 from sklearn.metrics import mean_squared_error
 from sklearn.utils.validation import indexable, _num_samples
 
-from models import RNaive, RNaive2, RAutoARIMA, RSimple, RHolt, RDamped, RTheta
+from models import RNaive, RNaive2, RAutoARIMA, RSimple, RHolt, RDamped, RTheta, RComb
 
 pandas2ri.activate()
 
@@ -25,6 +25,7 @@ model_class_list = [
     RDamped,
     RTheta,
     RNaive2,
+    RComb,
 ]
 
 

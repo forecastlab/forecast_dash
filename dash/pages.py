@@ -36,7 +36,7 @@ header = [
                     dbc.DropdownMenuItem(
                         html.A(
                             "UK Economic Indicators",
-                            href="/filter?tags=UK,Economic",
+                            href="/filter?tags=UK&tags=Economic",
                         )
                     ),
                 ],

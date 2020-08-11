@@ -55,7 +55,7 @@ class Fred(DataSource):
 
     # Thanks to https://github.com/mortada/fredapi/blob/master/fredapi/fred.py
     # and https://realpython.com/python-requests/
-    
+
     def download(self):
 
         api_key_file = "../shared_config/fred_api_key"
@@ -66,10 +66,10 @@ class Fred(DataSource):
         if not api_key:
             raise ValueError(f"Please add a FRED API key to {api_key_file} .")
 
-        self.url += "&api_key=" + api_key
+        payload = {"api_key": api_key}
 
         try:
-            response = requests.get(self.url)
+            response = requests.get(self.url, params=payload)
 
             # Raise exception if response fails
             # (response.status_code outside the 200 to 400 range).
@@ -90,7 +90,7 @@ class Fred(DataSource):
 
         df = pd.DataFrame(values, index=dates, columns=["value"])
         df.index.name = "date"
-        # print(df)
+
         return df
 
 
@@ -112,9 +112,8 @@ class Ons(DataSource):
         except HTTPError as http_err:
             raise ValueError(f"HTTP error: {http_err} .")
 
-        data = json.loads(response.text)
-        if not data:
-            raise ValueError("Failed to retrieve any data.")
+        # This will raise an exception JSON decoding fails
+        data = response.json()
 
         dates = []
         values = []
@@ -124,7 +123,7 @@ class Ons(DataSource):
 
         df = pd.DataFrame(values, index=dates, columns=["value"])
         df.index.name = "date"
-        # print(df)
+
         return df
 
 

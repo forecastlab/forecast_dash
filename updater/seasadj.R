@@ -65,3 +65,25 @@ naive2 <- function(y, h = 10, level = c(80,95)) {
                   upper = fc$upper*SIout,
                   lower = fc$lower*SIout) )
 }
+
+# Comb benchmark from M4 competition (SES, Holt, Damped)
+
+comb <- function(y, h=10, level = c(80,95)) {
+
+	fses_m <- ses(y, h=h, level=level)$mean
+	fses_u <- ses(y, h=h, level=level)$upper
+	fses_l <- ses(y, h=h, level=level)$lower
+	
+	fholt_m <- holt(y, h=h, level=level, damped=F)$mean
+	fholt_u <- holt(y, h=h, level=level, damped=F)$upper
+	fholt_l <- holt(y, h=h, level=level, damped=F)$lower
+	
+	fdamp_m <- holt(y, h=h, level=level, damped=T)$mean
+	fdamp_u <- holt(y, h=h, level=level, damped=T)$upper
+	fdamp_l <- holt(y, h=h, level=level, damped=T)$lower
+	
+	return( list( method = "Comb",
+		mean = (fses_m+fholt_m+fdamp_m) / 3,
+		upper = (fses_u+fholt_u+fdamp_u) / 3,
+		lower = (fses_l+fholt_l+fdamp_l) / 3 ))
+}

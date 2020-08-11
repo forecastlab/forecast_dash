@@ -4,7 +4,7 @@ import pickle
 import re
 from abc import ABC, abstractmethod
 from functools import wraps
-from urllib.parse import urlparse, parse_qsl, urlencode
+from urllib.parse import urlparse, parse_qs, urlencode
 
 import dash
 import dash_bootstrap_components as dbc
@@ -24,13 +24,13 @@ header = [
                     dbc.DropdownMenuItem(
                         html.A(
                             "Australian Economic Indicators",
-                            href="/filter?tags=Australia,Economic",
+                            href="/filter?tags=Australia&tags=Economic",
                         )
                     ),
                     dbc.DropdownMenuItem(
                         html.A(
                             "US Economic Indicators",
-                            href="/filter?tags=US,Economic",
+                            href="/filter?tags=US&tags=Economic",
                         )
                     ),
                     dbc.DropdownMenuItem(
@@ -51,7 +51,7 @@ header = [
                         [
                             html.A(
                                 "Australian Financial Indicators",
-                                href="/filter?tags=Australia,Financial",
+                                href="/filter?tags=Australia&tags=Financial",
                             )
                         ]
                     ),
@@ -59,7 +59,7 @@ header = [
                         [
                             html.A(
                                 "US Financial Indicators",
-                                href="/filter?tags=US,Financial",
+                                href="/filter?tags=US&tags=Financial",
                             )
                         ]
                     ),
@@ -142,9 +142,7 @@ def dash_kwarg(inputs):
 
 def parse_state(url):
     parse_result = urlparse(url)
-    params = parse_qsl(parse_result.query)
-    state = dict(params)
-    return state
+    return parse_qs(parse_result.query)
 
 
 def get_forecast_plot_data(series_df, forecast_df):
@@ -379,6 +377,7 @@ class Index(BootstrapApp):
             for item_title in showcase_item_titles:
 
                 series_data = get_forecast_data(item_title)
+                url_title = urlencode( { "title": item_title } )
                 thumbnail_figure = get_thumbnail_figure(series_data)
                 showcase_list.append(
                     dbc.Col(
@@ -391,7 +390,7 @@ class Index(BootstrapApp):
                                         config={"displayModeBar": False},
                                     )
                                 ],
-                                href=f"/series?title={item_title}",
+                                href=f"/series?{url_title}",
                             )
                         ],
                         lg=6,
@@ -519,7 +518,7 @@ class Series(BootstrapApp):
                     parse_result = parse_state(kwargs_dict[location_id])
 
                     if "title" in parse_result:
-                        title = parse_result["title"]
+                        title = parse_result["title"][0]
                         series_data_dict = get_forecast_data(title)
 
                         del kwargs_dict[location_id]
@@ -792,7 +791,7 @@ class Stats(BootstrapApp):
 
             # Apply URLS to index
             for row in table.children[1].children:
-                state = urlencode({"methods": [row.children[0].children]})
+                state = urlencode({"methods": [row.children[0].children]}, doseq=True)
                 row.children[0].children = html.A(
                     row.children[0].children, href=f"/filter/?{state}"
                 )
@@ -949,7 +948,6 @@ class Filter(BootstrapApp):
             return children
 
         component_ids = ["name", "tags", "methods"]
-        listlike_component_ids = ["tags", "methods"]
 
 
         @self.callback(
@@ -958,11 +956,6 @@ class Filter(BootstrapApp):
         @location_ignore_null([Input("url", "href")], "url")
         def display_value(value):
             parse_result = parse_state(value)
-
-            # Convert comma seperated strings into a list of strings
-            for k in listlike_component_ids:
-                if k in parse_result and type(parse_result[k]) is str:
-                    parse_result[k] = parse_result[k].split(",")
 
             # Dynamically load tags
             data_sources_json_file = open("../shared_config/data_sources.json")
@@ -983,7 +976,6 @@ class Filter(BootstrapApp):
             return filter_panel_children(parse_result, all_tags, all_methods)
 
 
-
         @self.callback(
             Output("url", "search"),
             inputs=[Input(i, "value") for i in component_ids],
@@ -991,8 +983,7 @@ class Filter(BootstrapApp):
         @dash_kwarg([Input(i, "value") for i in component_ids])
         def update_url_state(**kwargs):
 
-
-            state = urlencode(kwargs)
+            state = urlencode(kwargs, doseq=True)
 
             return f"?{state}"
 
@@ -1040,6 +1031,7 @@ class Filter(BootstrapApp):
 
                 for item_title in unique_series_titles:
                     series_data = forecast_series_dicts[item_title]
+                    url_title = urlencode( { "title": item_title } )
                     thumbnail_figure = get_thumbnail_figure(series_data)
 
                     results_list.append(
@@ -1053,7 +1045,7 @@ class Filter(BootstrapApp):
                                             config={"displayModeBar": False},
                                         ),
                                     ],
-                                    href=f"/series?title={item_title}",
+                                    href=f"/series?{url_title}",
                                 ),
                                 html.Hr(),
                             ]

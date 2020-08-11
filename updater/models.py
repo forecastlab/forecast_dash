@@ -197,3 +197,11 @@ class RAutoARIMA(RForecastModel):
     r_forecast_lib = "forecast"
 
     r_forecast_model_name = "auto_arima"
+
+
+class RComb(RDirectForecastModel):
+    name = "Combination M4 Benchmark"
+
+    r_forecast_lib = "seasadj.R"
+
+    r_forecast_model_name = "comb"

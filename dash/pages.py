@@ -501,8 +501,6 @@ class Series(BootstrapApp):
 
                     parse_result = parse_state(kwargs_dict[location_id])
 
-                    print( "parse_result:", parse_result )
-                    
                     if "title" in parse_result:
                         title = parse_result["title"][0]
                         series_data_dict = get_forecast_data(title)

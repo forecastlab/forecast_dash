@@ -1,8 +1,8 @@
 from abc import ABC
 from abc import abstractmethod
 
-import urllib.request as url_request
-import urllib.error as url_error
+import requests
+from requests.exceptions import HTTPError
 
 import json
 import xml.etree.ElementTree as ET
@@ -54,7 +54,8 @@ class AusMacroData(DataSource):
 class Fred(DataSource):
 
     # Thanks to https://github.com/mortada/fredapi/blob/master/fredapi/fred.py
-
+    # and https://realpython.com/python-requests/
+    
     def download(self):
 
         api_key_file = "../shared_config/fred_api_key"
@@ -68,13 +69,17 @@ class Fred(DataSource):
         self.url += "&api_key=" + api_key
 
         try:
-            response = url_request.urlopen(self.url)
-            root = ET.fromstring(response.read())
-        except url_error.HTTPError as exc:
-            root = ET.fromstring(exc.read())
-            raise ValueError(root.get("message"))
+            response = requests.get(self.url)
 
-        if root is None:
+            # Raise exception if response fails
+            # (response.status_code outside the 200 to 400 range).
+            response.raise_for_status()
+
+        except HTTPError as http_err:
+            raise ValueError(f"HTTP error: {http_err} .")
+
+        root = ET.fromstring(response.text)
+        if not root:
             raise ValueError("Failed to retrieve any data.")
 
         dates = []
@@ -96,14 +101,18 @@ class Ons(DataSource):
             # ONS currently rejects requests that use the default User-Agent
             # (python-urllib/3.x.y). Set the header manually to pretend to be
             # a 'real' browser.
-            req = url_request.Request(
+            response = requests.get(
                 self.url, headers={"User-Agent": "Mozilla/5.0"}
             )
-            response = url_request.urlopen(req)
-            data = json.loads(response.read())
-        except url_error.HTTPError as err:
-            raise ValueError(err.reason)
 
+            # Raise exception if response fails
+            # (response.status_code outside the 200 to 400 range).
+            response.raise_for_status()
+
+        except HTTPError as http_err:
+            raise ValueError(f"HTTP error: {http_err} .")
+
+        data = json.loads(response.text)
         if not data:
             raise ValueError("Failed to retrieve any data.")
 

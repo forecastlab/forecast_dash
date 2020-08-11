@@ -35,6 +35,74 @@ class ForecastModel(ABC):
         return {}
 
 
+class NNModel(ForecastModel, ABC):
+    @property
+    @staticmethod
+    @abstractmethod
+    def NN_model_name():
+        pass
+
+    forecast_model_params = {}
+
+    def __init__(self, h, level):
+
+        super().__init__(h, level)
+
+        # Import the Python source ??
+        self.forecast_lib = import(type(self).forecast_lib)
+        self.forecast_func = getattr(
+                self.forecast_lib, type(self).forecast_model_name
+            )
+
+    def description(self):
+        return self.method
+
+    def get_forecast_dict(self):
+        return dict(
+            self.forecast_lib.forecast(
+                self.fit_results, h=self.h, level=self.level
+            ).items()
+        )
+
+    def fit(self, y):
+
+        forecast_dict = self.get_forecast_dict()
+
+        self.method = forecast_dict["method"]
+
+    def predict(self):
+
+        forecast_dict = self.get_forecast_dict()
+
+        prediction = forecast_dict["mean"]
+
+        return prediction
+
+    def predict_withci(self):
+
+        forecast_dict = self.get_forecast_dict()
+
+        forecast_dict = {"forecast": forecast_dict["mean"]}
+
+        for i in range(len(self.level)):
+            forecast_dict[f"LB_{self.level[i]}"] = forecast_dict["lower"][
+                :, i
+            ]
+            forecast_dict[f"UB_{self.level[i]}"] = forecast_dict["upper"][
+                :, i
+            ]
+
+        return forecast_dict
+
+
+class RNN(NNModel):
+    name = "RNN M4 Benchmark"
+
+    forecast_lib = "NNBenchmarks.py"
+
+    forecast_model_name = "rnn_bench"
+
+
 class RModel(ForecastModel, ABC):
     @property
     @staticmethod

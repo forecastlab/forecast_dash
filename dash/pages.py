@@ -379,7 +379,7 @@ class Index(BootstrapApp):
                 # If data not present for any reason skip this
                 try:
                     series_data = get_forecast_data(item_title)
-                except:
+                except FileNotFoundError:
                     continue
 
                 url_title = urlencode({"title": item_title})
@@ -764,9 +764,12 @@ class Stats(BootstrapApp):
             forecast_series_dicts = {}
 
             for series_dict in source_series_list:
-                forecast_series_dicts[
-                    series_dict["title"]
-                ] = get_forecast_data(series_dict["title"])
+                try:
+                    forecast_series_dicts[
+                        series_dict["title"]
+                    ] = get_forecast_data(series_dict["title"])
+                except FileNotFoundError:
+                    continue
 
             chosen_methods = []
             for series_title, forecast_data in forecast_series_dicts.items():
@@ -1008,9 +1011,12 @@ class Filter(BootstrapApp):
             forecast_series_dicts = {}
 
             for series_dict in source_series_list:
-                forecast_series_dicts[
-                    series_dict["title"]
-                ] = get_forecast_data(series_dict["title"])
+                try:
+                    forecast_series_dicts[
+                        series_dict["title"]
+                    ] = get_forecast_data(series_dict["title"])
+                except FileNotFoundError:
+                    continue
 
             filters = {
                 "name": match_names,

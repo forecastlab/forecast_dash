@@ -33,6 +33,12 @@ header = [
                             href="/filter?tags=US&tags=Economic",
                         )
                     ),
+                    dbc.DropdownMenuItem(
+                        html.A(
+                            "UK Economic Indicators",
+                            href="/filter?tags=UK&tags=Economic",
+                        )
+                    ),
                 ],
                 nav=True,
                 in_navbar=True,
@@ -54,6 +60,14 @@ header = [
                             html.A(
                                 "US Financial Indicators",
                                 href="/filter?tags=US&tags=Financial",
+                            )
+                        ]
+                    ),
+                    dbc.DropdownMenuItem(
+                        [
+                            html.A(
+                                "UK Financial Indicators",
+                                href="/filter?tags=UK,Financial",
                             )
                         ]
                     ),
@@ -352,6 +366,8 @@ class Index(BootstrapApp):
             "Australian Underemployment",
             "US GDP Growth",
             "US Unemployment",
+            "UK Inflation (RPI)",
+            "UK Unemployment",
         ]
 
         def layout_func():
@@ -361,7 +377,7 @@ class Index(BootstrapApp):
             for item_title in showcase_item_titles:
 
                 series_data = get_forecast_data(item_title)
-                url_title = urlencode( { "title": item_title } )
+                url_title = urlencode({"title": item_title})
                 thumbnail_figure = get_thumbnail_figure(series_data)
                 showcase_list.append(
                     dbc.Col(
@@ -775,7 +791,9 @@ class Stats(BootstrapApp):
 
             # Apply URLS to index
             for row in table.children[1].children:
-                state = urlencode({"methods": [row.children[0].children]}, doseq=True)
+                state = urlencode(
+                    {"methods": [row.children[0].children]}, doseq=True
+                )
                 row.children[0].children = html.A(
                     row.children[0].children, href=f"/filter/?{state}"
                 )
@@ -933,7 +951,6 @@ class Filter(BootstrapApp):
 
         component_ids = ["name", "tags", "methods"]
 
-
         @self.callback(
             Output("filter_panel", "children"), [Input("url", "href")]
         )
@@ -958,7 +975,6 @@ class Filter(BootstrapApp):
             all_methods = stats["models_used"]
 
             return filter_panel_children(parse_result, all_tags, all_methods)
-
 
         @self.callback(
             Output("url", "search"),
@@ -1015,7 +1031,7 @@ class Filter(BootstrapApp):
 
                 for item_title in unique_series_titles:
                     series_data = forecast_series_dicts[item_title]
-                    url_title = urlencode( { "title": item_title } )
+                    url_title = urlencode({"title": item_title})
                     thumbnail_figure = get_thumbnail_figure(series_data)
 
                     results_list.append(

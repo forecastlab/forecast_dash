@@ -58,5 +58,25 @@
       "US",
       "Economic"
     ]
-  }  
+  },
+  {
+    "title": "UK Inflation (RPI)",
+    "source": "Ons",
+    "url": "https://api.ons.gov.uk/timeseries/czbh/dataset/mm23/data",
+    "frequency": "MS",
+    "tags": [
+      "UK",
+      "Economic"
+    ]
+  },
+  {
+    "title": "UK Unemployment",
+    "source": "Ons",
+    "url": "https://api.ons.gov.uk/timeseries/mgsx/dataset/lms/data",
+    "frequency": "MS",
+    "tags": [
+      "UK",
+      "Economic"
+    ]
+  }
 ]

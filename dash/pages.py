@@ -376,7 +376,12 @@ class Index(BootstrapApp):
 
             for item_title in showcase_item_titles:
 
-                series_data = get_forecast_data(item_title)
+                # If data not present for any reason skip this
+                try:
+                    series_data = get_forecast_data(item_title)
+                except:
+                    continue
+
                 url_title = urlencode({"title": item_title})
                 thumbnail_figure = get_thumbnail_figure(series_data)
                 showcase_list.append(

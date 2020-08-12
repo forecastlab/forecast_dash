@@ -20,18 +20,18 @@ RUN chmod 777 /usr/local/lib/python3.7/site-packages
 # Create the log file to be able to run tail
 RUN touch /var/log/cron.log
 
-# Install Python Libraries
-ENV PYTHONUNBUFFERED 1
-COPY ./requirements.txt ./
-RUN pip install -r requirements.txt
-RUN rm requirements.txt
-
-# Install R
+# Install R - must be present for rpy2
 RUN apt-get -y install libopenblas-base r-base
 
 COPY ./requirements.R ./
 RUN Rscript requirements.R
 RUN rm requirements.R
+
+# Install Python Libraries
+ENV PYTHONUNBUFFERED 1
+COPY ./requirements.txt ./
+RUN pip install -r requirements.txt
+RUN rm requirements.txt
 
 # Run the command on container startup
 CMD ["cron", "-f"]

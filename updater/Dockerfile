@@ -21,14 +21,16 @@ RUN chmod 777 /usr/local/lib/python3.7/site-packages
 RUN touch /var/log/cron.log
 
 # Add unstable as a source to get access to R binaries
-RUN echo "deb http://deb.debian.org/debian unstable main contrib non-free" > /etc/apt/sources.list && apt-get update
+RUN echo "deb http://deb.debian.org/debian testing main contrib non-free" > /etc/apt/sources.list && apt-get update
 
 # Install R - must be present for rpy2
-RUN apt-get -y -t unstable install gcc-8-base libopenblas-base r-base
+RUN apt-get -y -t testing install gcc-8-base
+RUN apt-get -y -t testing install libopenblas-base
+RUN apt-get -y -t testing install r-base
 
 # Install binary R packages
 COPY ./requirements-bin.txt .
-RUN cat requirements-bin.txt | xargs apt-get install -y -qq
+RUN cat requirements-bin.txt | xargs apt-get -y -t testing install
 
 # Install remaining R packages from source
 COPY ./requirements.R ./

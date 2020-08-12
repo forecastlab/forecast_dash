@@ -4,5 +4,5 @@ ipak <- function(pkg){
         install.packages(new.pkg, dependencies = TRUE)
 }
 
-packages <- c("forecast")
+packages <- c()
 ipak(packages)

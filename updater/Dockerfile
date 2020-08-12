@@ -20,12 +20,19 @@ RUN chmod 777 /usr/local/lib/python3.7/site-packages
 # Create the log file to be able to run tail
 RUN touch /var/log/cron.log
 
-# Install R - must be present for rpy2
-RUN apt-get -y install libopenblas-base r-base
+# Add unstable as a source to get access to R binaries
+RUN echo "deb http://deb.debian.org/debian unstable main contrib non-free" > /etc/apt/sources.list && apt-get update
 
+# Install R - must be present for rpy2
+RUN apt-get -y -t unstable install gcc-8-base libopenblas-base r-base
+
+# Install binary R packages
+COPY ./requirements-bin.txt .
+RUN cat requirements-bin.txt | xargs apt-get install -y -qq
+
+# Install remaining R packages from source
 COPY ./requirements.R ./
 RUN Rscript requirements.R
-RUN rm requirements.R
 
 # Install Python Libraries
 ENV PYTHONUNBUFFERED 1

@@ -15,7 +15,6 @@ services:
     build:
       context: dash
       dockerfile: ./Dockerfile
-    command: gunicorn -b 0.0.0.0:80 app:server
     expose:
       - 80
     volumes:

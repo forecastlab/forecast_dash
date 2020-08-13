@@ -49,7 +49,7 @@ class NNModel(ForecastModel, ABC):
         super().__init__(h, level)
 
         # Import the Python source ??
-        self.forecast_lib = import(type(self).forecast_lib)
+        self.forecast_lib = __import__(type(self).forecast_lib)
         self.forecast_func = getattr(
                 self.forecast_lib, type(self).forecast_model_name
             )
@@ -100,7 +100,7 @@ class RNN(NNModel):
 
     forecast_lib = "NNBenchmarks.py"
 
-    forecast_model_name = "rnn_bench"
+    NN_model_name = "rnn_bench"
 
 
 class RModel(ForecastModel, ABC):

@@ -131,7 +131,6 @@ class About(BootstrapApp):
                                 )
                             ]
                         ),
-
                         dbc.Row(
                             [
                                 dbc.Col(

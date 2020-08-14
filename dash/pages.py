@@ -332,10 +332,13 @@ class Series(BootstrapApp):
                                 dbc.Col(
                                     [
                                         dbc.FormGroup(
-                                            dcc.Dropdown(
-                                                id="model_selector",
-                                                clearable=False,
-                                            ),
+                                            [
+                                                dbc.Label("Forecast Method"),
+                                                dcc.Dropdown(
+                                                    id="model_selector",
+                                                    clearable=False,
+                                                ),
+                                            ]
                                         ),
                                         dcc.Loading(
                                             html.Div(id="meta_data_list")
@@ -346,29 +349,31 @@ class Series(BootstrapApp):
                                 dbc.Col(
                                     [
                                         dbc.FormGroup(
-                                            dcc.Dropdown(
-                                                options=[
-                                                    {
-                                                        "label": "Forecast",
-                                                        "value": "Forecast",
-                                                    },
-                                                    {
-                                                        "label": "50% CI",
-                                                        "value": "CI_50",
-                                                    },
-                                                    {
-                                                        "label": "75% CI",
-                                                        "value": "CI_75",
-                                                    },
-                                                    {
-                                                        "label": "95% CI",
-                                                        "value": "CI_95",
-                                                    },
-                                                ],
-                                                value="Forecast",
-                                                clearable=False,
-                                                id="forecast_table_selector",
-                                            ),
+                                            [
+                                                dcc.Dropdown(
+                                                    options=[
+                                                        {
+                                                            "label": "Forecast",
+                                                            "value": "Forecast",
+                                                        },
+                                                        {
+                                                            "label": "50% CI",
+                                                            "value": "CI_50",
+                                                        },
+                                                        {
+                                                            "label": "75% CI",
+                                                            "value": "CI_75",
+                                                        },
+                                                        {
+                                                            "label": "95% CI",
+                                                            "value": "CI_95",
+                                                        },
+                                                    ],
+                                                    value="Forecast",
+                                                    clearable=False,
+                                                    id="forecast_table_selector",
+                                                ),
+                                            ]
                                         ),
                                         dcc.Loading(
                                             html.Div(id="forecast_table")
@@ -458,22 +463,19 @@ class Series(BootstrapApp):
         def update_model_selector(series_data_dict):
 
             best_model_name = select_best_model(series_data_dict)
-            model_select_options = [
-                {
-                    "label": f"Best Model - {best_model_name}",
-                    "value": best_model_name,
-                }
-            ]
 
             stats = get_forecast_data("statistics")
-            all_methods = stats["models_used"]
+            all_methods = sorted(stats["models_used"])
 
-            model_select_options.extend(
-                [
-                    {"label": model_name, "value": model_name}
-                    for model_name in all_methods
-                ]
-            )
+            all_methods_dict = dict(zip(all_methods, all_methods))
+
+            all_methods_dict[
+                best_model_name
+            ] = f"{best_model_name} - Best Model"
+
+            model_select_options = [
+                {"label": v, "value": k} for k, v in all_methods_dict.items()
+            ]
 
             return model_select_options, best_model_name
 

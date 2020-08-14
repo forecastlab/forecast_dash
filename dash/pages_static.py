@@ -123,6 +123,18 @@ class About(BootstrapApp):
                         dbc.Row(
                             [
                                 dbc.Col(
+                                    [html.H2("Code Contributors")]
+                                    + parse_people(
+                                        "static_files/contributors.json"
+                                    ),
+                                    lg=12,
+                                )
+                            ]
+                        ),
+
+                        dbc.Row(
+                            [
+                                dbc.Col(
                                     [html.H2("Research Group Leaders")]
                                     + parse_people(
                                         "static_files/research_team.json"

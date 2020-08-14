@@ -75,10 +75,7 @@ class About(BootstrapApp):
                             [
                                 dbc.Col(
                                     [
-                                        html.H2("Members"),
-                                        html.P(
-                                            "The Business Forecast Lab was established in ...."
-                                        ),
+                                        html.H2("Research Group Leaders"),
                                         html.H4(
                                             "Andrey Vasnev", className="mt-3"
                                         ),

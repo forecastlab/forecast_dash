@@ -2,7 +2,7 @@
 
 # USYD Forecasting Lab
 
-Developed by Stephen Tierney
+This is the repository for the [USYD Business Forecast Lab](https://business-forecast-lab.com).
 
 ## Licensing
 

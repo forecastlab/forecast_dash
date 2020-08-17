@@ -29,7 +29,7 @@ class DataSource(ABC):
         print("  -", hashsum)       
         
         data = {
-            "sha256": hashsum,
+            "hashsum": hashsum,
             "series_df": series_df,
             "downloaded_at": datetime.datetime.now(),
         }

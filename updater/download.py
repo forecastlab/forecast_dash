@@ -24,10 +24,10 @@ class DataSource(ABC):
     def fetch(self):
         print(self.title)
         series_df = self.download()
-        
+
         hashsum = sha256(series_df.to_csv().encode()).hexdigest()
-        print("  -", hashsum)       
-        
+        print("  -", hashsum)
+
         data = {
             "hashsum": hashsum,
             "series_df": series_df,

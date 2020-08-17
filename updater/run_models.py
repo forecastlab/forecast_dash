@@ -2,6 +2,7 @@ import argparse
 import datetime
 import json
 import pickle
+import os.path
 
 import numpy as np
 import pandas as pd
@@ -30,11 +31,11 @@ model_class_list = [
     RNaive,
     # RAutoARIMA,  # RAutoARIMA is very slow!
     RSimple,
-    RHolt,
-    RDamped,
+    # RHolt,
+    # RDamped,
     RTheta,
-    RNaive2,
-    RComb,
+    # RNaive2,
+    # RComb,
 ]
 
 
@@ -136,14 +137,36 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
 
         for data_source_dict in data_sources_list:
 
-            print(data_source_dict["title"])
+            data_source_title = data_source_dict["title"]
+            print(data_source_title)
 
             # Read local pickle that we created earlier
-            f = open(
-                f"{download_dir_path}/{data_source_dict['title']}.pkl", "rb"
-            )
+            f = open(f"{download_dir_path}/{data_source_title}.pkl", "rb")
             downloaded_dict = pickle.load(f)
             f.close()
+
+            download_hashsum = downloaded_dict["hashsum"]
+            # Debug: modify the download_hashsum (as if data had changed)
+            # to force re-calculation of all forecasts.
+            #download_hashsum = "X" + download_hashsum[1:]
+
+            print("  - download:", download_hashsum)
+
+            cache_hashsum = "Not found"
+            valid_cache = False
+
+            if os.path.isfile(f"{forecast_dir_path}/{data_source_title}.pkl"):
+                f = open(f"{forecast_dir_path}/{data_source_title}.pkl", "rb")
+                cache_dict = pickle.load(f)
+                f.close()
+
+                if "hashsum" in cache_dict["downloaded_dict"]:
+                    cache_hashsum = cache_dict["downloaded_dict"]["hashsum"]
+
+                # Short-circuit forecasting if hashsums match
+                valid_cache = cache_hashsum == download_hashsum
+
+            print("  - cache   :", cache_hashsum)
 
             series_df = downloaded_dict["series_df"]
 
@@ -157,18 +180,25 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
             y = series_df["value"]
 
             all_forecasts = {}
+            forecasted_at = datetime.datetime.now()
 
             # Train a whole bunch-o models on the training set
             # and evaluate them on the validation set
             for model_class in model_class_list:
 
-                print("-", model_class.name)
-                forecasted_at = datetime.datetime.now()
+                model_name = model_class.name
+                cached_forecasts = cache_dict["all_forecasts"]
+                if valid_cache and model_name in cached_forecasts:
+                    all_forecasts[model_name] = cached_forecasts[model_name]
+                    print("  - Re-using   :", model_name)
+                    continue
+
+                print("  - Calculating:", model_name)
+
                 model = model_class(**init_params)
                 cv_score = cross_val_score(model, y, cv, mean_squared_error)
 
                 model.fit(y)
-                model_name = model.name
                 model_description = model.description()
 
                 # Generate final forecast using best model
@@ -200,9 +230,7 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                 "all_forecasts": all_forecasts,
             }
 
-            f = open(
-                f"{forecast_dir_path}/{data_source_dict['title']}.pkl", "wb"
-            )
+            f = open(f"{forecast_dir_path}/{data_source_title}.pkl", "wb")
             pickle.dump(data, f)
             f.close()
 

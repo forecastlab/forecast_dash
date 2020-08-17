@@ -2,6 +2,7 @@ import argparse
 import datetime
 import json
 import pickle
+import os.path
 
 import numpy as np
 import pandas as pd
@@ -28,7 +29,7 @@ level = [50, 75, 95]
 
 model_class_list = [
     RNaive,
-    # RAutoARIMA,  # RAutoARIMA is very slow!
+    RAutoARIMA,  # RAutoARIMA is very slow!
     RSimple,
     RHolt,
     RDamped,
@@ -129,6 +130,35 @@ def cross_val_score(model, y, cv, scorer, fit_params={}):
     return np.mean(errors)
 
 
+# Short-circuit forecasting if hashsums match
+def check_cache(download_pickle, cache_pickle):
+
+    # Read local pickle that we created earlier
+    f = open(download_pickle, "rb")
+    downloaded_dict = pickle.load(f)
+    f.close()
+
+    download_hashsum = downloaded_dict["hashsum"]
+
+    # Debug: modify the download_hashsum (as if data had changed)
+    # to force re-calculation of all forecasts.
+    # download_hashsum = "X" + download_hashsum[1:]
+
+    # print("  - download:", download_hashsum)
+
+    if os.path.isfile(cache_pickle):
+        f = open(cache_pickle, "rb")
+        cache_dict = pickle.load(f)
+        f.close()
+
+        if "hashsum" in cache_dict["downloaded_dict"]:
+            cache_hashsum = cache_dict["downloaded_dict"]["hashsum"]
+            if cache_hashsum == download_hashsum:
+                return downloaded_dict, cache_dict
+
+    return downloaded_dict, None
+
+
 def run_models(sources_path, download_dir_path, forecast_dir_path):
     with open(sources_path) as data_sources_json_file:
 
@@ -138,13 +168,12 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
 
             print(data_source_dict["title"])
 
-            # Read local pickle that we created earlier
-            f = open(
-                f"{download_dir_path}/{data_source_dict['title']}.pkl", "rb"
+            downloaded_dict, cache_dict = check_cache(
+                f"{download_dir_path}/{data_source_dict['title']}.pkl",
+                f"{forecast_dir_path}/{data_source_dict['title']}.pkl",
             )
-            downloaded_dict = pickle.load(f)
-            f.close()
 
+            # Read local pickle that we created earlier
             series_df = downloaded_dict["series_df"]
 
             # Hack to align to the end of the quarter
@@ -157,18 +186,25 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
             y = series_df["value"]
 
             all_forecasts = {}
+            forecasted_at = datetime.datetime.now()
 
             # Train a whole bunch-o models on the training set
             # and evaluate them on the validation set
             for model_class in model_class_list:
 
-                print("-", model_class.name)
-                forecasted_at = datetime.datetime.now()
+                model_name = model_class.name
+                if cache_dict and model_name in cache_dict["all_forecasts"]:
+                    cached_forecasts = cache_dict["all_forecasts"]
+                    all_forecasts[model_name] = cached_forecasts[model_name]
+                    print("  - Re-using   :", model_name)
+                    continue
+
+                print("  - Calculating:", model_name)
+
                 model = model_class(**init_params)
                 cv_score = cross_val_score(model, y, cv, mean_squared_error)
 
                 model.fit(y)
-                model_name = model.name
                 model_description = model.description()
 
                 # Generate final forecast using best model

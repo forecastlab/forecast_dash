@@ -10,6 +10,7 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 import pickle
 import datetime
+from hashlib import sha256
 
 
 class DataSource(ABC):
@@ -22,9 +23,13 @@ class DataSource(ABC):
 
     def fetch(self):
         print(self.title)
-
         series_df = self.download()
+
+        hashsum = sha256(series_df.to_csv().encode()).hexdigest()
+        # print("  -", hashsum)
+
         data = {
+            "hashsum": hashsum,
             "series_df": series_df,
             "downloaded_at": datetime.datetime.now(),
         }

@@ -31,11 +31,11 @@ model_class_list = [
     RNaive,
     # RAutoARIMA,  # RAutoARIMA is very slow!
     RSimple,
-    # RHolt,
-    # RDamped,
+    RHolt,
+    RDamped,
     RTheta,
-    # RNaive2,
-    # RComb,
+    RNaive2,
+    RComb,
 ]
 
 
@@ -129,6 +129,34 @@ def cross_val_score(model, y, cv, scorer, fit_params={}):
 
     return np.mean(errors)
 
+# Short-circuit forecasting if hashsums match
+def check_cache(download_pickle, cache_pickle):
+
+    # Read local pickle that we created earlier
+    f = open(download_pickle, "rb")
+    downloaded_dict = pickle.load(f)
+    f.close()
+
+    download_hashsum = downloaded_dict["hashsum"]
+    
+    # Debug: modify the download_hashsum (as if data had changed)
+    # to force re-calculation of all forecasts.
+    #download_hashsum = "X" + download_hashsum[1:]
+
+    #print("  - download:", download_hashsum)
+
+    if os.path.isfile(cache_pickle):
+        f = open(cache_pickle, "rb")
+        cache_dict = pickle.load(f)
+        f.close()
+   
+        if "hashsum" in cache_dict["downloaded_dict"]:
+            cache_hashsum = cache_dict["downloaded_dict"]["hashsum"]
+            if cache_hashsum == download_hashsum:    
+                return downloaded_dict, cache_dict
+
+    return downloaded_dict, None
+
 
 def run_models(sources_path, download_dir_path, forecast_dir_path):
     with open(sources_path) as data_sources_json_file:
@@ -137,37 +165,14 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
 
         for data_source_dict in data_sources_list:
 
-            data_source_title = data_source_dict["title"]
-            print(data_source_title)
+            print(data_source_dict["title"])
+
+            downloaded_dict, cache_dict = check_cache(
+                f"{download_dir_path}/{data_source_dict['title']}.pkl",
+                f"{forecast_dir_path}/{data_source_dict['title']}.pkl"
+            )
 
             # Read local pickle that we created earlier
-            f = open(f"{download_dir_path}/{data_source_title}.pkl", "rb")
-            downloaded_dict = pickle.load(f)
-            f.close()
-
-            download_hashsum = downloaded_dict["hashsum"]
-            # Debug: modify the download_hashsum (as if data had changed)
-            # to force re-calculation of all forecasts.
-            #download_hashsum = "X" + download_hashsum[1:]
-
-            print("  - download:", download_hashsum)
-
-            cache_hashsum = "Not found"
-            valid_cache = False
-
-            if os.path.isfile(f"{forecast_dir_path}/{data_source_title}.pkl"):
-                f = open(f"{forecast_dir_path}/{data_source_title}.pkl", "rb")
-                cache_dict = pickle.load(f)
-                f.close()
-
-                if "hashsum" in cache_dict["downloaded_dict"]:
-                    cache_hashsum = cache_dict["downloaded_dict"]["hashsum"]
-
-                # Short-circuit forecasting if hashsums match
-                valid_cache = cache_hashsum == download_hashsum
-
-            print("  - cache   :", cache_hashsum)
-
             series_df = downloaded_dict["series_df"]
 
             # Hack to align to the end of the quarter
@@ -187,8 +192,8 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
             for model_class in model_class_list:
 
                 model_name = model_class.name
-                cached_forecasts = cache_dict["all_forecasts"]
-                if valid_cache and model_name in cached_forecasts:
+                if cache_dict and model_name in cache_dict["all_forecasts"]:
+                    cached_forecasts = cache_dict["all_forecasts"]
                     all_forecasts[model_name] = cached_forecasts[model_name]
                     print("  - Re-using   :", model_name)
                     continue
@@ -230,7 +235,9 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                 "all_forecasts": all_forecasts,
             }
 
-            f = open(f"{forecast_dir_path}/{data_source_title}.pkl", "wb")
+            f = open(
+                f"{forecast_dir_path}/{data_source_dict['title']}.pkl", "wb"
+            )
             pickle.dump(data, f)
             f.close()
 

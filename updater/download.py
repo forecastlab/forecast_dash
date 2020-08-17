@@ -26,7 +26,7 @@ class DataSource(ABC):
         series_df = self.download()
 
         hashsum = sha256(series_df.to_csv().encode()).hexdigest()
-        print("  -", hashsum)
+        #print("  -", hashsum)
 
         data = {
             "hashsum": hashsum,

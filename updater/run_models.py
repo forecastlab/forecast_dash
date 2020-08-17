@@ -129,6 +129,7 @@ def cross_val_score(model, y, cv, scorer, fit_params={}):
 
     return np.mean(errors)
 
+
 # Short-circuit forecasting if hashsums match
 def check_cache(download_pickle, cache_pickle):
 
@@ -138,21 +139,21 @@ def check_cache(download_pickle, cache_pickle):
     f.close()
 
     download_hashsum = downloaded_dict["hashsum"]
-    
+
     # Debug: modify the download_hashsum (as if data had changed)
     # to force re-calculation of all forecasts.
-    #download_hashsum = "X" + download_hashsum[1:]
+    # download_hashsum = "X" + download_hashsum[1:]
 
-    #print("  - download:", download_hashsum)
+    # print("  - download:", download_hashsum)
 
     if os.path.isfile(cache_pickle):
         f = open(cache_pickle, "rb")
         cache_dict = pickle.load(f)
         f.close()
-   
+
         if "hashsum" in cache_dict["downloaded_dict"]:
             cache_hashsum = cache_dict["downloaded_dict"]["hashsum"]
-            if cache_hashsum == download_hashsum:    
+            if cache_hashsum == download_hashsum:
                 return downloaded_dict, cache_dict
 
     return downloaded_dict, None
@@ -169,7 +170,7 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
 
             downloaded_dict, cache_dict = check_cache(
                 f"{download_dir_path}/{data_source_dict['title']}.pkl",
-                f"{forecast_dir_path}/{data_source_dict['title']}.pkl"
+                f"{forecast_dir_path}/{data_source_dict['title']}.pkl",
             )
 
             # Read local pickle that we created earlier

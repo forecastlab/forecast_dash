@@ -1,3 +1,13 @@
+# -*- mode:sh -*-
+# Dockerfile structure: put things at the top that won't change often.
+#
+# "Docker doesn't rebuild layers it's already built, and it caches the
+# Dockerfile line by line. Try changing one character of a Dockerfile you've
+# already built, and then rebuild. You'll notice that each step above that line
+# will be recognized as already been built, but the line you changed (and each
+# line following) will be rebuilt."
+#   (from https://hackernoon.com/tips-to-reduce-docker-image-sizes-876095da3b34)
+#
 FROM python:3
 
 # Install cron and dependencies
@@ -22,12 +32,15 @@ RUN touch /var/log/cron.log
 # Add unstable as a source to get access to R binaries
 RUN echo "deb http://deb.debian.org/debian testing main contrib non-free" > /etc/apt/sources.list && apt-get update
 
+# --no-install-recommends reduces the install footprint substantially
+ENV APTOPTS "-y -t testing --no-install-recommends"
+
 # Install R - must be present for rpy2
-RUN apt-get -y -t testing install gcc-8-base libopenblas-base r-base
+RUN apt-get $APTOPTS install gcc-8-base libopenblas-base r-base r-cran-forecast
 
 # Install binary R packages
 COPY ./requirements-bin.txt .
-RUN cat requirements-bin.txt | xargs apt-get -y -t testing install
+RUN cat requirements-bin.txt | xargs apt-get $APTOPTS install
 
 # Install remaining R packages from source
 COPY ./requirements.R ./

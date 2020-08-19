@@ -35,10 +35,7 @@ RUN echo "deb http://deb.debian.org/debian testing main contrib non-free" > /etc
 # --no-install-recommends reduces the install footprint substantially
 ENV APTOPTS "-y -t testing --no-install-recommends"
 
-# Install R - must be present for rpy2
-RUN apt-get $APTOPTS install gcc-8-base libopenblas-base r-base r-cran-forecast
-
-# Install binary R packages
+# Install R and dependencies
 COPY ./requirements-bin.txt .
 RUN cat requirements-bin.txt | xargs apt-get $APTOPTS install
 

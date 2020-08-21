@@ -935,7 +935,6 @@ class Filter(BootstrapApp):
         component_ids = ["name", "tags", "methods"]
         listlike_component_ids = ["tags", "methods"]
 
-
         @self.callback(
             Output("filter_panel", "children"), [Input("url", "href")]
         )
@@ -966,15 +965,12 @@ class Filter(BootstrapApp):
 
             return filter_panel_children(parse_result, all_tags, all_methods)
 
-
-
         @self.callback(
             Output("url", "search"),
             inputs=[Input(i, "value") for i in component_ids],
         )
         @dash_kwarg([Input(i, "value") for i in component_ids])
         def update_url_state(**kwargs):
-
 
             state = urlencode(kwargs)
 

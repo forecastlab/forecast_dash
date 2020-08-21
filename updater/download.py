@@ -47,7 +47,7 @@ class AusMacroData(DataSource):
             parse_dates=["date"],
             index_col="date",
         )
-        #print(df)
+        # print(df)
         return df
 
 
@@ -85,7 +85,7 @@ class Fred(DataSource):
 
         df = pd.DataFrame(values, index=dates, columns=["value"])
         df.index.name = "date"
-        #print(df)
+        # print(df)
         return df
 
 

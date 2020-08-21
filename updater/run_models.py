@@ -9,7 +9,17 @@ from rpy2.robjects import pandas2ri
 from sklearn.metrics import mean_squared_error
 from sklearn.utils.validation import indexable, _num_samples
 
-from models import RNaive, RNaive2, RAutoARIMA, RSimple, RHolt, RDamped, RTheta, RComb
+from models import (
+    RNaive,
+    RNaive2,
+    RAutoARIMA,
+    RSimple,
+    RHolt,
+    RDamped,
+    RTheta,
+    RComb,
+    RNNModel,
+)
 
 pandas2ri.activate()
 
@@ -18,14 +28,15 @@ forecast_len = 8
 level = [50, 75, 95]
 
 model_class_list = [
-    RNaive,
-    RAutoARIMA,  # RAutoARIMA is very slow!
-    RSimple,
-    RHolt,
-    RDamped,
-    RTheta,
-    RNaive2,
-    RComb,
+    # RNaive,
+    # RAutoARIMA,  # RAutoARIMA is very slow!
+    # RSimple,
+    # RHolt,
+    # RDamped,
+    # RTheta,
+    # RNaive2,
+    # RComb,
+    RNNModel
 ]
 
 

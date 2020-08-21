@@ -3,3 +3,5 @@ rpy2
 scikit-learn
 statsmodels
 tzlocal
+tensorflow
+Keras

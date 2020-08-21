@@ -1,4 +1,5 @@
 pandas
+requests
 rpy2
 scikit-learn
 statsmodels

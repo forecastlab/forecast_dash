@@ -25,6 +25,22 @@ to install new R packages and
     python update.py
 to run the models.
 
+# Build and run docker images
+Takes >3GB disk and 6m15s on my machine:
+
+    rm -rf /var/lib/docker
+    systemctl restart docker
+    docker network create web
+    docker-compose down
+    docker-compose up -d
+
+Use
+    docker container ls
+to see running containers by name, and
+    docker logs <NAME>
+to see the output of a running docker instance.
+
+
 # Local build
 
 Before pushing commits you should locally build to run tests, check formatting

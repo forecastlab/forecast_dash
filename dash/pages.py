@@ -2,115 +2,18 @@ import ast
 import json
 import pickle
 import re
-from abc import ABC, abstractmethod
 from functools import wraps
-from urllib.parse import urlparse, parse_qsl, urlencode
+from urllib.parse import urlparse, parse_qs, urlencode
 
-import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 import numpy as np
 import pandas as pd
 import plotly.graph_objs as go
+from common import BootstrapApp, header, breadcrumb_layout
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
-
-header = [
-    dbc.NavbarSimple(
-        children=[
-            dbc.DropdownMenu(
-                children=[
-                    dbc.DropdownMenuItem(
-                        html.A(
-                            "Australian Economic Indicators",
-                            href="/filter?tags=Australia,Economic",
-                        )
-                    ),
-                    dbc.DropdownMenuItem(
-                        html.A(
-                            "US Economic Indicators",
-                            href="/filter?tags=US,Economic",
-                        )
-                    ),
-                ],
-                nav=True,
-                in_navbar=True,
-                label="Economic Forecasts",
-                disabled=False,
-            ),
-            dbc.DropdownMenu(
-                children=[
-                    dbc.DropdownMenuItem(
-                        [
-                            html.A(
-                                "Australian Financial Indicators",
-                                href="/filter?tags=Australia,Financial",
-                            )
-                        ]
-                    ),
-                    dbc.DropdownMenuItem(
-                        [
-                            html.A(
-                                "US Financial Indicators",
-                                href="/filter?tags=US,Financial",
-                            )
-                        ]
-                    ),
-                ],
-                nav=True,
-                in_navbar=True,
-                label="Financial Forecasts",
-            ),
-            dbc.NavItem(
-                dbc.NavLink("Filter", href="/filter", external_link=True)
-            ),
-            dbc.NavItem(
-                dbc.NavLink("Stats", href="/stats", external_link=True)
-            ),
-            dbc.NavItem(
-                dbc.NavLink(
-                    "Methodology", href="/methodology", external_link=True
-                )
-            ),
-            dbc.NavItem(
-                dbc.NavLink("About", href="/about", external_link=True)
-            ),
-        ],
-        brand="Forecast Lab",
-        brand_href="/",
-        brand_external_link=True,
-        color="dark",
-        dark=True,
-        expand="lg",
-    )
-]
-
-
-def breadcrumb_layout(crumbs):
-
-    return dbc.Nav(
-        [
-            html.Ol(
-                [
-                    html.Li(
-                        html.A(crumb[0], href=crumb[1]),
-                        className="breadcrumb-item",
-                    )
-                    for crumb in crumbs[:-1]
-                ]
-                + [
-                    html.Li(
-                        crumbs[-1][0],
-                        id="breadcrumb",
-                        className="breadcrumb-item active",
-                    )
-                ],
-                className="breadcrumb",
-            )
-        ],
-        navbar=True,
-    )
 
 
 def dash_kwarg(inputs):
@@ -128,9 +31,7 @@ def dash_kwarg(inputs):
 
 def parse_state(url):
     parse_result = urlparse(url)
-    params = parse_qsl(parse_result.query)
-    state = dict(params)
-    return state
+    return parse_qs(parse_result.query)
 
 
 def get_forecast_plot_data(series_df, forecast_df):
@@ -235,7 +136,7 @@ def get_thumbnail_figure(data_dict):
     data = get_forecast_plot_data(series_df, forecast_df)
     shapes = get_forecast_shapes(forecast_df)
 
-    title = data_dict["data_source_dict"]["title"] + " - " + model_name
+    title = data_dict["data_source_dict"]["title"]
     layout = go.Layout(
         title={"text": title, "xanchor": "auto"},
         height=480,
@@ -261,7 +162,7 @@ def get_series_figure(data_dict, model_name):
         - series_df.index[0].to_pydatetime()
     )
 
-    title = data_dict["data_source_dict"]["title"] + " - " + model_name
+    title = data_dict["data_source_dict"]["title"]
     layout = go.Layout(
         title=title,
         height=720,
@@ -323,25 +224,6 @@ def get_forecast_data(title):
     return data_dict
 
 
-class BootstrapApp(dash.Dash, ABC):
-    def __init__(self, name, server, url_base_pathname):
-
-        external_stylesheets = [dbc.themes.BOOTSTRAP]
-
-        super().__init__(
-            name=name,
-            server=server,
-            url_base_pathname=url_base_pathname,
-            external_stylesheets=external_stylesheets,
-        )
-
-        self.setup()
-
-    @abstractmethod
-    def setup(self):
-        pass
-
-
 class Index(BootstrapApp):
     def setup(self):
 
@@ -354,6 +236,8 @@ class Index(BootstrapApp):
             "Australian Underemployment",
             "US GDP Growth",
             "US Unemployment",
+            "UK Inflation (RPI)",
+            "UK Unemployment",
         ]
 
         def layout_func():
@@ -362,7 +246,13 @@ class Index(BootstrapApp):
 
             for item_title in showcase_item_titles:
 
-                series_data = get_forecast_data(item_title)
+                # If data not present for any reason skip this
+                try:
+                    series_data = get_forecast_data(item_title)
+                except FileNotFoundError:
+                    continue
+
+                url_title = urlencode({"title": item_title})
                 thumbnail_figure = get_thumbnail_figure(series_data)
                 showcase_list.append(
                     dbc.Col(
@@ -375,7 +265,7 @@ class Index(BootstrapApp):
                                         config={"displayModeBar": False},
                                     )
                                 ],
-                                href=f"/series?title={item_title}",
+                                href=f"/series?{url_title}",
                             )
                         ],
                         lg=6,
@@ -442,10 +332,13 @@ class Series(BootstrapApp):
                                 dbc.Col(
                                     [
                                         dbc.FormGroup(
-                                            dcc.Dropdown(
-                                                id="model_selector",
-                                                clearable=False,
-                                            ),
+                                            [
+                                                dbc.Label("Forecast Method"),
+                                                dcc.Dropdown(
+                                                    id="model_selector",
+                                                    clearable=False,
+                                                ),
+                                            ]
                                         ),
                                         dcc.Loading(
                                             html.Div(id="meta_data_list")
@@ -456,29 +349,31 @@ class Series(BootstrapApp):
                                 dbc.Col(
                                     [
                                         dbc.FormGroup(
-                                            dcc.Dropdown(
-                                                options=[
-                                                    {
-                                                        "label": "Forecast",
-                                                        "value": "Forecast",
-                                                    },
-                                                    {
-                                                        "label": "50% CI",
-                                                        "value": "CI_50",
-                                                    },
-                                                    {
-                                                        "label": "75% CI",
-                                                        "value": "CI_75",
-                                                    },
-                                                    {
-                                                        "label": "95% CI",
-                                                        "value": "CI_95",
-                                                    },
-                                                ],
-                                                value="Forecast",
-                                                clearable=False,
-                                                id="forecast_table_selector",
-                                            ),
+                                            [
+                                                dcc.Dropdown(
+                                                    options=[
+                                                        {
+                                                            "label": "Forecast",
+                                                            "value": "Forecast",
+                                                        },
+                                                        {
+                                                            "label": "50% CI",
+                                                            "value": "CI_50",
+                                                        },
+                                                        {
+                                                            "label": "75% CI",
+                                                            "value": "CI_75",
+                                                        },
+                                                        {
+                                                            "label": "95% CI",
+                                                            "value": "CI_95",
+                                                        },
+                                                    ],
+                                                    value="Forecast",
+                                                    clearable=False,
+                                                    id="forecast_table_selector",
+                                                ),
+                                            ]
                                         ),
                                         dcc.Loading(
                                             html.Div(id="forecast_table")
@@ -503,7 +398,7 @@ class Series(BootstrapApp):
                     parse_result = parse_state(kwargs_dict[location_id])
 
                     if "title" in parse_result:
-                        title = parse_result["title"]
+                        title = parse_result["title"][0]
                         series_data_dict = get_forecast_data(title)
 
                         del kwargs_dict[location_id]
@@ -568,22 +463,19 @@ class Series(BootstrapApp):
         def update_model_selector(series_data_dict):
 
             best_model_name = select_best_model(series_data_dict)
-            model_select_options = [
-                {
-                    "label": f"Best Model - {best_model_name}",
-                    "value": best_model_name,
-                }
-            ]
 
             stats = get_forecast_data("statistics")
-            all_methods = stats["models_used"]
+            all_methods = sorted(stats["models_used"])
 
-            model_select_options.extend(
-                [
-                    {"label": model_name, "value": model_name}
-                    for model_name in all_methods
-                ]
-            )
+            all_methods_dict = dict(zip(all_methods, all_methods))
+
+            all_methods_dict[
+                best_model_name
+            ] = f"{best_model_name} - Best Model"
+
+            model_select_options = [
+                {"label": v, "value": k} for k, v in all_methods_dict.items()
+            ]
 
             return model_select_options, best_model_name
 
@@ -744,9 +636,12 @@ class Stats(BootstrapApp):
             forecast_series_dicts = {}
 
             for series_dict in source_series_list:
-                forecast_series_dicts[
-                    series_dict["title"]
-                ] = get_forecast_data(series_dict["title"])
+                try:
+                    forecast_series_dicts[
+                        series_dict["title"]
+                    ] = get_forecast_data(series_dict["title"])
+                except FileNotFoundError:
+                    continue
 
             chosen_methods = []
             for series_title, forecast_data in forecast_series_dicts.items():
@@ -776,7 +671,9 @@ class Stats(BootstrapApp):
 
             # Apply URLS to index
             for row in table.children[1].children:
-                state = urlencode({"methods": [row.children[0].children]})
+                state = urlencode(
+                    {"methods": [row.children[0].children]}, doseq=True
+                )
                 row.children[0].children = html.A(
                     row.children[0].children, href=f"/filter/?{state}"
                 )
@@ -933,8 +830,6 @@ class Filter(BootstrapApp):
             return children
 
         component_ids = ["name", "tags", "methods"]
-        listlike_component_ids = ["tags", "methods"]
-
 
         @self.callback(
             Output("filter_panel", "children"), [Input("url", "href")]
@@ -942,11 +837,6 @@ class Filter(BootstrapApp):
         @location_ignore_null([Input("url", "href")], "url")
         def display_value(value):
             parse_result = parse_state(value)
-
-            # Convert comma seperated strings into a list of strings
-            for k in listlike_component_ids:
-                if k in parse_result and type(parse_result[k]) is str:
-                    parse_result[k] = parse_result[k].split(",")
 
             # Dynamically load tags
             data_sources_json_file = open("../shared_config/data_sources.json")
@@ -966,8 +856,6 @@ class Filter(BootstrapApp):
 
             return filter_panel_children(parse_result, all_tags, all_methods)
 
-
-
         @self.callback(
             Output("url", "search"),
             inputs=[Input(i, "value") for i in component_ids],
@@ -975,8 +863,7 @@ class Filter(BootstrapApp):
         @dash_kwarg([Input(i, "value") for i in component_ids])
         def update_url_state(**kwargs):
 
-
-            state = urlencode(kwargs)
+            state = urlencode(kwargs, doseq=True)
 
             return f"?{state}"
 
@@ -996,9 +883,12 @@ class Filter(BootstrapApp):
             forecast_series_dicts = {}
 
             for series_dict in source_series_list:
-                forecast_series_dicts[
-                    series_dict["title"]
-                ] = get_forecast_data(series_dict["title"])
+                try:
+                    forecast_series_dicts[
+                        series_dict["title"]
+                    ] = get_forecast_data(series_dict["title"])
+                except FileNotFoundError:
+                    continue
 
             filters = {
                 "name": match_names,
@@ -1024,6 +914,7 @@ class Filter(BootstrapApp):
 
                 for item_title in unique_series_titles:
                     series_data = forecast_series_dicts[item_title]
+                    url_title = urlencode({"title": item_title})
                     thumbnail_figure = get_thumbnail_figure(series_data)
 
                     results_list.append(
@@ -1037,7 +928,7 @@ class Filter(BootstrapApp):
                                             config={"displayModeBar": False},
                                         ),
                                     ],
-                                    href=f"/series?title={item_title}",
+                                    href=f"/series?{url_title}",
                                 ),
                                 html.Hr(),
                             ]
@@ -1054,209 +945,3 @@ class Filter(BootstrapApp):
                 results = [html.P("No results found")]
 
             return results
-
-
-class MarkdownApp(BootstrapApp):
-    @property
-    @classmethod
-    @abstractmethod
-    def markdown(cls):
-        return NotImplementedError
-
-    @property
-    @classmethod
-    @abstractmethod
-    def title(cls):
-        return NotImplementedError
-
-    def setup(self):
-        self.title = type(self).title
-
-        self.layout = html.Div(
-            header
-            + [
-                dcc.Location(id="url", refresh=False),
-                dbc.Container(
-                    [
-                        breadcrumb_layout(
-                            [("Home", "/"), (f"{self.title}", "")]
-                        ),
-                        dcc.Markdown(type(self).markdown),
-                    ]
-                ),
-            ]
-        )
-
-
-class Methodology(MarkdownApp):
-
-    title = "Methodology"
-
-    markdown = """
-# Methodology
-
-**This page is under construction.**
-
-It will contain the description of the models and other aspects of the
-methodology used to forecast the time series.
-
-While we are busy with this document, we recommend “Forecasting: Principles
-and Practice” textbook freely available at
-[otexts.com/fpp2/](https://otexts.com/fpp2/)
-    """
-
-
-class About(BootstrapApp):
-
-    title = "About"
-
-    def setup(self):
-
-        self.layout = html.Div(
-            header
-            + [
-                dcc.Location(id="url", refresh=False),
-                dbc.Container(
-                    [
-                        breadcrumb_layout(
-                            [("Home", "/"), (f"{self.title}", "")]
-                        ),
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    [
-                                        html.H2("Our Mission"),
-                                        html.Ol(
-                                            [
-                                                html.Li(
-                                                    "To make forecasting models accessible to everyone."
-                                                ),
-                                                html.Li(
-                                                    "To provide the latest financial and economic forecasts of the commonly used time series."
-                                                ),
-                                            ]
-                                        ),
-                                    ],
-                                    lg=12,
-                                )
-                            ]
-                        ),
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    [
-                                        html.H2("About"),
-                                        html.P(
-                                            "The Business Forecast Lab was established in ...."
-                                        ),
-                                    ],
-                                    lg=12,
-                                )
-                            ]
-                        ),
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    [
-                                        html.H2("Members"),
-                                        html.P(
-                                            "The Business Forecast Lab was established in ...."
-                                        ),
-                                        html.H4(
-                                            "Andrey Vasnev", className="mt-3"
-                                        ),
-                                        dbc.Row(
-                                            [
-                                                dbc.Col(
-                                                    [
-                                                        html.Img(
-                                                            src="https://business.sydney.edu.au/__data/assets/image/0006/170556/vasnev.png",
-                                                            height="200px",
-                                                        )
-                                                    ],
-                                                    lg=2,
-                                                ),
-                                                dbc.Col(
-                                                    [
-                                                        html.P(
-                                                            "Andrey Vasnev (Perm, 1976) graduated in Applied Mathematics from Moscow State University in 1998. In 2001 he completed his Master's degree in Economics in the New Economic School, Moscow. In 2006 he received Ph.D. degree in Economics from the Department of Econometrics and Operations Research at Tilburg University under the supervision of Jan R. Magnus. He worked as a credit risk analyst in ABN AMRO bank before joining the University of Sydney."
-                                                        ),
-                                                        html.A(
-                                                            "https://business.sydney.edu.au/staff/andrey.vasnev",
-                                                            href="https://business.sydney.edu.au/staff/andrey.vasnev",
-                                                        ),
-                                                    ],
-                                                    lg=9,
-                                                ),
-                                            ]
-                                        ),
-                                        html.H4(
-                                            "Richard Gerlach", className="mt-3"
-                                        ),
-                                        dbc.Row(
-                                            [
-                                                dbc.Col(
-                                                    [
-                                                        html.Img(
-                                                            src="https://business.sydney.edu.au/__data/assets/image/0003/170553/RichardGerlach.jpg",
-                                                            height="200px",
-                                                        )
-                                                    ],
-                                                    lg=2,
-                                                ),
-                                                dbc.Col(
-                                                    [
-                                                        html.P(
-                                                            "Richard Gerlach's research interests lie mainly in financial econometrics and time series. His work has concerned developing time series models for measuring, forecasting and managing risk in financial markets as well as computationally intensive Bayesian methods for inference, diagnosis, forecasting and model comparison for these models. Recent focus has been on nonlinear threshold heteroskedastic models for volatility, Value-at-Risk and Expected Shortfall forecasting. He has developed structural break and intervention detection tools for use in state space models; also has an interest in estimating logit models incorporating misclassification and variable selection. His applied work has involved forecasting risk levels during and after the Global Financial Crisis; assessing asymmetry in major international stock markets, in response to local and exogenous factors; co-integration analysis assessing the effect of the Asian financial crisis on long term relationships between international real estate investment markets; stock selection for financial investment using logit models; option pricing and hedging involving barriers; and factors influencing the 2004 Federal election."
-                                                        ),
-                                                        html.P(
-                                                            "His research papers have been published in Journal of the American Statistical Association, Journal of Business and Economic Statistics, Journal of Time Series Analysis and the International Journal of Forecasting. He has been an invited speaker and regular presenter at international conferences such as the International conference for Computational and Financial Econometrics, the International Symposium on Forecasting and the International Statistical Institute sessions."
-                                                        ),
-                                                        html.A(
-                                                            "https://business.sydney.edu.au/staff/richard.gerlach",
-                                                            href="https://business.sydney.edu.au/staff/richard.gerlach",
-                                                        ),
-                                                    ],
-                                                    lg=9,
-                                                ),
-                                            ]
-                                        ),
-                                        html.H4("Chao Wang", className="mt-3"),
-                                        dbc.Row(
-                                            [
-                                                dbc.Col(
-                                                    [
-                                                        html.Img(
-                                                            src="https://business.sydney.edu.au/__data/assets/image/0012/279678/wang.jpg",
-                                                            height="200px",
-                                                        )
-                                                    ],
-                                                    lg=2,
-                                                ),
-                                                dbc.Col(
-                                                    [
-                                                        html.P(
-                                                            "Dr Chao Wang received his PhD degree in Econometrics from The University of Sydney. He has two master degrees major in Machine Learning & Data Mining from Helsinki University of Technology and Mechatronic Engineering from Beijing Institute of Technology respectively."
-                                                        ),
-                                                        html.P(
-                                                            "Chao Wang’s main research interests are financial econometrics and time series modelling. He has developed a series of parametric and non-parametric volatility models incorporating intra-day and high frequency volatility measures (realized variance, realized range, etc) applied on the financial market risk forecasting, employing Bayesian adaptive Markov chain Monte Carlo estimation. His work has also considered different techniques, including scaling and sub-sampling, to deal with the micro-structure noisy of the high frequency volatility measures. Further, Chao’s research interests also include big data, machine learning and data mining, text mining, etc."
-                                                        ),
-                                                        html.A(
-                                                            "https://business.sydney.edu.au/staff/chao.wang",
-                                                            href="https://business.sydney.edu.au/staff/chao.wang",
-                                                        ),
-                                                    ],
-                                                    lg=9,
-                                                ),
-                                            ]
-                                        ),
-                                    ],
-                                    lg=12,
-                                )
-                            ]
-                        ),
-                    ],
-                    className="mb-5",
-                ),
-            ]
-        )

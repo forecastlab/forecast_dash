@@ -1,3 +1,0 @@
-PYTHONPATH=/usr/local/lib/python3.7/site-packages
-0 3 * * * root cd /updater && python3 update.py > /proc/1/fd/1 2>/proc/1/fd/2
-@reboot root cd /updater && python3 update.py > /proc/1/fd/1 2>/proc/1/fd/2

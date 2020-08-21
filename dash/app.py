@@ -1,6 +1,7 @@
 from flask import Flask
 from multipage import Route, MultiPageApp
-from pages import Index, Series, Filter, Stats, Methodology, About
+from pages import Index, Series, Filter, Stats
+from pages_static import Methodology, About
 
 
 class MyApp(MultiPageApp):

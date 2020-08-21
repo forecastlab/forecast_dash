@@ -1,3 +1,13 @@
+# -*- mode:sh -*-
+# Dockerfile structure: put things at the top that won't change often.
+#
+# "Docker doesn't rebuild layers it's already built, and it caches the
+# Dockerfile line by line. Try changing one character of a Dockerfile you've
+# already built, and then rebuild. You'll notice that each step above that line
+# will be recognized as already been built, but the line you changed (and each
+# line following) will be rebuilt."
+#   (from https://hackernoon.com/tips-to-reduce-docker-image-sizes-876095da3b34)
+#
 FROM python:3
 
 # Install cron and dependencies
@@ -9,29 +19,29 @@ RUN apt-get -y install tzdata &&\
     echo "Australia/Sydney" > /etc/timezone
 
 # Add crontab file in the cron directory
-ADD crontab /etc/cron.d/simple-cron
-WORKDIR /src
-COPY . /src
+ADD updater-cron /etc/cron.d/updater-cron
 
 # Give execution rights on the cron job
-RUN chmod 0644 /etc/cron.d/simple-cron
-RUN chmod 777 /usr/local/lib/python3.7/site-packages
+RUN chmod 0644 /etc/cron.d/updater-cron
+# Apply cron job
+RUN crontab /etc/cron.d/updater-cron
 
 # Create the log file to be able to run tail
 RUN touch /var/log/cron.log
 
-# Install Python Libraries
-ENV PYTHONUNBUFFERED 1
-COPY ./requirements.txt ./
-RUN pip install -r requirements.txt
-RUN rm requirements.txt
+# Add unstable as a source to get access to R binaries
+RUN echo "deb http://deb.debian.org/debian testing main contrib non-free" > /etc/apt/sources.list && apt-get update
 
-# Install R
-RUN apt-get -y install libopenblas-base r-base
+# --no-install-recommends reduces the install footprint substantially
+ENV APTOPTS "-y -t testing --no-install-recommends"
 
+# Install R and dependencies
+COPY ./requirements-bin.txt .
+RUN cat requirements-bin.txt | xargs apt-get $APTOPTS install
+
+# Install remaining R packages from source
 COPY ./requirements.R ./
 RUN Rscript requirements.R
-RUN rm requirements.R
 
 # Run the command on container startup
 CMD ["cron", "-f"]

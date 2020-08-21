@@ -1,0 +1,4 @@
+gcc-8-base
+libopenblas-base
+r-base
+r-cran-forecast

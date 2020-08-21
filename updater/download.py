@@ -1,8 +1,8 @@
 from abc import ABC
 from abc import abstractmethod
 
-import urllib.request as url_request
-import urllib.error as url_error
+import requests
+from requests.exceptions import HTTPError
 
 import json
 import xml.etree.ElementTree as ET
@@ -10,8 +10,8 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 import pickle
 import datetime
+from hashlib import sha256
 
-from multiprocessing.dummy import Pool as ThreadPool
 
 class DataSource(ABC):
     def __init__(self, download_path, title, url, frequency, tags):
@@ -23,9 +23,13 @@ class DataSource(ABC):
 
     def fetch(self):
         print(self.title)
-
         series_df = self.download()
+
+        hashsum = sha256(series_df.to_csv().encode()).hexdigest()
+        # print("  -", hashsum)
+
         data = {
+            "hashsum": hashsum,
             "series_df": series_df,
             "downloaded_at": datetime.datetime.now(),
         }
@@ -48,13 +52,14 @@ class AusMacroData(DataSource):
             parse_dates=["date"],
             index_col="date",
         )
-        #print(df)
+        # print(df)
         return df
 
 
 class Fred(DataSource):
 
     # Thanks to https://github.com/mortada/fredapi/blob/master/fredapi/fred.py
+    # and https://realpython.com/python-requests/
 
     def download(self):
 
@@ -66,16 +71,20 @@ class Fred(DataSource):
         if not api_key:
             raise ValueError(f"Please add a FRED API key to {api_key_file} .")
 
-        self.url += "&api_key=" + api_key
+        payload = {"api_key": api_key}
 
         try:
-            response = url_request.urlopen(self.url)
-            root = ET.fromstring(response.read())
-        except url_error.HTTPError as exc:
-            root = ET.fromstring(exc.read())
-            raise ValueError(root.get("message"))
+            response = requests.get(self.url, params=payload)
 
-        if root is None:
+            # Raise exception if response fails
+            # (response.status_code outside the 200 to 400 range).
+            response.raise_for_status()
+
+        except HTTPError as http_err:
+            raise ValueError(f"HTTP error: {http_err} .")
+
+        root = ET.fromstring(response.text)
+        if not root:
             raise ValueError("Failed to retrieve any data.")
 
         dates = []
@@ -86,29 +95,41 @@ class Fred(DataSource):
 
         df = pd.DataFrame(values, index=dates, columns=["value"])
         df.index.name = "date"
-        #print(df)
+
         return df
 
-supported_data_sources = {
-    "AusMacroData": AusMacroData,
-    "Fred": Fred
-}
 
-def download_data_source(data_source_dict, download_path):
+class Ons(DataSource):
+    def download(self):
 
-    if "source" not in data_source_dict:
-        raise ValueError(f"No source found for {data_source_dict['title']}")
+        try:
+            # ONS currently rejects requests that use the default User-Agent
+            # (python-urllib/3.x.y). Set the header manually to pretend to be
+            # a 'real' browser.
+            response = requests.get(
+                self.url, headers={"User-Agent": "Mozilla/5.0"}
+            )
 
-    if data_source_dict["source"] not in supported_data_sources:
-        raise ValueError(f"Source {data_source_dict['source']} is not supported")
+            # Raise exception if response fails
+            # (response.status_code outside the 200 to 400 range).
+            response.raise_for_status()
 
-    # Pop because init of DataSource does not accept source
-    source_class = supported_data_sources[data_source_dict.pop("source")]
-    data_source_dict["download_path"] = download_path
+        except HTTPError as http_err:
+            raise ValueError(f"HTTP error: {http_err} .")
 
-    source = source_class(**data_source_dict)
+        # This will raise an exception JSON decoding fails
+        data = response.json()
 
-    source.fetch()
+        dates = []
+        values = []
+        for el in data["months"]:
+            dates.append(pd.to_datetime(el["date"], format="%Y %b"))
+            values.append(float(el["value"]))
+
+        df = pd.DataFrame(values, index=dates, columns=["value"])
+        df.index.name = "date"
+
+        return df
 
 
 def download_data(sources_path, download_path):
@@ -117,12 +138,21 @@ def download_data(sources_path, download_path):
 
         data_sources_list = json.load(data_sources_json_file)
 
-        pool = ThreadPool(8)
+        for data_source_dict in data_sources_list:
 
-        pool.starmap(download_data_source, [(data_source_dict, download_path) for data_source_dict in data_sources_list])
+            all_source_classes = {
+                "AusMacroData": AusMacroData,
+                "Fred": Fred,
+                "Ons": Ons,
+            }
 
-        pool.close()
-        pool.join()
+            source_class = all_source_classes[data_source_dict.pop("source")]
+            data_source_dict["download_path"] = download_path
+
+            source = source_class(**data_source_dict)
+
+            source.fetch()
+
 
 if __name__ == "__main__":
     download_data("../shared_config/data_sources.json", "../data/downloads")

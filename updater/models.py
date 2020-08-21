@@ -46,9 +46,10 @@ class RNNModel(ForecastModel, ABC):
 
         super().__init__(h, level)
         self.method = 'SimpleRNN'
+        self.name = 'RNN M4 Benchmark'
 
-    def name():
-        return "RNN M4 Benchmark"
+    def name(self):
+        return self.name
 
     def description(self):
         return self.method
@@ -83,7 +84,7 @@ class RNNModel(ForecastModel, ABC):
 
     	return model.fit(x_train, y_train, epochs=100, batch_size=1, verbose=0)
 
-    def predict(y, h = self.h, input_size = 3):
+    def predict(self, y, h = h, input_size = 3):
         x_train, y_train = y[:-1], np.roll(y, -input_size)[:-input_size]
         x_test = np.array( y[-input_size:] ).T[0]
 

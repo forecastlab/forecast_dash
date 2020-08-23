@@ -1,27 +1,24 @@
 import argparse
 import datetime
 import json
-import pickle
 import os.path
+import pickle
+from multiprocessing import Pool, cpu_count
 
 import numpy as np
 import pandas as pd
-from rpy2.robjects import pandas2ri
-from sklearn.metrics import mean_squared_error
-from sklearn.utils.validation import indexable, _num_samples
-
 from models import (
     RNaive,
-    RNaive2,
     RAutoARIMA,
     RSimple,
     RHolt,
     RDamped,
     RTheta,
+    RNaive2,
     RComb,
 )
-
-pandas2ri.activate()
+from sklearn.metrics import mean_squared_error
+from sklearn.utils.validation import indexable, _num_samples
 
 p_to_use = 1
 forecast_len = 8
@@ -159,96 +156,139 @@ def check_cache(download_pickle, cache_pickle):
     return downloaded_dict, None
 
 
+def run_job(job_dict, cv, model_params):
+
+    print(f"{job_dict['title']} - {job_dict['model_cls']}")
+
+    series_df = job_dict["downloaded_dict"]["series_df"]
+
+    # Hack to align to the end of the quarter
+    if job_dict["data_source_dict"]["frequency"] == "Q":
+        offset = pd.offsets.QuarterEnd()
+        series_df.index = series_df.index + offset
+
+    y = series_df["value"]
+
+    model = job_dict["model_cls"](**model_params)
+
+    cv_score = cross_val_score(model, y, cv, mean_squared_error)
+
+    model.fit(y)
+
+    forecast_dict = model.predict_withci()
+
+    first_value = series_df["value"].iloc[-1]
+    first_time = series_df.index[-1]
+
+    forecast_df = forecast_to_df(
+        job_dict["data_source_dict"],
+        forecast_dict,
+        first_value,
+        first_time,
+        forecast_len,
+        levels=level,
+    )
+
+    result = {
+        "model_description": model.description(),
+        "cv_score": cv_score,
+        "forecast_df": forecast_df,
+    }
+
+    return job_dict, result
+
+
 def run_models(sources_path, download_dir_path, forecast_dir_path):
+
     with open(sources_path) as data_sources_json_file:
 
         data_sources_list = json.load(data_sources_json_file)
 
-        for data_source_dict in data_sources_list:
+    # Results storage
+    series_dict = {}
 
-            print(data_source_dict["title"])
+    job_list = []
 
-            downloaded_dict, cache_dict = check_cache(
-                f"{download_dir_path}/{data_source_dict['title']}.pkl",
-                f"{forecast_dir_path}/{data_source_dict['title']}.pkl",
-            )
+    # Parse JSON and cache
+    for data_source_dict in data_sources_list:
 
-            # Read local pickle that we created earlier
-            series_df = downloaded_dict["series_df"]
+        print(data_source_dict["title"])
 
-            # Hack to align to the end of the quarter
-            if data_source_dict["frequency"] == "Q":
-                offset = pd.offsets.QuarterEnd()
-                series_df.index = series_df.index + offset
+        downloaded_dict, cache_dict = check_cache(
+            f"{download_dir_path}/{data_source_dict['title']}.pkl",
+            f"{forecast_dir_path}/{data_source_dict['title']}.pkl",
+        )
 
-            cv = TimeSeriesRollingSplit(h=forecast_len, p_to_use=p_to_use)
-            init_params = {"h": forecast_len, "level": level}
-            y = series_df["value"]
+        # Read local pickle that we created earlier
+        series_df = downloaded_dict["series_df"]
 
-            all_forecasts = {}
-            forecasted_at = datetime.datetime.now()
+        all_forecasts = {}
 
-            # Train a whole bunch-o models on the training set
-            # and evaluate them on the validation set
-            for model_class in model_class_list:
+        for model_class in model_class_list:
 
-                model_name = model_class.name
-                if cache_dict and model_name in cache_dict["all_forecasts"]:
-                    cached_forecasts = cache_dict["all_forecasts"]
-                    all_forecasts[model_name] = cached_forecasts[model_name]
-                    print("  - Re-using   :", model_name)
-                    continue
+            model_name = model_class.name
 
-                print("  - Calculating:", model_name)
+            # Use cached results
+            if cache_dict and model_name in cache_dict["all_forecasts"]:
+                cached_forecasts = cache_dict["all_forecasts"]
+                result = cached_forecasts[model_name]
 
-                model = model_class(**init_params)
-                cv_score = cross_val_score(model, y, cv, mean_squared_error)
-
-                model.fit(y)
-                model_description = model.description()
-
-                # Generate final forecast using best model
-                forecast_dict = model.predict_withci()
-
-                first_value = series_df["value"].iloc[-1]
-                first_time = series_df.index[-1]
-
-                forecast_df = forecast_to_df(
-                    data_source_dict,
-                    forecast_dict,
-                    first_value,
-                    first_time,
-                    forecast_len,
-                    levels=level,
+            else:
+                # Add to job list
+                job_list.append(
+                    {
+                        "title": data_source_dict["title"],
+                        "model_cls": model_class,
+                        "data_source_dict": data_source_dict,
+                        "downloaded_dict": downloaded_dict,
+                    }
                 )
 
-                all_forecasts[model_name] = {
-                    "model_description": model_description,
-                    "cv_score": cv_score,
-                    "forecast_df": forecast_df,
-                }
+                # Temporarily set result to empty
+                result = {}
 
-            # Store forecast and related
-            data = {
-                "data_source_dict": data_source_dict,
-                "downloaded_dict": downloaded_dict,
-                "forecasted_at": forecasted_at,
-                "all_forecasts": all_forecasts,
-            }
+            all_forecasts[model_name] = result
 
-            f = open(
-                f"{forecast_dir_path}/{data_source_dict['title']}.pkl", "wb"
-            )
-            pickle.dump(data, f)
-            f.close()
+        series_dict[data_source_dict["title"]] = {
+            "data_source_dict": data_source_dict,
+            "downloaded_dict": downloaded_dict,
+            "forecasted_at": datetime.datetime.now(),
+            "all_forecasts": all_forecasts,
+        }
 
-        # Save statistics
-        print("Generating Statistics")
-        data = {"models_used": [m.name for m in model_class_list]}
+    cv = TimeSeriesRollingSplit(h=forecast_len, p_to_use=p_to_use)
+    model_params = {"h": forecast_len, "level": level}
 
-        f = open(f"{forecast_dir_path}/statistics.pkl", "wb")
-        pickle.dump(data, f)
+    pool = Pool(cpu_count())
+
+    results = pool.starmap(
+        run_job, [[job_dict, cv, model_params] for job_dict in job_list]
+    )
+
+    for result in results:
+
+        series_title = result[0]["title"]
+
+        model_name = result[0]["model_cls"].name
+
+        series_dict[series_title]["all_forecasts"][model_name] = result[1]
+
+    for series_title, series_data in series_dict.items():
+
+        f = open(
+            f"{forecast_dir_path}/{series_data['data_source_dict']['title']}.pkl",
+            "wb",
+        )
+        pickle.dump(series_data, f)
         f.close()
+
+    # Save statistics
+    print("Generating Statistics")
+    data = {"models_used": [m.name for m in model_class_list]}
+
+    f = open(f"{forecast_dir_path}/statistics.pkl", "wb")
+    pickle.dump(data, f)
+    f.close()
 
 
 if __name__ == "__main__":

@@ -1,17 +1,12 @@
 from abc import ABC
 from abc import abstractmethod
 
-
-
 from sklearn.base import BaseEstimator
 
 
-
-import time
-
 class ForecastModel(BaseEstimator, ABC):
     def __init__(self, h=None, level=None):
-        self.set_params(**{'h': h, 'level': level})
+        self.set_params(**{"h": h, "level": level})
 
     @property
     @staticmethod
@@ -47,6 +42,7 @@ class RModel(ForecastModel, ABC):
 
         import rpy2.robjects as robjects
         from rpy2.robjects import pandas2ri
+
         pandas2ri.activate()
 
         self.r_level = robjects.IntVector(self.level)
@@ -94,10 +90,10 @@ class RModel(ForecastModel, ABC):
         forecast_dict = {"forecast": r_forecast_dict["mean"]}
 
         for i in range(len(self.level)):
-            forecast_dict[f"LB_{self.level_[i]}"] = r_forecast_dict["lower"][
+            forecast_dict[f"LB_{self.level[i]}"] = r_forecast_dict["lower"][
                 :, i
             ]
-            forecast_dict[f"UB_{self.level_[i]}"] = r_forecast_dict["upper"][
+            forecast_dict[f"UB_{self.level[i]}"] = r_forecast_dict["upper"][
                 :, i
             ]
 

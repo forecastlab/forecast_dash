@@ -2,10 +2,15 @@ import time
 
 from models import RNaive, RNaive2, RAutoARIMA, RSimple, RHolt, RDamped, RTheta
 from rpy2.robjects import pandas2ri
+
 pandas2ri.activate()
 import json
 import pickle
-from run_models import TimeSeriesRollingSplit, cross_val_score, mean_squared_error
+from run_models import (
+    TimeSeriesRollingSplit,
+    cross_val_score,
+    mean_squared_error,
+)
 import pandas as pd
 
 sources_path = "../shared_config/data_sources.json"
@@ -20,13 +25,9 @@ data_source_dict = data_sources_list[0]
 print(data_source_dict["title"])
 
 # Read local pickle that we created earlier
-f = open(
-    f"{download_dir_path}/{data_source_dict['title']}.pkl", "rb"
-)
+f = open(f"{download_dir_path}/{data_source_dict['title']}.pkl", "rb")
 downloaded_dict = pickle.load(f)
 f.close()
-
-
 
 
 model_class_list = [
@@ -43,7 +44,6 @@ model_class_list = [
 #     model_class.__name__: model_class()
 #     for model_class in model_class_list
 # }
-
 
 
 def run_model_data(model_cls, data_dict, cv, model_params):
@@ -63,6 +63,7 @@ def run_model_data(model_cls, data_dict, cv, model_params):
 
     return cv_score
 
+
 from multiprocessing import Pool, Manager, cpu_count
 
 
@@ -74,15 +75,17 @@ forecast_len = 8
 level = [50, 75, 95]
 p_to_use = 1
 cv = TimeSeriesRollingSplit(h=forecast_len, p_to_use=p_to_use)
-model_params = {
-    'h': forecast_len,
-    'level': level
-}
+model_params = {"h": forecast_len, "level": level}
 
-results = pool.starmap(run_model_data, [[model_cls, downloaded_dict, cv, model_params] for model_cls in model_class_list])
+results = pool.starmap(
+    run_model_data,
+    [
+        [model_cls, downloaded_dict, cv, model_params]
+        for model_cls in model_class_list
+    ],
+)
 
 print(results)
-
 
 
 # 1. Collect list of model and forecasts

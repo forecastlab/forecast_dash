@@ -265,6 +265,7 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
         run_job, [[job_dict, cv, model_params] for job_dict in job_list]
     )
 
+    # Insert results of jobs into dictionary
     for result in results:
 
         series_title = result[0]["title"]
@@ -273,6 +274,7 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
 
         series_dict[series_title]["all_forecasts"][model_name] = result[1]
 
+    # Write all series pickles to disk
     for series_title, series_data in series_dict.items():
 
         f = open(

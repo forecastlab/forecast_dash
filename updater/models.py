@@ -12,6 +12,20 @@ from keras.models import Sequential
 from keras.layers import Dense, SimpleRNN
 from keras.optimizers import RMSprop
 
+def split_into_train(y):
+    train = np.array(y)
+    x_train, y_train = train[:-1], np.roll(train, -3)[:-3]
+
+    # reshape input to be [samples, time steps, features] (N-NF samples, 1 time step, 1 feature)
+    x_train = x_train.reshape(-1, 1)
+    temp_train = np.roll(x_train, -1)
+        
+    for x in range(1, 3):
+        x_train = np.concatenate((x_train[:-1], temp_train[:-1]), 1)
+        temp_train = np.roll(temp_train, -1)[:-1]
+
+    return x_train, y_train
+
 
 class ForecastModel(ABC):
     def __init__(self, h, level):
@@ -56,27 +70,18 @@ class RNNModel(ForecastModel, ABC):
     def description(self):
         return self.method
 
-    def fit(self, y, input_size=1):
+    def fit(self, y):
 
-        x_train, y_train = y[:-1], np.roll(y, -input_size)[:-input_size]
-        x_test = np.array(y[-input_size:]).T[0]
-
-        # reshape input to be [samples, time steps, features] (N-NF samples, 1 time step, 1 feature)
-        temp_train = np.roll(x_train, -1)
-
-        for x in range(1, input_size):
-            x_train = np.concatenate((x_train[:-1], temp_train[:-1]), 1)
-            temp_train = np.roll(temp_train, -1)[:-1]
+        x_train, y_train = split_into_train(y)
 
         # reshape to match expected input
-        x_train = np.reshape(x_train, (-1, input_size, 1))
-        x_test = np.reshape(x_test, (-1, input_size, 1))
+        x_train = np.reshape(x_train, (-1, 3, 1))
 
         self.model = Sequential(
             [
                 SimpleRNN(
                     6,
-                    input_shape=(input_size, 1),
+                    input_shape=(3, 1),
                     activation="linear",
                     use_bias=False,
                     kernel_initializer="glorot_uniform",
@@ -97,26 +102,18 @@ class RNNModel(ForecastModel, ABC):
         return self
 
 
-    def predict(self):
-        x_train, y_train = self.y[:-1], np.roll(self.y, -self.input_size)[:-self.input_size]
-        x_test = np.array(self.y[-self.input_size:]).T[0]
-
-        # reshape input to be [samples, time steps, features] (N-NF samples, 1 time step, 1 feature)
-        temp_train = np.roll(x_train, -1)
-
-        for x in range(1, self.input_size):
-            x_train = np.concatenate((x_train[:-1], temp_train[:-1]), 1)
-            temp_train = np.roll(temp_train, -1)[:-1]
-
+    def predict(self, y):
         y_hat = []
-        last_prediction = float(self.fit().predict(x_test)[0])
+        x_test = np.array(y[-3:]).reshape(-1,1)
+        x_test = np.reshape(x_test, (-1, 3, 1))
+        last_prediction = self.model.predict(x_test)[0]
         for i in range(0, self.h):
             y_hat.append(last_prediction)
             x_test[0] = np.roll(x_test[0], -1)
             x_test[0, (len(x_test[0]) - 1)] = last_prediction
-            last_prediction = float(self.model.predict(x_test)[0])
-
-        return y_hat
+            last_prediction = self.model.predict(x_test)[0]
+        print(y_hat)
+        return np.reshape(y_hat, (-1))
 
 
 class RModel(ForecastModel, ABC):

@@ -124,7 +124,8 @@ def cross_val_score(model, y, cv, scorer, fit_params={}):
 
         model.fit(y_train, **fit_params)
 
-        model_predictions = model.predict()
+        if isinstance(model, RNNModel): model_predictions = model.predict(y)
+        else: model_predictions = model.predict()
 
         errors.append(scorer(y_test, model_predictions))
 

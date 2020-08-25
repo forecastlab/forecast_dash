@@ -1,17 +1,12 @@
 from abc import ABC
 from abc import abstractmethod
 
-import rpy2.robjects as robjects
-from rpy2.robjects import pandas2ri
-from rpy2.robjects.packages import importr
-
-pandas2ri.activate()
+from sklearn.base import BaseEstimator
 
 
-class ForecastModel(ABC):
-    def __init__(self, h, level):
-        self.h = h
-        self.level = level
+class ForecastModel(BaseEstimator, ABC):
+    def __init__(self, h=None, level=None):
+        self.set_params(**{"h": h, "level": level})
 
     @property
     @staticmethod
@@ -31,9 +26,6 @@ class ForecastModel(ABC):
     def predict(self):
         pass
 
-    def get_params(self, deep=True):
-        return {}
-
 
 class RModel(ForecastModel, ABC):
     @property
@@ -44,11 +36,16 @@ class RModel(ForecastModel, ABC):
 
     forecast_model_params = {}
 
-    def __init__(self, h, level):
+    def __init__(self, h=1, level=[]):
 
         super().__init__(h, level)
 
-        self.r_level = robjects.IntVector(level)
+        import rpy2.robjects as robjects
+        from rpy2.robjects import pandas2ri
+
+        pandas2ri.activate()
+
+        self.r_level = robjects.IntVector(self.level)
 
         # Import the R sources
         if type(self).r_forecast_lib.endswith(".R"):
@@ -58,6 +55,8 @@ class RModel(ForecastModel, ABC):
             )
         else:
             # Import the R library
+            from rpy2.robjects.packages import importr
+
             self.forecast_lib = importr(type(self).r_forecast_lib)
             self.forecast_func = getattr(
                 self.forecast_lib, type(self).r_forecast_model_name

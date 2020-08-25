@@ -37,7 +37,7 @@ ENV APTOPTS "-y -t testing --no-install-recommends"
 
 # Install R and dependencies
 COPY ./requirements-bin.txt .
-RUN cat requirements-bin.txt | xargs apt-get $APTOPTS install
+RUN apt-get update && cat requirements-bin.txt | xargs apt-get $APTOPTS install
 
 # Install remaining R packages from source
 COPY ./requirements.R ./

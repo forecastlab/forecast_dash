@@ -40,6 +40,46 @@
     ]
   },
   {
+    "title": "Australian Real GDP",
+    "source": "AusMacroData",
+    "url": "http://ausmacrodata.org/Data/5206.0/gdpcknaasaq.csv",
+    "frequency": "Q",
+    "tags": [
+      "Australia",
+      "Economic"
+    ]
+  },
+  {
+    "title": "Australian Current Account",
+    "source": "AusMacroData",
+    "url": "http://ausmacrodata.org/Data/5302.0/cabpsqoq.csv",
+    "frequency": "Q",
+    "tags": [
+      "Australia",
+      "Economic"
+    ]
+  },
+  {
+    "title": "Australian Change in House Prices",
+    "source": "AusMacroData",
+    "url": "http://ausmacrodata.org/Data/6416.0/rppipccqpywaeccrppiinpcoq.csv",
+    "frequency": "Q",
+    "tags": [
+      "Australia",
+      "Economic"
+    ]
+  },
+  {
+    "title": "Australian Retail Sales",
+    "source": "AusMacroData",
+    "url": "http://ausmacrodata.org/Data/H3/rsmsamaiol.csv",
+    "frequency": "MS",
+    "tags": [
+      "Australia",
+      "Economic"
+    ]
+  },
+  {
     "title": "US GDP Growth",
     "source": "Fred",
     "url": "https://api.stlouisfed.org/fred/series/observations?series_id=CPGDPAI",

@@ -162,11 +162,6 @@ def run_job(job_dict, cv, model_params):
 
     series_df = job_dict["downloaded_dict"]["series_df"]
 
-    # Hack to align to the end of the quarter
-    if job_dict["data_source_dict"]["frequency"] == "Q":
-        offset = pd.offsets.QuarterEnd()
-        series_df.index = series_df.index + offset
-
     y = series_df["value"]
 
     model = job_dict["model_cls"](**model_params)
@@ -221,6 +216,11 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
 
         # Read local pickle that we created earlier
         series_df = downloaded_dict["series_df"]
+
+        # Hack to align to the end of the quarter
+        if data_source_dict["frequency"] == "Q":
+            offset = pd.offsets.QuarterEnd()
+            series_df.index = series_df.index + offset
 
         all_forecasts = {}
 

@@ -626,8 +626,11 @@ class Stats(BootstrapApp):
 
         def layout_func():
 
-            stats = get_forecast_data("statistics")
-            all_methods = stats["models_used"]
+            try:
+                stats = get_forecast_data("statistics")
+                all_methods = stats["models_used"]
+            except FileNotFoundError:
+                all_methods = []
 
             data_sources_json_file = open("../shared_config/data_sources.json")
             source_series_list = json.load(data_sources_json_file)

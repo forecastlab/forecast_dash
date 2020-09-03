@@ -195,6 +195,14 @@ def run_job(job_dict, cv, model_params):
 
 def run_models(sources_path, download_dir_path, forecast_dir_path):
 
+    # Save statistics
+    print("Generating Statistics")
+    data = {"models_used": [m.name for m in model_class_list]}
+
+    f = open(f"{forecast_dir_path}/statistics.pkl", "wb")
+    pickle.dump(data, f)
+    f.close()
+
     with open(sources_path) as data_sources_json_file:
 
         data_sources_list = json.load(data_sources_json_file)
@@ -284,13 +292,6 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
         pickle.dump(series_data, f)
         f.close()
 
-    # Save statistics
-    print("Generating Statistics")
-    data = {"models_used": [m.name for m in model_class_list]}
-
-    f = open(f"{forecast_dir_path}/statistics.pkl", "wb")
-    pickle.dump(data, f)
-    f.close()
 
 
 if __name__ == "__main__":

@@ -293,7 +293,6 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
         f.close()
 
 
-
 if __name__ == "__main__":
 
     args_dict = {

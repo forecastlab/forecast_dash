@@ -280,19 +280,32 @@ class Index(BootstrapApp):
                 + [
                     dcc.Location(id="url", refresh=False),
                     dbc.Jumbotron(
-                        dbc.Container([
-                            html.H1("Our Mission", className="display-4"),
-                            # html.Hr(),
-                            html.P("To make forecasting accessible to everyone by providing:", className='lead'),
-                            html.Ol([
-                                html.Li("up to date forecasts for common or important time series.", className='lead'),
-                                html.Li("evaluations and comparisons of forecasting methods.", className='lead')
-                            ]),
-                        ]),
-                        fluid=True),
+                        dbc.Container(
+                            [
+                                html.H1("Our Mission", className="display-4"),
+                                # html.Hr(),
+                                html.P(
+                                    "To make forecasting accessible to everyone by providing:",
+                                    className="lead",
+                                ),
+                                html.Ol(
+                                    [
+                                        html.Li(
+                                            "up to date forecasts for common or important time series.",
+                                            className="lead",
+                                        ),
+                                        html.Li(
+                                            "evaluations and comparisons of forecasting methods.",
+                                            className="lead",
+                                        ),
+                                    ]
+                                ),
+                            ]
+                        ),
+                        fluid=True,
+                    ),
                     dbc.Container(
                         [
-
                             html.H2(
                                 "Featured",
                                 style={"text-align": "center"},

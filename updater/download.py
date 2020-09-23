@@ -1,16 +1,14 @@
+import datetime
+import json
+import pickle
 from abc import ABC
 from abc import abstractmethod
+from hashlib import sha256
 
+import numpy as np
+import pandas as pd
 import requests
 from requests.exceptions import HTTPError
-
-import json
-import xml.etree.ElementTree as ET
-
-import pandas as pd
-import pickle
-import datetime
-from hashlib import sha256
 
 
 class DataSource(ABC):
@@ -71,7 +69,10 @@ class Fred(DataSource):
         if not api_key:
             raise ValueError(f"Please add a FRED API key to {api_key_file} .")
 
-        payload = {"api_key": api_key}
+        payload = {
+            "api_key": api_key,
+            "file_type": 'json'
+        }
 
         try:
             response = requests.get(self.url, params=payload)
@@ -83,18 +84,17 @@ class Fred(DataSource):
         except HTTPError as http_err:
             raise ValueError(f"HTTP error: {http_err} .")
 
-        root = ET.fromstring(response.text)
-        if not root:
-            raise ValueError("Failed to retrieve any data.")
+        data = response.json()
 
-        dates = []
-        values = []
-        for child in root:
-            dates.append(pd.to_datetime(child.get("date"), format="%Y-%m-%d"))
-            values.append(float(child.get("value")))
+        df = pd.DataFrame(data['observations'])[['date', 'value']]
 
-        df = pd.DataFrame(values, index=dates, columns=["value"])
-        df.index.name = "date"
+        # Set index
+        df['date'] = pd.to_datetime(df['date'])
+        df = df.set_index('date')
+
+        # FRED uses '.' to represent null values - replace with NaN
+        df['value'] = df['value'].replace('.', np.NaN).astype(float)
+        df = df.dropna()
 
         return df
 

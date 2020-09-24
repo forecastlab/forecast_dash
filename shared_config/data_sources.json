@@ -80,16 +80,6 @@
     ]
   },
   {
-    "title": "US GDP Growth",
-    "source": "Fred",
-    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=CPGDPAI",
-    "frequency": "Q",
-    "tags": [
-      "US",
-      "Economic"
-    ]
-  },
-  {
     "title": "US Unemployment",
     "source": "Fred",
     "url": "https://api.stlouisfed.org/fred/series/observations?series_id=UNRATE",
@@ -100,6 +90,60 @@
     ]
   },
   {
+    "title": "US GDP Growth",
+    "source": "Fred",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=CPGDPAI",
+    "frequency": "Q",
+    "tags": [
+      "US",
+      "Economic"
+    ]
+  },
+  {
+    "title": "US Personal Consumption Expenditures: Chain-type Price Index (% Change, 1 Year)",
+    "short_title": "US Inflation",
+    "source": "Fred",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=PCEPI&units=pc1",
+    "frequency": "MS",
+    "tags": [
+      "US",
+      "Economic"
+    ]
+  },
+  {
+    "title": "US Gross Private Domestic Investment",
+    "short_title": "US Investment Growth",
+    "source": "Fred",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=GPDI",
+    "frequency": "MS",
+    "tags": [
+      "US",
+      "Economic"
+    ]
+  },
+  {
+    "title": "US Personal Consumption Expenditures Excluding Food and Energy (Chain-Type Price Index)",
+    "short_title": "US Consumption Growth",
+    "source": "Fred",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=BPCCRO1Q156NBEA",
+    "frequency": "MS",
+    "tags": [
+      "US",
+      "Economic"
+    ]
+  },
+   {
+    "title": "US 10-Year Treasury Constant Maturity Rate",
+     "short_title": "US Interest Rates",
+    "source": "Fred",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&frequency=m",
+    "frequency": "MS",
+    "tags": [
+      "US",
+      "Economic"
+    ]
+  },
+    {
     "title": "UK Inflation (RPI)",
     "source": "Ons",
     "url": "https://api.ons.gov.uk/timeseries/czbh/dataset/mm23/data",

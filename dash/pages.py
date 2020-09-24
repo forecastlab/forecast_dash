@@ -223,7 +223,7 @@ def get_forecast_data(title):
     return data_dict
 
 
-def component_2col(row_title, series_titles):
+def component_figs_2col(row_title, series_titles):
 
     if len(series_titles) != 2:
         raise ValueError("series_titles must have 3 elements")
@@ -256,7 +256,7 @@ def component_2col(row_title, series_titles):
     )
 
 
-def component_3col(row_title, series_titles):
+def component_figs_3col(row_title, series_titles):
 
     if len(series_titles) != 3:
         raise ValueError("series_titles must have 3 elements")
@@ -326,6 +326,39 @@ def component_news_5col():
         lg=5,
     )
 
+def component_leaderboard_5col():
+
+    leaderboard_counts = get_leaderboard_df().iloc[:10, :]
+
+
+    body = []
+
+    for index, row in leaderboard_counts.iterrows():
+        body.append(
+            html.Li(
+                index,
+                className="lead",
+            )
+        )
+
+
+    return dbc.Col(
+        [
+            html.H1("Leaderboard"),
+            html.P("Ranked by number of times each method was selected as the best performer"),
+            html.Ol(
+                body
+            ),
+            html.A(
+                html.P(
+                    "View full leaderboard"
+                ),
+                href="/leaderboard",
+            ),
+        ],
+        lg=5,
+    )
+
 
 class Index(BootstrapApp):
     def setup(self):
@@ -334,51 +367,7 @@ class Index(BootstrapApp):
 
         feature_series_title = "Australian GDP Growth"
 
-        showcase_item_titles = [
-            "Australian GDP Growth",
-            "Australian Inflation (CPI)",
-            "Australian Unemployment",
-            "Australian Underemployment",
-            "US GDP Growth",
-            "US Unemployment",
-            "UK Inflation (RPI)",
-            "UK Unemployment",
-        ]
-
         def layout_func():
-
-            showcase_list = []
-
-            for item_title in showcase_item_titles:
-
-                # If data not present for any reason skip this
-                try:
-                    series_data = get_forecast_data(item_title)
-                except FileNotFoundError:
-                    continue
-
-                url_title = urlencode({"title": item_title})
-                thumbnail_figure = get_thumbnail_figure(series_data)
-                showcase_list.append(
-                    dbc.Col(
-                        [
-                            html.A(
-                                [
-                                    dcc.Graph(
-                                        id=item_title,
-                                        figure=thumbnail_figure,
-                                        config={"displayModeBar": False},
-                                    )
-                                ],
-                                href=f"/series?{url_title}",
-                            )
-                        ],
-                        lg=6,
-                        sm=12,
-                    )
-                )
-
-            showcase_div = dbc.Row(showcase_list, className="row")
 
             return html.Div(
                 header
@@ -449,12 +438,12 @@ class Index(BootstrapApp):
                                 ]
                             ),
                             # Row 2 - US Snapshot
-                            component_3col(
+                            component_figs_3col(
                                 "US Snapshot",
                                 [
                                     "US Unemployment",
                                     "US GDP Growth",
-                                    "US Personal Consumption Expenditures Excluding Food and Energy (Chain-Type Price Index) (% Change, 1 Year)",
+                                    "US Personal Consumption Expenditures Excluding Food and Energy (Chain-Type Price Index)",
                                 ],
                             ),
                             # Row 3 - Leaderboard
@@ -471,7 +460,7 @@ class Index(BootstrapApp):
                                                     dcc.Graph(
                                                         figure=get_thumbnail_figure(
                                                             get_forecast_data(
-                                                                "US 10-Year Treasury Constant Maturity Rate (% Change, 1 Year)"
+                                                                "US 10-Year Treasury Constant Maturity Rate"
                                                             )
                                                         ),
                                                         config={
@@ -485,46 +474,11 @@ class Index(BootstrapApp):
                                         lg=7,
                                         className="border-right",
                                     ),
-                                    dbc.Col(
-                                        [
-                                            html.H1("Leaderboard"),
-                                            html.Ol(
-                                                [
-                                                    html.Li(
-                                                        "Combination M4 Benchmark",
-                                                        className="lead",
-                                                    ),
-                                                    html.Li(
-                                                        "Simple Exponential Smoothing (ZNN)",
-                                                        className="lead",
-                                                    ),
-                                                    html.Li(
-                                                        "Auto ARIMA",
-                                                        className="lead",
-                                                    ),
-                                                    html.Li(
-                                                        "Naive",
-                                                        className="lead",
-                                                    ),
-                                                    html.Li(
-                                                        "Theta",
-                                                        className="lead",
-                                                    ),
-                                                ]
-                                            ),
-                                            html.A(
-                                                html.P(
-                                                    "View full leaderboard"
-                                                ),
-                                                href="#",
-                                            ),
-                                        ],
-                                        lg=5,
-                                    ),
+                                    component_leaderboard_5col()
                                 ]
                             ),
                             # Row 4 - Australia Snapshot
-                            component_3col(
+                            component_figs_3col(
                                 "Australia",
                                 [
                                     "Australian GDP Growth",
@@ -533,23 +487,12 @@ class Index(BootstrapApp):
                                 ],
                             ),
                             # Row 5 - UK Snapshot
-                            component_2col(
+                            component_figs_2col(
                                 "UK",
                                 ["UK Inflation (RPI)", "UK Inflation (RPI)",],
                             ),
-
                         ]
                     ),
-                    # dbc.Container(
-                    #     [
-                    #         html.H2(
-                    #             "Featured",
-                    #             style={"text-align": "center"},
-                    #             className="mt-3",
-                    #         ),
-                    #         showcase_div,
-                    #     ]
-                    # ),
                 ]
             )
 
@@ -862,6 +805,50 @@ def apply_default_value(params):
 
     return wrapper
 
+def get_leaderboard_df():
+    try:
+        stats = get_forecast_data("statistics")
+        all_methods = stats["models_used"]
+    except FileNotFoundError:
+        all_methods = []
+
+    data_sources_json_file = open("../shared_config/data_sources.json")
+    source_series_list = json.load(data_sources_json_file)
+    data_sources_json_file.close()
+
+    forecast_series_dicts = {}
+
+    for series_dict in source_series_list:
+        try:
+            forecast_series_dicts[
+                series_dict["title"]
+            ] = get_forecast_data(series_dict["title"])
+        except FileNotFoundError:
+            continue
+
+    chosen_methods = []
+    for series_title, forecast_data in forecast_series_dicts.items():
+        model_name = select_best_model(forecast_data)
+        chosen_methods.append(model_name)
+
+    stats_raw = pd.DataFrame({"Method": chosen_methods})
+
+    unchosen_methods = list(set(all_methods) - set(chosen_methods))
+    unchosen_counts = pd.Series(
+        data=np.zeros(len(unchosen_methods)),
+        index=unchosen_methods,
+        name="Total",
+    )
+
+    counts = pd.DataFrame(
+        stats_raw["Method"]
+            .value_counts()
+            .rename("Total")
+            .append(unchosen_counts)
+    )
+
+    return counts
+
 
 class Leaderboard(BootstrapApp):
     def setup(self):
@@ -870,46 +857,8 @@ class Leaderboard(BootstrapApp):
 
         def layout_func():
 
-            try:
-                stats = get_forecast_data("statistics")
-                all_methods = stats["models_used"]
-            except FileNotFoundError:
-                all_methods = []
+            counts = get_leaderboard_df()
 
-            data_sources_json_file = open("../shared_config/data_sources.json")
-            source_series_list = json.load(data_sources_json_file)
-            data_sources_json_file.close()
-
-            forecast_series_dicts = {}
-
-            for series_dict in source_series_list:
-                try:
-                    forecast_series_dicts[
-                        series_dict["title"]
-                    ] = get_forecast_data(series_dict["title"])
-                except FileNotFoundError:
-                    continue
-
-            chosen_methods = []
-            for series_title, forecast_data in forecast_series_dicts.items():
-                model_name = select_best_model(forecast_data)
-                chosen_methods.append(model_name)
-
-            stats_raw = pd.DataFrame({"Method": chosen_methods})
-
-            unchosen_methods = list(set(all_methods) - set(chosen_methods))
-            unchosen_counts = pd.Series(
-                data=np.zeros(len(unchosen_methods)),
-                index=unchosen_methods,
-                name="Total",
-            )
-
-            counts = pd.DataFrame(
-                stats_raw["Method"]
-                .value_counts()
-                .rename("Total")
-                .append(unchosen_counts)
-            )
             counts["Proportion"] = counts["Total"] / counts["Total"].sum()
 
             table = dbc.Table.from_dataframe(

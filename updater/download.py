@@ -14,9 +14,12 @@ from hashlib import sha256
 
 
 class DataSource(ABC):
-    def __init__(self, download_path, title, url, frequency, tags):
+    def __init__(
+        self, download_path, title, url, frequency, tags, short_title=None
+    ):
         self.download_path = download_path
         self.title = title
+        self.short_title = short_title
         self.url = url
         self.frequency = frequency
         self.tags = tags

@@ -8,69 +8,74 @@ import dash_html_components as html
 header = [
     dbc.NavbarSimple(
         children=[
-            dbc.DropdownMenu(
-                children=[
-                    dbc.DropdownMenuItem(
-                        html.A(
-                            "Australian Economic Indicators",
-                            href="/filter?tags=Australia&tags=Economic",
-                        )
-                    ),
-                    dbc.DropdownMenuItem(
-                        html.A(
-                            "US Economic Indicators",
-                            href="/filter?tags=US&tags=Economic",
-                        )
-                    ),
-                    dbc.DropdownMenuItem(
-                        html.A(
-                            "UK Economic Indicators",
-                            href="/filter?tags=UK&tags=Economic",
-                        )
-                    ),
-                ],
-                nav=True,
-                in_navbar=True,
-                label="Economic Forecasts",
-                disabled=False,
-            ),
-            dbc.DropdownMenu(
-                children=[
-                    dbc.DropdownMenuItem(
-                        [
-                            html.A(
-                                "Australian Financial Indicators",
-                                href="/filter?tags=Australia&tags=Financial",
-                            )
-                        ]
-                    ),
-                    dbc.DropdownMenuItem(
-                        [
-                            html.A(
-                                "US Financial Indicators",
-                                href="/filter?tags=US&tags=Financial",
-                            )
-                        ]
-                    ),
-                    dbc.DropdownMenuItem(
-                        [
-                            html.A(
-                                "UK Financial Indicators",
-                                href="/filter?tags=UK,Financial",
-                            )
-                        ]
-                    ),
-                ],
-                nav=True,
-                in_navbar=True,
-                label="Financial Forecasts",
+            # dbc.DropdownMenu(
+            #     children=[
+            #         dbc.DropdownMenuItem(
+            #             html.A(
+            #                 "Australian Economic Indicators",
+            #                 href="/filter?tags=Australia&tags=Economic",
+            #             )
+            #         ),
+            #         dbc.DropdownMenuItem(
+            #             html.A(
+            #                 "US Economic Indicators",
+            #                 href="/filter?tags=US&tags=Economic",
+            #             )
+            #         ),
+            #         dbc.DropdownMenuItem(
+            #             html.A(
+            #                 "UK Economic Indicators",
+            #                 href="/filter?tags=UK&tags=Economic",
+            #             )
+            #         ),
+            #     ],
+            #     nav=True,
+            #     in_navbar=True,
+            #     label="Economic Forecasts",
+            #     disabled=False,
+            # ),
+            # dbc.DropdownMenu(
+            #     children=[
+            #         dbc.DropdownMenuItem(
+            #             [
+            #                 html.A(
+            #                     "Australian Financial Indicators",
+            #                     href="/filter?tags=Australia&tags=Financial",
+            #                 )
+            #             ]
+            #         ),
+            #         dbc.DropdownMenuItem(
+            #             [
+            #                 html.A(
+            #                     "US Financial Indicators",
+            #                     href="/filter?tags=US&tags=Financial",
+            #                 )
+            #             ]
+            #         ),
+            #         dbc.DropdownMenuItem(
+            #             [
+            #                 html.A(
+            #                     "UK Financial Indicators",
+            #                     href="/filter?tags=UK,Financial",
+            #                 )
+            #             ]
+            #         ),
+            #     ],
+            #     nav=True,
+            #     in_navbar=True,
+            #     label="Financial Forecasts",
+            # ),
+            dbc.NavItem(
+                dbc.NavLink(
+                    "Find a Series", href="/search", external_link=True
+                )
             ),
             dbc.NavItem(
-                dbc.NavLink("Filter", href="/filter", external_link=True)
+                dbc.NavLink(
+                    "Leaderboard", href="/leaderboard", external_link=True
+                )
             ),
-            dbc.NavItem(
-                dbc.NavLink("Stats", href="/stats", external_link=True)
-            ),
+            dbc.NavItem(dbc.NavLink("Blog", href="/blog", external_link=True)),
             dbc.NavItem(
                 dbc.NavLink(
                     "Methodology", href="/methodology", external_link=True

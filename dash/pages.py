@@ -3,7 +3,7 @@ import json
 import pickle
 import re
 from functools import wraps
-from urllib.parse import urlparse, parse_qs, urlencode
+from urllib.parse import urlencode
 
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
@@ -14,6 +14,9 @@ import plotly.graph_objs as go
 from common import BootstrapApp, header, breadcrumb_layout
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
+from frontmatter import Frontmatter
+
+from util import glob_re, location_ignore_null, parse_state
 
 
 def dash_kwarg(inputs):
@@ -27,11 +30,6 @@ def dash_kwarg(inputs):
         return wrapper
 
     return accept_func
-
-
-def parse_state(url):
-    parse_result = urlparse(url)
-    return parse_qs(parse_result.query)
 
 
 def get_forecast_plot_data(series_df, forecast_df):
@@ -143,12 +141,13 @@ def get_thumbnail_figure(data_dict):
     )
 
     layout = go.Layout(
-        title={"text": title, "xanchor": "auto"},
+        title={"text": title, "xanchor": "auto", "x": 0.5},
         height=480,
         showlegend=False,
         xaxis=dict(fixedrange=True),
         yaxis=dict(fixedrange=True),
         shapes=shapes,
+        margin={"l": 0, "r": 0},
     )
 
     return go.Figure(data, layout)
@@ -230,92 +229,280 @@ def get_forecast_data(title):
     return data_dict
 
 
+def component_figs_2col(row_title, series_titles):
+
+    if len(series_titles) != 2:
+        raise ValueError("series_titles must have 3 elements")
+
+    return dbc.Row(
+        [
+            dbc.Col(
+                [html.H1(row_title, style={"text-align": "center"}),], lg=12
+            ),
+        ]
+        + [
+            dbc.Col(
+                [
+                    html.A(
+                        [
+                            dcc.Graph(
+                                figure=get_thumbnail_figure(
+                                    get_forecast_data(series_title)
+                                ),
+                                config={"displayModeBar": False},
+                            )
+                        ],
+                        href=f"/series?{urlencode({'title': series_title})}",
+                    )
+                ],
+                lg=6,
+            )
+            for series_title in series_titles
+        ]
+    )
+
+
+def component_figs_3col(row_title, series_titles):
+
+    if len(series_titles) != 3:
+        raise ValueError("series_titles must have 3 elements")
+
+    return dbc.Row(
+        [
+            dbc.Col(
+                [html.H1(row_title, style={"text-align": "center"}),], lg=12
+            ),
+        ]
+        + [
+            dbc.Col(
+                [
+                    html.A(
+                        [
+                            dcc.Graph(
+                                figure=get_thumbnail_figure(
+                                    get_forecast_data(series_title)
+                                ),
+                                config={"displayModeBar": False},
+                            )
+                        ],
+                        href=f"/series?{urlencode({'title': series_title})}",
+                    )
+                ],
+                lg=4,
+            )
+            for series_title in series_titles
+        ]
+    )
+
+
+def component_news_5col():
+
+    filenames = glob_re(r".*.md", "../blog")
+
+    blog_posts = []
+
+    for filename in filenames:
+        fm_dict = Frontmatter.read_file("../blog/" + filename)
+        fm_dict["filename"] = filename.split(".md")[0]
+        blog_posts.append(fm_dict)
+
+    # Sort by date
+    blog_posts = sorted(
+        blog_posts, key=lambda x: x["attributes"]["date"], reverse=True
+    )
+
+    body = []
+
+    for i in range(min(len(blog_posts), 5)):
+        blog_post = blog_posts[i]
+        body.extend(
+            [
+                blog_post["attributes"]["date"],
+                html.A(
+                    html.P(blog_post["attributes"]["title"], className="lead"),
+                    href=f"/blog/post?title={blog_post['filename']}",
+                ),
+            ]
+        )
+
+    return dbc.Col(
+        [html.H1("Latest News")]
+        + body
+        + [html.A(html.P("View all posts"), href="/blog")],
+        lg=5,
+    )
+
+def component_leaderboard_5col():
+
+    leaderboard_counts = get_leaderboard_df().iloc[:10, :]
+
+
+    body = []
+
+    for index, row in leaderboard_counts.iterrows():
+        body.append(
+            html.Li(
+                index,
+                className="lead",
+            )
+        )
+
+
+    return dbc.Col(
+        [
+            html.H1("Leaderboard"),
+            html.P("Ranked by number of times each method was selected as the best performer"),
+            html.Ol(
+                body
+            ),
+            html.A(
+                html.P(
+                    "View full leaderboard"
+                ),
+                href="/leaderboard",
+            ),
+        ],
+        lg=5,
+    )
+
+
 class Index(BootstrapApp):
     def setup(self):
 
         self.title = "Business Forecast Lab"
 
-        showcase_item_titles = [
-            "Australian GDP Growth",
-            "Australian Inflation (CPI)",
-            "Australian Unemployment",
-            "Australian Underemployment",
-            "US GDP Growth",
-            "US Unemployment",
-            "UK Inflation (RPI)",
-            "UK Unemployment",
-        ]
+        feature_series_title = "Australian GDP Growth"
 
         def layout_func():
-
-            showcase_list = []
-
-            for item_title in showcase_item_titles:
-
-                # If data not present for any reason skip this
-                try:
-                    series_data = get_forecast_data(item_title)
-                except FileNotFoundError:
-                    continue
-
-                url_title = urlencode({"title": item_title})
-                thumbnail_figure = get_thumbnail_figure(series_data)
-                showcase_list.append(
-                    dbc.Col(
-                        [
-                            html.A(
-                                [
-                                    dcc.Graph(
-                                        id=item_title,
-                                        figure=thumbnail_figure,
-                                        config={"displayModeBar": False},
-                                    )
-                                ],
-                                href=f"/series?{url_title}",
-                            )
-                        ],
-                        lg=6,
-                        sm=12,
-                    )
-                )
-
-            showcase_div = dbc.Row(showcase_list, className="row")
 
             return html.Div(
                 header
                 + [
                     dcc.Location(id="url", refresh=False),
+                    # Mission Statement
+                    dbc.Jumbotron(
+                        [
+                            dbc.Container(
+                                [
+                                    html.H1(
+                                        "Our Mission", className="display-4"
+                                    ),
+                                    html.Hr(),
+                                    html.P(
+                                        "To make forecasting accessible to everyone by providing:",
+                                        className="lead",
+                                    ),
+                                    html.Ul(
+                                        [
+                                            html.Li(
+                                                "up to date forecasts for common or important time series,",
+                                                className="lead",
+                                            ),
+                                            html.Li(
+                                                "evaluations and comparisons of forecasting methods.",
+                                                className="lead",
+                                            ),
+                                        ]
+                                    ),
+                                ]
+                            ),
+                        ],
+                        fluid=True,
+                    ),
+                    # Main Body
                     dbc.Container(
                         [
-                            html.H2(
-                                "Featured",
-                                style={"text-align": "center"},
-                                className="mt-3",
+                            # Row 1 - Featured and Latest News
+                            dbc.Row(
+                                [
+                                    dbc.Col(
+                                        [
+                                            html.H1(
+                                                "Featured Series",
+                                                style={"text-align": "center"},
+                                            ),
+                                            html.A(
+                                                [
+                                                    dcc.Graph(
+                                                        figure=get_thumbnail_figure(
+                                                            get_forecast_data(
+                                                                feature_series_title
+                                                            )
+                                                        ),
+                                                        config={
+                                                            "displayModeBar": False
+                                                        },
+                                                    )
+                                                ],
+                                                href=f"/series?{urlencode({'title': 'Australian GDP Growth'})}",
+                                            ),
+                                        ],
+                                        lg=7,
+                                        className="border-right",
+                                    ),
+                                    component_news_5col(),
+                                ]
                             ),
-                            showcase_div,
+                            # Row 2 - US Snapshot
+                            component_figs_3col(
+                                "US Snapshot",
+                                [
+                                    "US Unemployment",
+                                    "US GDP Growth",
+                                    "US Personal Consumption Expenditures Excluding Food and Energy (Chain-Type Price Index)",
+                                ],
+                            ),
+                            # Row 3 - Leaderboard
+                            dbc.Row(
+                                [
+                                    dbc.Col(
+                                        [
+                                            html.H1(
+                                                "US Interest Rate",
+                                                style={"text-align": "center"},
+                                            ),
+                                            html.A(
+                                                [
+                                                    dcc.Graph(
+                                                        figure=get_thumbnail_figure(
+                                                            get_forecast_data(
+                                                                "US 10-Year Treasury Constant Maturity Rate"
+                                                            )
+                                                        ),
+                                                        config={
+                                                            "displayModeBar": False
+                                                        },
+                                                    )
+                                                ],
+                                                href=f"/series?{urlencode({'title': 'Australian GDP Growth'})}",
+                                            ),
+                                        ],
+                                        lg=7,
+                                        className="border-right",
+                                    ),
+                                    component_leaderboard_5col()
+                                ]
+                            ),
+                            # Row 4 - Australia Snapshot
+                            component_figs_3col(
+                                "Australia",
+                                [
+                                    "Australian GDP Growth",
+                                    "Australian Inflation (CPI)",
+                                    "Australian Unemployment",
+                                ],
+                            ),
+                            # Row 5 - UK Snapshot
+                            component_figs_2col(
+                                "UK",
+                                ["UK Inflation (RPI)", "UK Inflation (RPI)",],
+                            ),
                         ]
                     ),
                 ]
             )
 
         self.layout = layout_func
-
-
-def location_ignore_null(inputs, location_id):
-    def accept_func(func):
-        @wraps(func)
-        def wrapper(*args):
-            input_names = [item.component_id for item in inputs]
-            kwargs_dict = dict(zip(input_names, args))
-
-            if kwargs_dict[location_id] is None:
-                raise PreventUpdate
-
-            return func(*args)
-
-        return wrapper
-
-    return accept_func
 
 
 class Series(BootstrapApp):
@@ -625,54 +812,60 @@ def apply_default_value(params):
 
     return wrapper
 
+def get_leaderboard_df():
+    try:
+        stats = get_forecast_data("statistics")
+        all_methods = stats["models_used"]
+    except FileNotFoundError:
+        all_methods = []
 
-class Stats(BootstrapApp):
+    data_sources_json_file = open("../shared_config/data_sources.json")
+    source_series_list = json.load(data_sources_json_file)
+    data_sources_json_file.close()
+
+    forecast_series_dicts = {}
+
+    for series_dict in source_series_list:
+        try:
+            forecast_series_dicts[
+                series_dict["title"]
+            ] = get_forecast_data(series_dict["title"])
+        except FileNotFoundError:
+            continue
+
+    chosen_methods = []
+    for series_title, forecast_data in forecast_series_dicts.items():
+        model_name = select_best_model(forecast_data)
+        chosen_methods.append(model_name)
+
+    stats_raw = pd.DataFrame({"Method": chosen_methods})
+
+    unchosen_methods = list(set(all_methods) - set(chosen_methods))
+    unchosen_counts = pd.Series(
+        data=np.zeros(len(unchosen_methods)),
+        index=unchosen_methods,
+        name="Total",
+    )
+
+    counts = pd.DataFrame(
+        stats_raw["Method"]
+            .value_counts()
+            .rename("Total")
+            .append(unchosen_counts)
+    )
+
+    return counts
+
+
+class Leaderboard(BootstrapApp):
     def setup(self):
 
-        self.title = "Statistics"
+        self.title = "Leaderboard"
 
         def layout_func():
 
-            try:
-                stats = get_forecast_data("statistics")
-                all_methods = stats["models_used"]
-            except FileNotFoundError:
-                all_methods = []
+            counts = get_leaderboard_df()
 
-            data_sources_json_file = open("../shared_config/data_sources.json")
-            source_series_list = json.load(data_sources_json_file)
-            data_sources_json_file.close()
-
-            forecast_series_dicts = {}
-
-            for series_dict in source_series_list:
-                try:
-                    forecast_series_dicts[
-                        series_dict["title"]
-                    ] = get_forecast_data(series_dict["title"])
-                except FileNotFoundError:
-                    continue
-
-            chosen_methods = []
-            for series_title, forecast_data in forecast_series_dicts.items():
-                model_name = select_best_model(forecast_data)
-                chosen_methods.append(model_name)
-
-            stats_raw = pd.DataFrame({"Method": chosen_methods})
-
-            unchosen_methods = list(set(all_methods) - set(chosen_methods))
-            unchosen_counts = pd.Series(
-                data=np.zeros(len(unchosen_methods)),
-                index=unchosen_methods,
-                name="Total",
-            )
-
-            counts = pd.DataFrame(
-                stats_raw["Method"]
-                .value_counts()
-                .rename("Total")
-                .append(unchosen_counts)
-            )
             counts["Proportion"] = counts["Total"] / counts["Total"].sum()
 
             table = dbc.Table.from_dataframe(
@@ -697,7 +890,7 @@ class Stats(BootstrapApp):
                             breadcrumb_layout(
                                 [("Home", "/"), (f"{self.title}", "")]
                             ),
-                            html.H2("Statistics"),
+                            html.H2(self.title),
                             table,
                         ]
                     ),
@@ -763,12 +956,12 @@ def match_methods(forecast_dicts, methods):
     return set(matched_series_names)
 
 
-class Filter(BootstrapApp):
+class Search(BootstrapApp):
     def setup(self):
 
         self.config.suppress_callback_exceptions = True
 
-        self.title = "Filter"
+        self.title = "Search"
 
         self.layout = html.Div(
             header

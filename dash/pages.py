@@ -3,7 +3,7 @@ import json
 import pickle
 import re
 from functools import wraps
-from urllib.parse import urlparse, parse_qs, urlencode
+from urllib.parse import urlencode
 
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
@@ -14,6 +14,9 @@ import plotly.graph_objs as go
 from common import BootstrapApp, header, breadcrumb_layout
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
+from frontmatter import Frontmatter
+
+from util import glob_re, location_ignore_null, parse_state
 
 
 def dash_kwarg(inputs):
@@ -27,11 +30,6 @@ def dash_kwarg(inputs):
         return wrapper
 
     return accept_func
-
-
-def parse_state(url):
-    parse_result = urlparse(url)
-    return parse_qs(parse_result.query)
 
 
 def get_forecast_plot_data(series_df, forecast_df):
@@ -138,12 +136,13 @@ def get_thumbnail_figure(data_dict):
 
     title = data_dict["data_source_dict"]["title"]
     layout = go.Layout(
-        title={"text": title, "xanchor": "auto"},
+        title={"text": title, "xanchor": "auto", "x": 0.5},
         height=480,
         showlegend=False,
         xaxis=dict(fixedrange=True),
         yaxis=dict(fixedrange=True),
         shapes=shapes,
+        margin={"l": 0, "r": 0},
     )
 
     return go.Figure(data, layout)
@@ -224,10 +223,116 @@ def get_forecast_data(title):
     return data_dict
 
 
+def component_2col(row_title, series_titles):
+
+    if len(series_titles) != 2:
+        raise ValueError("series_titles must have 3 elements")
+
+    return dbc.Row(
+        [
+            dbc.Col(
+                [html.H1(row_title, style={"text-align": "center"}),], lg=12
+            ),
+        ]
+        + [
+            dbc.Col(
+                [
+                    html.A(
+                        [
+                            dcc.Graph(
+                                figure=get_thumbnail_figure(
+                                    get_forecast_data(series_title)
+                                ),
+                                config={"displayModeBar": False},
+                            )
+                        ],
+                        href=f"/series?{urlencode({'title': series_title})}",
+                    )
+                ],
+                lg=6,
+            )
+            for series_title in series_titles
+        ]
+    )
+
+
+def component_3col(row_title, series_titles):
+
+    if len(series_titles) != 3:
+        raise ValueError("series_titles must have 3 elements")
+
+    return dbc.Row(
+        [
+            dbc.Col(
+                [html.H1(row_title, style={"text-align": "center"}),], lg=12
+            ),
+        ]
+        + [
+            dbc.Col(
+                [
+                    html.A(
+                        [
+                            dcc.Graph(
+                                figure=get_thumbnail_figure(
+                                    get_forecast_data(series_title)
+                                ),
+                                config={"displayModeBar": False},
+                            )
+                        ],
+                        href=f"/series?{urlencode({'title': series_title})}",
+                    )
+                ],
+                lg=4,
+            )
+            for series_title in series_titles
+        ]
+    )
+
+
+def component_news_5col():
+
+    filenames = glob_re(r".*.md", "../blog")
+
+    blog_posts = []
+
+    for filename in filenames:
+        fm_dict = Frontmatter.read_file("../blog/" + filename)
+        fm_dict["filename"] = filename.split(".md")[0]
+        blog_posts.append(fm_dict)
+
+    # Sort by date
+    blog_posts = sorted(
+        blog_posts, key=lambda x: x["attributes"]["date"], reverse=True
+    )
+
+    body = []
+
+    for i in range(min(len(blog_posts), 5)):
+        blog_post = blog_posts[i]
+        body.extend(
+            [
+                blog_post["attributes"]["date"],
+                html.A(
+                    html.P(blog_post["attributes"]["title"], className="lead"),
+                    href=f"/blog/post?title={blog_post['filename']}",
+                ),
+            ]
+        )
+
+    return dbc.Col(
+        [html.H1("Latest News")]
+        + body
+        + [html.A(html.P("View all posts"), href="/blog"),],
+        lg=5,
+    )
+
+
 class Index(BootstrapApp):
     def setup(self):
 
         self.title = "Business Forecast Lab"
+
+        feature_series_title = "Australian GDP Growth"
 
         showcase_item_titles = [
             "Australian GDP Growth",
@@ -279,62 +384,175 @@ class Index(BootstrapApp):
                 header
                 + [
                     dcc.Location(id="url", refresh=False),
+                    # Mission Statement
                     dbc.Jumbotron(
-                        dbc.Container(
-                            [
-                                html.H1("Our Mission", className="display-4"),
-                                # html.Hr(),
-                                html.P(
-                                    "To make forecasting accessible to everyone by providing:",
-                                    className="lead",
-                                ),
-                                html.Ol(
-                                    [
-                                        html.Li(
-                                            "up to date forecasts for common or important time series.",
-                                            className="lead",
-                                        ),
-                                        html.Li(
-                                            "evaluations and comparisons of forecasting methods.",
-                                            className="lead",
-                                        ),
-                                    ]
-                                ),
-                            ]
-                        ),
+                        [
+                            dbc.Container(
+                                [
+                                    html.H1(
+                                        "Our Mission", className="display-4"
+                                    ),
+                                    html.Hr(),
+                                    html.P(
+                                        "To make forecasting accessible to everyone by providing:",
+                                        className="lead",
+                                    ),
+                                    html.Ul(
+                                        [
+                                            html.Li(
+                                                "up to date forecasts for common or important time series,",
+                                                className="lead",
+                                            ),
+                                            html.Li(
+                                                "evaluations and comparisons of forecasting methods.",
+                                                className="lead",
+                                            ),
+                                        ]
+                                    ),
+                                ]
+                            ),
+                        ],
                         fluid=True,
                     ),
+                    # Main Body
                     dbc.Container(
                         [
-                            html.H2(
-                                "Featured",
-                                style={"text-align": "center"},
-                                className="mt-3",
+                            # Row 1 - Featured and Latest News
+                            dbc.Row(
+                                [
+                                    dbc.Col(
+                                        [
+                                            html.H1(
+                                                "Featured Series",
+                                                style={"text-align": "center"},
+                                            ),
+                                            html.A(
+                                                [
+                                                    dcc.Graph(
+                                                        figure=get_thumbnail_figure(
+                                                            get_forecast_data(
+                                                                feature_series_title
+                                                            )
+                                                        ),
+                                                        config={
+                                                            "displayModeBar": False
+                                                        },
+                                                    )
+                                                ],
+                                                href=f"/series?{urlencode({'title': 'Australian GDP Growth'})}",
+                                            ),
+                                        ],
+                                        lg=7,
+                                        className="border-right",
+                                    ),
+                                    component_news_5col(),
+                                ]
                             ),
-                            showcase_div,
+                            # Row 2 - US Snapshot
+                            component_3col(
+                                "US Snapshot",
+                                [
+                                    "US Unemployment",
+                                    "US GDP Growth",
+                                    "US Gross Private Domestic Investment (% Change, 1 Year)",
+                                ],
+                            ),
+                            # Row 3 - Leaderboard
+                            dbc.Row(
+                                [
+                                    dbc.Col(
+                                        [
+                                            html.H1(
+                                                "Featured Series",
+                                                style={"text-align": "center"},
+                                            ),
+                                            html.A(
+                                                [
+                                                    dcc.Graph(
+                                                        figure=get_thumbnail_figure(
+                                                            get_forecast_data(
+                                                                "Australian GDP Growth"
+                                                            )
+                                                        ),
+                                                        config={
+                                                            "displayModeBar": False
+                                                        },
+                                                    )
+                                                ],
+                                                href=f"/series?{urlencode({'title': 'Australian GDP Growth'})}",
+                                            ),
+                                        ],
+                                        lg=7,
+                                        className="border-right",
+                                    ),
+                                    dbc.Col(
+                                        [
+                                            html.H1("Leaderboard"),
+                                            html.Ol(
+                                                [
+                                                    html.Li(
+                                                        "Combination M4 Benchmark",
+                                                        className="lead",
+                                                    ),
+                                                    html.Li(
+                                                        "Simple Exponential Smoothing (ZNN)",
+                                                        className="lead",
+                                                    ),
+                                                    html.Li(
+                                                        "Auto ARIMA",
+                                                        className="lead",
+                                                    ),
+                                                    html.Li(
+                                                        "Naive",
+                                                        className="lead",
+                                                    ),
+                                                    html.Li(
+                                                        "Theta",
+                                                        className="lead",
+                                                    ),
+                                                ]
+                                            ),
+                                            html.A(
+                                                html.P(
+                                                    "View full leaderboard"
+                                                ),
+                                                href="#",
+                                            ),
+                                        ],
+                                        lg=5,
+                                    ),
+                                ]
+                            ),
+                            # Row 4 - UK Snapshot
+                            component_2col(
+                                "UK",
+                                ["UK Inflation (RPI)", "UK Inflation (RPI)",],
+                            ),
+                            # Row 5 - Australia Snapshot
+                            component_3col(
+                                "Australia",
+                                [
+                                    "Australian GDP Growth",
+                                    "Australian Inflation (CPI)",
+                                    "Australian Unemployment",
+                                ],
+                            ),
                         ]
                     ),
+                    # dbc.Container(
+                    #     [
+                    #         html.H2(
+                    #             "Featured",
+                    #             style={"text-align": "center"},
+                    #             className="mt-3",
+                    #         ),
+                    #         showcase_div,
+                    #     ]
+                    # ),
                 ]
             )
 
         self.layout = layout_func
-
-
-def location_ignore_null(inputs, location_id):
-    def accept_func(func):
-        @wraps(func)
-        def wrapper(*args):
-            input_names = [item.component_id for item in inputs]
-            kwargs_dict = dict(zip(input_names, args))
-
-            if kwargs_dict[location_id] is None:
-                raise PreventUpdate
-
-            return func(*args)
-
-        return wrapper
-
-    return accept_func
 
 
 class Series(BootstrapApp):
@@ -644,10 +862,10 @@ def apply_default_value(params):
     return wrapper
 
 
-class Stats(BootstrapApp):
+class Leaderboard(BootstrapApp):
     def setup(self):
 
-        self.title = "Statistics"
+        self.title = "Leaderboard"
 
         def layout_func():
 
@@ -715,7 +933,7 @@ class Stats(BootstrapApp):
                             breadcrumb_layout(
                                 [("Home", "/"), (f"{self.title}", "")]
                             ),
-                            html.H2("Statistics"),
+                            html.H2(self.title),
                             table,
                         ]
                     ),
@@ -781,12 +999,12 @@ def match_methods(forecast_dicts, methods):
     return set(matched_series_names)
 
 
-class Filter(BootstrapApp):
+class Search(BootstrapApp):
     def setup(self):
 
         self.config.suppress_callback_exceptions = True
 
-        self.title = "Filter"
+        self.title = "Search"
 
         self.layout = html.Div(
             header

@@ -101,6 +101,7 @@
   },
   {
     "title": "US Personal Consumption Expenditures: Chain-type Price Index (% Change, 1 Year)",
+    "short_title": "US Inflation",
     "source": "Fred",
     "url": "https://api.stlouisfed.org/fred/series/observations?series_id=PCEPI&units=pc1",
     "frequency": "MS",
@@ -110,9 +111,10 @@
     ]
   },
   {
-    "title": "US Gross Private Domestic Investment (% Change, 1 Year)",
+    "title": "US Gross Private Domestic Investment",
+    "short_title": "US Investment Growth",
     "source": "Fred",
-    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=GPDI&units=pc1",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=GPDI",
     "frequency": "MS",
     "tags": [
       "US",
@@ -120,9 +122,10 @@
     ]
   },
   {
-    "title": "US Personal Consumption Expenditures Excluding Food and Energy (Chain-Type Price Index) (% Change, 1 Year)",
+    "title": "US Personal Consumption Expenditures Excluding Food and Energy (Chain-Type Price Index)",
+    "short_title": "US Consumption Growth",
     "source": "Fred",
-    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=BPCCRO1Q156NBEA&units=pc1",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=BPCCRO1Q156NBEA",
     "frequency": "MS",
     "tags": [
       "US",
@@ -130,9 +133,10 @@
     ]
   },
    {
-    "title": "US 10-Year Treasury Constant Maturity Rate (% Change, 1 Year)",
+    "title": "US 10-Year Treasury Constant Maturity Rate",
+     "short_title": "US Interest Rates",
     "source": "Fred",
-    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&frequency=m&units=pc1",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&frequency=m",
     "frequency": "MS",
     "tags": [
       "US",

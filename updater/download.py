@@ -12,9 +12,12 @@ from requests.exceptions import HTTPError
 
 
 class DataSource(ABC):
-    def __init__(self, download_path, title, url, frequency, tags):
+    def __init__(
+        self, download_path, title, url, frequency, tags, short_title=None
+    ):
         self.download_path = download_path
         self.title = title
+        self.short_title = short_title
         self.url = url
         self.frequency = frequency
         self.tags = tags
@@ -69,10 +72,7 @@ class Fred(DataSource):
         if not api_key:
             raise ValueError(f"Please add a FRED API key to {api_key_file} .")
 
-        payload = {
-            "api_key": api_key,
-            "file_type": 'json'
-        }
+        payload = {"api_key": api_key, "file_type": "json"}
 
         try:
             response = requests.get(self.url, params=payload)
@@ -86,14 +86,14 @@ class Fred(DataSource):
 
         data = response.json()
 
-        df = pd.DataFrame(data['observations'])[['date', 'value']]
+        df = pd.DataFrame(data["observations"])[["date", "value"]]
 
         # Set index
-        df['date'] = pd.to_datetime(df['date'])
-        df = df.set_index('date')
+        df["date"] = pd.to_datetime(df["date"])
+        df = df.set_index("date")
 
         # FRED uses '.' to represent null values - replace with NaN
-        df['value'] = df['value'].replace('.', np.NaN).astype(float)
+        df["value"] = df["value"].replace(".", np.NaN).astype(float)
         df = df.dropna()
 
         return df

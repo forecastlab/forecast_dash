@@ -322,7 +322,7 @@ def component_news_5col():
     return dbc.Col(
         [html.H1("Latest News")]
         + body
-        + [html.A(html.P("View all posts"), href="/blog"),],
+        + [html.A(html.P("View all posts"), href="/blog")],
         lg=5,
     )
 
@@ -454,7 +454,7 @@ class Index(BootstrapApp):
                                 [
                                     "US Unemployment",
                                     "US GDP Growth",
-                                    "US Gross Private Domestic Investment (% Change, 1 Year)",
+                                    "US Personal Consumption Expenditures Excluding Food and Energy (Chain-Type Price Index) (% Change, 1 Year)",
                                 ],
                             ),
                             # Row 3 - Leaderboard
@@ -463,7 +463,7 @@ class Index(BootstrapApp):
                                     dbc.Col(
                                         [
                                             html.H1(
-                                                "Featured Series",
+                                                "US Interest Rate",
                                                 style={"text-align": "center"},
                                             ),
                                             html.A(
@@ -471,7 +471,7 @@ class Index(BootstrapApp):
                                                     dcc.Graph(
                                                         figure=get_thumbnail_figure(
                                                             get_forecast_data(
-                                                                "Australian GDP Growth"
+                                                                "US 10-Year Treasury Constant Maturity Rate (% Change, 1 Year)"
                                                             )
                                                         ),
                                                         config={
@@ -523,12 +523,7 @@ class Index(BootstrapApp):
                                     ),
                                 ]
                             ),
-                            # Row 4 - UK Snapshot
-                            component_2col(
-                                "UK",
-                                ["UK Inflation (RPI)", "UK Inflation (RPI)",],
-                            ),
-                            # Row 5 - Australia Snapshot
+                            # Row 4 - Australia Snapshot
                             component_3col(
                                 "Australia",
                                 [
@@ -537,6 +532,12 @@ class Index(BootstrapApp):
                                     "Australian Unemployment",
                                 ],
                             ),
+                            # Row 5 - UK Snapshot
+                            component_2col(
+                                "UK",
+                                ["UK Inflation (RPI)", "UK Inflation (RPI)",],
+                            ),
+
                         ]
                     ),
                     # dbc.Container(

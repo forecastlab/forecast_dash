@@ -332,35 +332,24 @@ def component_news_5col():
         lg=5,
     )
 
+
 def component_leaderboard_5col():
 
     leaderboard_counts = get_leaderboard_df().iloc[:10, :]
 
-
     body = []
 
     for index, row in leaderboard_counts.iterrows():
-        body.append(
-            html.Li(
-                index,
-                className="lead",
-            )
-        )
-
+        body.append(html.Li(index, className="lead",))
 
     return dbc.Col(
         [
             html.H1("Leaderboard"),
-            html.P("Ranked by number of times each method was selected as the best performer"),
-            html.Ol(
-                body
+            html.P(
+                "Ranked by number of times each method was selected as the best performer"
             ),
-            html.A(
-                html.P(
-                    "View full leaderboard"
-                ),
-                href="/leaderboard",
-            ),
+            html.Ol(body),
+            html.A(html.P("View full leaderboard"), href="/leaderboard",),
         ],
         lg=5,
     )
@@ -480,7 +469,7 @@ class Index(BootstrapApp):
                                         lg=7,
                                         className="border-right",
                                     ),
-                                    component_leaderboard_5col()
+                                    component_leaderboard_5col(),
                                 ]
                             ),
                             # Row 4 - Australia Snapshot
@@ -610,8 +599,11 @@ class Series(BootstrapApp):
         @series_input(inputs, location_id="url")
         def update_breadcrumb(series_data_dict):
 
-            return series_data_dict["data_source_dict"]["short_title"] if "short_title" in series_data_dict["data_source_dict"] else \
-                series_data_dict["data_source_dict"]["title"]
+            return (
+                series_data_dict["data_source_dict"]["short_title"]
+                if "short_title" in series_data_dict["data_source_dict"]
+                else series_data_dict["data_source_dict"]["title"]
+            )
 
         @self.callback(
             Output("series_graph", "children"),
@@ -812,6 +804,7 @@ def apply_default_value(params):
 
     return wrapper
 
+
 def get_leaderboard_df():
     try:
         stats = get_forecast_data("statistics")
@@ -827,9 +820,9 @@ def get_leaderboard_df():
 
     for series_dict in source_series_list:
         try:
-            forecast_series_dicts[
+            forecast_series_dicts[series_dict["title"]] = get_forecast_data(
                 series_dict["title"]
-            ] = get_forecast_data(series_dict["title"])
+            )
         except FileNotFoundError:
             continue
 
@@ -849,9 +842,9 @@ def get_leaderboard_df():
 
     counts = pd.DataFrame(
         stats_raw["Method"]
-            .value_counts()
-            .rename("Total")
-            .append(unchosen_counts)
+        .value_counts()
+        .rename("Total")
+        .append(unchosen_counts)
     )
 
     return counts

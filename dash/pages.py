@@ -438,7 +438,7 @@ class Index(BootstrapApp):
                                 [
                                     "US Unemployment",
                                     "US GDP Growth",
-                                    "US Personal Consumption Expenditures Excluding Food and Energy (Chain-Type Price Index)",
+                                    "US Personal Consumption Expenditures: Chain-type Price Index (% Change, 1 Year)",
                                 ],
                             ),
                             # Row 3 - Leaderboard

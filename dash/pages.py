@@ -166,7 +166,11 @@ def get_series_figure(data_dict, model_name):
         - series_df.index[0].to_pydatetime()
     )
 
-    title = f"{data_dict['data_source_dict']['short_title']} - {data_dict['data_source_dict']['title']}"
+    title = (
+        data_dict["data_source_dict"]["short_title"]
+        if "short_title" in data_dict["data_source_dict"]
+        else data_dict["data_source_dict"]["title"]
+    )
 
     layout = go.Layout(
         title=title,

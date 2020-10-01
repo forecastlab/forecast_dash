@@ -241,7 +241,10 @@ def component_figs_2col(row_title, series_titles):
     return dbc.Row(
         [
             dbc.Col(
-                [html.H1(row_title, style={"text-align": "center"}),], lg=12
+                [
+                    html.H1(row_title, style={"text-align": "center"}),
+                ],
+                lg=12,
             ),
         ]
         + [
@@ -274,7 +277,10 @@ def component_figs_3col(row_title, series_titles):
     return dbc.Row(
         [
             dbc.Col(
-                [html.H1(row_title, style={"text-align": "center"}),], lg=12
+                [
+                    html.H1(row_title, style={"text-align": "center"}),
+                ],
+                lg=12,
             ),
         ]
         + [
@@ -344,7 +350,12 @@ def component_leaderboard_5col():
     body = []
 
     for index, row in leaderboard_counts.iterrows():
-        body.append(html.Li(index, className="lead",))
+        body.append(
+            html.Li(
+                index,
+                className="lead",
+            )
+        )
 
     return dbc.Col(
         [
@@ -353,7 +364,10 @@ def component_leaderboard_5col():
                 "Ranked by number of times each method was selected as the best performer"
             ),
             html.Ol(body),
-            html.A(html.P("View full leaderboard"), href="/leaderboard",),
+            html.A(
+                html.P("View full leaderboard"),
+                href="/leaderboard",
+            ),
         ],
         lg=5,
     )
@@ -488,7 +502,10 @@ class Index(BootstrapApp):
                             # Row 5 - UK Snapshot
                             component_figs_2col(
                                 "UK",
-                                ["UK Inflation (RPI)", "UK Inflation (RPI)",],
+                                [
+                                    "UK Inflation (RPI)",
+                                    "UK Inflation (RPI)",
+                                ],
                             ),
                         ]
                     ),

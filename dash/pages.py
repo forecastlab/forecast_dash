@@ -875,7 +875,7 @@ class Leaderboard(BootstrapApp):
                     {"methods": [row.children[0].children]}, doseq=True
                 )
                 row.children[0].children = html.A(
-                    row.children[0].children, href=f"/filter/?{state}"
+                    row.children[0].children, href=f"/search/?{state}"
                 )
 
             return html.Div(

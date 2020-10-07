@@ -380,7 +380,7 @@ def component_git_version():
     # %n: literal newline
     # %H: commit hash
     # %h: abbreviated commit hash
-    # %ar: author relative date
+    # %ai: author date
     # %an: author name
     # %s: subject
     git_output = (

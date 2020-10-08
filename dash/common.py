@@ -5,6 +5,8 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 
+import os
+
 header = [
     dbc.NavbarSimple(
         children=[
@@ -120,6 +122,74 @@ def breadcrumb_layout(crumbs):
         navbar=True,
     )
 
+def component_git_version():
+
+    # Get the current git status
+    # %n: literal newline
+    # %H: commit hash
+    # %h: abbreviated commit hash
+    # %ai: author date
+    # %an: author name
+    # %s: subject
+    git_output = (
+        os.popen('git show --no-patch --format="%H%n%h%n%ai%n%an%n%s"')
+        .read()
+        .splitlines()
+    )
+
+    git_hash = git_output[0]
+    git_shorthash = git_output[1]
+    git_time = git_output[2]
+    git_author = git_output[3]
+
+    # Gotcha: git_subject might contain newlines
+    git_subject = "\n".join(git_output[4:])
+
+    github_home_url = "https://github.com/sjtrny/forecast_dash/"
+    github_patch_url = github_home_url + "commit/" + git_hash
+
+    return dbc.Col([
+        html.Hr(),
+        html.H3("Current Version"),
+        dbc.Card([
+            dbc.CardHeader(git_time),
+            dbc.CardBody(
+                [
+                    html.H5(git_subject, className="card-title"),
+                    html.P(f"by {git_author}", className="card-text"),
+                ]
+            ),
+            dbc.CardFooter([
+                dbc.CardLink(git_shorthash, href=github_patch_url),
+            ]),
+        ], color="dark", outline=True),
+        html.P(
+            [
+                html.A(
+                    "Development homepage", href=github_home_url
+                ),
+                " on github.",
+            ]
+        ),
+    ])
+
+footer = [
+    dbc.Row([
+
+        dbc.Col([
+            html.Hr(),
+            html.H3("Sections"),
+            dbc.ListGroup([
+                dbc.ListGroupItem(html.A("Find a Series", href="/search")),
+                dbc.ListGroupItem(html.A("Leaderboard", href="/leaderboard")),
+                dbc.ListGroupItem(html.A("Blog", href="/blog")),
+                dbc.ListGroupItem(html.A("Methodology", href="/methodology")),
+                dbc.ListGroupItem(html.A("About", href="/about")),
+            ]),
+        ], lg=7),
+        component_git_version()
+    ])
+]
 
 class BootstrapApp(dash.Dash, ABC):
     def __init__(self, name, server, url_base_pathname):

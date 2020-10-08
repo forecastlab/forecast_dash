@@ -12,7 +12,7 @@ import dash_html_components as html
 import numpy as np
 import pandas as pd
 import plotly.graph_objs as go
-from common import BootstrapApp, header, breadcrumb_layout
+from common import BootstrapApp, header, breadcrumb_layout, footer
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
 from frontmatter import Frontmatter
@@ -374,61 +374,7 @@ def component_leaderboard_5col():
     )
 
 
-def component_git_version():
 
-    # Get the current git status
-    # %n: literal newline
-    # %H: commit hash
-    # %h: abbreviated commit hash
-    # %ai: author date
-    # %an: author name
-    # %s: subject
-    git_output = (
-        os.popen('git show --no-patch --format="%H%n%h%n%ai%n%an%n%s"')
-        .read()
-        .splitlines()
-    )
-
-    git_hash = git_output[0]
-    git_shorthash = git_output[1]
-    git_time = git_output[2]
-    git_author = git_output[3]
-
-    # Gotcha: git_subject might contain newlines
-    git_subject = "\n".join(git_output[4:])
-
-    github_home_url = "https://github.com/sjtrny/forecast_dash/"
-    github_patch_url = github_home_url + "commit/" + git_hash
-
-    return dbc.Row(
-        [
-            dbc.Col(
-                [
-                    html.H3("Git Version", style={"text-align": "center"}),
-                    html.P(
-                        [
-                            html.A(
-                                "Development homepage", href=github_home_url
-                            ),
-                            " on github. Current deployed version:",
-                        ]
-                    ),
-                    html.P(
-                        [
-                            "[",
-                            html.A(git_shorthash, href=github_patch_url),
-                            "] ",
-                            git_time,
-                            " (",
-                            git_author,
-                            ")",
-                        ]
-                    ),
-                    html.P(git_subject),
-                ]
-            )
-        ]
-    )
 
 
 class Index(BootstrapApp):
@@ -565,11 +511,11 @@ class Index(BootstrapApp):
                                     "UK Inflation (RPI)",
                                 ],
                             ),
-                            # Row 6 - Git Version
-                            component_git_version(),
                         ]
-                    ),
+                        + footer
+                    , style={'margin-bottom': "64px"}),
                 ]
+
             )
 
         self.layout = layout_func

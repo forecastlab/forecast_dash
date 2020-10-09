@@ -112,7 +112,7 @@ def footer():
     from app import nav_routes
 
     return [
-        dbc.Row(dbc.Col(html.Hr(), lg=12),),
+        dbc.Row(dbc.Col(html.Hr(style={'margin-top': '64px'}), lg=12),),
         dbc.Row(
             [
                 dbc.Col(
@@ -126,7 +126,7 @@ def footer():
                 ),
                 component_git_version(),
             ]
-        )
+        , style={"margin-bottom": "64px"})
     ]
 
 

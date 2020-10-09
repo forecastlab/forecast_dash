@@ -507,8 +507,7 @@ class Index(BootstrapApp):
                                 ],
                             ),
                         ]
-                        + footer(),
-                        style={"margin-bottom": "64px"},
+                        + footer()
                     ),
                 ]
             )
@@ -588,8 +587,7 @@ class Series(BootstrapApp):
                             ]
                         ),
                     ]
-                    + footer(),
-                    style={"margin-bottom": "64px"},
+                    + footer()
                 ),
             ]
         )
@@ -910,8 +908,7 @@ class Leaderboard(BootstrapApp):
                             html.H2(self.title),
                             table,
                         ]
-                        + footer(),
-                        style={"margin-bottom": "64px"},
+                        + footer()
                     ),
                 ]
             )
@@ -1006,7 +1003,6 @@ class Search(BootstrapApp):
                         ),
                     ]
                     + footer(),
-                    style={"margin-bottom": "64px"},
                 ),
             ]
         )

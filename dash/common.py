@@ -112,21 +112,31 @@ def footer():
     from app import nav_routes
 
     return [
-        dbc.Row(dbc.Col(html.Hr(style={'margin-top': '64px'}), lg=12),),
+        dbc.Row(
+            dbc.Col(html.Hr(style={"margin-top": "64px"}), lg=12),
+        ),
         dbc.Row(
             [
                 dbc.Col(
                     [
-                        dbc.Nav([
-                            dbc.NavItem(dbc.NavLink(x[1], href=x[2], external_link=True))
-                            for x in nav_routes
-                        ], vertical="md",)
+                        dbc.Nav(
+                            [
+                                dbc.NavItem(
+                                    dbc.NavLink(
+                                        x[1], href=x[2], external_link=True
+                                    )
+                                )
+                                for x in nav_routes
+                            ],
+                            vertical="md",
+                        )
                     ],
                     lg=7,
                 ),
                 component_git_version(),
-            ]
-        , style={"margin-bottom": "64px"})
+            ],
+            style={"margin-bottom": "64px"},
+        ),
     ]
 
 

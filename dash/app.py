@@ -5,7 +5,7 @@ from pages_static import Methodology, About
 
 from blog import BlogSection
 
-home_route = (Index, "home", "/")
+home_route = (Index, "Business Forecast Lab", "/")
 
 nav_routes = [
     (Search, "Find a Series", "/search/"),
@@ -18,9 +18,6 @@ nav_routes = [
 dynamic_routes = [
     (Series, "Series", "/series/"),
 ]
-
-# from routes import home_route, nav_routes, dynamic_routes
-
 
 class MyApp(MultiPageApp):
     def get_routes(self):

@@ -9,8 +9,6 @@ import json
 
 class Methodology(MarkdownApp):
 
-    title = "Methodology"
-
     markdown = """
 # Methodology
 
@@ -73,8 +71,6 @@ def parse_people(filepath):
 
 
 class About(BootstrapApp):
-
-    title = "About"
 
     def setup(self):
 

@@ -375,8 +375,6 @@ def component_leaderboard_5col():
 class Index(BootstrapApp):
     def setup(self):
 
-        self.title = "Business Forecast Lab"
-
         feature_series_title = "Australian GDP Growth"
 
         def layout_func():
@@ -517,8 +515,6 @@ class Index(BootstrapApp):
 
 class Series(BootstrapApp):
     def setup(self):
-
-        self.title = "Series"
 
         self.layout = html.Div(
             header()
@@ -875,8 +871,6 @@ def get_leaderboard_df():
 class Leaderboard(BootstrapApp):
     def setup(self):
 
-        self.title = "Leaderboard"
-
         def layout_func():
 
             counts = get_leaderboard_df()
@@ -976,8 +970,6 @@ class Search(BootstrapApp):
     def setup(self):
 
         self.config.suppress_callback_exceptions = True
-
-        self.title = "Find a Series"
 
         self.layout = html.Div(
             header()

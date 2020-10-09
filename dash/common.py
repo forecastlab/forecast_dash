@@ -152,6 +152,8 @@ class BootstrapApp(dash.Dash, ABC):
             external_stylesheets=external_stylesheets,
         )
 
+        self.title = name
+
         self.setup()
 
     @abstractmethod
@@ -166,14 +168,7 @@ class MarkdownApp(BootstrapApp):
     def markdown(cls):
         return NotImplementedError
 
-    @property
-    @classmethod
-    @abstractmethod
-    def title(cls):
-        return NotImplementedError
-
     def setup(self):
-        self.title = type(self).title
 
         self.layout = html.Div(
             header()
@@ -186,8 +181,7 @@ class MarkdownApp(BootstrapApp):
                         ),
                         dcc.Markdown(type(self).markdown),
                     ]
-                    + footer(),
-                    style={"margin-bottom": "64px"},
+                    + footer()
                 ),
             ]
         )

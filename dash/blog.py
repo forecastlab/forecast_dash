@@ -12,8 +12,6 @@ from util import glob_re, location_ignore_null, parse_state
 class Blog(BootstrapApp):
     def setup(self):
 
-        self.title = "Blog"
-
         filenames = glob_re(r".*.md", "../blog")
 
         blog_posts = []
@@ -70,8 +68,6 @@ class Blog(BootstrapApp):
 
 class Post(BootstrapApp):
     def setup(self):
-
-        self.title = "Post"
 
         self.layout = html.Div(
             header()
@@ -146,6 +142,6 @@ class Post(BootstrapApp):
 class BlogSection(MultiPageApp):
     def get_routes(self):
         return [
-            Route(Blog, "index", "/"),
-            Route(Post, "post", "/post/"),
+            Route(Blog, "Blog", "/"),
+            Route(Post, "Post", "/post/"),
         ]

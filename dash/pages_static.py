@@ -2,7 +2,7 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 
-from common import MarkdownApp, BootstrapApp, header, breadcrumb_layout
+from common import MarkdownApp, BootstrapApp, header, breadcrumb_layout, footer
 
 import json
 
@@ -79,7 +79,7 @@ class About(BootstrapApp):
     def setup(self):
 
         self.layout = html.Div(
-            header
+            header()
             + [
                 dcc.Location(id="url", refresh=False),
                 dbc.Container(
@@ -142,7 +142,9 @@ class About(BootstrapApp):
                                 )
                             ]
                         ),
-                    ],
+                    ]
+                    + footer(),
+                    style={"margin-bottom": "64px"},
                     className="mb-5",
                 ),
             ]

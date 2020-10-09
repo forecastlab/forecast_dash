@@ -1,7 +1,7 @@
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
-from common import BootstrapApp, header, breadcrumb_layout
+from common import BootstrapApp, header, breadcrumb_layout, footer
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
 from frontmatter import Frontmatter
@@ -53,7 +53,7 @@ class Blog(BootstrapApp):
             )
 
         self.layout = html.Div(
-            header
+            header()
             + [
                 dcc.Location(id="url", refresh=False),
                 dbc.Container(
@@ -61,6 +61,8 @@ class Blog(BootstrapApp):
                         breadcrumb_layout([("Home", "/"), ("Blog", "")]),
                         dbc.Row(dbc.Col(body, lg=12)),
                     ]
+                    + footer(),
+                    style={"margin-bottom": "64px"},
                 ),
             ]
         )
@@ -72,7 +74,7 @@ class Post(BootstrapApp):
         self.title = "Post"
 
         self.layout = html.Div(
-            header
+            header()
             + [
                 dcc.Location(id="url", refresh=False),
                 dbc.Container(

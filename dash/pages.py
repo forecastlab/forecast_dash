@@ -1,6 +1,5 @@
 import ast
 import json
-import os
 import pickle
 import re
 from functools import wraps
@@ -16,7 +15,6 @@ from common import BootstrapApp, header, breadcrumb_layout, footer
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
 from frontmatter import Frontmatter
-
 from util import glob_re, location_ignore_null, parse_state
 
 
@@ -374,9 +372,6 @@ def component_leaderboard_5col():
     )
 
 
-
-
-
 class Index(BootstrapApp):
     def setup(self):
 
@@ -387,7 +382,7 @@ class Index(BootstrapApp):
         def layout_func():
 
             return html.Div(
-                header
+                header()
                 + [
                     dcc.Location(id="url", refresh=False),
                     # Mission Statement
@@ -512,10 +507,10 @@ class Index(BootstrapApp):
                                 ],
                             ),
                         ]
-                        + footer
-                    , style={'margin-bottom': "64px"}),
+                        + footer(),
+                        style={"margin-bottom": "64px"},
+                    ),
                 ]
-
             )
 
         self.layout = layout_func
@@ -527,7 +522,7 @@ class Series(BootstrapApp):
         self.title = "Series"
 
         self.layout = html.Div(
-            header
+            header()
             + [
                 dcc.Location(id="url", refresh=False),
                 dbc.Container(
@@ -593,6 +588,8 @@ class Series(BootstrapApp):
                             ]
                         ),
                     ]
+                    + footer(),
+                    style={"margin-bottom": "64px"},
                 ),
             ]
         )
@@ -902,7 +899,7 @@ class Leaderboard(BootstrapApp):
                 )
 
             return html.Div(
-                header
+                header()
                 + [
                     dcc.Location(id="url", refresh=False),
                     dbc.Container(
@@ -913,6 +910,8 @@ class Leaderboard(BootstrapApp):
                             html.H2(self.title),
                             table,
                         ]
+                        + footer(),
+                        style={"margin-bottom": "64px"},
                     ),
                 ]
             )
@@ -981,10 +980,10 @@ class Search(BootstrapApp):
 
         self.config.suppress_callback_exceptions = True
 
-        self.title = "Search"
+        self.title = "Find a Series"
 
         self.layout = html.Div(
-            header
+            header()
             + [
                 dcc.Location(id="url", refresh=False),
                 dbc.Container(
@@ -1006,6 +1005,8 @@ class Search(BootstrapApp):
                             ]
                         ),
                     ]
+                    + footer(),
+                    style={"margin-bottom": "64px"},
                 ),
             ]
         )

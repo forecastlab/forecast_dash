@@ -80,14 +80,12 @@ def component_git_version():
 
     return dbc.Col(
         [
-            html.Hr(),
-            html.H3("Current Version"),
             dbc.Card(
                 [
                     dbc.CardHeader(git_time),
                     dbc.CardBody(
                         [
-                            html.H5(git_subject, className="card-title"),
+                            html.H6(git_subject, className="card-title"),
                             html.P(f"by {git_author}", className="card-text"),
                         ]
                     ),
@@ -114,18 +112,15 @@ def footer():
     from app import nav_routes
 
     return [
+        dbc.Row(dbc.Col(html.Hr(), lg=12),),
         dbc.Row(
             [
                 dbc.Col(
                     [
-                        html.Hr(),
-                        html.H3("Sections"),
-                        dbc.ListGroup(
-                            [
-                                dbc.ListGroupItem(html.A(x[1], href=x[2]))
-                                for x in nav_routes
-                            ]
-                        ),
+                        dbc.Nav([
+                            dbc.NavItem(dbc.NavLink(x[1], href=x[2], external_link=True))
+                            for x in nav_routes
+                        ], vertical="md",)
                     ],
                     lg=7,
                 ),

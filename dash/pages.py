@@ -11,11 +11,10 @@ import dash_html_components as html
 import numpy as np
 import pandas as pd
 import plotly.graph_objs as go
-from common import BootstrapApp, header, breadcrumb_layout
+from common import BootstrapApp, header, breadcrumb_layout, footer
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
 from frontmatter import Frontmatter
-
 from util import glob_re, location_ignore_null, parse_state
 
 
@@ -383,7 +382,7 @@ class Index(BootstrapApp):
         def layout_func():
 
             return html.Div(
-                header
+                header()
                 + [
                     dcc.Location(id="url", refresh=False),
                     # Mission Statement
@@ -508,6 +507,7 @@ class Index(BootstrapApp):
                                 ],
                             ),
                         ]
+                        + footer()
                     ),
                 ]
             )
@@ -518,10 +518,8 @@ class Index(BootstrapApp):
 class Series(BootstrapApp):
     def setup(self):
 
-        self.title = "Series"
-
         self.layout = html.Div(
-            header
+            header()
             + [
                 dcc.Location(id="url", refresh=False),
                 dbc.Container(
@@ -587,6 +585,7 @@ class Series(BootstrapApp):
                             ]
                         ),
                     ]
+                    + footer()
                 ),
             ]
         )
@@ -874,8 +873,6 @@ def get_leaderboard_df():
 class Leaderboard(BootstrapApp):
     def setup(self):
 
-        self.title = "Leaderboard"
-
         def layout_func():
 
             counts = get_leaderboard_df()
@@ -896,7 +893,7 @@ class Leaderboard(BootstrapApp):
                 )
 
             return html.Div(
-                header
+                header()
                 + [
                     dcc.Location(id="url", refresh=False),
                     dbc.Container(
@@ -907,6 +904,7 @@ class Leaderboard(BootstrapApp):
                             html.H2(self.title),
                             table,
                         ]
+                        + footer()
                     ),
                 ]
             )
@@ -975,10 +973,8 @@ class Search(BootstrapApp):
 
         self.config.suppress_callback_exceptions = True
 
-        self.title = "Search"
-
         self.layout = html.Div(
-            header
+            header()
             + [
                 dcc.Location(id="url", refresh=False),
                 dbc.Container(
@@ -1000,6 +996,7 @@ class Search(BootstrapApp):
                             ]
                         ),
                     ]
+                    + footer(),
                 ),
             ]
         )

@@ -1,21 +1,30 @@
 from flask import Flask
 from multipage import Route, MultiPageApp
 from pages import Index, Series, Search, Leaderboard
-from blog import BlogSection
 from pages_static import Methodology, About
 
+from blog import BlogSection
+
+home_route = (Index, "Business Forecast Lab", "/")
+
+nav_routes = [
+    (Search, "Find a Series", "/search/"),
+    (Leaderboard, "Leaderboard", "/leaderboard/"),
+    (BlogSection, "Blog", "/blog"),
+    (Methodology, "Methodology", "/methodology/"),
+    (About, "About", "/about/"),
+]
+
+dynamic_routes = [
+    (Series, "Series", "/series/"),
+]
 
 class MyApp(MultiPageApp):
     def get_routes(self):
 
         return [
-            Route(Index, "index", "/"),
-            Route(BlogSection, "blog", "/blog"),
-            Route(Series, "series", "/series/"),
-            Route(Search, "search", "/search/"),
-            Route(Leaderboard, "stats", "/leaderboard/"),
-            Route(Methodology, "methodology", "/methodology/"),
-            Route(About, "about", "/about/"),
+            Route(r[0], r[1], r[2])
+            for r in [home_route] + nav_routes + dynamic_routes
         ]
 
 

@@ -109,7 +109,7 @@ def component_git_version():
 
 
 def footer():
-    from app import nav_routes
+    from app import home_route, nav_routes
 
     return [
         dbc.Row(
@@ -126,7 +126,7 @@ def footer():
                                         x[1], href=x[2], external_link=True
                                     )
                                 )
-                                for x in nav_routes
+                                for x in [home_route] + nav_routes
                             ],
                             vertical="md",
                         )

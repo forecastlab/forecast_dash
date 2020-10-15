@@ -6,7 +6,8 @@ from sklearn.base import BaseEstimator
 
 class ForecastModel(BaseEstimator, ABC):
     def __init__(self, h=None, level=None):
-        self.set_params(**{"h": h, "level": level})
+        self.h = h
+        self.level = level
 
     @property
     @staticmethod

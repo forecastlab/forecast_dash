@@ -375,7 +375,9 @@ def component_leaderboard_5col():
 class Index(BootstrapApp):
     def setup(self):
 
-        feature_series_title = "Australian GDP Growth"
+        self.title = "Business Forecast Lab"
+
+        feature_series_title = "Australian Unemployment"
 
         def layout_func():
 
@@ -438,7 +440,7 @@ class Index(BootstrapApp):
                                                         },
                                                     )
                                                 ],
-                                                href=f"/series?{urlencode({'title': 'Australian GDP Growth'})}",
+                                                href=f"/series?{urlencode({'title': feature_series_title})}",
                                             ),
                                         ],
                                         lg=7,
@@ -462,7 +464,7 @@ class Index(BootstrapApp):
                                     dbc.Col(
                                         [
                                             html.H1(
-                                                "US Interest Rate",
+                                                "US Unemployment",
                                                 style={"text-align": "center"},
                                             ),
                                             html.A(
@@ -470,7 +472,7 @@ class Index(BootstrapApp):
                                                     dcc.Graph(
                                                         figure=get_thumbnail_figure(
                                                             get_forecast_data(
-                                                                "US 10-Year Treasury Constant Maturity Rate"
+                                                                "US Unemployment"
                                                             )
                                                         ),
                                                         config={
@@ -478,7 +480,7 @@ class Index(BootstrapApp):
                                                         },
                                                     )
                                                 ],
-                                                href=f"/series?{urlencode({'title': 'Australian GDP Growth'})}",
+                                                href=f"/series?{urlencode({'title': 'US Unemployment'})}",
                                             ),
                                         ],
                                         lg=7,
@@ -489,7 +491,7 @@ class Index(BootstrapApp):
                             ),
                             # Row 4 - Australia Snapshot
                             component_figs_3col(
-                                "Australia",
+                                "Australia Snapshot",
                                 [
                                     "Australian GDP Growth",
                                     "Australian Inflation (CPI)",
@@ -498,9 +500,9 @@ class Index(BootstrapApp):
                             ),
                             # Row 5 - UK Snapshot
                             component_figs_2col(
-                                "UK",
+                                "UK Snapshot",
                                 [
-                                    "UK Inflation (RPI)",
+                                    "UK Unemployment",
                                     "UK Inflation (RPI)",
                                 ],
                             ),

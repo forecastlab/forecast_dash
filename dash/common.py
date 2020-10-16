@@ -67,6 +67,8 @@ def component_git_version():
         .splitlines()
     )
 
+    git_output = [ 'abcd1234', 'abcd1234', '00:00', 'Test', 'Testing' ]
+    
     git_hash = git_output[0]
     git_shorthash = git_output[1]
     git_time = git_output[2]

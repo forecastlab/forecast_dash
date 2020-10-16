@@ -22,6 +22,7 @@ services:
       - ./data:/data
       - ./blog:/blog
       - ./shared_config:/shared_config
+      - ./.git:/.git/:ro
     networks:
       - web
       - default

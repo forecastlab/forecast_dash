@@ -54,6 +54,12 @@ def breadcrumb_layout(crumbs):
 
 def component_git_version():
 
+    git_hash = ''
+    git_shorthash = 'Unknown commit'
+    git_time = '00:00'
+    git_author = 'Unknown author'
+    git_subject = ''
+    
     # Get the current git status
     # %n: literal newline
     # %H: commit hash
@@ -61,21 +67,19 @@ def component_git_version():
     # %ai: author date
     # %an: author name
     # %s: subject
-    git_output = (
-        os.popen('git show --no-patch --format="%H%n%h%n%ai%n%an%n%s"')
-        .read()
-        .splitlines()
-    )
+    # Gotcha: The seemingly redundant --git-dir ../.git is a workaround for
+    # docker container isolation: .git is exported to /.git as read-only volume.
+    git_cmd = 'git --git-dir ../.git show --no-patch --format="%H%n%h%n%ai%n%an%n%s"'
+    git_output = os.popen(git_cmd).read().splitlines()
 
-    git_output = [ 'abcd1234', 'abcd1234', '00:00', 'Test', 'Testing' ]
-    
-    git_hash = git_output[0]
-    git_shorthash = git_output[1]
-    git_time = git_output[2]
-    git_author = git_output[3]
+    if len(git_output) >= 5:
+        git_hash = git_output[0]
+        git_shorthash = git_output[1]
+        git_time = git_output[2]
+        git_author = git_output[3]
 
-    # Gotcha: git_subject might contain newlines
-    git_subject = "\n".join(git_output[4:])
+        # Gotcha: git_subject might contain newlines
+        git_subject = "\n".join(git_output[4:])
 
     github_home_url = "https://github.com/sjtrny/forecast_dash/"
     github_patch_url = github_home_url + "commit/" + git_hash

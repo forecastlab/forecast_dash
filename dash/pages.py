@@ -394,18 +394,14 @@ class Index(BootstrapApp):
                                         "Our Mission", className="display-4"
                                     ),
                                     html.Hr(),
-                                    html.P(
-                                        "To make forecasting accessible to everyone by providing:",
-                                        className="lead",
-                                    ),
                                     html.Ul(
                                         [
                                             html.Li(
-                                                "up to date forecasts for common or important time series,",
+                                                "To make forecasting models accessible to everyone.",
                                                 className="lead",
                                             ),
                                             html.Li(
-                                                "evaluations and comparisons of forecasting methods.",
+                                                "To provide the latest economic and financial forecasts of commonly used time series.",
                                                 className="lead",
                                             ),
                                         ]

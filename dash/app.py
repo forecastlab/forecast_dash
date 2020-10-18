@@ -19,6 +19,7 @@ dynamic_routes = [
     (Series, "Series", "/series/"),
 ]
 
+
 class MyApp(MultiPageApp):
     def get_routes(self):
 

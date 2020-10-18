@@ -71,7 +71,6 @@ def parse_people(filepath):
 
 
 class About(BootstrapApp):
-
     def setup(self):
 
         self.layout = html.Div(

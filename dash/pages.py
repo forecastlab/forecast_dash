@@ -868,7 +868,6 @@ def get_leaderboard_df():
 
 class Leaderboard(BootstrapApp):
     def setup(self):
-
         def layout_func():
 
             counts = get_leaderboard_df()
@@ -919,13 +918,21 @@ def match_names(forecast_dicts, name_input):
     for series_title, forecast_dict in forecast_dicts.items():
 
         # Search title
-        re_results = re.search(name_terms, forecast_dict['data_source_dict']['title'], re.IGNORECASE)
+        re_results = re.search(
+            name_terms,
+            forecast_dict["data_source_dict"]["title"],
+            re.IGNORECASE,
+        )
         if re_results is not None:
             matched_series_names.append(series_title)
 
         # Search short_title
-        if 'short_title' in forecast_dict['data_source_dict']:
-            re_results = re.search(name_terms, forecast_dict['data_source_dict']['short_title'], re.IGNORECASE)
+        if "short_title" in forecast_dict["data_source_dict"]:
+            re_results = re.search(
+                name_terms,
+                forecast_dict["data_source_dict"]["short_title"],
+                re.IGNORECASE,
+            )
             if re_results is not None:
                 matched_series_names.append(series_title)
 
@@ -1069,7 +1076,7 @@ class Search(BootstrapApp):
 
             # Dynamically load methods
             stats = get_forecast_data("statistics")
-            all_methods = stats["models_used"]
+            all_methods = sorted(stats["models_used"])
 
             return filter_panel_children(parse_result, all_tags, all_methods)
 
@@ -1091,10 +1098,10 @@ class Search(BootstrapApp):
         @dash_kwarg([Input(i, "value") for i in component_ids])
         def filter_results(**kwargs):
 
-            print(kwargs['name'])
+            print(kwargs["name"])
             # Fix up name
-            if type(kwargs['name']) == list:
-                kwargs['name'] = "".join(kwargs['name'])
+            if type(kwargs["name"]) == list:
+                kwargs["name"] = "".join(kwargs["name"])
 
             # Filtering by AND-ing conditions together
 

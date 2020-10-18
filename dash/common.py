@@ -54,12 +54,12 @@ def breadcrumb_layout(crumbs):
 
 def component_git_version():
 
-    git_hash = ''
-    git_shorthash = 'Unknown commit'
-    git_time = '00:00'
-    git_author = 'Unknown author'
-    git_subject = ''
-    
+    git_hash = ""
+    git_shorthash = "Unknown commit"
+    git_time = "00:00"
+    git_author = "Unknown author"
+    git_subject = ""
+
     # Get the current git status
     # %n: literal newline
     # %H: commit hash
@@ -69,7 +69,9 @@ def component_git_version():
     # %s: subject
     # Gotcha: The seemingly redundant --git-dir ../.git is a workaround for
     # docker container isolation: .git is exported to /.git as read-only volume.
-    git_cmd = 'git --git-dir ../.git show --no-patch --format="%H%n%h%n%ai%n%an%n%s"'
+    git_cmd = (
+        'git --git-dir ../.git show --no-patch --format="%H%n%h%n%ai%n%an%n%s"'
+    )
     git_output = os.popen(git_cmd).read().splitlines()
 
     if len(git_output) >= 5:

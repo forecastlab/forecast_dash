@@ -918,9 +918,16 @@ def match_names(forecast_dicts, name_input):
 
     for series_title, forecast_dict in forecast_dicts.items():
 
-        re_results = re.search(name_terms, series_title, re.IGNORECASE)
+        # Search title
+        re_results = re.search(name_terms, forecast_dict['data_source_dict']['title'], re.IGNORECASE)
         if re_results is not None:
             matched_series_names.append(series_title)
+
+        # Search short_title
+        if 'short_title' in forecast_dict['data_source_dict']:
+            re_results = re.search(name_terms, forecast_dict['data_source_dict']['short_title'], re.IGNORECASE)
+            if re_results is not None:
+                matched_series_names.append(series_title)
 
     return set(matched_series_names)
 
@@ -1007,7 +1014,7 @@ class Search(BootstrapApp):
                         apply_default_value(params)(dbc.Input)(
                             id="name",
                             placeholder="Name of a series...",
-                            type="text",
+                            type="search",
                             value="",
                         ),
                         dbc.FormText("Type something in the box above"),
@@ -1045,7 +1052,7 @@ class Search(BootstrapApp):
             Output("filter_panel", "children"), [Input("url", "href")]
         )
         @location_ignore_null([Input("url", "href")], "url")
-        def display_value(value):
+        def filter_panel(value):
             parse_result = parse_state(value)
 
             # Dynamically load tags
@@ -1083,6 +1090,11 @@ class Search(BootstrapApp):
         )
         @dash_kwarg([Input(i, "value") for i in component_ids])
         def filter_results(**kwargs):
+
+            print(kwargs['name'])
+            # Fix up name
+            if type(kwargs['name']) == list:
+                kwargs['name'] = "".join(kwargs['name'])
 
             # Filtering by AND-ing conditions together
 

@@ -17,6 +17,8 @@ from dash.exceptions import PreventUpdate
 from frontmatter import Frontmatter
 from util import glob_re, location_ignore_null, parse_state
 
+import smtplib
+from email.message import EmailMessage
 
 def dash_kwarg(inputs):
     def accept_func(func):
@@ -1264,15 +1266,32 @@ class Contact(BootstrapApp):
             ]
         )
         def update_output(n_clicks, name, email, subject, message):     
-            if n_clicks:
-                return "Name:{}\nEmail:{}\nSubject:{}\nMessage:{}".format(
-                    name,
-                    email,
-                    subject,
-                    message
-                )
-            else:
+            if not n_clicks:
                 return ""
+
+            recipient = "TODO:account@domain"
+            
+            # Create a text/plain message
+            msg = EmailMessage()
+            msg["Subject"] = subject
+            msg["From"] = "{} <{}>".format(name, email)
+            msg["To"] = recipient
+            msg.set_content(message)
+
+            smtp_server = "TODO:smtp.domain"
+            smtp_port = 587
+            email_username = recipient
+            email_password = "TODO:password"
+            
+            # Send the message via our own SMTP server.
+            server = smtplib.SMTP(smtp_server, smtp_port)
+            server.ehlo()
+            server.starttls()
+            server.login(email_username, email_password)
+            server.send_message(msg)
+            server.close()
+
+            return "Thank you for your feedback. We will try to respond to you as soon as possible."
             
             
         @self.callback(
@@ -1281,6 +1300,7 @@ class Contact(BootstrapApp):
                 Output("input-email", "disabled"),
                 Output("input-subject", "disabled"),
                 Output("input-message", "disabled"),
+                Output("submit-button", "disabled"),
             ],
             [
                 Input("submit-button", "n_clicks"),
@@ -1288,6 +1308,6 @@ class Contact(BootstrapApp):
         )
         def update_output(n_clicks):
             if n_clicks:
-                return True, True, True, True
+                return True, True, True, True, True
             else:
-                return False, False, False, False
+                return False, False, False, False, False

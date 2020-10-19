@@ -4,6 +4,5 @@ date: "2020-08-11"
 author: Stephen Tierney
 ---
 
-**Hello world**, this is my first Jekyll blog post.
-
-I hope you like it!
+We've added the M4 Competition benchmark combination forecast to the available
+forecasting methods.

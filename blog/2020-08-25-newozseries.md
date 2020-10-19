@@ -4,6 +4,9 @@ date: "2020-08-25"
 author: Stephen Tierney
 ---
 
-**Hello world**, this is my first Jekyll blog post.
+The new Australian series are:
+- Australian Real GDP
+- Australian Current Account
+- Australian Change in House Prices
+- Australian Retail Sales
 
-I hope you like it!

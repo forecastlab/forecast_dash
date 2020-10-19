@@ -79,6 +79,25 @@ def parse_people(filepath):
     return result
 
 
+def parse_poweredby(filepath):
+
+    with open(filepath) as poweredby_file:
+        poweredby_list = json.load(poweredby_file)
+
+        return [
+            html.Ul(
+                [
+                    html.Li(
+                        html.A(
+                            poweredby_dict["name"],
+                            href=poweredby_dict["url"],
+                        )
+                    ) for poweredby_dict in poweredby_list
+                ]
+            ),
+        ]
+
+    
 class About(BootstrapApp):
     def setup(self):
 
@@ -124,6 +143,17 @@ class About(BootstrapApp):
                                 )
                             ]
                         ),
+                        dbc.Row(
+                            [
+                                dbc.Col(
+                                    [html.H2("Powered by:")]
+                                    + parse_poweredby(
+                                        "static_files/poweredby.json"
+                                    ),
+                                    lg=12,
+                                )
+                            ]
+                        ),                      
                         dbc.Row(
                             [
                                 dbc.Col(

@@ -1,0 +1,18 @@
+[
+  {
+    "name": "R/forecast",
+    "url": "https://cran.r-project.org/package=forecast"
+  },
+  {
+    "name": "scikit-learn",
+    "url": "https://scikit-learn.org/"
+  },
+  {
+    "name": "rpy2",
+    "url": "https://rpy2.github.io/"
+  },
+  {
+    "name": "Plotly Dash",
+    "url": "https://plotly.com/dash/"
+  }  
+]

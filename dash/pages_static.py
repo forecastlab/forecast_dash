@@ -25,21 +25,12 @@ and Practice” textbook freely available at
 
 def parse_people(filepath):
 
-    dh_image_file = 'static_files/DavidHouseman-ProfilePic.jpg'
-    dh_b64_image = base64.b64encode(open(dh_image_file, 'rb').read())
-
     with open(filepath) as person_file:
         person_list = json.load(person_file)
 
         result = []
 
         for person_dict in person_list:
-
-            img_url = person_dict["image_url"]
-
-            if img_url == 'dh_b64_img':
-                img_url = 'data:image/jpg;base64,{}'.format(dh_b64_image.decode())
-
             result.extend(
                 [
                     dbc.Row(
@@ -47,7 +38,7 @@ def parse_people(filepath):
                             dbc.Col(
                                 [
                                     html.Img(
-                                        src=img_url,
+                                        src=person_dict["image_url"],
                                         height="200px",
                                     )
                                 ],

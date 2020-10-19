@@ -1174,3 +1174,120 @@ class Search(BootstrapApp):
                 results = [html.P("No results found")]
 
             return results
+
+
+class Contact(BootstrapApp):
+    def setup(self):
+        self.layout = html.Div(
+            header() +
+            [
+                dcc.Location(id="url", refresh=False),
+                dbc.Container(
+                    [
+                        breadcrumb_layout(
+                            [("Home", "/"), (f"{self.title}", "")]
+                        ),
+                        dbc.Row(
+                            [
+                                dbc.Col(
+                                    [
+                                        dbc.FormGroup(
+                                            [
+                                                dbc.Label("Name", html_for="input-name"),
+                                                dbc.Input(
+                                                    id="input-name",
+                                                    type="text",
+                                                    placeholder="Enter name",
+                                                ),
+                                            ]
+                                        ),
+                                        dbc.FormGroup(
+                                            [
+                                                dbc.Label("Email", html_for="input-email"),
+                                                dbc.Input(
+                                                    id="input-email",
+                                                    type="text",
+                                                    placeholder="Enter email",
+                                                ),
+                                            ]
+                                        ),
+                                        dbc.FormGroup(
+                                            [
+                                                dbc.Label("Subject", html_for="input-subject"),
+                                                dbc.Input(
+                                                    id="input-subject",
+                                                    type="text",
+                                                    placeholder="Enter subject",
+                                                ),
+                                            ]
+                                        ),
+                                        dbc.FormGroup(
+                                            [
+                                                dbc.Label("Message", html_for="input-message"),
+                                                dcc.Textarea(
+                                                    id="input-message",
+                                                    placeholder="Enter message",
+                                                    style = {
+                                                        'width': '100%',
+                                                        'height': 200
+                                                    }
+                                                ),
+                                            ]
+                                        ),
+                                        dbc.Button(
+                                            "Submit",
+                                            id="submit-button"
+                                        ),
+                                        html.Div(
+                                            id="submit-feedback",
+                                            children=""
+                                        )
+                                    ]
+                                )
+                            ]
+                        )
+                    ] + footer(),
+                    style={"margin-bottom": "64px"},
+                    className="mb-5"
+                )
+            ]
+        )
+        
+        @self.callback(
+            Output("submit-feedback", "children"),
+            [
+                Input("submit-button", "n_clicks"),
+                Input("input-name", "value"),
+                Input("input-email", "value"),
+                Input("input-subject", "value"),
+                Input("input-message", "value"),                
+            ]
+        )
+        def update_output(n_clicks, name, email, subject, message):     
+            if n_clicks:
+                return "Name:{}\nEmail:{}\nSubject:{}\nMessage:{}".format(
+                    name,
+                    email,
+                    subject,
+                    message
+                )
+            else:
+                return ""
+            
+            
+        @self.callback(
+            [
+                Output("input-name", "disabled"),
+                Output("input-email", "disabled"),
+                Output("input-subject", "disabled"),
+                Output("input-message", "disabled"),
+            ],
+            [
+                Input("submit-button", "n_clicks"),
+            ]
+        )
+        def update_output(n_clicks):
+            if n_clicks:
+                return True, True, True, True
+            else:
+                return False, False, False, False

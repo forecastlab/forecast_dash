@@ -1,6 +1,6 @@
 from flask import Flask
 from multipage import Route, MultiPageApp
-from pages import Index, Series, Search, Leaderboard
+from pages import Index, Series, Search, Leaderboard, Contact
 from pages_static import Methodology, About
 
 from blog import BlogSection
@@ -13,6 +13,7 @@ nav_routes = [
     (BlogSection, "Blog", "/blog"),
     (Methodology, "Methodology", "/methodology/"),
     (About, "About", "/about/"),
+    (Contact, "Contact", "/contact/"),
 ]
 
 dynamic_routes = [

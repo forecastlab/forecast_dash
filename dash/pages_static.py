@@ -10,6 +10,13 @@ import base64
 class Methodology(MarkdownApp):
 
     markdown = """
+# Data
+
+Data are sourced from the following sources:
+- [Australian Macro Database](http://ausmacrodata.org)
+- [St Louis Federal Reserve](https://api.stlouisfed.org)
+- [UK Office of National Statistics](https://www.ons.gov.uk)
+
 # Methodology
 
 The available models are listed in the [Leaderboard](/leaderboard/).
@@ -21,11 +28,11 @@ scheme described in \[1\], Sect 3.4, with forecast horizons of length 1-8.
 ![time series cross-validation](https://otexts.com/fpp2/fpp_files/figure-html/cv1-1.png)  
 \(Image reproduced with permission.\)
 
-The forecast accuracy or cross-validation score is computed by averaging over 
-the mean-squared error over the test sets and forecast horizons. The model with 
-the best forecast accuracy is selected by the Forecast Lab as the preferred 
-model. Forecasts from the other available models may be selected from the 
-drop-down menu in each Series page.
+The forecast accuracy or cross-validation score is computed by averaging 
+the mean-squared forecast error over the test sets and forecast horizons. 
+The model with the best forecast accuracy is selected by the Forecast Lab 
+as the preferred model. Forecasts from the other available models may be 
+selected from the drop-down menu in each Series page.
 
 
 \[0\] Makridakis, S., Spiliotis, E. and Assimakopoulos, V.,  

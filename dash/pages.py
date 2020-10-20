@@ -10,7 +10,6 @@ import dash_core_components as dcc
 import dash_html_components as html
 import numpy as np
 import pandas as pd
-import plotly.graph_objs as go
 from common import BootstrapApp, header, breadcrumb_layout, footer
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
@@ -33,7 +32,9 @@ def dash_kwarg(inputs):
 
 def get_forecast_plot_data(series_df, forecast_df):
 
-    line_history = go.Scatter(
+    # Plot series history
+    line_history = dict(
+        type="scatter",
         x=series_df.index,
         y=series_df["value"],
         name="Historical",
@@ -46,7 +47,9 @@ def get_forecast_plot_data(series_df, forecast_df):
     )
     forecast_error_x = [x.to_pydatetime() for x in forecast_error_x]
 
-    error_50 = go.Scatter(
+    # Plot CI50
+    error_50 = dict(
+        type="scatter",
         x=forecast_error_x,
         y=list(forecast_df["UB_50"]) + list(reversed(forecast_df["LB_50"])),
         fill="tozeroy",
@@ -55,7 +58,9 @@ def get_forecast_plot_data(series_df, forecast_df):
         name="50% CI",
     )
 
-    error_75 = go.Scatter(
+    # Plot CI75
+    error_75 = dict(
+        type="scatter",
         x=forecast_error_x,
         y=list(forecast_df["UB_75"]) + list(reversed(forecast_df["LB_75"])),
         fill="tozeroy",
@@ -64,7 +69,9 @@ def get_forecast_plot_data(series_df, forecast_df):
         name="75% CI",
     )
 
-    error_95 = go.Scatter(
+    # Plot CI95
+    error_95 = dict(
+        type="scatter",
         x=forecast_error_x,
         y=list(forecast_df["UB_95"]) + list(reversed(forecast_df["LB_95"])),
         fill="tozeroy",
@@ -73,7 +80,9 @@ def get_forecast_plot_data(series_df, forecast_df):
         name="95% CI",
     )
 
-    line_forecast = go.Scatter(
+    # Plot forecast
+    line_forecast = dict(
+        type="scatter",
         x=forecast_df.index,
         y=forecast_df["forecast"],
         name="Forecast",
@@ -86,24 +95,37 @@ def get_forecast_plot_data(series_df, forecast_df):
     return data
 
 
-def get_forecast_shapes(forecast_df):
+def get_plot_shapes(series_df, forecast_df):
 
     shapes = [
         {
             "type": "rect",
             # x-reference is assigned to the x-values
             "xref": "x",
+            "x0": series_df.index[0],
+            "x1": series_df.index[-1],
             # y-reference is assigned to the plot paper [0,1]
             "yref": "paper",
-            "x0": forecast_df.index[0],
             "y0": 0,
-            "x1": forecast_df.index[-1],
             "y1": 1,
-            "fillcolor": "rgba(0,0,0)",
-            "opacity": 0.1,
+            "fillcolor": "rgb(229, 236, 245)",
             "line": {"width": 0},
             "layer": "below",
-        }
+        },
+        {
+            "type": "rect",
+            # x-reference is assigned to the x-values
+            "xref": "x",
+            "x0": forecast_df.index[0],
+            "x1": forecast_df.index[-1],
+            # y-reference is assigned to the plot paper [0,1]
+            "yref": "paper",
+            "y0": 0,
+            "y1": 1,
+            "fillcolor": "rgb(206, 212, 220)",
+            "line": {"width": 0},
+            "layer": "below",
+        },
     ]
 
     return shapes
@@ -131,7 +153,9 @@ def get_thumbnail_figure(data_dict):
     forecast_df = data_dict["all_forecasts"][model_name]["forecast_df"]
 
     data = get_forecast_plot_data(series_df, forecast_df)
-    shapes = get_forecast_shapes(forecast_df)
+    shapes = get_plot_shapes(
+        data_dict["downloaded_dict"]["series_df"], forecast_df
+    )
 
     title = (
         data_dict["data_source_dict"]["short_title"]
@@ -139,17 +163,21 @@ def get_thumbnail_figure(data_dict):
         else data_dict["data_source_dict"]["title"]
     )
 
-    layout = go.Layout(
+    layout = dict(
         title={"text": title, "xanchor": "auto", "x": 0.5},
         height=480,
         showlegend=False,
-        xaxis=dict(fixedrange=True),
-        yaxis=dict(fixedrange=True),
+        xaxis=dict(
+            fixedrange=True,
+            range=[series_df.index[0], forecast_df.index[-1]],
+            gridcolor="rgb(255,255,255)",
+        ),
+        yaxis=dict(fixedrange=True, gridcolor="rgb(255,255,255)"),
         shapes=shapes,
         margin={"l": 0, "r": 0},
     )
 
-    return go.Figure(data, layout)
+    return dict(data=data, layout=layout)
 
 
 def get_series_figure(data_dict, model_name):
@@ -158,7 +186,7 @@ def get_series_figure(data_dict, model_name):
     forecast_df = data_dict["all_forecasts"][model_name]["forecast_df"]
 
     data = get_forecast_plot_data(series_df, forecast_df)
-    shapes = get_forecast_shapes(forecast_df)
+    shapes = get_plot_shapes(series_df, forecast_df)
 
     time_difference_forecast_to_start = (
         forecast_df.index[-1].to_pydatetime()
@@ -171,12 +199,13 @@ def get_series_figure(data_dict, model_name):
         else data_dict["data_source_dict"]["title"]
     )
 
-    layout = go.Layout(
+    layout = dict(
         title=title,
         height=720,
         xaxis=dict(
             fixedrange=True,
             type="date",
+            gridcolor="rgb(255,255,255)",
             range=[
                 series_df.index[
                     -16
@@ -219,11 +248,12 @@ def get_series_figure(data_dict, model_name):
             # Will disable all zooming and movement controls if True
             fixedrange=True,
             autorange=True,
+            gridcolor="rgb(255,255,255)",
         ),
         shapes=shapes,
     )
 
-    return go.Figure(data, layout)
+    return dict(data=data, layout=layout)
 
 
 def get_forecast_data(title):
@@ -342,7 +372,7 @@ def component_news_5col():
     )
 
 
-def component_leaderboard_5col():
+def component_leaderboard_5col(series_list):
 
     leaderboard_counts = get_leaderboard_df().iloc[:10, :]
 
@@ -489,17 +519,16 @@ class Index(BootstrapApp):
                             component_figs_3col(
                                 "Australia Snapshot",
                                 [
-                                    "Australian Unemployment",
                                     "Australian GDP Growth",
                                     "Australian Inflation (CPI)",
+                                    "Australian Unemployment",
                                 ],
                             ),
                             # Row 5 - UK Snapshot
-                            component_figs_3col(
+                            component_figs_2col(
                                 "UK Snapshot",
                                 [
                                     "UK Unemployment",
-                                    "UK GDP Growth",
                                     "UK Inflation (RPI)",
                                 ],
                             ),
@@ -822,20 +851,16 @@ def apply_default_value(params):
     return wrapper
 
 
-def get_leaderboard_df():
+def get_leaderboard_df(series_list):
     try:
         stats = get_forecast_data("statistics")
         all_methods = stats["models_used"]
     except FileNotFoundError:
         all_methods = []
 
-    data_sources_json_file = open("../shared_config/data_sources.json")
-    source_series_list = json.load(data_sources_json_file)
-    data_sources_json_file.close()
-
     forecast_series_dicts = {}
 
-    for series_dict in source_series_list:
+    for series_dict in series_list:
         try:
             forecast_series_dicts[series_dict["title"]] = get_forecast_data(
                 series_dict["title"]
@@ -869,9 +894,14 @@ def get_leaderboard_df():
 
 class Leaderboard(BootstrapApp):
     def setup(self):
+
+        data_sources_json_file = open("../shared_config/data_sources.json")
+        self.series_list = json.load(data_sources_json_file)
+        data_sources_json_file.close()
+
         def layout_func():
 
-            counts = get_leaderboard_df()
+            counts = get_leaderboard_df(self.series_list)
 
             counts["Proportion"] = counts["Total"] / counts["Total"].sum()
 
@@ -984,6 +1014,11 @@ class Search(BootstrapApp):
 
         self.config.suppress_callback_exceptions = True
 
+        # Dynamically load tags
+        data_sources_json_file = open("../shared_config/data_sources.json")
+        self.series_list = json.load(data_sources_json_file)
+        data_sources_json_file.close()
+
         self.layout = html.Div(
             header()
             + [
@@ -1061,16 +1096,12 @@ class Search(BootstrapApp):
         )
         @location_ignore_null([Input("url", "href")], "url")
         def filter_panel(value):
-            parse_result = parse_state(value)
 
-            # Dynamically load tags
-            data_sources_json_file = open("../shared_config/data_sources.json")
-            series_list = json.load(data_sources_json_file)
-            data_sources_json_file.close()
+            parse_result = parse_state(value)
 
             all_tags = []
 
-            for series_dict in series_list:
+            for series_dict in self.series_list:
                 all_tags.extend(series_dict["tags"])
 
             all_tags = sorted(set(all_tags))
@@ -1099,20 +1130,15 @@ class Search(BootstrapApp):
         @dash_kwarg([Input(i, "value") for i in component_ids])
         def filter_results(**kwargs):
 
-            print(kwargs["name"])
             # Fix up name
             if type(kwargs["name"]) == list:
                 kwargs["name"] = "".join(kwargs["name"])
 
             # Filtering by AND-ing conditions together
 
-            data_sources_json_file = open("../shared_config/data_sources.json")
-            source_series_list = json.load(data_sources_json_file)
-            data_sources_json_file.close()
-
             forecast_series_dicts = {}
 
-            for series_dict in source_series_list:
+            for series_dict in self.series_list:
                 try:
                     forecast_series_dicts[
                         series_dict["title"]

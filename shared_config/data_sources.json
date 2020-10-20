@@ -162,5 +162,15 @@
       "UK",
       "Economic"
     ]
+  },
+  {
+    "title": "UK GDP Growth",
+    "source": "Ons",
+    "url": "https://api.ons.gov.uk/timeseries/ihyq/dataset/qna/data",
+    "frequency": "Q",
+    "tags": [
+      "UK",
+      "Economic"
+    ]
   }
 ]

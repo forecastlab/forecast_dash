@@ -12,14 +12,31 @@ class Methodology(MarkdownApp):
     markdown = """
 # Methodology
 
-**This page is under construction.**
+The available models are listed in the [Leaderboard](/leaderboard/).
+These are based on the benchmark models used in the M4 Competition \[0\].
 
-It will contain the description of the models and other aspects of the
-methodology used to forecast the time series.
+The models are run on each dataset according to the time series cross-validation
+scheme described in \[1\], Sect 3.4, with forecast horizons of length 1-8.
 
-While we are busy with this document, we recommend “Forecasting: Principles
-and Practice” textbook freely available at
-[otexts.com/fpp2/](https://otexts.com/fpp2/)
+![time series cross-validation](https://otexts.com/fpp2/fpp_files/figure-html/cv1-1.png)  
+\(Image reproduced with permission.\)
+
+The forecast accuracy or cross-validation score is computed by averaging over 
+the mean-squared error over the test sets and forecast horizons. The model with 
+the best forecast accuracy is selected by the Forecast Lab as the preferred 
+model. Forecasts from the other available models may be selected from the 
+drop-down menu in each Series page.
+
+
+\[0\] Makridakis, S., Spiliotis, E. and Assimakopoulos, V.,  
+      _The M4 Competition: 100,000 time series and 61 forecasting methods,_  
+      Int. J. Forecasting 36 \(2020\) 54-74
+
+\[1\] Hyndman, R. and Athanasopoulos, G.,  
+      _Forecasting: Principles and Practice_
+      OTexts: Melbourne, Australia.  
+      [otexts.com/fpp2/](https://otexts.com/fpp2/)
+
     """
 
 

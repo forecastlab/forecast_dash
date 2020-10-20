@@ -489,16 +489,17 @@ class Index(BootstrapApp):
                             component_figs_3col(
                                 "Australia Snapshot",
                                 [
+                                    "Australian Unemployment",
                                     "Australian GDP Growth",
                                     "Australian Inflation (CPI)",
-                                    "Australian Unemployment",
                                 ],
                             ),
                             # Row 5 - UK Snapshot
-                            component_figs_2col(
+                            component_figs_3col(
                                 "UK Snapshot",
                                 [
                                     "UK Unemployment",
+                                    "UK GDP Growth",
                                     "UK Inflation (RPI)",
                                 ],
                             ),

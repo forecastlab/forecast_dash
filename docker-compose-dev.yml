@@ -2,31 +2,34 @@ version: "3"
 
 services:
 
-  updater:
-    build:
-      context: updater
-      dockerfile: ./Dockerfile
-    volumes:
-      - ./updater:/updater
-      - ./data:/data
-      - ./shared_config:/shared_config
-
   gunicorn:
     build:
       context: dash
       dockerfile: ./Dockerfile
-    command: gunicorn -b 0.0.0.0:80 app:server
-    ports:
-      - 80:80
+    expose:
+      - 80
     volumes:
       - ./dash:/dash
       - ./data:/data
+      - ./blog:/blog
       - ./shared_config:/shared_config
+      - ./.git:/.git/:ro
+    networks:
+      - default
+
+# VARNISH HERE
+
+  cache:
+    image: nginx
+    ports:
+      - 80:80
     networks:
       - web
       - default
-    depends_on:
-      - updater
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    # PUT TRAEFIK LABELS HERE
+
 
 networks:
   web:

@@ -16,6 +16,7 @@ from dash.exceptions import PreventUpdate
 from frontmatter import Frontmatter
 from util import glob_re, location_ignore_null, parse_state
 
+import flask
 
 def dash_kwarg(inputs):
     def accept_func(func):
@@ -374,7 +375,7 @@ def component_news_5col():
 
 def component_leaderboard_5col(series_list):
 
-    leaderboard_counts = get_leaderboard_df().iloc[:10, :]
+    leaderboard_counts = get_leaderboard_df(series_list).iloc[:10, :]
 
     body = []
 
@@ -406,6 +407,10 @@ class Index(BootstrapApp):
     def setup(self):
 
         self.title = "Business Forecast Lab"
+
+        data_sources_json_file = open("../shared_config/data_sources.json")
+        series_list = json.load(data_sources_json_file)
+        data_sources_json_file.close()
 
         feature_series_title = "Australian Unemployment"
 
@@ -512,7 +517,7 @@ class Index(BootstrapApp):
                                         lg=7,
                                         className="border-right",
                                     ),
-                                    component_leaderboard_5col(),
+                                    component_leaderboard_5col(series_list),
                                 ]
                             ),
                             # Row 4 - Australia Snapshot
@@ -1130,6 +1135,8 @@ class Search(BootstrapApp):
         @dash_kwarg([Input(i, "value") for i in component_ids])
         def filter_results(**kwargs):
 
+            print("HELLO")
+            print(flask.request.headers)
             # Fix up name
             if type(kwargs["name"]) == list:
                 kwargs["name"] = "".join(kwargs["name"])

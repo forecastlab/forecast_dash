@@ -117,18 +117,33 @@ class Ons(DataSource):
         except HTTPError as http_err:
             raise ValueError(f"HTTP error: {http_err} .")
 
-        # This will raise an exception JSON decoding fails
-        data = response.json()
+        # This will raise an exception if JSON decoding fails
+        json_data = response.json()
 
         dates = []
         values = []
-        for el in data["months"]:
-            dates.append(pd.to_datetime(el["date"], format="%Y %b"))
-            values.append(float(el["value"]))
 
-        df = pd.DataFrame(values, index=dates, columns=["value"])
+        if self.frequency == "MS":
+            dates = [
+                j["date"] for j in json_data["months"]
+            ]
+            values = [
+                float(j["value"]) for j in json_data["months"]
+            ]
+
+        elif self.frequency == "Q":
+            # Reformat "YYYY Qn" to "YYYY-Qn" before passing to pd.to_datetime
+            dates = [
+                '-'.join(j["date"].split()) for j in json_data["quarters"]
+            ]
+            values = [
+                float(j["value"]) for j in json_data["quarters"]
+            ]
+
+        df = pd.DataFrame(values, index=pd.to_datetime(dates), columns=["value"])
         df.index.name = "date"
 
+        #print(df)
         return df
 
 

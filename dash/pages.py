@@ -16,7 +16,6 @@ from dash.exceptions import PreventUpdate
 from frontmatter import Frontmatter
 from util import glob_re, location_ignore_null, parse_state
 
-
 def dash_kwarg(inputs):
     def accept_func(func):
         @wraps(func)

@@ -10,6 +10,7 @@ services:
       - ./updater:/updater
       - ./data:/data
       - ./shared_config:/shared_config
+      - nginx_cache:/nginx_cache:rw
 
   gunicorn:
     build:
@@ -17,23 +18,30 @@ services:
       dockerfile: ./Dockerfile
     expose:
       - 80
+    networks:
+      - default
     volumes:
       - ./dash:/dash
       - ./data:/data
       - ./blog:/blog
       - ./shared_config:/shared_config
       - ./.git:/.git/:ro
+
+  cache:
+    image: nginx
+    expose:
+      - 80
     networks:
-      - web
       - default
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - nginx_cache:/nginx_cache:rw
     labels:
-      - traefik.backend=my-awesome-app-events
+      - traefik.backend=website
       - traefik.docker.network=web
       - traefik.frontend.rule=Host:business-forecast-lab.com
       - traefik.enable=true
       - traefik.port=80
-    depends_on:
-      - updater
 
   traefik:
     image: traefik:alpine
@@ -47,9 +55,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik/traefik.toml:/traefik.toml
       - ./shared_config/acme.json:/acme.json
-    depends_on:
-      - gunicorn
 
+volumes:
+  nginx_cache:
 
 networks:
   web:

@@ -16,8 +16,6 @@ from dash.exceptions import PreventUpdate
 from frontmatter import Frontmatter
 from util import glob_re, location_ignore_null, parse_state
 
-import flask
-
 def dash_kwarg(inputs):
     def accept_func(func):
         @wraps(func)
@@ -1135,8 +1133,6 @@ class Search(BootstrapApp):
         @dash_kwarg([Input(i, "value") for i in component_ids])
         def filter_results(**kwargs):
 
-            print("HELLO")
-            print(flask.request.headers)
             # Fix up name
             if type(kwargs["name"]) == list:
                 kwargs["name"] = "".join(kwargs["name"])

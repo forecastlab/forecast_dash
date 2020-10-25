@@ -7,6 +7,7 @@ from common import MarkdownApp, BootstrapApp, header, breadcrumb_layout, footer
 import json
 import base64
 
+
 class Methodology(MarkdownApp):
 
     markdown = """
@@ -83,12 +84,13 @@ def parse_poweredby(filepath):
                             poweredby_dict["name"],
                             href=poweredby_dict["url"],
                         )
-                    ) for poweredby_dict in poweredby_list
+                    )
+                    for poweredby_dict in poweredby_list
                 ]
             ),
         ]
 
-    
+
 class About(BootstrapApp):
     def setup(self):
 
@@ -144,7 +146,7 @@ class About(BootstrapApp):
                                     lg=12,
                                 )
                             ]
-                        ),                      
+                        ),
                         dbc.Row(
                             [
                                 dbc.Col(

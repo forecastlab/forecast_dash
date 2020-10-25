@@ -124,26 +124,22 @@ class Ons(DataSource):
         values = []
 
         if self.frequency == "MS":
-            dates = [
-                j["date"] for j in json_data["months"]
-            ]
-            values = [
-                float(j["value"]) for j in json_data["months"]
-            ]
+            dates = [j["date"] for j in json_data["months"]]
+            values = [float(j["value"]) for j in json_data["months"]]
 
         elif self.frequency == "Q":
             # Reformat "YYYY Qn" to "YYYY-Qn" before passing to pd.to_datetime
             dates = [
-                '-'.join(j["date"].split()) for j in json_data["quarters"]
+                "-".join(j["date"].split()) for j in json_data["quarters"]
             ]
-            values = [
-                float(j["value"]) for j in json_data["quarters"]
-            ]
+            values = [float(j["value"]) for j in json_data["quarters"]]
 
-        df = pd.DataFrame(values, index=pd.to_datetime(dates), columns=["value"])
+        df = pd.DataFrame(
+            values, index=pd.to_datetime(dates), columns=["value"]
+        )
         df.index.name = "date"
 
-        #print(df)
+        # print(df)
         return df
 
 

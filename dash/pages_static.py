@@ -27,7 +27,7 @@ The models are run on each dataset according to the time series cross-validation
 scheme described in \[1\], Sect 3.4, with forecast horizons of length 1-8.
 
 ![time series cross-validation](https://otexts.com/fpp2/fpp_files/figure-html/cv1-1.png)  
-\(Image reproduced with permission.\)
+\(Image reproduced from \[1\] with permission.\)
 
 The forecast accuracy or cross-validation score is computed by averaging 
 the mean-squared forecast error over the test sets and forecast horizons. 

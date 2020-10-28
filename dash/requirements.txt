@@ -1,6 +1,7 @@
 dash
 dash-bootstrap-components
 dash-multi
+humanize
 Flask-Caching
 frontmatter
 gunicorn

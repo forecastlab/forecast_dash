@@ -2,12 +2,14 @@ import ast
 import json
 import pickle
 import re
+from datetime import datetime
 from functools import wraps
 from urllib.parse import urlencode
 
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
+import humanize
 import numpy as np
 import pandas as pd
 from common import BootstrapApp, header, breadcrumb_layout, footer
@@ -15,6 +17,7 @@ from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
 from frontmatter import Frontmatter
 from util import glob_re, location_ignore_null, parse_state
+
 
 def dash_kwarg(inputs):
     def accept_func(func):
@@ -353,9 +356,13 @@ def component_news_4col():
 
     for i in range(min(len(blog_posts), 5)):
         blog_post = blog_posts[i]
+        blog_timedelta = humanize.naturaltime(
+            datetime.now()
+            - datetime.strptime(blog_post["attributes"]["date"], "%Y-%m-%d")
+        )
         body.extend(
             [
-                blog_post["attributes"]["date"],
+                blog_timedelta,
                 html.A(
                     html.P(blog_post["attributes"]["title"], className="lead"),
                     href=f"/blog/post?title={blog_post['filename']}",
@@ -443,7 +450,7 @@ class Index(BootstrapApp):
                             ),
                         ],
                         fluid=True,
-                        className='d-none d-md-block'
+                        className="d-none d-md-block",
                     ),
                     # Main Body
                     dbc.Container(
@@ -451,7 +458,6 @@ class Index(BootstrapApp):
                             # Row 1 - Featured and Latest News
                             dbc.Row(
                                 [
-
                                     dbc.Col(
                                         [
                                             html.H3(
@@ -479,7 +485,7 @@ class Index(BootstrapApp):
                                     ),
                                     component_news_4col(),
                                 ],
-                                style={'margin-top': '16px'}
+                                style={"margin-top": "16px"},
                             ),
                             # Row 2 - US Snapshot
                             component_figs_3col(

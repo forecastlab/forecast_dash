@@ -140,7 +140,7 @@ def footer():
                         )
                     ],
                     lg=7,
-                    style={'margin-bottom': '16px'}
+                    style={"margin-bottom": "16px"},
                 ),
                 component_git_version(),
             ],
@@ -160,8 +160,11 @@ class BootstrapApp(dash.Dash, ABC):
             url_base_pathname=url_base_pathname,
             external_stylesheets=external_stylesheets,
             meta_tags=[
-                {"name": "viewport", "content": "width=device-width, initial-scale=1"}
-            ]
+                {
+                    "name": "viewport",
+                    "content": "width=device-width, initial-scale=1",
+                }
+            ],
         )
 
         self.title = name

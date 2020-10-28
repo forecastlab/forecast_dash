@@ -333,7 +333,7 @@ def component_figs_3col(row_title, series_titles):
     )
 
 
-def component_news_5col():
+def component_news_4col():
 
     filenames = glob_re(r".*.md", "../blog")
 
@@ -367,11 +367,11 @@ def component_news_5col():
         [html.H1("Latest News")]
         + body
         + [html.A(html.P("View all posts"), href="/blog")],
-        lg=5,
+        lg=4,
     )
 
 
-def component_leaderboard_5col(series_list):
+def component_leaderboard_4col(series_list):
 
     leaderboard_counts = get_leaderboard_df(series_list).iloc[:10, :]
 
@@ -397,7 +397,7 @@ def component_leaderboard_5col(series_list):
                 href="/leaderboard",
             ),
         ],
-        lg=5,
+        lg=4,
     )
 
 
@@ -443,6 +443,7 @@ class Index(BootstrapApp):
                             ),
                         ],
                         fluid=True,
+                        # className='d-none d-md-block'
                     ),
                     # Main Body
                     dbc.Container(
@@ -450,6 +451,7 @@ class Index(BootstrapApp):
                             # Row 1 - Featured and Latest News
                             dbc.Row(
                                 [
+
                                     dbc.Col(
                                         [
                                             html.H1(
@@ -472,15 +474,15 @@ class Index(BootstrapApp):
                                                 href=f"/series?{urlencode({'title': feature_series_title})}",
                                             ),
                                         ],
-                                        lg=7,
-                                        className="border-right",
+                                        lg=8,
+                                        # className="border-right",
                                     ),
-                                    component_news_5col(),
+                                    component_news_4col(),
                                 ]
                             ),
                             # Row 2 - US Snapshot
                             component_figs_3col(
-                                "US Snapshot",
+                                "US Snapshot 🇺🇸",
                                 [
                                     "US Unemployment",
                                     "US GDP Growth",
@@ -512,15 +514,15 @@ class Index(BootstrapApp):
                                                 href=f"/series?{urlencode({'title': 'US Unemployment'})}",
                                             ),
                                         ],
-                                        lg=7,
+                                        lg=8,
                                         className="border-right",
                                     ),
-                                    component_leaderboard_5col(series_list),
+                                    component_leaderboard_4col(series_list),
                                 ]
                             ),
                             # Row 4 - Australia Snapshot
                             component_figs_3col(
-                                "Australia Snapshot",
+                                "Australia Snapshot 🇦🇺",
                                 [
                                     "Australian GDP Growth",
                                     "Australian Inflation (CPI)",
@@ -529,7 +531,7 @@ class Index(BootstrapApp):
                             ),
                             # Row 5 - UK Snapshot
                             component_figs_2col(
-                                "UK Snapshot",
+                                "UK Snapshot 🇬🇧",
                                 [
                                     "UK Unemployment",
                                     "UK Inflation (RPI)",

@@ -270,7 +270,7 @@ def component_figs_2col(row_title, series_titles):
         [
             dbc.Col(
                 [
-                    html.H1(row_title, style={"text-align": "center"}),
+                    html.H3(row_title, style={"text-align": "center"}),
                 ],
                 lg=12,
             ),
@@ -306,7 +306,7 @@ def component_figs_3col(row_title, series_titles):
         [
             dbc.Col(
                 [
-                    html.H1(row_title, style={"text-align": "center"}),
+                    html.H3(row_title, style={"text-align": "center"}),
                 ],
                 lg=12,
             ),
@@ -364,7 +364,7 @@ def component_news_4col():
         )
 
     return dbc.Col(
-        [html.H1("Latest News")]
+        [html.H3("Latest News")]
         + body
         + [html.A(html.P("View all posts"), href="/blog")],
         lg=4,
@@ -387,7 +387,7 @@ def component_leaderboard_4col(series_list):
 
     return dbc.Col(
         [
-            html.H1("Leaderboard"),
+            html.H3("Leaderboard"),
             html.P(
                 "Ranked by number of times each method was selected as the best performer"
             ),
@@ -443,7 +443,7 @@ class Index(BootstrapApp):
                             ),
                         ],
                         fluid=True,
-                        # className='d-none d-md-block'
+                        className='d-none d-md-block'
                     ),
                     # Main Body
                     dbc.Container(
@@ -454,7 +454,7 @@ class Index(BootstrapApp):
 
                                     dbc.Col(
                                         [
-                                            html.H1(
+                                            html.H3(
                                                 "Featured Series",
                                                 style={"text-align": "center"},
                                             ),
@@ -478,7 +478,8 @@ class Index(BootstrapApp):
                                         # className="border-right",
                                     ),
                                     component_news_4col(),
-                                ]
+                                ],
+                                style={'margin-top': '16px'}
                             ),
                             # Row 2 - US Snapshot
                             component_figs_3col(
@@ -494,7 +495,7 @@ class Index(BootstrapApp):
                                 [
                                     dbc.Col(
                                         [
-                                            html.H1(
+                                            html.H3(
                                                 "US Unemployment",
                                                 style={"text-align": "center"},
                                             ),
@@ -515,7 +516,7 @@ class Index(BootstrapApp):
                                             ),
                                         ],
                                         lg=8,
-                                        className="border-right",
+                                        # className="border-right",
                                     ),
                                     component_leaderboard_4col(series_list),
                                 ]

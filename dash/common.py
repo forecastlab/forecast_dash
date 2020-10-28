@@ -140,6 +140,7 @@ def footer():
                         )
                     ],
                     lg=7,
+                    style={'margin-bottom': '16px'}
                 ),
                 component_git_version(),
             ],

@@ -5,7 +5,6 @@ import dash_html_components as html
 from common import MarkdownApp, BootstrapApp, header, breadcrumb_layout, footer
 
 import json
-import base64
 
 
 class Methodology(MarkdownApp):
@@ -101,19 +100,27 @@ def parse_poweredby(filepath):
         poweredby_list = json.load(poweredby_file)
 
         return [
-            html.Ul(
+            dbc.Col(
                 [
-                    html.Li(
-                        html.A(
-                            poweredby_dict["name"],
-                            href=poweredby_dict["url"],
-                        )
+                    html.A(
+                        [
+                            html.Img(
+                                src=poweredby_dict["image_url"],
+                                height="96px",
+                                style={'margin-bottom': '8px'}
+                            ),
+                            html.H5(poweredby_dict["name"])
+                        ],
+                        href=poweredby_dict["url"]
                     )
-                    for poweredby_dict in poweredby_list
-                ]
-            ),
-        ]
+                ],
+                lg=2, md=3, xs=6,
+                className='text-center',
+                style={'margin-bottom': '16px'}
+            )
 
+            for poweredby_dict in poweredby_list
+        ]
 
 class About(BootstrapApp):
     def setup(self):
@@ -131,45 +138,55 @@ class About(BootstrapApp):
                             [
                                 dbc.Col(
                                     [
-                                        html.H2("Our Mission"),
-                                        html.Ol(
-                                            [
-                                                html.Li(
-                                                    "To make forecasting models accessible to everyone."
-                                                ),
-                                                html.Li(
-                                                    "To provide the latest financial and economic forecasts of the commonly used time series."
-                                                ),
-                                            ]
-                                        ),
-                                    ],
-                                    lg=12,
-                                )
-                            ]
-                        ),
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    [
                                         html.H2("About"),
                                         html.P(
-                                            "The Business Forecast Lab was established in ...."
+                                            """
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ultricies ante
+                                            turpis, eget lobortis erat feugiat quis. Duis sed rutrum sapien, ut ullamcorper
+                                            turpis. Praesent ut nunc lobortis lorem gravida bibendum. Aenean elementum dapibus
+                                            felis vitae posuere.Nulla semper erat vitae sollicitudin elementum.
+                                            """
+                                        ),
+                                        html.P(
+                                            """
+                                            Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac
+                                            turpis egestas. Praesent semper fermentum erat ut cursus.Etiam gravida dui justo,
+                                            at sodales ante euismod ac. Maecenas porta nisi ut lacus vehicula imperdiet. Sed
+                                            facilisis dui id orci volutpat, id porta est imperdiet.
+                                            """
                                         ),
                                     ],
-                                    lg=12,
+                                    lg=6,
+                                ),
+                                dbc.Col(
+                                    [
+                                        dbc.Jumbotron([
+                                            html.H1("Our Mission"),
+                                            html.Ol(
+                                                [
+                                                    html.Li(
+                                                        "To make forecasting models accessible to everyone."
+                                                    ),
+                                                    html.Li(
+                                                        "To provide the latest financial and economic forecasts of the commonly used time series."
+                                                    ),
+                                                ]
+                                            ),
+                                        ])
+
+                                    ],
+                                    lg=6,
                                 )
                             ]
                         ),
                         dbc.Row(
                             [
-                                dbc.Col(
-                                    [html.H2("Powered by:")]
-                                    + parse_poweredby(
-                                        "static_files/poweredby.json"
-                                    ),
-                                    lg=12,
+                                dbc.Col(html.H2("Powered By", className='text-center', style={'margin-bottom': '32px'}), lg=12,
                                 )
                             ]
+                        ),
+                        dbc.Row(
+                                parse_poweredby("static_files/poweredby.json"),
                         ),
                         dbc.Row(
                             [

@@ -15,7 +15,7 @@ def header():
             children=[
                 dbc.NavItem(dbc.NavLink(x[1], href=x[2], external_link=True))
                 for x in nav_routes
-            ],
+            ] + [dbc.NavItem(dbc.NavLink(html.I(className='fab fa-github'), href="https://github.com/forecastlab/forecast_dash", external_link=True))],
             brand="Forecast Lab",
             brand_href="/",
             brand_external_link=True,

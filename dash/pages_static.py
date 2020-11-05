@@ -70,28 +70,32 @@ def parse_people(person_list):
                 html.H6(
                     person_dict["affiliation"],
                     className="subtitle mb-3 text-muted",
-                )
-            ] + (
+                ),
+            ]
+            + (
                 [
                     html.Ul(
                         [
                             html.Li(
                                 html.A(
-                                    html.I(className=f"{icon_map[link_type]} fa-lg"),
+                                    html.I(
+                                        className=f"{icon_map[link_type]} fa-lg"
+                                    ),
                                     href=link_value,
                                 ),
                                 className="list-inline-item",
                             )
                             for link_type, link_value in person_dict[
-                            "links"
-                        ].items()
+                                "links"
+                            ].items()
                         ],
                         className="list-inline",
                     )
                 ]
                 if "links" in person_dict
                 else []
-            ) + [
+            )
+            + [
                 html.P(person_dict["bio"], className="text-justify"),
             ],
             lg=4,

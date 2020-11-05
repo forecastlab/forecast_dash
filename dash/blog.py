@@ -7,6 +7,9 @@ from dash.exceptions import PreventUpdate
 from frontmatter import Frontmatter
 from multipage import Route, MultiPageApp
 from util import glob_re, location_ignore_null, parse_state
+import dash_dangerously_set_inner_html
+import humanize
+from datetime import datetime
 
 
 class Blog(BootstrapApp):
@@ -43,10 +46,20 @@ class Blog(BootstrapApp):
                             " by ",
                             blog_post["attributes"]["author"],
                             ", ",
-                            blog_post["attributes"]["date"],
+                            humanize.naturaltime(
+                                datetime.now()
+                                - datetime.strptime(
+                                    blog_post["attributes"]["date"], "%Y-%m-%d"
+                                )
+                            ),
                         ]
                     ),
-                    dcc.Markdown(blog_post["body"]),
+                    dash_dangerously_set_inner_html.DangerouslySetInnerHTML(
+                        blog_post["body"]
+                    )
+                    if "type" in blog_post["attributes"]
+                    and blog_post["attributes"]["type"] == "html"
+                    else dcc.Markdown(blog_post["body"]),
                 ]
             )
 
@@ -132,10 +145,20 @@ class Post(BootstrapApp):
                         " by ",
                         blog_post["attributes"]["author"],
                         ", ",
-                        blog_post["attributes"]["date"],
+                        humanize.naturaltime(
+                            datetime.now()
+                            - datetime.strptime(
+                                blog_post["attributes"]["date"], "%Y-%m-%d"
+                            )
+                        ),
                     ]
                 ),
-                dcc.Markdown(blog_post["body"]),
+                dash_dangerously_set_inner_html.DangerouslySetInnerHTML(
+                    blog_post["body"]
+                )
+                if "type" in blog_post["attributes"]
+                and blog_post["attributes"]["type"] == "html"
+                else dcc.Markdown(blog_post["body"]),
             ]
 
 

@@ -1,0 +1,54 @@
+{
+  "contributors": [
+    {
+      "name": "Stephen Tierney",
+      "affiliation": "The University of Sydney",
+      "image_url": "assets/profiles/StephenTierney.jpeg",
+      "bio": "Stephen Tierney is a lecturer in Business Analytics at The University Sydney Business School. His research interests include machine learning, computer vision, image processing, data visualisation and recommendation systems.",
+      "links": {
+        "home": "https://sjtrny.com",
+        "work": "https://www.sydney.edu.au/business/about/our-people/academic-staff/stephen-tierney.html",
+        "github": "https://github.com/sjtrny"
+      }
+    },
+    {
+      "name": "David Houseman",
+      "affiliation": "The University of Sydney",
+      "image_url": "assets/profiles/DavidHouseman.jpeg",
+      "homepage": "",
+      "bio": "David Houseman has a PhD in theoretical physics from University College, London, and is a tutor in Business Analytics at the University of Sydney Business School. David's interests are financial time series and statistical modelling of stock returns.",
+      "links": {
+        "github": "https://github.com/david-houseman"
+      }
+    }
+  ],
+  "research_team": [
+    {
+      "name": "Andrey Vasnev",
+      "affiliation": "The University of Sydney",
+      "image_url": "assets/profiles/AndreyVasnev.png",
+      "bio": "Associate Professor Andrey Vasnev is Head of the Discipline of Business Analytics at the University of Sydney Business School. His main research area is forecast combination in business, finance and economic applications.",
+      "links": {
+        "home": "https://business.sydney.edu.au/staff/andrey.vasnev"
+      }
+    },
+    {
+      "name": "Richard Gerlach",
+      "affiliation": "The University of Sydney",
+      "image_url": "assets/profiles/RichardGerlach.jpeg",
+      "bio": "Richard Gerlach's research interests lie mainly in financial econometrics and time series. His work has concerned developing time series models for measuring, forecasting and managing risk in financial markets as well as computationally intensive Bayesian methods for inference, diagnosis, forecasting and model comparison for these models.",
+      "links": {
+        "home": "https://business.sydney.edu.au/staff/richard.gerlach"
+      }
+    },
+    {
+      "name": "Chao Wang",
+      "affiliation": "The University of Sydney",
+      "image_url": "assets/profiles/ChaoWang.jpeg",
+      "bio": "Dr Chao Wang received his PhD degree in Econometrics from The University of Sydney. He has two master degrees major in Machine Learning & Data Mining from Helsinki University of Technology and Mechatronic Engineering from Beijing Institute of Technology respectively.",
+      "links": {
+        "home": "https://business.sydney.edu.au/staff/chao.wang"
+      }
+    }
+  ]
+}

@@ -47,52 +47,39 @@ selected from the drop-down menu in each Series page.
     """
 
 
-def parse_people(filepath):
+def parse_people(person_list):
 
-    with open(filepath) as person_file:
-        person_list = json.load(person_file)
+    icon_map = {
+        "home": 'fas fa-home',
+        'github': "fab fa-github",
+        "work": 'fas fa-building'
+    }
 
-        result = []
-
-        for person_dict in person_list:
-            result.extend(
-                [
-                    dbc.Row(
-                        [
-                            dbc.Col(
-                                [
-                                    html.Img(
-                                        src=person_dict["image_url"],
-                                        height="200px",
-                                    )
-                                ],
-                                lg=2,
-                                style={"margin-top": "16px"},
-                            ),
-                            dbc.Col(
-                                [
-                                    html.H4(
-                                        person_dict["name"], className="mt-3"
-                                    ),
-                                    html.P(
-                                        person_dict["bio"],
-                                        style={"whiteSpace": "pre-wrap"},
-                                    ),
-                                    html.A(
-                                        person_dict["homepage"],
-                                        href=person_dict["homepage"],
-                                    ),
-                                ],
-                                lg=9,
-                            ),
-                        ],
-                        style={"margin-bottom": "16px"},
-                    )
-                ]
-            )
-
-    return result
-
+    return [
+        dbc.Col([
+            html.Img(
+                src=person_dict["image_url"],
+                height="148px",
+                className='rounded-circle shadow'
+            ),
+            html.H5(person_dict["name"], className='mt-4 font-weight-medium mb-0'),
+            html.H6(person_dict["affiliation"], className='subtitle mb-3 text-muted'),
+            html.P(person_dict["bio"], className='text-justify')
+        ] + ([
+            html.Ul([
+                html.Li(
+                    html.A(
+                        html.I(className=f"{icon_map[link_type]}"),
+                        href=link_value
+                    ),
+                    className='list-inline-item')
+                for link_type, link_value in person_dict["links"].items()
+            ], className='list-inline')
+        ] if "links" in person_dict else []),
+        lg=4, sm=6,
+        className='text-center',)
+        for  person_dict in person_list
+    ]
 
 def parse_poweredby(filepath):
 
@@ -124,6 +111,11 @@ def parse_poweredby(filepath):
 
 class About(BootstrapApp):
     def setup(self):
+
+        contributors = json.load(open("static_files/profiles.json"))['contributors']
+
+        research_team = json.load(open("static_files/profiles.json"))['research_team']
+
 
         self.layout = html.Div(
             header()
@@ -179,37 +171,12 @@ class About(BootstrapApp):
                                 )
                             ]
                         ),
-                        dbc.Row(
-                            [
-                                dbc.Col(html.H2("Powered By", className='text-center', style={'margin-bottom': '32px'}), lg=12,
-                                )
-                            ]
-                        ),
-                        dbc.Row(
-                                parse_poweredby("static_files/poweredby.json"),
-                        ),
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    [html.H2("Code Contributors")]
-                                    + parse_people(
-                                        "static_files/contributors.json"
-                                    ),
-                                    lg=12,
-                                )
-                            ]
-                        ),
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    [html.H2("Research Group Leaders")]
-                                    + parse_people(
-                                        "static_files/research_team.json"
-                                    ),
-                                    lg=12,
-                                )
-                            ]
-                        ),
+                        dbc.Row(dbc.Col(html.H2("Powered By", style={'margin-bottom': '32px'}), lg=12)),
+                        dbc.Row(parse_poweredby("static_files/poweredby.json")),
+                        dbc.Row(dbc.Col(html.H2("Core Contributors", style={'margin-bottom': '32px'}), lg=12)),
+                        dbc.Row(parse_people(contributors)),
+                        dbc.Row(dbc.Col(html.H2("Research Group Leaders", style={'margin-bottom': '32px'}), lg=12)),
+                        dbc.Row(parse_people(research_team)),
                     ]
                     + footer(),
                     style={"margin-bottom": "64px"},

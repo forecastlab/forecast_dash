@@ -152,13 +152,22 @@ def footer():
 class BootstrapApp(dash.Dash, ABC):
     def __init__(self, name, server, url_base_pathname):
 
+        external_scripts = [
+            {
+                'src': "https://kit.fontawesome.com/b4d76f3ee0.js",
+                'crossorigin': "anonymous"
+            }
+        ]
+
         external_stylesheets = [dbc.themes.BOOTSTRAP]
+
 
         super().__init__(
             name=name,
             server=server,
             url_base_pathname=url_base_pathname,
             external_stylesheets=external_stylesheets,
+            external_scripts=external_scripts,
             meta_tags=[
                 {
                     "name": "viewport",

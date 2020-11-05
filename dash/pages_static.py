@@ -70,30 +70,30 @@ def parse_people(person_list):
                 html.H6(
                     person_dict["affiliation"],
                     className="subtitle mb-3 text-muted",
-                ),
-                html.P(person_dict["bio"], className="text-justify"),
-            ]
-            + (
+                )
+            ] + (
                 [
                     html.Ul(
                         [
                             html.Li(
                                 html.A(
-                                    html.I(className=f"{icon_map[link_type]}"),
+                                    html.I(className=f"{icon_map[link_type]} fa-lg"),
                                     href=link_value,
                                 ),
                                 className="list-inline-item",
                             )
                             for link_type, link_value in person_dict[
-                                "links"
-                            ].items()
+                            "links"
+                        ].items()
                         ],
                         className="list-inline",
                     )
                 ]
                 if "links" in person_dict
                 else []
-            ),
+            ) + [
+                html.P(person_dict["bio"], className="text-justify"),
+            ],
             lg=4,
             sm=6,
             className="text-center",
@@ -201,18 +201,6 @@ class About(BootstrapApp):
                         dbc.Row(
                             dbc.Col(
                                 html.H2(
-                                    "Powered By",
-                                    style={"margin-bottom": "32px"},
-                                ),
-                                lg=12,
-                            )
-                        ),
-                        dbc.Row(
-                            parse_poweredby("static_files/poweredby.json")
-                        ),
-                        dbc.Row(
-                            dbc.Col(
-                                html.H2(
                                     "Core Contributors",
                                     style={"margin-bottom": "32px"},
                                 ),
@@ -230,6 +218,18 @@ class About(BootstrapApp):
                             )
                         ),
                         dbc.Row(parse_people(research_team)),
+                        dbc.Row(
+                            dbc.Col(
+                                html.H2(
+                                    "Powered By",
+                                    style={"margin-bottom": "32px"},
+                                ),
+                                lg=12,
+                            )
+                        ),
+                        dbc.Row(
+                            parse_poweredby("static_files/poweredby.json")
+                        ),
                     ]
                     + footer(),
                     style={"margin-bottom": "64px"},

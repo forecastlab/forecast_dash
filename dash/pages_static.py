@@ -205,6 +205,18 @@ class About(BootstrapApp):
                         dbc.Row(
                             dbc.Col(
                                 html.H2(
+                                    "Powered By",
+                                    style={"margin-bottom": "32px"},
+                                ),
+                                lg=12,
+                            )
+                        ),
+                        dbc.Row(
+                            parse_poweredby("static_files/poweredby.json")
+                        ),
+                        dbc.Row(
+                            dbc.Col(
+                                html.H2(
                                     "Core Contributors",
                                     style={"margin-bottom": "32px"},
                                 ),
@@ -221,19 +233,7 @@ class About(BootstrapApp):
                                 lg=12,
                             )
                         ),
-                        dbc.Row(parse_people(research_team)),
-                        dbc.Row(
-                            dbc.Col(
-                                html.H2(
-                                    "Powered By",
-                                    style={"margin-bottom": "32px"},
-                                ),
-                                lg=12,
-                            )
-                        ),
-                        dbc.Row(
-                            parse_poweredby("static_files/poweredby.json")
-                        ),
+                        dbc.Row(parse_people(research_team))
                     ]
                     + footer(),
                     style={"margin-bottom": "64px"},

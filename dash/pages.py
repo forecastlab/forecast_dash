@@ -2,12 +2,14 @@ import ast
 import json
 import pickle
 import re
+from datetime import datetime
 from functools import wraps
 from urllib.parse import urlencode
 
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
+import humanize
 import numpy as np
 import pandas as pd
 from common import BootstrapApp, header, breadcrumb_layout, footer
@@ -15,6 +17,7 @@ from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
 from frontmatter import Frontmatter
 from util import glob_re, location_ignore_null, parse_state
+
 
 def dash_kwarg(inputs):
     def accept_func(func):
@@ -270,7 +273,7 @@ def component_figs_2col(row_title, series_titles):
         [
             dbc.Col(
                 [
-                    html.H1(row_title, style={"text-align": "center"}),
+                    html.H3(row_title, style={"text-align": "center"}),
                 ],
                 lg=12,
             ),
@@ -306,7 +309,7 @@ def component_figs_3col(row_title, series_titles):
         [
             dbc.Col(
                 [
-                    html.H1(row_title, style={"text-align": "center"}),
+                    html.H3(row_title, style={"text-align": "center"}),
                 ],
                 lg=12,
             ),
@@ -333,7 +336,7 @@ def component_figs_3col(row_title, series_titles):
     )
 
 
-def component_news_5col():
+def component_news_4col():
 
     filenames = glob_re(r".*.md", "../blog")
 
@@ -353,9 +356,13 @@ def component_news_5col():
 
     for i in range(min(len(blog_posts), 5)):
         blog_post = blog_posts[i]
+        blog_timedelta = humanize.naturaltime(
+            datetime.now()
+            - datetime.strptime(blog_post["attributes"]["date"], "%Y-%m-%d")
+        )
         body.extend(
             [
-                blog_post["attributes"]["date"],
+                blog_timedelta,
                 html.A(
                     html.P(blog_post["attributes"]["title"], className="lead"),
                     href=f"/blog/post?title={blog_post['filename']}",
@@ -364,14 +371,14 @@ def component_news_5col():
         )
 
     return dbc.Col(
-        [html.H1("Latest News")]
+        [html.H3("Latest News")]
         + body
         + [html.A(html.P("View all posts"), href="/blog")],
-        lg=5,
+        lg=4,
     )
 
 
-def component_leaderboard_5col(series_list):
+def component_leaderboard_4col(series_list):
 
     leaderboard_counts = get_leaderboard_df(series_list).iloc[:10, :]
 
@@ -387,7 +394,7 @@ def component_leaderboard_5col(series_list):
 
     return dbc.Col(
         [
-            html.H1("Leaderboard"),
+            html.H3("Leaderboard"),
             html.P(
                 "Ranked by number of times each method was selected as the best performer"
             ),
@@ -397,7 +404,7 @@ def component_leaderboard_5col(series_list):
                 href="/leaderboard",
             ),
         ],
-        lg=5,
+        lg=4,
     )
 
 
@@ -443,6 +450,7 @@ class Index(BootstrapApp):
                             ),
                         ],
                         fluid=True,
+                        className="d-none d-md-block",
                     ),
                     # Main Body
                     dbc.Container(
@@ -452,7 +460,7 @@ class Index(BootstrapApp):
                                 [
                                     dbc.Col(
                                         [
-                                            html.H1(
+                                            html.H3(
                                                 "Featured Series",
                                                 style={"text-align": "center"},
                                             ),
@@ -472,15 +480,16 @@ class Index(BootstrapApp):
                                                 href=f"/series?{urlencode({'title': feature_series_title})}",
                                             ),
                                         ],
-                                        lg=7,
-                                        className="border-right",
+                                        lg=8,
+                                        # className="border-right",
                                     ),
-                                    component_news_5col(),
-                                ]
+                                    component_news_4col(),
+                                ],
+                                style={"margin-top": "16px"},
                             ),
                             # Row 2 - US Snapshot
                             component_figs_3col(
-                                "US Snapshot",
+                                "US Snapshot 🇺🇸",
                                 [
                                     "US Unemployment",
                                     "US GDP Growth",
@@ -492,7 +501,7 @@ class Index(BootstrapApp):
                                 [
                                     dbc.Col(
                                         [
-                                            html.H1(
+                                            html.H3(
                                                 "US Unemployment",
                                                 style={"text-align": "center"},
                                             ),
@@ -512,15 +521,15 @@ class Index(BootstrapApp):
                                                 href=f"/series?{urlencode({'title': 'US Unemployment'})}",
                                             ),
                                         ],
-                                        lg=7,
-                                        className="border-right",
+                                        lg=8,
+                                        # className="border-right",
                                     ),
-                                    component_leaderboard_5col(series_list),
+                                    component_leaderboard_4col(series_list),
                                 ]
                             ),
                             # Row 4 - Australia Snapshot
                             component_figs_3col(
-                                "Australia Snapshot",
+                                "Australia Snapshot 🇦🇺",
                                 [
                                     "Australian GDP Growth",
                                     "Australian Inflation (CPI)",
@@ -529,7 +538,7 @@ class Index(BootstrapApp):
                             ),
                             # Row 5 - UK Snapshot
                             component_figs_2col(
-                                "UK Snapshot",
+                                "UK Snapshot 🇬🇧",
                                 [
                                     "UK Unemployment",
                                     "UK Inflation (RPI)",

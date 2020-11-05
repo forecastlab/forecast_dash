@@ -15,6 +15,15 @@ def header():
             children=[
                 dbc.NavItem(dbc.NavLink(x[1], href=x[2], external_link=True))
                 for x in nav_routes
+            ]
+            + [
+                dbc.NavItem(
+                    dbc.NavLink(
+                        html.I(className="fab fa-github"),
+                        href="https://github.com/forecastlab/forecast_dash",
+                        external_link=True,
+                    )
+                )
             ],
             brand="Forecast Lab",
             brand_href="/",
@@ -140,6 +149,7 @@ def footer():
                         )
                     ],
                     lg=7,
+                    style={"margin-bottom": "16px"},
                 ),
                 component_git_version(),
             ],
@@ -151,6 +161,13 @@ def footer():
 class BootstrapApp(dash.Dash, ABC):
     def __init__(self, name, server, url_base_pathname):
 
+        external_scripts = [
+            {
+                "src": "https://kit.fontawesome.com/b4d76f3ee0.js",
+                "crossorigin": "anonymous",
+            }
+        ]
+
         external_stylesheets = [dbc.themes.BOOTSTRAP]
 
         super().__init__(
@@ -158,6 +175,13 @@ class BootstrapApp(dash.Dash, ABC):
             server=server,
             url_base_pathname=url_base_pathname,
             external_stylesheets=external_stylesheets,
+            external_scripts=external_scripts,
+            meta_tags=[
+                {
+                    "name": "viewport",
+                    "content": "width=device-width, initial-scale=1",
+                }
+            ],
         )
 
         self.title = name

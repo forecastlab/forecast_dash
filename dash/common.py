@@ -19,7 +19,7 @@ def header():
             + [
                 dbc.NavItem(
                     dbc.NavLink(
-                        html.I(className="fab fa-github"),
+                        html.I(className="fab fa-github fa-lg"),
                         href="https://github.com/forecastlab/forecast_dash",
                         external_link=True,
                     )

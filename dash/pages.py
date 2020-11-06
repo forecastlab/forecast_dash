@@ -362,7 +362,7 @@ def component_news_4col():
         )
         body.extend(
             [
-                blog_timedelta,
+                html.Div(blog_timedelta, className='subtitle mt-0 text-muted small'),
                 html.A(
                     html.P(blog_post["attributes"]["title"], className="lead"),
                     href=f"/blog/post?title={blog_post['filename']}",
@@ -396,7 +396,7 @@ def component_leaderboard_4col(series_list):
         [
             html.H3("Leaderboard"),
             html.P(
-                "Ranked by number of times each method was selected as the best performer"
+                "Ranked by number of times each method was selected as the best performer", className='subtitle text-muted'
             ),
             html.Ol(body),
             html.A(

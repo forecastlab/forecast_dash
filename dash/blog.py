@@ -10,7 +10,7 @@ from util import glob_re, location_ignore_null, parse_state
 import dash_dangerously_set_inner_html
 import humanize
 from datetime import datetime
-
+import html2text
 
 class Blog(BootstrapApp):
     def setup(self):
@@ -31,16 +31,20 @@ class Blog(BootstrapApp):
 
         body = []
 
-        for i in range(min(len(blog_posts), 5)):
+        h = html2text.HTML2Text()
+        h.ignore_links = True
+
+        for i in range(len(blog_posts)):
             blog_post = blog_posts[i]
             body.extend(
                 [
                     html.A(
-                        html.H1(blog_post["attributes"]["title"]),
+                        html.H2(blog_post["attributes"]["title"], style = {'padding-top': '16px'}),
                         href=f"post?title={blog_post['filename']}",
                         id=blog_post["filename"],
+
                     ),
-                    html.Hr(),
+
                     html.P(
                         [
                             " by ",
@@ -53,13 +57,16 @@ class Blog(BootstrapApp):
                                 )
                             ),
                         ]
-                    ),
-                    dash_dangerously_set_inner_html.DangerouslySetInnerHTML(
-                        blog_post["body"]
-                    )
-                    if "type" in blog_post["attributes"]
-                    and blog_post["attributes"]["type"] == "html"
-                    else dcc.Markdown(blog_post["body"]),
+                    , className='subtitle mt-0 text-muted small'),
+                    html.Div(
+                        h.handle(
+                            blog_post["body"]
+                        )
+                        if "type" in blog_post["attributes"]
+                           and blog_post["attributes"]["type"] == "html"
+                        else dcc.Markdown(blog_post["body"])
+                    ,style = {'padding-bottom': '16px'}),
+                    html.Hr(),
                 ]
             )
 
@@ -70,6 +77,10 @@ class Blog(BootstrapApp):
                 dbc.Container(
                     [
                         breadcrumb_layout([("Home", "/"), ("Blog", "")]),
+                        dbc.Row([
+                            dbc.Col([html.H1("Recent posts"), html.Hr()]),
+
+                        ]),
                         dbc.Row(dbc.Col(body, lg=12)),
                     ]
                     + footer(),
@@ -93,6 +104,8 @@ class Post(BootstrapApp):
                         ),
                         dbc.Row(dbc.Col(id="post", lg=12)),
                     ]
+                    + footer(),
+                    style={"margin-bottom": "64px"},
                 ),
             ]
         )
@@ -135,7 +148,7 @@ class Post(BootstrapApp):
 
             return [
                 html.A(
-                    html.H1(blog_post["attributes"]["title"]),
+                    html.H2(blog_post["attributes"]["title"]),
                     href=f"/blog?post={blog_post['filename']}",
                     id=blog_post["filename"],
                 ),
@@ -152,7 +165,7 @@ class Post(BootstrapApp):
                             )
                         ),
                     ]
-                ),
+                , className='subtitle mt-0 text-muted small'),
                 dash_dangerously_set_inner_html.DangerouslySetInnerHTML(
                     blog_post["body"]
                 )

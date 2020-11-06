@@ -12,7 +12,7 @@ class Methodology(MarkdownApp):
     markdown = """
 # Data
 
-Data are sourced from the following sources:
+Data are sourced from:
 - [Australian Macro Database](http://ausmacrodata.org)
 - [St Louis Federal Reserve](https://api.stlouisfed.org)
 - [UK Office of National Statistics](https://www.ons.gov.uk)
@@ -53,6 +53,7 @@ def parse_people(person_list):
         "home": "fas fa-home",
         "github": "fab fa-github",
         "work": "fas fa-building",
+        "university": "fa fa-university"
     }
 
     return [
@@ -79,7 +80,7 @@ def parse_people(person_list):
                             html.Li(
                                 html.A(
                                     html.I(
-                                        className=f"{icon_map[link_type]} fa-lg"
+                                        className=f"{icon_map[link_type]} fa-lg mr-3"
                                     ),
                                     href=link_value,
                                 ),

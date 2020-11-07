@@ -1,3 +1,4 @@
+import ast
 import os
 import re
 from functools import wraps
@@ -30,3 +31,20 @@ def location_ignore_null(inputs, location_id):
         return wrapper
 
     return accept_func
+
+
+def apply_default_value(params):
+    def wrapper(func):
+        def apply_value(*args, **kwargs):
+            if "id" in kwargs and kwargs["id"] in params:
+                key = "value"
+                try:
+                    kwargs[key] = ast.literal_eval(params[kwargs["id"]])
+                except Exception:
+                    kwargs[key] = params[kwargs["id"]]
+
+            return func(*args, **kwargs)
+
+        return apply_value
+
+    return wrapper

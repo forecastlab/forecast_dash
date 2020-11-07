@@ -1,4 +1,3 @@
-import ast
 import json
 import pickle
 import re
@@ -16,7 +15,12 @@ from common import BootstrapApp, header, breadcrumb_layout, footer
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
 from frontmatter import Frontmatter
-from util import glob_re, location_ignore_null, parse_state
+from util import (
+    glob_re,
+    location_ignore_null,
+    parse_state,
+    apply_default_value,
+)
 
 
 def dash_kwarg(inputs):
@@ -847,23 +851,6 @@ class Series(BootstrapApp):
             )
 
             return table
-
-
-def apply_default_value(params):
-    def wrapper(func):
-        def apply_value(*args, **kwargs):
-            if "id" in kwargs and kwargs["id"] in params:
-                key = "value"
-                try:
-                    kwargs[key] = ast.literal_eval(params[kwargs["id"]])
-                except Exception:
-                    kwargs[key] = params[kwargs["id"]]
-
-            return func(*args, **kwargs)
-
-        return apply_value
-
-    return wrapper
 
 
 def get_leaderboard_df(series_list):

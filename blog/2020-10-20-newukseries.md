@@ -5,6 +5,6 @@ author: David Houseman
 ---
 
 The new UK series are:
-- UK GDP Growth
-- UK Current Account Balance
-- UK Average Weekly Earnings Growth
+* UK GDP Growth
+* UK Current Account Balance
+* UK Average Weekly Earnings Growth

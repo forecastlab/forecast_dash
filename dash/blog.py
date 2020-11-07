@@ -1,16 +1,22 @@
+import textwrap
+from datetime import datetime
+
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
+import dash_dangerously_set_inner_html
 import dash_html_components as html
+import html2text
+import humanize
+import markdown2
 from common import BootstrapApp, header, breadcrumb_layout, footer
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
 from frontmatter import Frontmatter
 from multipage import Route, MultiPageApp
 from util import glob_re, location_ignore_null, parse_state
-import dash_dangerously_set_inner_html
-import humanize
-from datetime import datetime
-import html2text
+
+markdown_extras = ["cuddled-lists"]
+
 
 class Blog(BootstrapApp):
     def setup(self):
@@ -36,38 +42,60 @@ class Blog(BootstrapApp):
 
         for i in range(len(blog_posts)):
             blog_post = blog_posts[i]
-            body.extend(
-                [
-                    html.A(
-                        html.H2(blog_post["attributes"]["title"], style = {'padding-top': '16px'}),
-                        href=f"post?title={blog_post['filename']}",
-                        id=blog_post["filename"],
 
-                    ),
+            if (
+                "type" in blog_post["attributes"]
+                and blog_post["attributes"]["type"] == "html"
+            ):
+                body_html = blog_post["body"]
+            else:
+                body_html = markdown2.markdown(
+                    blog_post["body"], extras=markdown_extras
+                )
 
-                    html.P(
+            preview = textwrap.shorten(
+                h.handle(body_html), 280, placeholder="..."
+            )
+
+            body.append(
+                dbc.Row(
+                    dbc.Col(
                         [
-                            " by ",
-                            blog_post["attributes"]["author"],
-                            ", ",
-                            humanize.naturaltime(
-                                datetime.now()
-                                - datetime.strptime(
-                                    blog_post["attributes"]["date"], "%Y-%m-%d"
-                                )
+                            html.A(
+                                html.H2(
+                                    blog_post["attributes"]["title"],
+                                    style={"padding-top": "16px"},
+                                ),
+                                href=f"post?title={blog_post['filename']}",
+                                id=blog_post["filename"],
                             ),
-                        ]
-                    , className='subtitle mt-0 text-muted small'),
-                    html.Div(
-                        h.handle(
-                            blog_post["body"]
-                        )
-                        if "type" in blog_post["attributes"]
-                           and blog_post["attributes"]["type"] == "html"
-                        else dcc.Markdown(blog_post["body"])
-                    ,style = {'padding-bottom': '16px'}),
-                    html.Hr(),
-                ]
+                            html.P(
+                                [
+                                    " by ",
+                                    blog_post["attributes"]["author"],
+                                    ", ",
+                                    humanize.naturaltime(
+                                        datetime.now()
+                                        - datetime.strptime(
+                                            blog_post["attributes"]["date"],
+                                            "%Y-%m-%d",
+                                        )
+                                    ),
+                                ],
+                                className="subtitle mt-0 text-muted small",
+                            ),
+                            html.Div(
+                                preview, style={"padding-bottom": "16px"}
+                            ),
+                            html.A(
+                                html.P("Read more", className="text-right"),
+                                href=f"post?title={blog_post['filename']}",
+                            ),
+                            html.Hr(),
+                        ],
+                        lg=8,
+                    )
+                )
             )
 
         self.layout = html.Div(
@@ -77,12 +105,13 @@ class Blog(BootstrapApp):
                 dbc.Container(
                     [
                         breadcrumb_layout([("Home", "/"), ("Blog", "")]),
-                        dbc.Row([
-                            dbc.Col([html.H1("Recent posts"), html.Hr()]),
-
-                        ]),
-                        dbc.Row(dbc.Col(body, lg=12)),
+                        dbc.Row(
+                            [
+                                dbc.Col([html.H1("Recent posts"), html.Hr()]),
+                            ]
+                        ),
                     ]
+                    + body
                     + footer(),
                     style={"margin-bottom": "64px"},
                 ),
@@ -164,8 +193,9 @@ class Post(BootstrapApp):
                                 blog_post["attributes"]["date"], "%Y-%m-%d"
                             )
                         ),
-                    ]
-                , className='subtitle mt-0 text-muted small'),
+                    ],
+                    className="subtitle mt-0 text-muted small",
+                ),
                 dash_dangerously_set_inner_html.DangerouslySetInnerHTML(
                     blog_post["body"]
                 )

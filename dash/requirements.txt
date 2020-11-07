@@ -6,4 +6,5 @@ humanize
 Flask-Caching
 frontmatter
 gunicorn
+markdown2
 pandas

@@ -53,7 +53,7 @@ def parse_people(person_list):
         "home": "fas fa-home",
         "github": "fab fa-github",
         "work": "fas fa-building",
-        "university": "fa fa-university"
+        "university": "fa fa-university",
     }
 
     return [
@@ -234,7 +234,7 @@ class About(BootstrapApp):
                                 lg=12,
                             )
                         ),
-                        dbc.Row(parse_people(research_team))
+                        dbc.Row(parse_people(research_team)),
                     ]
                     + footer(),
                     style={"margin-bottom": "64px"},

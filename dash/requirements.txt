@@ -3,7 +3,6 @@ dash-bootstrap-components
 dash-dangerously-set-inner-html
 dash-multi
 humanize
-Flask-Caching
 frontmatter
 gunicorn
 markdown2

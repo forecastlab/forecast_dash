@@ -147,36 +147,42 @@ class Blog(BootstrapApp):
             # Add bottom navigation
             # Previous | Page X of Y | Earlier
 
-            n_pages = math.ceil(n_posts/n_posts_per_page)
+            n_pages = math.ceil(n_posts / n_posts_per_page)
 
             body.append(
-                dbc.Row([
-                    dbc.Col(
-                        html.A(
-                            html.P("< Previous Posts"),
-                            id="previous_link",
-                            href=f"?page={page_int+1}",
-                            className="text-left",
-                        ) if page_int < n_pages else [],
-                        lg=2
-                    ),
-                    dbc.Col(
-                        html.P(
-                            f"Page {page_int} of {n_pages}",
-                            className='text-center'
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            html.A(
+                                html.P("< Previous Posts"),
+                                id="previous_link",
+                                href=f"?page={page_int+1}",
+                                className="text-left",
+                            )
+                            if page_int < n_pages
+                            else [],
+                            lg=2,
                         ),
-                        lg=4
-                    ),
-                    dbc.Col(
-                        html.A(
-                            html.P("Earlier Posts >"),
-                            id="previous_link",
-                            href=f"?page={page_int-1}",
-                            className="text-right",
-                        ) if page_int > 1 else [],
-                        lg=2
-                    )
-                ])
+                        dbc.Col(
+                            html.P(
+                                f"Page {page_int} of {n_pages}",
+                                className="text-center",
+                            ),
+                            lg=4,
+                        ),
+                        dbc.Col(
+                            html.A(
+                                html.P("Earlier Posts >"),
+                                id="previous_link",
+                                href=f"?page={page_int-1}",
+                                className="text-right",
+                            )
+                            if page_int > 1
+                            else [],
+                            lg=2,
+                        ),
+                    ]
+                )
             )
 
             return body

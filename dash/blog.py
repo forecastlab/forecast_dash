@@ -15,6 +15,8 @@ from frontmatter import Frontmatter
 from multipage import Route, MultiPageApp
 from util import glob_re, location_ignore_null, parse_state
 
+import math
+
 markdown_extras = ["cuddled-lists"]
 
 
@@ -45,12 +47,17 @@ class Blog(BootstrapApp):
         @location_ignore_null([Input("url", "href")], "url")
         def body(value):
 
+            # Find page number
             parse_result = parse_state(value)
 
             if "page" not in parse_result:
                 parse_result["page"] = ["1"]
 
+            page_int = int(parse_result["page"][0])
+
+            # Load blog posts
             filenames = glob_re(r".*.md", "../blog")
+            n_posts = len(filenames)
 
             blog_posts = []
 
@@ -64,16 +71,16 @@ class Blog(BootstrapApp):
                 blog_posts, key=lambda x: x["attributes"]["date"], reverse=True
             )
 
-            body = []
-
+            # Render post previews
             h = html2text.HTML2Text()
             h.ignore_links = True
 
-            page_int = int(parse_result["page"][0])
-            n_posts_per_page = 3
+            n_posts_per_page = 5
 
             start = (page_int - 1) * n_posts_per_page
-            end = min((page_int) * n_posts_per_page, len(filenames))
+            end = min((page_int) * n_posts_per_page, n_posts)
+
+            body = []
 
             for i in range(start, end):
                 blog_post = blog_posts[i]
@@ -137,35 +144,40 @@ class Blog(BootstrapApp):
                     )
                 )
 
-            bottom_navigation_row = []
+            # Add bottom navigation
+            # Previous | Page X of Y | Earlier
 
-            if page_int < len(filenames) / n_posts_per_page:
-                bottom_navigation_row.append(
+            n_pages = math.ceil(n_posts/n_posts_per_page)
+
+            body.append(
+                dbc.Row([
                     dbc.Col(
                         html.A(
                             html.P("< Previous Posts"),
                             id="previous_link",
                             href=f"?page={page_int+1}",
                             className="text-left",
-                        ), lg=4
-                    )
-
-                )
-
-            if page_int > 1:
-                bottom_navigation_row.append(
+                        ) if page_int < n_pages else [],
+                        lg=2
+                    ),
+                    dbc.Col(
+                        html.P(
+                            f"Page {page_int} of {n_pages}",
+                            className='text-center'
+                        ),
+                        lg=4
+                    ),
                     dbc.Col(
                         html.A(
                             html.P("Earlier Posts >"),
                             id="previous_link",
                             href=f"?page={page_int-1}",
                             className="text-right",
-                        ), lg=4
+                        ) if page_int > 1 else [],
+                        lg=2
                     )
-
-                )
-
-            body.append(dbc.Row(bottom_navigation_row))
+                ])
+            )
 
             return body
 

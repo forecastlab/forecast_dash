@@ -106,7 +106,7 @@ class Blog(BootstrapApp):
                                 html.A(
                                     html.H2(
                                         blog_post["attributes"]["title"],
-                                        style={"padding-top": "16px"},
+                                        style={"padding-top": "8px"},
                                     ),
                                     href=f"post?title={blog_post['filename']}",
                                     id=blog_post["filename"],
@@ -129,11 +129,15 @@ class Blog(BootstrapApp):
                                     className="subtitle mt-0 text-muted small",
                                 ),
                                 html.Div(
-                                    preview, style={"padding-bottom": "16px"}
+                                    preview, style={"padding-bottom": "8px"}
                                 ),
                                 html.A(
                                     html.P(
-                                        "Read more >", className="text-right"
+                                        html.Strong(
+                                            "Read more",
+                                            className="text-left",
+                                        ),
+                                        style={"padding-bottom": "24px"},
                                     ),
                                     href=f"post?title={blog_post['filename']}",
                                 ),

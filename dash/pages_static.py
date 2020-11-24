@@ -163,20 +163,14 @@ class About(BootstrapApp):
                                     [
                                         html.H2("About"),
                                         html.P(
-                                            """
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ultricies ante
-                                            turpis, eget lobortis erat feugiat quis. Duis sed rutrum sapien, ut ullamcorper
-                                            turpis. Praesent ut nunc lobortis lorem gravida bibendum. Aenean elementum dapibus
-                                            felis vitae posuere.Nulla semper erat vitae sollicitudin elementum.
-                                            """
-                                        ),
-                                        html.P(
-                                            """
-                                            Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac
-                                            turpis egestas. Praesent semper fermentum erat ut cursus.Etiam gravida dui justo,
-                                            at sodales ante euismod ac. Maecenas porta nisi ut lacus vehicula imperdiet. Sed
-                                            facilisis dui id orci volutpat, id porta est imperdiet.
-                                            """
+                                            [
+                                                """
+This website is an intuitive tool that makes business forecasting accessible to the wider community. You can easily obtain predictions of commonly used variables together with the uncertainty around them. The website implements classical forecasting models as well as the novel models and methods developed by the members of the Time Series and Forecasting (TSF) research group in the University of Sydney Business School. The website visualizes and summarizes the forecasting results in an easy-to-understand manner. The forecasts are updated daily and include the latest publicly available information. It is an open-source project under the AGPL license, see 
+                                                """,
+                                                html.A("https://github.com/forecastlab/forecast_dash", href="https://github.com/forecastlab/forecast_dash"
+                                                ),
+                                                " .",
+                                            ]
                                         ),
                                     ],
                                     lg=6,

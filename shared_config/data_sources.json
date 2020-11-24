@@ -132,11 +132,22 @@
       "Economic"
     ]
   },
-   {
+  {
     "title": "US 10-Year Treasury Constant Maturity Rate",
      "short_title": "US Interest Rates",
     "source": "Fred",
     "url": "https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&frequency=m",
+    "frequency": "MS",
+    "tags": [
+      "US",
+      "Economic"
+    ]
+  },
+  {
+    "title": "US Real Retail and Food Services Sales",
+    "short_title": "US Retail Sales",
+    "source": "Fred",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=RRSFS&frequency=m",
     "frequency": "MS",
     "tags": [
       "US",

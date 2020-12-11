@@ -424,7 +424,7 @@ class Index(BootstrapApp):
         series_list = json.load(data_sources_json_file)
         data_sources_json_file.close()
 
-        feature_series_title = "Australian Unemployment"
+        feature_series_title = "Australian GDP Growth"
 
         def layout_func():
 

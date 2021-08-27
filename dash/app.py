@@ -21,7 +21,7 @@ dynamic_routes = [
 
 
 class MyApp(MultiPageApp):
-    def get_routes( self):
+    def get_routes( self ):
 
         return [
             Route(r[0], r[1], r[2])

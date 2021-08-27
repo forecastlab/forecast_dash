@@ -1,6 +1,7 @@
 import ast
 import os
 import re
+from datetime import datetime
 from functools import wraps
 from urllib.parse import urlparse, parse_qs
 
@@ -48,3 +49,23 @@ def apply_default_value(params):
         return apply_value
 
     return wrapper
+
+
+def watermark_information():
+    current_date = datetime.today().strftime(
+        "%Y/%m/%d"
+    )  # Get the current date YYYY-MM-DD format for watermarking figures
+    watermark_text = "https://business-forecast-lab.com - {}".format(
+        current_date
+    )
+    watermark_font_size_dict = {
+        12: 20,
+        8: 15,
+        6: 12,
+        4: 10,
+    }  # Size is based upon the number of columns in the row. based upon the lg argument in dcc.Col
+    watermark_dict = {
+        "text": watermark_text,
+        "font_size": watermark_font_size_dict,
+    }
+    return watermark_dict

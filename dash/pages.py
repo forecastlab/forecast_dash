@@ -20,6 +20,7 @@ from util import (
     location_ignore_null,
     parse_state,
     apply_default_value,
+    watermark_information,
 )
 
 
@@ -152,7 +153,10 @@ def select_best_model(data_dict):
     return model_name
 
 
-def get_thumbnail_figure(data_dict):
+def get_thumbnail_figure(data_dict, lg=12):
+    watermark_config = (
+        watermark_information()
+    )  # Grab the watermark text and fontsize information
 
     model_name = select_best_model(data_dict)
     series_df = data_dict["downloaded_dict"]["series_df"].iloc[-16:, :]
@@ -181,12 +185,28 @@ def get_thumbnail_figure(data_dict):
         yaxis=dict(fixedrange=True, gridcolor="rgb(255,255,255)"),
         shapes=shapes,
         margin={"l": 0, "r": 0},
+        annotations=[
+            dict(
+                name="watermark",
+                text=watermark_config["text"],
+                opacity=0.2,
+                font=dict(
+                    color="black", size=watermark_config["font_size"][lg]
+                ),
+                xref="paper",
+                yref="paper",
+                x=0.025,  # x axis location relative to bottom left hand corner between (0,1)
+                y=0.025,  # y axis location relative to bottom left hand corner between (0,1)
+                showarrow=False,
+            )
+        ],
     )
 
     return dict(data=data, layout=layout)
 
 
 def get_series_figure(data_dict, model_name):
+    watermark_config = watermark_information()
 
     series_df = data_dict["downloaded_dict"]["series_df"]
     forecast_df = data_dict["all_forecasts"][model_name]["forecast_df"]
@@ -256,6 +276,21 @@ def get_series_figure(data_dict, model_name):
             autorange=True,
             gridcolor="rgb(255,255,255)",
         ),
+        annotations=[
+            dict(
+                name="watermark",
+                text=watermark_config["text"],
+                opacity=0.2,
+                font=dict(
+                    color="black", size=watermark_config["font_size"][12]
+                ),
+                xref="paper",
+                yref="paper",
+                x=0.025,  # x axis location relative to bottom left hand corner between (0,1)
+                y=0.025,  # y axis location relative to bottom left hand corner between (0,1)
+                showarrow=False,
+            )
+        ],
         shapes=shapes,
     )
 
@@ -289,7 +324,7 @@ def component_figs_2col(row_title, series_titles):
                         [
                             dcc.Graph(
                                 figure=get_thumbnail_figure(
-                                    get_forecast_data(series_title)
+                                    get_forecast_data(series_title), lg=6
                                 ),
                                 config={"displayModeBar": False},
                             )
@@ -325,7 +360,7 @@ def component_figs_3col(row_title, series_titles):
                         [
                             dcc.Graph(
                                 figure=get_thumbnail_figure(
-                                    get_forecast_data(series_title)
+                                    get_forecast_data(series_title), lg=4
                                 ),
                                 config={"displayModeBar": False},
                             )
@@ -477,7 +512,8 @@ class Index(BootstrapApp):
                                                         figure=get_thumbnail_figure(
                                                             get_forecast_data(
                                                                 feature_series_title
-                                                            )
+                                                            ),
+                                                            lg=8,
                                                         ),
                                                         config={
                                                             "displayModeBar": False
@@ -518,7 +554,8 @@ class Index(BootstrapApp):
                                                         figure=get_thumbnail_figure(
                                                             get_forecast_data(
                                                                 "US Unemployment"
-                                                            )
+                                                            ),
+                                                            lg=8,
                                                         ),
                                                         config={
                                                             "displayModeBar": False

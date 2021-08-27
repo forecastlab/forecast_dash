@@ -167,7 +167,9 @@ class About(BootstrapApp):
                                                 """
 This website is an intuitive tool that makes business forecasting accessible to the wider community. You can easily obtain predictions of commonly used variables together with the uncertainty around them. The website implements classical forecasting models as well as the novel models and methods developed by the members of the Time Series and Forecasting (TSF) research group in the University of Sydney Business School. The website visualizes and summarizes the forecasting results in an easy-to-understand manner. The forecasts are updated daily and include the latest publicly available information. It is an open-source project under the AGPL license, see 
                                                 """,
-                                                html.A("https://github.com/forecastlab/forecast_dash", href="https://github.com/forecastlab/forecast_dash"
+                                                html.A(
+                                                    "https://github.com/forecastlab/forecast_dash",
+                                                    href="https://github.com/forecastlab/forecast_dash",
                                                 ),
                                                 " .",
                                             ]

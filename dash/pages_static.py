@@ -200,6 +200,25 @@ This website is an intuitive tool that makes business forecasting accessible to 
                             ]
                         ),
                         dbc.Row(
+                            [
+                                dbc.Col(
+                                    html.H2(
+                                        "Built by the University of Sydney\n Discipline of Business Analytics"
+                                    ),
+                                    width=6,
+                                    align="center",
+                                ),
+                                dbc.Col(
+                                    html.A(
+                                        [html.Img(src="assets/USYD_logo.png")],
+                                        href="https://www.sydney.edu.au/business/",
+                                    ),
+                                    width=6,
+                                ),
+                            ],
+                            justify="between",
+                        ),
+                        dbc.Row(
                             dbc.Col(
                                 html.H2(
                                     "Powered By",

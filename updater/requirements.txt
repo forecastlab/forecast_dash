@@ -3,4 +3,5 @@ requests
 rpy2
 scikit-learn
 statsmodels
+tensorflow
 tzlocal

@@ -1,3 +1,4 @@
+keras
 pandas
 requests
 rpy2

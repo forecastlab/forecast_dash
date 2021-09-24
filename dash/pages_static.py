@@ -1,6 +1,5 @@
 import dash_bootstrap_components as dbc
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc, html
 
 from common import MarkdownApp, BootstrapApp, header, breadcrumb_layout, footer
 
@@ -25,23 +24,23 @@ These are based on the benchmark models used in the M4 Competition \[0\].
 The models are run on each dataset according to the time series cross-validation
 scheme described in \[1\], Sect 3.4, with forecast horizons of length 1-8.
 
-![time series cross-validation](https://otexts.com/fpp2/fpp_files/figure-html/cv1-1.png)  
+![time series cross-validation](https://otexts.com/fpp2/fpp_files/figure-html/cv1-1.png)
 \(Image reproduced from \[1\] with permission.\)
 
-The forecast accuracy or cross-validation score is computed by averaging 
-the mean-squared forecast error over the test sets and forecast horizons. 
-The model with the best forecast accuracy is selected by the Forecast Lab 
-as the preferred model. Forecasts from the other available models may be 
+The forecast accuracy or cross-validation score is computed by averaging
+the mean-squared forecast error over the test sets and forecast horizons.
+The model with the best forecast accuracy is selected by the Forecast Lab
+as the preferred model. Forecasts from the other available models may be
 selected from the drop-down menu in each Series page.
 
 
-\[0\] Makridakis, S., Spiliotis, E. and Assimakopoulos, V.,  
-      _The M4 Competition: 100,000 time series and 61 forecasting methods,_  
+\[0\] Makridakis, S., Spiliotis, E. and Assimakopoulos, V.,
+      _The M4 Competition: 100,000 time series and 61 forecasting methods,_
       Int. J. Forecasting 36 \(2020\) 54-74
 
-\[1\] Hyndman, R. and Athanasopoulos, G.,  
+\[1\] Hyndman, R. and Athanasopoulos, G.,
       _Forecasting: Principles and Practice_
-      OTexts: Melbourne, Australia.  
+      OTexts: Melbourne, Australia.
       [otexts.com/fpp2/](https://otexts.com/fpp2/)
 
     """
@@ -165,7 +164,7 @@ class About(BootstrapApp):
                                         html.P(
                                             [
                                                 """
-This website is an intuitive tool that makes business forecasting accessible to the wider community. You can easily obtain predictions of commonly used variables together with the uncertainty around them. The website implements classical forecasting models as well as the novel models and methods developed by the members of the Time Series and Forecasting (TSF) research group in the University of Sydney Business School. The website visualizes and summarizes the forecasting results in an easy-to-understand manner. The forecasts are updated daily and include the latest publicly available information. It is an open-source project under the AGPL license, see 
+This website is an intuitive tool that makes business forecasting accessible to the wider community. You can easily obtain predictions of commonly used variables together with the uncertainty around them. The website implements classical forecasting models as well as the novel models and methods developed by the members of the Time Series and Forecasting (TSF) research group in the University of Sydney Business School. The website visualizes and summarizes the forecasting results in an easy-to-understand manner. The forecasts are updated daily and include the latest publicly available information. It is an open-source project under the AGPL license, see
                                                 """,
                                                 html.A(
                                                     "https://github.com/forecastlab/forecast_dash",

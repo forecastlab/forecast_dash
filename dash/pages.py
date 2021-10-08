@@ -183,7 +183,7 @@ def get_thumbnail_figure(data_dict, lg=12):
         ),
         yaxis=dict(fixedrange=True, gridcolor="rgb(255,255,255)"),
         shapes=shapes,
-        margin={"l": 0, "r": 0},
+        margin={"l": 30, "r": 0, 't': 30},
         annotations=[
             dict(
                 name="watermark",
@@ -311,9 +311,9 @@ def component_figs_2col(row_title, series_titles):
         [
             dbc.Col(
                 [
-                    html.H3(row_title, style={"text-align": "center"}),
+                    html.H2(row_title),
                 ],
-                lg=12,
+                lg=12, className='text-center'
             ),
         ]
         + [
@@ -485,7 +485,7 @@ class Index(BootstrapApp):
                                                 "To provide the latest economic and financial forecasts of commonly used time series.",
                                                 className="lead",
                                             ),
-                                        ]
+                                        ],
                                     ),
                                 ]
                             ),
@@ -523,30 +523,20 @@ class Index(BootstrapApp):
                                             ),
                                         ],
                                         lg=8,
-                                        # className="border-right",
                                     ),
                                     component_news_4col(),
                                 ],
-                                style={"margin-top": "16px"},
                             ),
-                            # Row 2 - US Snapshot
-                            component_figs_3col(
-                                "US Snapshot 🇺🇸",
-                                [
-                                    "US Unemployment",
-                                    "US GDP Growth",
-                                    "US Personal Consumption Expenditures: Chain-type Price Index (% Change, 1 Year)",
-                                ],
-                            ),
-                            # Row 3 - Leaderboard
                             dbc.Row(
                                 [
+                                    dbc.Col([
+                                        html.H2(
+                                            "US Recovery from COVID-19",
+                                        ),
+                                        html.A(html.P("View all US forecasts"), href="/search/?name=&tags=US")
+                                    ], lg=4, className='text-center align-self-center'),
                                     dbc.Col(
                                         [
-                                            html.H3(
-                                                "US Unemployment",
-                                                style={"text-align": "center"},
-                                            ),
                                             html.A(
                                                 [
                                                     dcc.Graph(
@@ -561,27 +551,44 @@ class Index(BootstrapApp):
                                                         },
                                                     )
                                                 ],
-                                                href=f"/series?{urlencode({'title': 'US Unemployment'})}",
+                                                href=f"/series?{urlencode({'title': feature_series_title})}",
                                             ),
                                         ],
                                         lg=8,
-                                        # className="border-right",
                                     ),
-                                    component_leaderboard_4col(series_list),
-                                ]
-                            ),
-                            # Row 4 - Australia Snapshot
-                            component_figs_3col(
-                                "Australia Snapshot 🇦🇺",
-                                [
-                                    "Australian GDP Growth",
-                                    "Australian Inflation (CPI)",
-                                    "Australian Unemployment",
                                 ],
+                                className = 'd-flex'
                             ),
+                            # Row 3 - Leaderboard
+                            dbc.Row([
+                                dbc.Col([
+                                    dbc.Jumbotron(
+                                        [
+                                            html.A([
+                                                html.H1("Leaderboard", className='display-4'),
+                                            ], href="/leaderboard/", className='text-decoration-none text-reset'),
+                                            html.H4(
+                                                "We back test every model on every series.", className='mb-3'
+                                            ),
+                                            html.H4(
+                                                "Daily.", className='mb-3'
+                                            ),
+                                            html.A(html.P("Go to Leaderboard"), href="/leaderboard/")
+                                        ],
+                                        # fluid=True,
+                                        # className="d-none d-md-block",
+                                        className='text-center'
+                                    ),
+                                ], lg=12)
+                            ]),
+
+
+
+
+
                             # Row 5 - UK Snapshot
                             component_figs_2col(
-                                "UK Snapshot 🇬🇧",
+                                "UK Snapshot",
                                 [
                                     "UK Unemployment",
                                     "UK Inflation (RPI)",

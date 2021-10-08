@@ -183,7 +183,7 @@ def get_thumbnail_figure(data_dict, lg=12):
         ),
         yaxis=dict(fixedrange=True, gridcolor="rgb(255,255,255)"),
         shapes=shapes,
-        margin={"l": 30, "r": 0, 't': 30},
+        margin={"l": 30, "r": 0, "t": 30},
         annotations=[
             dict(
                 name="watermark",
@@ -313,7 +313,8 @@ def component_figs_2col(row_title, series_titles):
                 [
                     html.H2(row_title),
                 ],
-                lg=12, className='text-center'
+                lg=12,
+                className="text-center",
             ),
         ]
         + [
@@ -529,12 +530,21 @@ class Index(BootstrapApp):
                             ),
                             dbc.Row(
                                 [
-                                    dbc.Col([
-                                        html.H2(
-                                            "US Recovery from COVID-19",
-                                        ),
-                                        html.A(html.P("View all US forecasts"), href="/search/?name=&tags=US")
-                                    ], lg=4, className='text-center align-self-center'),
+                                    dbc.Col(
+                                        [
+                                            html.H2(
+                                                "US Recovery from COVID-19",
+                                            ),
+                                            html.A(
+                                                html.P(
+                                                    "View all US forecasts"
+                                                ),
+                                                href="/search/?name=&tags=US",
+                                            ),
+                                        ],
+                                        lg=4,
+                                        className="text-center align-self-center",
+                                    ),
                                     dbc.Col(
                                         [
                                             html.A(
@@ -557,35 +567,49 @@ class Index(BootstrapApp):
                                         lg=8,
                                     ),
                                 ],
-                                className = 'd-flex'
+                                className="d-flex",
                             ),
                             # Row 3 - Leaderboard
-                            dbc.Row([
-                                dbc.Col([
-                                    dbc.Jumbotron(
+                            dbc.Row(
+                                [
+                                    dbc.Col(
                                         [
-                                            html.A([
-                                                html.H1("Leaderboard", className='display-4'),
-                                            ], href="/leaderboard/", className='text-decoration-none text-reset'),
-                                            html.H4(
-                                                "We back test every model on every series.", className='mb-3'
+                                            dbc.Jumbotron(
+                                                [
+                                                    html.A(
+                                                        [
+                                                            html.H1(
+                                                                "Leaderboard",
+                                                                className="display-4",
+                                                            ),
+                                                        ],
+                                                        href="/leaderboard/",
+                                                        className="text-decoration-none text-reset",
+                                                    ),
+                                                    html.H4(
+                                                        "We back test every model on every series.",
+                                                        className="mb-3",
+                                                    ),
+                                                    html.H4(
+                                                        "Daily.",
+                                                        className="mb-3",
+                                                    ),
+                                                    html.A(
+                                                        html.P(
+                                                            "Go to Leaderboard"
+                                                        ),
+                                                        href="/leaderboard/",
+                                                    ),
+                                                ],
+                                                # fluid=True,
+                                                # className="d-none d-md-block",
+                                                className="text-center",
                                             ),
-                                            html.H4(
-                                                "Daily.", className='mb-3'
-                                            ),
-                                            html.A(html.P("Go to Leaderboard"), href="/leaderboard/")
                                         ],
-                                        # fluid=True,
-                                        # className="d-none d-md-block",
-                                        className='text-center'
-                                    ),
-                                ], lg=12)
-                            ]),
-
-
-
-
-
+                                        lg=12,
+                                    )
+                                ]
+                            ),
                             # Row 5 - UK Snapshot
                             component_figs_2col(
                                 "UK Snapshot",

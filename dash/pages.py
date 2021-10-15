@@ -26,6 +26,7 @@ from util import (
 
 import urllib.parse
 
+
 def dash_kwarg(inputs):
     def accept_func(func):
         @wraps(func)
@@ -141,14 +142,14 @@ def get_plot_shapes(series_df, forecast_df):
 
 
 def select_best_model(data_dict):
-    #use the MSE as the default scoring function for identifying the best model. 
+    # use the MSE as the default scoring function for identifying the best model.
     # Extract ( model_name, cv_score ) for each model.
     all_models = []
     all_cv_scores = []
     for model_name, forecast_df in data_dict["all_forecasts"].items():
         all_models.append(model_name)
         if type(forecast_df["cv_score"]) == dict:
-            all_cv_scores.append(forecast_df["cv_score"]["MSE"]) 
+            all_cv_scores.append(forecast_df["cv_score"]["MSE"])
         else:
             all_cv_scores.append(forecast_df["cv_score"])
 
@@ -297,7 +298,7 @@ def get_series_figure(data_dict, model_name):
             )
         ],
         shapes=shapes,
-        modebar = {'color': 'rgba(0,0,0,1)'},
+        modebar={"color": "rgba(0,0,0,1)"},
     )
 
     return dict(data=data, layout=layout)
@@ -604,7 +605,6 @@ class Index(BootstrapApp):
 
 
 class Series(BootstrapApp):
-            
     def setup(self):
 
         self.layout = html.Div(
@@ -630,9 +630,17 @@ class Series(BootstrapApp):
                                                 ),
                                             ]
                                         ),
-                                        dbc.FormGroup([
-                                            html.A('Download Forecast Data', id='forecast_data_download_link', download = "forecast_data.csv", href = "", target = "_blank")
-                                            ]),
+                                        dbc.FormGroup(
+                                            [
+                                                html.A(
+                                                    "Download Forecast Data",
+                                                    id="forecast_data_download_link",
+                                                    download="forecast_data.csv",
+                                                    href="",
+                                                    target="_blank",
+                                                )
+                                            ]
+                                        ),
                                         dcc.Loading(
                                             html.Div(id="meta_data_list")
                                         ),
@@ -640,10 +648,13 @@ class Series(BootstrapApp):
                                     lg=6,
                                 ),
                                 dbc.Col(
-                                    [dbc.Label("Model Cross Validation Scores"),
-                                     dcc.Loading(
+                                    [
+                                        dbc.Label(
+                                            "Model Cross Validation Scores"
+                                        ),
+                                        dcc.Loading(
                                             html.Div(id="CV_scores_table")
-                                            )
+                                        ),
                                     ],
                                     lg=6,
                                 ),
@@ -717,11 +728,13 @@ class Series(BootstrapApp):
                         "toggleSpikelines",
                     ],
                     "displaylogo": False,
-                    'displayModeBar': True,
-                    "toImageButtonOptions":dict(filename = f"{model_name}",
-                                                format = 'png',
-                                                width=1024, 
-                                                height=768)
+                    "displayModeBar": True,
+                    "toImageButtonOptions": dict(
+                        filename=f"{model_name}",
+                        format="png",
+                        width=1024,
+                        height=768,
+                    ),
                 },
             )
 
@@ -772,7 +785,6 @@ class Series(BootstrapApp):
             if model_description == model_name:
                 model_description = ""
 
-
             return dbc.ListGroup(
                 [
                     dbc.ListGroupItem(
@@ -821,53 +833,74 @@ class Series(BootstrapApp):
                                     )
                                 ]
                             ),
-                        ]   
+                        ]
                     ),
                 ]
             )
-        
-            
+
         def create_forecast_table_df(series_data_dict, **kwargs):
             model_name = kwargs["model_selector"]
-    
+
             dataframe = series_data_dict["all_forecasts"][model_name][
                 "forecast_df"
             ]
-    
+
             column_name_map = {"forecast": "Forecast"}
-    
+
             dataframe = dataframe.rename(column_name_map, axis=1).round(4)
-            dataframe['date'] = dataframe.index.strftime("%Y-%m-%d %H:%M:%S")
-            dataframe = dataframe[['date'] + dataframe.columns.tolist()[:-1]] #reorder columns so the date is first
-    
+            dataframe["date"] = dataframe.index.strftime("%Y-%m-%d %H:%M:%S")
+            dataframe = dataframe[
+                ["date"] + dataframe.columns.tolist()[:-1]
+            ]  # reorder columns so the date is first
+
             return dataframe
-        
+
         def create_CV_scores_table(series_data_dict):
-            df_column_labels = [x for x in series_data_dict["all_forecasts"]['MLP']["cv_score"].keys() if 'Winkler' not in x]
-            df_column_labels = df_column_labels + ['95% Winkler']
-            
-            CV_score_df = pd.DataFrame(columns = df_column_labels, index = list(series_data_dict["all_forecasts"].keys()))
+            df_column_labels = [
+                x
+                for x in series_data_dict["all_forecasts"]["MLP"][
+                    "cv_score"
+                ].keys()
+                if "Winkler" not in x
+            ]
+            df_column_labels = df_column_labels + ["95% Winkler"]
+
+            CV_score_df = pd.DataFrame(
+                columns=df_column_labels,
+                index=list(series_data_dict["all_forecasts"].keys()),
+            )
             for model in list(series_data_dict["all_forecasts"].keys()):
-                for CV_score in list(series_data_dict["all_forecasts"]['MLP']["cv_score"].keys()):
-                    if 'Winkler' in CV_score:
-                        if '95' in CV_score: #only present the 95% CV score in the table
-                            CV_score_df.at[model, '95% Winkler'] = np.round(series_data_dict["all_forecasts"][model]['cv_score'][CV_score], 4) 
+                for CV_score in list(
+                    series_data_dict["all_forecasts"]["MLP"]["cv_score"].keys()
+                ):
+                    if "Winkler" in CV_score:
+                        if (
+                            "95" in CV_score
+                        ):  # only present the 95% CV score in the table
+                            CV_score_df.at[model, "95% Winkler"] = np.round(
+                                series_data_dict["all_forecasts"][model][
+                                    "cv_score"
+                                ][CV_score],
+                                4,
+                            )
                     else:
-                        CV_score_df.at[model, CV_score] = np.round(series_data_dict["all_forecasts"][model]['cv_score'][CV_score], 4)
-            CV_score_df.sort_values(by = ['MSE'], inplace = True)
+                        CV_score_df.at[model, CV_score] = np.round(
+                            series_data_dict["all_forecasts"][model][
+                                "cv_score"
+                            ][CV_score],
+                            4,
+                        )
+            CV_score_df.sort_values(by=["MSE"], inplace=True)
             return CV_score_df
-    
-        @self.callback(
-            Output("CV_scores_table", "children"),
-            inputs
-        )
+
+        @self.callback(Output("CV_scores_table", "children"), inputs)
         @location_ignore_null(inputs, location_id="url")
         @series_input(
             inputs,
             location_id="url",
         )
         def update_CV_scores_table(series_data_dict, **kwargs):
-            
+
             dataframe = create_CV_scores_table(series_data_dict)
 
             table = dbc.Table.from_dataframe(
@@ -875,12 +908,12 @@ class Series(BootstrapApp):
             )
 
             return table
-    
+
         @self.callback(
             Output("forecast_data_download_link", "href"),
             inputs + [Input("model_selector", "value")],
-            prevent_initial_call = True
-            )
+            prevent_initial_call=True,
+        )
         @location_ignore_null(inputs, location_id="url")
         @series_input(
             inputs
@@ -890,11 +923,13 @@ class Series(BootstrapApp):
             location_id="url",
         )
         def update_download_link(series_data_dict, **kwargs):
-            
+
             table = create_forecast_table_df(series_data_dict, **kwargs)
-            
-            csv_string = table.to_csv(index = False, encoding = 'utf-8')
-            csv_string = "data:text/csv;charset=utf-8," + urllib.parse.quote(csv_string)
+
+            csv_string = table.to_csv(index=False, encoding="utf-8")
+            csv_string = "data:text/csv;charset=utf-8," + urllib.parse.quote(
+                csv_string
+            )
             return csv_string
 
         @self.callback(
@@ -915,7 +950,7 @@ class Series(BootstrapApp):
             location_id="url",
         )
         def update_forecast_table(series_data_dict, **kwargs):
-            
+
             dataframe = create_forecast_table_df(series_data_dict, **kwargs)
 
             table = dbc.Table.from_dataframe(

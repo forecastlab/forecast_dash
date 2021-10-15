@@ -480,6 +480,10 @@ class RModel(ForecastModel, ABC):
         pass
 
     def fit(self, y):
+        
+        # Find period of y
+        freq = getattr(self.y.index, "inferred_freq", None)
+        self.period = freq_to_period(freq)
 
         r_forecast_dict = self.get_r_forecast_dict()
 

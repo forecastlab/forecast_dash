@@ -1,12 +1,14 @@
 import json
 import pickle
 import re
+
 from datetime import datetime
 from functools import wraps
 from urllib.parse import urlencode
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html
+
 import humanize
 import numpy as np
 import pandas as pd
@@ -22,6 +24,7 @@ from util import (
     watermark_information,
 )
 
+import urllib.parse
 
 def dash_kwarg(inputs):
     def accept_func(func):
@@ -138,13 +141,16 @@ def get_plot_shapes(series_df, forecast_df):
 
 
 def select_best_model(data_dict):
-
+    #use the MSE as the default scoring function for identifying the best model. 
     # Extract ( model_name, cv_score ) for each model.
     all_models = []
     all_cv_scores = []
     for model_name, forecast_df in data_dict["all_forecasts"].items():
         all_models.append(model_name)
-        all_cv_scores.append(forecast_df["cv_score"])
+        if type(forecast_df["cv_score"]) == dict:
+            all_cv_scores.append(forecast_df["cv_score"]["MSE"]) 
+        else:
+            all_cv_scores.append(forecast_df["cv_score"])
 
     # Select the best model.
     model_name = all_models[np.argmin(all_cv_scores)]
@@ -291,6 +297,7 @@ def get_series_figure(data_dict, model_name):
             )
         ],
         shapes=shapes,
+        modebar = {'color': 'rgba(0,0,0,1)'},
     )
 
     return dict(data=data, layout=layout)
@@ -597,6 +604,7 @@ class Index(BootstrapApp):
 
 
 class Series(BootstrapApp):
+            
     def setup(self):
 
         self.layout = html.Div(
@@ -622,6 +630,9 @@ class Series(BootstrapApp):
                                                 ),
                                             ]
                                         ),
+                                        dbc.FormGroup([
+                                            html.A('Download Forecast Data', id='forecast_data_download_link', download = "forecast_data.csv", href = "", target = "_blank")
+                                            ]),
                                         dcc.Loading(
                                             html.Div(id="meta_data_list")
                                         ),
@@ -629,37 +640,10 @@ class Series(BootstrapApp):
                                     lg=6,
                                 ),
                                 dbc.Col(
-                                    [
-                                        dbc.FormGroup(
-                                            [
-                                                dcc.Dropdown(
-                                                    options=[
-                                                        {
-                                                            "label": "Forecast",
-                                                            "value": "Forecast",
-                                                        },
-                                                        {
-                                                            "label": "50% CI",
-                                                            "value": "CI_50",
-                                                        },
-                                                        {
-                                                            "label": "75% CI",
-                                                            "value": "CI_75",
-                                                        },
-                                                        {
-                                                            "label": "95% CI",
-                                                            "value": "CI_95",
-                                                        },
-                                                    ],
-                                                    value="Forecast",
-                                                    clearable=False,
-                                                    id="forecast_table_selector",
-                                                ),
-                                            ]
-                                        ),
-                                        dcc.Loading(
-                                            html.Div(id="forecast_table")
-                                        ),
+                                    [dbc.Label("Model Cross Validation Scores"),
+                                     dcc.Loading(
+                                            html.Div(id="CV_scores_table")
+                                            )
                                     ],
                                     lg=6,
                                 ),
@@ -733,6 +717,11 @@ class Series(BootstrapApp):
                         "toggleSpikelines",
                     ],
                     "displaylogo": False,
+                    'displayModeBar': True,
+                    "toImageButtonOptions":dict(filename = f"{model_name}",
+                                                format = 'png',
+                                                width=1024, 
+                                                height=768)
                 },
             )
 
@@ -758,7 +747,7 @@ class Series(BootstrapApp):
 
             all_methods_dict[
                 best_model_name
-            ] = f"{best_model_name} - Best Model"
+            ] = f"{best_model_name} - Best Model (MSE)"
 
             model_select_options = [
                 {"label": v, "value": k} for k, v in all_methods_dict.items()
@@ -775,7 +764,6 @@ class Series(BootstrapApp):
             inputs + [Input("model_selector", "value")], location_id="url"
         )
         def update_meta_data_list(series_data_dict, **kwargs):
-
             model_name = kwargs["model_selector"]
 
             model_description = series_data_dict["all_forecasts"][model_name][
@@ -784,9 +772,6 @@ class Series(BootstrapApp):
             if model_description == model_name:
                 model_description = ""
 
-            model_cv_score = series_data_dict["all_forecasts"][model_name][
-                "cv_score"
-            ]
 
             return dbc.ListGroup(
                 [
@@ -797,7 +782,6 @@ class Series(BootstrapApp):
                                 [
                                     html.P(model_name),
                                     html.P(model_description),
-                                    html.P("CV score: %f" % model_cv_score),
                                 ]
                             ),
                         ]
@@ -837,10 +821,81 @@ class Series(BootstrapApp):
                                     )
                                 ]
                             ),
-                        ]
+                        ]   
                     ),
                 ]
             )
+        
+            
+        def create_forecast_table_df(series_data_dict, **kwargs):
+            model_name = kwargs["model_selector"]
+    
+            dataframe = series_data_dict["all_forecasts"][model_name][
+                "forecast_df"
+            ]
+    
+            column_name_map = {"forecast": "Forecast"}
+    
+            dataframe = dataframe.rename(column_name_map, axis=1).round(4)
+            dataframe['date'] = dataframe.index.strftime("%Y-%m-%d %H:%M:%S")
+            dataframe = dataframe[['date'] + dataframe.columns.tolist()[:-1]] #reorder columns so the date is first
+    
+            return dataframe
+        
+        def create_CV_scores_table(series_data_dict):
+            df_column_labels = [x for x in series_data_dict["all_forecasts"]['MLP']["cv_score"].keys() if 'Winkler' not in x]
+            df_column_labels = df_column_labels + ['95% Winkler']
+            
+            CV_score_df = pd.DataFrame(columns = df_column_labels, index = list(series_data_dict["all_forecasts"].keys()))
+            for model in list(series_data_dict["all_forecasts"].keys()):
+                for CV_score in list(series_data_dict["all_forecasts"]['MLP']["cv_score"].keys()):
+                    if 'Winkler' in CV_score:
+                        if '95' in CV_score: #only present the 95% CV score in the table
+                            CV_score_df.at[model, '95% Winkler'] = np.round(series_data_dict["all_forecasts"][model]['cv_score'][CV_score], 4) 
+                    else:
+                        CV_score_df.at[model, CV_score] = np.round(series_data_dict["all_forecasts"][model]['cv_score'][CV_score], 4)
+            CV_score_df.sort_values(by = ['MSE'], inplace = True)
+            return CV_score_df
+    
+        @self.callback(
+            Output("CV_scores_table", "children"),
+            inputs
+        )
+        @location_ignore_null(inputs, location_id="url")
+        @series_input(
+            inputs,
+            location_id="url",
+        )
+        def update_CV_scores_table(series_data_dict, **kwargs):
+            
+            dataframe = create_CV_scores_table(series_data_dict)
+
+            table = dbc.Table.from_dataframe(
+                dataframe, index=True, index_label="Model"
+            )
+
+            return table
+    
+        @self.callback(
+            Output("forecast_data_download_link", "href"),
+            inputs + [Input("model_selector", "value")],
+            prevent_initial_call = True
+            )
+        @location_ignore_null(inputs, location_id="url")
+        @series_input(
+            inputs
+            + [
+                Input("model_selector", "value"),
+            ],
+            location_id="url",
+        )
+        def update_download_link(series_data_dict, **kwargs):
+            
+            table = create_forecast_table_df(series_data_dict, **kwargs)
+            
+            csv_string = table.to_csv(index = False, encoding = 'utf-8')
+            csv_string = "data:text/csv;charset=utf-8," + urllib.parse.quote(csv_string)
+            return csv_string
 
         @self.callback(
             Output("forecast_table", "children"),
@@ -860,27 +915,8 @@ class Series(BootstrapApp):
             location_id="url",
         )
         def update_forecast_table(series_data_dict, **kwargs):
-
-            selected_column_map = {
-                "Forecast": ["Forecast"],
-                "CI_50": ["LB_50", "UB_50"],
-                "CI_75": ["LB_75", "UB_75"],
-                "CI_95": ["LB_95", "UB_95"],
-            }
-
-            model_name = kwargs["model_selector"]
-
-            dataframe = series_data_dict["all_forecasts"][model_name][
-                "forecast_df"
-            ]
-
-            column_name_map = {"forecast": "Forecast"}
-
-            dataframe = dataframe.rename(column_name_map, axis=1)[
-                selected_column_map[kwargs["forecast_table_selector"]]
-            ].round(4)
-
-            dataframe.index = dataframe.index.strftime("%Y-%m-%d %H:%M:%S")
+            
+            dataframe = create_forecast_table_df(series_data_dict, **kwargs)
 
             table = dbc.Table.from_dataframe(
                 dataframe, index=True, index_label="Date"

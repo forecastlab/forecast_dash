@@ -19,27 +19,68 @@ from models import (
     MLP_M4_benchmark,
     RNN_M4_benchmark,
 )
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_absolute_error
 from sklearn.utils.validation import indexable, _num_samples
+from statsmodels.tsa.tsatools import freq_to_period
 
 p_to_use = 1
 forecast_len = 8
 level = [50, 75, 95]
 
 model_class_list = [
-    RNaive,
-    RAutoARIMA,  # RAutoARIMA is very slow!
-    RSimple,
-    RHolt,
-    RDamped,
-    RTheta,
-    RNaive2,
-    RComb,
+    # RNaive,
+    # RAutoARIMA,  # RAutoARIMA is very slow!
+    # RSimple,
+    # RHolt,
+    # RDamped,
+    # RTheta,
+    # RNaive2,
+    # RComb,
     MLP_M4_benchmark,
     RNN_M4_benchmark,
 ]
 
+class ScoringFunctions():
+    """
+    Scoring functions to use in the CV function
+    """
+    
+    def __init__(self, y_train, y_true, y_pred):
+        self.y_train = y_train
+        self.y_true = y_true
+        self.y_pred = y_pred
+        self.error = self.y_true - self.y_pred
+        
+    def mean_squared_error(self):
+        """
+        mean squared error of forecasts
+        """
+        
+        MSE = np.mean(np.square(self.error))
+        return MSE
 
+    def mean_absolute_scaled_error(self, period = 1):
+        """
+        mean absolute scaled error of forecasts. 
+        """
+    
+        y_pred_naive = self.y_train[:-period]
+        denominator = mean_absolute_error(self.y_train[period:], y_pred_naive)
+        if denominator < 1e-8:
+            denominator = 1e-8
+        MASE = np.mean(np.abs(self.error/denominator))
+        return MASE
+
+    def Winkler_score(self, upper_ci, lower_ci, alpha):
+        """
+        Winkler score for evaluating the quality of prediction intervals. 
+        The quantile loss is not multiplied by 2 here. see e.g., https://otexts.com/fpp3/distaccuracy.html
+        """
+        lower_quantile_score = ((self.y_true <= lower_ci) - (alpha/2))*(lower_ci - self.y_true)
+        upper_quantile_score = ((self.y_true <= upper_ci) - (1-alpha/2))*(upper_ci - self.y_true)
+        Ws = np.sum((lower_quantile_score + upper_quantile_score)/alpha) #Sum of individual all h-step Winkler scores
+        return Ws 
+    
 def forecast_to_df(
     data_source_dict,
     forecast_dict,
@@ -115,9 +156,9 @@ class TimeSeriesRollingSplit:
             yield (indices[:position], indices[position : position + h])
 
 
-def cross_val_score(model, y, cv, scorer, fit_params={}):
+def cross_val_score(model, y, cv, fit_params={}):
 
-    errors = []
+    errors = {score:[] for score in ['MSE', 'MASE'] + [f'{x}% Winkler' for x in level]} #list of scores for each scoring function
 
     for train_index, test_index in cv.split(y):
         y_train, y_test = y[train_index], y[test_index]
@@ -125,10 +166,28 @@ def cross_val_score(model, y, cv, scorer, fit_params={}):
         model.fit(y_train, **fit_params)
 
         model_predictions = model.predict()
-
-        errors.append(scorer(y_test, model_predictions))
-
-    return np.mean(errors)
+        
+        #Compute score for each scoring function
+        sf = ScoringFunctions(y_train = y_train, y_true = y_test, y_pred = model_predictions)
+        errors['MSE'].append(sf.mean_squared_error())
+        try: #if the model instance has a periodicity attribute use that
+            if y_train.shape[0] > model.period: #can only compute the MASE when there is at least 1 lagged observation of the same period
+                model_period = model.period
+                errors['MASE'].append(sf.mean_absolute_scaled_error(period = model_period))
+        except AttributeError: #otherwise try to compute the periodicity of the training data 
+            freq = getattr(y_train.index, "inferred_freq", None)
+            period = freq_to_period(freq)
+            errors['MASE'].append(sf.mean_absolute_scaled_error(period = period))
+    
+        #Scores for 95% prediction intervals
+        forecast_dict_index = model.predict_withci()
+        for CI_alpha in model.level:        
+            lower_ci = forecast_dict_index[f'LB_{CI_alpha}']
+            upper_ci = forecast_dict_index[f'UB_{CI_alpha}']
+            errors[f'{CI_alpha}% Winkler'].append(sf.Winkler_score(upper_ci = upper_ci, lower_ci = lower_ci, alpha = 1-(CI_alpha/100)))
+    
+    mean_errors = {key:np.mean(value) for key, value in errors.items()}
+    return mean_errors
 
 
 # Short-circuit forecasting if hashsums match
@@ -170,7 +229,7 @@ def run_job(job_dict, cv, model_params):
 
     model = job_dict["model_cls"](**model_params)
 
-    cv_score = cross_val_score(model, y, cv, mean_squared_error)
+    cv_score = cross_val_score(model, y, cv)
 
     model.fit(y)
 
@@ -271,11 +330,14 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
     cv = TimeSeriesRollingSplit(h=forecast_len, p_to_use=p_to_use)
     model_params = {"h": forecast_len, "level": level}
 
-    pool = Pool(cpu_count())
+    # pool = Pool(cpu_count())
 
-    results = pool.starmap(
-        run_job, [[job_dict, cv, model_params] for job_dict in job_list]
-    )
+    # results = pool.starmap(
+    #     run_job, [[job_dict, cv, model_params] for job_dict in job_list]
+    # )
+    results = []
+    for i in range(len(job_list)):
+        results.append(run_job(job_list[i], cv, model_params))
 
     # Insert results of jobs into dictionary
     for result in results:

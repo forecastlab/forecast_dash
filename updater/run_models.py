@@ -28,14 +28,14 @@ forecast_len = 8
 level = [50, 75, 95]
 
 model_class_list = [
-    # RNaive,
-    # RAutoARIMA,  # RAutoARIMA is very slow!
-    # RSimple,
-    # RHolt,
-    # RDamped,
-    # RTheta,
-    # RNaive2,
-    # RComb,
+    RNaive,
+    RAutoARIMA,  # RAutoARIMA is very slow!
+    RSimple,
+    RHolt,
+    RDamped,
+    RTheta,
+    RNaive2,
+    RComb,
     MLP_M4_benchmark,
     RNN_M4_benchmark,
 ]
@@ -353,14 +353,11 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
     cv = TimeSeriesRollingSplit(h=forecast_len, p_to_use=p_to_use)
     model_params = {"h": forecast_len, "level": level}
 
-    # pool = Pool(cpu_count())
+    pool = Pool(cpu_count())
 
-    # results = pool.starmap(
-    #     run_job, [[job_dict, cv, model_params] for job_dict in job_list]
-    # )
-    results = []
-    for i in range(len(job_list)):
-        results.append(run_job(job_list[i], cv, model_params))
+    results = pool.starmap(
+        run_job, [[job_dict, cv, model_params] for job_dict in job_list]
+    )
 
     # Insert results of jobs into dictionary
     for result in results:

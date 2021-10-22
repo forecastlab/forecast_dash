@@ -905,16 +905,36 @@ class Series(BootstrapApp):
 
             dataframe = create_CV_scores_table(series_data_dict)
             rounded_dataframe = dataframe.copy()
-            #Round and format so that trailing zeros still appear
+            # Round and format so that trailing zeros still appear
             for col in rounded_dataframe.columns:
-                rounded_dataframe[col] = rounded_dataframe[col].map('{:,.2f}'.format)
-            rounded_dataframe['Model'] = rounded_dataframe.index
-            #Reorder columns for presentation
-            rounded_dataframe = rounded_dataframe[['Model'] + rounded_dataframe.columns.tolist()[:-1]]
-            
-            table = dash_table.DataTable(id = 'CV_scores_datatable', data = rounded_dataframe.to_dict('records'), columns=[{"name": i, "id": i} for i in rounded_dataframe.columns], 
-                                         sort_action="native", sort_mode="multi", style_cell={'textAlign': 'left','fontSize':16, 'font-family':'helvetica'}, style_cell_conditional = [{'if': {'column_id': 'Model'},'textAlign': 'left'}], 
-                                         style_header={'fontWeight': 'bold', 'fontSize':18}, style_as_list_view = True)
+                rounded_dataframe[col] = rounded_dataframe[col].map(
+                    "{:,.2f}".format
+                )
+            rounded_dataframe["Model"] = rounded_dataframe.index
+            # Reorder columns for presentation
+            rounded_dataframe = rounded_dataframe[
+                ["Model"] + rounded_dataframe.columns.tolist()[:-1]
+            ]
+
+            table = dash_table.DataTable(
+                id="CV_scores_datatable",
+                data=rounded_dataframe.to_dict("records"),
+                columns=[
+                    {"name": i, "id": i} for i in rounded_dataframe.columns
+                ],
+                sort_action="native",
+                sort_mode="multi",
+                style_cell={
+                    "textAlign": "left",
+                    "fontSize": 16,
+                    "font-family": "helvetica",
+                },
+                style_cell_conditional=[
+                    {"if": {"column_id": "Model"}, "textAlign": "left"}
+                ],
+                style_header={"fontWeight": "bold", "fontSize": 18},
+                style_as_list_view=True,
+            )
             return table
 
         @self.callback(

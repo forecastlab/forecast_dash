@@ -22,7 +22,8 @@ The available models are listed in the [Leaderboard](/leaderboard/).
 These are based on the benchmark models used in the M4 Competition \[0\].
 
 The models are run on each dataset according to the time series cross-validation
-scheme described in \[1\], Sect 3.4, with forecast horizons of length 1-8.
+scheme described in \[1\], Sect 3.4. The forecast horizon depends upon the frequency of the 
+underlying time series, that is 6 for yearly, 8 for quarterly and 18 for monthly data. 
 
 ![time series cross-validation](https://otexts.com/fpp2/fpp_files/figure-html/cv1-1.png)
 \(Image reproduced from \[1\] with permission.\)

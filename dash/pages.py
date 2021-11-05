@@ -12,7 +12,7 @@ from dash import dcc, html
 import humanize
 import numpy as np
 import pandas as pd
-import dash_table
+from dash import dash_table
 from common import BootstrapApp, header, breadcrumb_layout, footer
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
@@ -25,7 +25,8 @@ from util import (
     watermark_information,
 )
 
-import urllib.parse
+import io
+import base64
 
 
 def dash_kwarg(inputs):
@@ -636,7 +637,7 @@ class Series(BootstrapApp):
                                                 html.A(
                                                     "Download Forecast Data",
                                                     id="forecast_data_download_link",
-                                                    download="forecast_data.csv",
+                                                    download="forecast_data.xlsx",
                                                     href="",
                                                     target="_blank",
                                                 )
@@ -839,16 +840,14 @@ class Series(BootstrapApp):
                 ]
             )
 
-        def create_forecast_table_df(series_data_dict, **kwargs):
-            model_name = kwargs["model_selector"]
+        def create_historical_series_table_df(series_data_dict, **kwargs):
+            """
+            Creates a Pandas DataFrame containing the historical time series data
+            """
 
-            dataframe = series_data_dict["all_forecasts"][model_name][
-                "forecast_df"
-            ]
-
-            column_name_map = {"forecast": "Forecast"}
-
-            dataframe = dataframe.rename(column_name_map, axis=1).round(4)
+            dataframe = pd.DataFrame(
+                series_data_dict["downloaded_dict"]["series_df"]["value"]
+            )
             dataframe["date"] = dataframe.index.strftime("%Y-%m-%d %H:%M:%S")
             dataframe = dataframe[
                 ["date"] + dataframe.columns.tolist()[:-1]
@@ -856,7 +855,37 @@ class Series(BootstrapApp):
 
             return dataframe
 
+        def create_forecast_table_df(series_data_dict, **kwargs):
+            """
+            Creates a Pandas DataFrame containing the point forecasts and confidence interval forecasts
+            for a given forecast model
+            """
+            model_name = kwargs["model_selector"]
+
+            forecast_dataframe = series_data_dict["all_forecasts"][model_name][
+                "forecast_df"
+            ]
+
+            column_name_map = {"forecast": "value"}
+
+            forecast_dataframe = forecast_dataframe.rename(
+                column_name_map, axis=1
+            ).round(4)
+            forecast_dataframe["date"] = forecast_dataframe.index.strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
+            forecast_dataframe["model"] = model_name
+            forecast_dataframe = forecast_dataframe[
+                ["date", "model"] + forecast_dataframe.columns.tolist()[:-2]
+            ]  # reorder columns so the date and model columns first
+            print(forecast_dataframe)
+            return forecast_dataframe
+
         def create_CV_scores_table(series_data_dict):
+            """
+            Creates a Pandas DataFrame containing the cross-validation scores for all scoring functions for all forecast models
+            """
+
             df_column_labels = [
                 x
                 for x in series_data_dict["all_forecasts"]["MLP"][
@@ -950,42 +979,31 @@ class Series(BootstrapApp):
             ],
             location_id="url",
         )
-        def update_download_link(series_data_dict, **kwargs):
-
-            table = create_forecast_table_df(series_data_dict, **kwargs)
-
-            csv_string = table.to_csv(index=False, encoding="utf-8")
-            csv_string = "data:text/csv;charset=utf-8," + urllib.parse.quote(
-                csv_string
+        def download_excel(series_data_dict, **kwargs):
+            # Create DFs
+            forecast_table = create_forecast_table_df(
+                series_data_dict, **kwargs
             )
-            return csv_string
-
-        @self.callback(
-            Output("forecast_table", "children"),
-            inputs
-            + [
-                Input("forecast_table_selector", "value"),
-                Input("model_selector", "value"),
-            ],
-        )
-        @location_ignore_null(inputs, location_id="url")
-        @series_input(
-            inputs
-            + [
-                Input("forecast_table_selector", "value"),
-                Input("model_selector", "value"),
-            ],
-            location_id="url",
-        )
-        def update_forecast_table(series_data_dict, **kwargs):
-
-            dataframe = create_forecast_table_df(series_data_dict, **kwargs)
-
-            table = dbc.Table.from_dataframe(
-                dataframe, index=True, index_label="Date"
+            CV_scores_table = create_CV_scores_table(series_data_dict)
+            series_data = create_historical_series_table_df(
+                series_data_dict, **kwargs
             )
 
-            return table
+            xlsx_io = io.BytesIO()
+            writer = pd.ExcelWriter(xlsx_io)
+
+            forecast_table.to_excel(
+                writer, sheet_name="forecasts", index=False
+            )
+            CV_scores_table.to_excel(writer, sheet_name="CV_scores")
+            series_data.to_excel(writer, sheet_name="series_data", index=False)
+
+            writer.save()
+            xlsx_io.seek(0)
+            media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            data = base64.b64encode(xlsx_io.read()).decode("utf-8")
+            href_data_downloadable = f"data:{media_type};base64,{data}"
+            return href_data_downloadable
 
 
 def get_leaderboard_df(series_list):

@@ -143,7 +143,7 @@ def get_plot_shapes(series_df, forecast_df):
     return shapes
 
 
-def select_best_model(data_dict):
+def select_best_model(data_dict, CV_score_function="MSE"):
     # use the MSE as the default scoring function for identifying the best model.
     # Extract ( model_name, cv_score ) for each model.
     all_models = []
@@ -151,7 +151,7 @@ def select_best_model(data_dict):
     for model_name, forecast_df in data_dict["all_forecasts"].items():
         all_models.append(model_name)
         if type(forecast_df["cv_score"]) == dict:
-            all_cv_scores.append(forecast_df["cv_score"]["MSE"])
+            all_cv_scores.append(forecast_df["cv_score"][CV_score_function])
         else:
             all_cv_scores.append(forecast_df["cv_score"])
 
@@ -886,14 +886,20 @@ class Series(BootstrapApp):
             Creates a Pandas DataFrame containing the cross-validation scores for all scoring functions for all forecast models
             """
 
-            df_column_labels = [
-                x
-                for x in series_data_dict["all_forecasts"]["MLP"][
-                    "cv_score"
-                ].keys()
-                if "Winkler" not in x
-            ]
-            df_column_labels = df_column_labels + ["95% Winkler"]
+            # grab the list of all possible CV scores
+            df_column_labels = []
+            for model in series_data_dict["all_forecasts"].keys():
+                df_column_labels = [
+                    x
+                    for x in series_data_dict["all_forecasts"][model][
+                        "cv_score"
+                    ].keys()
+                    if "Winkler" not in x
+                ]
+            df_column_labels = df_column_labels + [
+                "95% Winkler"
+            ]  # only report the Winkler score for the 95% CI in the series page
+            df_column_labels = list(set(df_column_labels))
 
             CV_score_df = pd.DataFrame(
                 columns=df_column_labels,
@@ -921,6 +927,11 @@ class Series(BootstrapApp):
                             4,
                         )
             CV_score_df.sort_values(by=["MSE"], inplace=True)
+            # Reorder columns so MSE is always first as this is the most popular scoring function for the conditional mean
+            CV_score_df = CV_score_df[
+                ["MSE"]
+                + [x for x in CV_score_df.columns.tolist() if x != "MSE"]
+            ]
 
             return CV_score_df
 
@@ -1006,7 +1017,7 @@ class Series(BootstrapApp):
             return href_data_downloadable
 
 
-def get_leaderboard_df(series_list):
+def get_leaderboard_df(series_list, CV_score_function="MSE"):
     try:
         stats = get_forecast_data("statistics")
         all_methods = stats["models_used"]
@@ -1024,8 +1035,11 @@ def get_leaderboard_df(series_list):
             continue
 
     chosen_methods = []
+
     for series_title, forecast_data in forecast_series_dicts.items():
-        model_name = select_best_model(forecast_data)
+        model_name = select_best_model(
+            forecast_data, CV_score_function=CV_score_function
+        )
         chosen_methods.append(model_name)
 
     stats_raw = pd.DataFrame({"Method": chosen_methods})
@@ -1051,12 +1065,64 @@ class Leaderboard(BootstrapApp):
     def setup(self):
 
         data_sources_json_file = open("../shared_config/data_sources.json")
-        self.series_list = json.load(data_sources_json_file)
+        series_list = json.load(data_sources_json_file)
         data_sources_json_file.close()
 
-        def layout_func():
+        # grab the CV scoring function choices to populate dash dcc.Dropdown menu
+        CV_scoring_functions = []
+        for series_dict in series_list:
+            forecast_series = get_forecast_data(series_dict["title"])
+            print(forecast_series["all_forecasts"].keys())
+            for model in forecast_series["all_forecasts"].keys():
+                CV_scoring_functions += list(
+                    forecast_series["all_forecasts"][model]["cv_score"].keys()
+                )
+        CV_scoring_functions = list(set(CV_scoring_functions))
+        all_CV_scoring_function_options = dict(
+            zip(CV_scoring_functions, CV_scoring_functions)
+        )
+        model_select_options = [
+            {"label": v, "value": k}
+            for k, v in all_CV_scoring_function_options.items()
+        ]
 
-            counts = get_leaderboard_df(self.series_list)
+        inputs = [Input("url", "href")]
+
+        self.layout = html.Div(
+            header()
+            + [
+                dcc.Location(id="url", refresh=False),
+                dbc.Container(
+                    [
+                        breadcrumb_layout(
+                            [("Home", "/"), (f"{self.title}", "")]
+                        ),
+                        html.H2(self.title),
+                        dcc.Dropdown(
+                            id="leaderboard_CV_score_selector",
+                            clearable=False,
+                            options=model_select_options,
+                            value="MSE",
+                        ),
+                        dbc.Row([dbc.Col(id="leaderboard_CV_table")]),
+                    ]
+                    + footer()
+                ),
+            ]
+        )
+
+        @self.callback(
+            Output("leaderboard_CV_table", "children"),
+            Input("leaderboard_CV_score_selector", "value"),
+        )
+        @location_ignore_null(inputs, location_id="url")
+        def update_leaderboard_df(CV_score):
+            """
+            construct the best model leaderboard based upon user selected scoring function
+            """
+
+            # Build leaderboard with chosen CV scoring function
+            counts = get_leaderboard_df(series_list, CV_score)
 
             counts["Proportion"] = counts["Total"] / counts["Total"].sum()
 
@@ -1073,24 +1139,7 @@ class Leaderboard(BootstrapApp):
                     row.children[0].children, href=f"/search/?{state}"
                 )
 
-            return html.Div(
-                header()
-                + [
-                    dcc.Location(id="url", refresh=False),
-                    dbc.Container(
-                        [
-                            breadcrumb_layout(
-                                [("Home", "/"), (f"{self.title}", "")]
-                            ),
-                            html.H2(self.title),
-                            table,
-                        ]
-                        + footer()
-                    ),
-                ]
-            )
-
-        self.layout = layout_func
+            return table
 
 
 def match_names(forecast_dicts, name_input):

@@ -733,7 +733,7 @@ class Series(BootstrapApp):
         @location_ignore_null(inputs, location_id="url")
         @series_input(inputs, location_id="url")
         def update_breadcrumb(series_data_dict):
-
+            print("breadcrumb update")
             return (
                 series_data_dict["data_source_dict"]["short_title"]
                 if "short_title" in series_data_dict["data_source_dict"]

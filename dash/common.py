@@ -57,6 +57,7 @@ def breadcrumb_layout(crumbs):
             )
         ],
         navbar=True,
+        class_name="bg-light rounded-3 px-3 pt-3 mb-3",
     )
 
 

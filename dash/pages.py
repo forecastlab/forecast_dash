@@ -661,7 +661,7 @@ class Series(BootstrapApp):
                                             clearable=False,
                                         ),
                                         dcc.Loading(
-                                            html.Div(id="meta_data_list")
+                                            html.Div(id="meta_data_list", className="py-3")
                                         ),
                                     ],
                                     lg=6,
@@ -692,7 +692,7 @@ class Series(BootstrapApp):
                                             id="forecast_table_selector",
                                         ),
                                         dcc.Loading(
-                                            html.Div(id="forecast_table")
+                                            html.Div(id="forecast_table", className="py-3")
                                         ),
                                     ],
                                     lg=6,
@@ -826,8 +826,8 @@ class Series(BootstrapApp):
                 [
                     dbc.ListGroupItem(
                         [
-                            dbc.ListGroupItemHeading("Model Details"),
-                            dbc.ListGroupItemText(
+                            html.H4("Model Details"),
+                            html.P(
                                 [
                                     html.P(model_name),
                                     html.P(model_description),
@@ -838,8 +838,8 @@ class Series(BootstrapApp):
                     ),
                     dbc.ListGroupItem(
                         [
-                            dbc.ListGroupItemHeading("Forecast Updated At"),
-                            dbc.ListGroupItemText(
+                            html.H4("Forecast Updated At"),
+                            html.P(
                                 series_data_dict["forecasted_at"].strftime(
                                     "%Y-%m-%d %H:%M:%S"
                                 )
@@ -848,8 +848,8 @@ class Series(BootstrapApp):
                     ),
                     dbc.ListGroupItem(
                         [
-                            dbc.ListGroupItemHeading("Data Collected At"),
-                            dbc.ListGroupItemText(
+                            html.H4("Data Collected At"),
+                            html.P(
                                 series_data_dict["downloaded_dict"][
                                     "downloaded_at"
                                 ].strftime("%Y-%m-%d %H:%M:%S")
@@ -858,8 +858,8 @@ class Series(BootstrapApp):
                     ),
                     dbc.ListGroupItem(
                         [
-                            dbc.ListGroupItemHeading("Data Source"),
-                            dbc.ListGroupItemText(
+                            html.H4("Data Source"),
+                            html.P(
                                 [
                                     html.A(
                                         series_data_dict["data_source_dict"][

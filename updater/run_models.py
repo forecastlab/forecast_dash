@@ -27,21 +27,22 @@ from statsmodels.tsa.tsatools import freq_to_period
 # monthly data (freq = 12): 18 forecasts
 # quarterly data (freq = 4): 8 forecasts
 # weekly data (freq = 52): 13 forecasts
-forecast_len = {52: 13, 12: 18, 4: 8}
+forecast_len_map = {52: 13, 12: 18, 4: 8}
+default_forecast_len = 8
 p_to_use = 1
 level = [50, 75, 95]
 
 model_class_list = [
-    RNaive,
-    RAutoARIMA,  # RAutoARIMA is very slow!
-    RSimple,
-    RHolt,
-    RDamped,
-    RTheta,
-    RNaive2,
-    RComb,
+    # RNaive,
+    # RAutoARIMA,  # RAutoARIMA is very slow!
+    # RSimple,
+    # RHolt,
+    # RDamped,
+    # RTheta,
+    # RNaive2,
+    # RComb,
     MLP_M4_benchmark,
-    RNN_M4_benchmark,
+    # RNN_M4_benchmark,
 ]
 
 
@@ -307,7 +308,7 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
     # Parse JSON and cache
     for data_source_dict in data_sources_list:
 
-        print(data_source_dict["title"])
+        # print(data_source_dict["title"])
 
         downloaded_dict, cache_dict = check_cache(
             f"{download_dir_path}/{data_source_dict['title']}.pkl",
@@ -326,8 +327,13 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
 
         # Find period of the series and define the TimeSeriesRollingSplit instance
         series_freq = getattr(series_df.index, "inferred_freq", None)
-        series_period = freq_to_period(series_freq)
-        series_h = forecast_len[series_period]
+        if series_freq is not None:
+            series_period = freq_to_period(series_freq)
+            series_h = forecast_len_map[series_period]
+        else:
+            series_period = None
+            series_h = default_forecast_len
+
         series_cv = TimeSeriesRollingSplit(
             h=series_h, p_to_use=p_to_use
         )  # seperate TimeSeriesRollingSplit instance for each series to account for differences in frequencies
@@ -354,7 +360,7 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                 # Add CV instance to list
                 cv_instance_list.append(series_cv)
                 # Add model parameters dictionary to list
-                model_params_list.append({"h": series_h, "level": level})
+                model_params_list.append({"h": series_h, "level": level, "period": series_period})
 
                 # Temporarily set result to empty
                 result = {}

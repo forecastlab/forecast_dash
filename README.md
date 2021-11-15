@@ -1,4 +1,4 @@
-![example workflow](https://github.com/forecastlab/forecast_dash/actions/workflows/ci.yml/badge.svg)
+![Build Status](https://github.com/forecastlab/forecast_dash/actions/workflows/ci.yml/badge.svg)
 
 # USYD Forecasting Lab
 

@@ -468,31 +468,36 @@ class Index(BootstrapApp):
                 + [
                     dcc.Location(id="url", refresh=False),
                     # Mission Statement
-                    dbc.Jumbotron(
-                        [
-                            dbc.Container(
-                                [
-                                    html.H1(
-                                        "Our Mission", className="display-4"
-                                    ),
-                                    html.Hr(),
-                                    html.Ul(
-                                        [
-                                            html.Li(
-                                                "To make forecasting models accessible to everyone.",
-                                                className="lead",
+                    html.Div(
+                        dbc.Container(
+                            dbc.Row(
+                                dbc.Col(
+                                    [
+                                        html.H1(
+                                            "Our Mission",
+                                            className="display-4",
+                                        ),
+                                        html.Hr(),
+                                        html.P(
+                                            html.Ul(
+                                                [
+                                                    html.Li(
+                                                        "To make forecasting models accessible to everyone.",
+                                                        className="lead",
+                                                    ),
+                                                    html.Li(
+                                                        "To provide the latest economic and financial forecasts of commonly used time series.",
+                                                        className="lead",
+                                                    ),
+                                                ],
                                             ),
-                                            html.Li(
-                                                "To provide the latest economic and financial forecasts of commonly used time series.",
-                                                className="lead",
-                                            ),
-                                        ],
-                                    ),
-                                ]
+                                        ),
+                                    ]
+                                ),
                             ),
-                        ],
-                        fluid=True,
-                        className="d-none d-md-block",
+                            className="px-4",
+                        ),
+                        className="bg-light rounded-3 py-5 mb-4",
                     ),
                     # Main Body
                     dbc.Container(
@@ -574,36 +579,42 @@ class Index(BootstrapApp):
                                 [
                                     dbc.Col(
                                         [
-                                            dbc.Jumbotron(
-                                                [
-                                                    html.A(
-                                                        [
-                                                            html.H1(
-                                                                "Leaderboard",
-                                                                className="display-4",
-                                                            ),
-                                                        ],
-                                                        href="/leaderboard/",
-                                                        className="text-decoration-none text-reset",
-                                                    ),
-                                                    html.H4(
-                                                        "We back test every model on every series.",
-                                                        className="mb-3",
-                                                    ),
-                                                    html.H4(
-                                                        "Daily.",
-                                                        className="mb-3",
-                                                    ),
-                                                    html.A(
-                                                        html.P(
-                                                            "Go to Leaderboard"
+                                            html.Div(
+                                                dbc.Container(
+                                                    dbc.Row(
+                                                        dbc.Col(
+                                                            [
+                                                                html.A(
+                                                                    [
+                                                                        html.H1(
+                                                                            "Leaderboard",
+                                                                            className="display-4",
+                                                                        ),
+                                                                    ],
+                                                                    href="/leaderboard/",
+                                                                    className="text-decoration-none text-reset",
+                                                                ),
+                                                                html.H4(
+                                                                    "We backtest every model on every series.",
+                                                                    className="mb-3",
+                                                                ),
+                                                                html.H4(
+                                                                    "Daily.",
+                                                                    className="mb-3",
+                                                                ),
+                                                                html.A(
+                                                                    html.P(
+                                                                        "Go to Leaderboard"
+                                                                    ),
+                                                                    href="/leaderboard/",
+                                                                ),
+                                                            ],
+                                                            className="text-center",
                                                         ),
-                                                        href="/leaderboard/",
                                                     ),
-                                                ],
-                                                # fluid=True,
-                                                # className="d-none d-md-block",
-                                                className="text-center",
+                                                    className="px-4",
+                                                ),
+                                                className="bg-light rounded-3 py-5 mb-4",
                                             ),
                                         ],
                                         lg=12,
@@ -644,14 +655,10 @@ class Series(BootstrapApp):
                             [
                                 dbc.Col(
                                     [
-                                        dbc.FormGroup(
-                                            [
-                                                dbc.Label("Forecast Method"),
-                                                dcc.Dropdown(
-                                                    id="model_selector",
-                                                    clearable=False,
-                                                ),
-                                            ]
+                                        dbc.Label("Forecast Method"),
+                                        dcc.Dropdown(
+                                            id="model_selector",
+                                            clearable=False,
                                         ),
                                         dcc.Loading(
                                             html.Div(id="meta_data_list")
@@ -661,32 +668,28 @@ class Series(BootstrapApp):
                                 ),
                                 dbc.Col(
                                     [
-                                        dbc.FormGroup(
-                                            [
-                                                dcc.Dropdown(
-                                                    options=[
-                                                        {
-                                                            "label": "Forecast",
-                                                            "value": "Forecast",
-                                                        },
-                                                        {
-                                                            "label": "50% CI",
-                                                            "value": "CI_50",
-                                                        },
-                                                        {
-                                                            "label": "75% CI",
-                                                            "value": "CI_75",
-                                                        },
-                                                        {
-                                                            "label": "95% CI",
-                                                            "value": "CI_95",
-                                                        },
-                                                    ],
-                                                    value="Forecast",
-                                                    clearable=False,
-                                                    id="forecast_table_selector",
-                                                ),
-                                            ]
+                                        dcc.Dropdown(
+                                            options=[
+                                                {
+                                                    "label": "Forecast",
+                                                    "value": "Forecast",
+                                                },
+                                                {
+                                                    "label": "50% CI",
+                                                    "value": "CI_50",
+                                                },
+                                                {
+                                                    "label": "75% CI",
+                                                    "value": "CI_75",
+                                                },
+                                                {
+                                                    "label": "95% CI",
+                                                    "value": "CI_95",
+                                                },
+                                            ],
+                                            value="Forecast",
+                                            clearable=False,
+                                            id="forecast_table_selector",
                                         ),
                                         dcc.Loading(
                                             html.Div(id="forecast_table")
@@ -1120,39 +1123,25 @@ class Search(BootstrapApp):
 
             children = [
                 html.H4("Filters"),
-                dbc.FormGroup(
-                    [
-                        dbc.Label("Name"),
-                        apply_default_value(params)(dbc.Input)(
-                            id="name",
-                            placeholder="Name of a series...",
-                            type="search",
-                            value="",
-                        ),
-                        dbc.FormText("Type something in the box above"),
-                    ]
+                dbc.Label("Name"),
+                apply_default_value(params)(dbc.Input)(
+                    id="name",
+                    placeholder="Name of a series...",
+                    type="search",
+                    value="",
                 ),
-                dbc.FormGroup(
-                    [
-                        dbc.Label("Tags"),
-                        apply_default_value(params)(dbc.Checklist)(
-                            options=[{"label": t, "value": t} for t in tags],
-                            value=[],
-                            id="tags",
-                        ),
-                    ]
+                dbc.FormText("Type something in the box above"),
+                dbc.Label("Tags"),
+                apply_default_value(params)(dbc.Checklist)(
+                    options=[{"label": t, "value": t} for t in tags],
+                    value=[],
+                    id="tags",
                 ),
-                dbc.FormGroup(
-                    [
-                        dbc.Label("Method"),
-                        apply_default_value(params)(dbc.Checklist)(
-                            options=[
-                                {"label": m, "value": m} for m in methods
-                            ],
-                            value=[],
-                            id="methods",
-                        ),
-                    ]
+                dbc.Label("Method"),
+                apply_default_value(params)(dbc.Checklist)(
+                    options=[{"label": m, "value": m} for m in methods],
+                    value=[],
+                    id="methods",
                 ),
             ]
 

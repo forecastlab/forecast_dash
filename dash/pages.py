@@ -661,7 +661,10 @@ class Series(BootstrapApp):
                                             clearable=False,
                                         ),
                                         dcc.Loading(
-                                            html.Div(id="meta_data_list", className="py-3")
+                                            html.Div(
+                                                id="meta_data_list",
+                                                className="py-3",
+                                            )
                                         ),
                                     ],
                                     lg=6,
@@ -692,7 +695,10 @@ class Series(BootstrapApp):
                                             id="forecast_table_selector",
                                         ),
                                         dcc.Loading(
-                                            html.Div(id="forecast_table", className="py-3")
+                                            html.Div(
+                                                id="forecast_table",
+                                                className="py-3",
+                                            )
                                         ),
                                     ],
                                     lg=6,
@@ -1121,33 +1127,44 @@ class Search(BootstrapApp):
 
         def filter_panel_children(params, tags, methods):
             children = [
-                html.Div([
-                    html.H4("Filters"),
-                    dbc.Label("Name", html_for="name"),
-                    apply_default_value(params)(dbc.Input)(
-                        id="name",
-                        placeholder="Name of a series...",
-                        type="search",
-                        value="",
-                    ),
-                    dbc.FormText("Type something in the box above"),
-                ], className='mb-3'),
-                html.Div([
-                    dbc.Label("Tags", html_for="tags"),
-                    apply_default_value(params)(dbc.Checklist)(
-                        options=[{"label": t, "value": t} for t in tags],
-                        value=[],
-                        id="tags",
-                    ),
-                ], className='mb-3'),
-                html.Div([
-                    dbc.Label("Method", html_for="methods"),
-                    apply_default_value(params)(dbc.Checklist)(
-                        options=[{"label": m, "value": m} for m in methods],
-                        value=[],
-                        id="methods",
-                    ),
-                ], className='mb-3'),
+                html.Div(
+                    [
+                        html.H4("Filters"),
+                        dbc.Label("Name", html_for="name"),
+                        apply_default_value(params)(dbc.Input)(
+                            id="name",
+                            placeholder="Name of a series...",
+                            type="search",
+                            value="",
+                        ),
+                        dbc.FormText("Type something in the box above"),
+                    ],
+                    className="mb-3",
+                ),
+                html.Div(
+                    [
+                        dbc.Label("Tags", html_for="tags"),
+                        apply_default_value(params)(dbc.Checklist)(
+                            options=[{"label": t, "value": t} for t in tags],
+                            value=[],
+                            id="tags",
+                        ),
+                    ],
+                    className="mb-3",
+                ),
+                html.Div(
+                    [
+                        dbc.Label("Method", html_for="methods"),
+                        apply_default_value(params)(dbc.Checklist)(
+                            options=[
+                                {"label": m, "value": m} for m in methods
+                            ],
+                            value=[],
+                            id="methods",
+                        ),
+                    ],
+                    className="mb-3",
+                ),
             ]
 
             return children

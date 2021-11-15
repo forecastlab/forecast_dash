@@ -170,7 +170,7 @@ This website is an intuitive tool that makes business forecasting accessible to 
                                                     "https://github.com/forecastlab/forecast_dash",
                                                     href="https://github.com/forecastlab/forecast_dash",
                                                 ),
-                                                " .",
+                                                ".",
                                             ]
                                         ),
                                     ],
@@ -248,7 +248,7 @@ This website is an intuitive tool that makes business forecasting accessible to 
                         dbc.Row(
                             dbc.Col(
                                 html.H2(
-                                    "Core Contributors",
+                                    "Contributors",
                                     style={"margin-bottom": "32px"},
                                 ),
                                 lg=12,

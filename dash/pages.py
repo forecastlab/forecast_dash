@@ -682,16 +682,12 @@ class Series(BootstrapApp):
                                                 )
                                             ]
                                         ),
-                                        dbc.FormGroup(
-                                            [
-                                                html.A(
-                                                    "Download Forecast Data",
-                                                    id="forecast_data_download_link",
-                                                    download="forecast_data.xlsx",
-                                                    href="",
-                                                    target="_blank",
-                                                )
-                                            ]
+                                        html.A(
+                                            "Download Forecast Data",
+                                            id="forecast_data_download_link",
+                                            download="forecast_data.xlsx",
+                                            href="",
+                                            target="_blank",
                                         ),
                                         dcc.Loading(
                                             html.Div(

@@ -7,4 +7,5 @@ html2text
 frontmatter
 gunicorn
 markdown2
+openpyxl
 pandas

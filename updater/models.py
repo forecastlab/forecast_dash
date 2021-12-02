@@ -485,6 +485,7 @@ class RModel(ForecastModel, ABC):
         pass
 
     def fit(self, y):
+
         r_forecast_dict = self.get_r_forecast_dict()
 
         self.method = r_forecast_dict["method"][0]

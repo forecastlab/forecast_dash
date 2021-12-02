@@ -1044,7 +1044,6 @@ class Series(BootstrapApp):
             ],
             location_id="url",
         )
-        
         def download_excel(series_data_dict, **kwargs):
             # Create DFs
             forecast_table = create_forecast_table_df(

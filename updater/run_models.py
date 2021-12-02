@@ -33,16 +33,16 @@ p_to_use = 1
 level = [50, 75, 95]
 
 model_class_list = [
-    # RNaive,
-    # RAutoARIMA,  # RAutoARIMA is very slow!
-    # RSimple,
-    # RHolt,
-    # RDamped,
-    # RTheta,
-    # RNaive2,
-    # RComb,
+    RNaive,
+    RAutoARIMA,  # RAutoARIMA is very slow!
+    RSimple,
+    RHolt,
+    RDamped,
+    RTheta,
+    RNaive2,
+    RComb,
     MLP_M4_benchmark,
-    # RNN_M4_benchmark,
+    RNN_M4_benchmark,
 ]
 
 

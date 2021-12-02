@@ -360,7 +360,9 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                 # Add CV instance to list
                 cv_instance_list.append(series_cv)
                 # Add model parameters dictionary to list
-                model_params_list.append({"h": series_h, "level": level, "period": series_period})
+                model_params_list.append(
+                    {"h": series_h, "level": level, "period": series_period}
+                )
 
                 # Temporarily set result to empty
                 result = {}

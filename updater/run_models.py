@@ -23,8 +23,13 @@ from sklearn.metrics import mean_absolute_error
 from sklearn.utils.validation import indexable, _num_samples
 from statsmodels.tsa.tsatools import freq_to_period
 
+# number of forecasts to make for series with different frequencies
+# monthly data (freq = 12): 18 forecasts
+# quarterly data (freq = 4): 8 forecasts
+# weekly data (freq = 52): 13 forecasts
+forecast_len_map = {52: 13, 12: 18, 4: 8}
+default_forecast_len = 8
 p_to_use = 1
-forecast_len = 8
 level = [50, 75, 95]
 
 model_class_list = [
@@ -266,7 +271,7 @@ def run_job(job_dict, cv, model_params):
         forecast_dict,
         first_value,
         first_time,
-        forecast_len,
+        model_params["h"],
         levels=level,
     )
 
@@ -297,11 +302,13 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
     series_dict = {}
 
     job_list = []
+    cv_instance_list = []
+    model_params_list = []
 
     # Parse JSON and cache
     for data_source_dict in data_sources_list:
 
-        print(data_source_dict["title"])
+        # print(data_source_dict["title"])
 
         downloaded_dict, cache_dict = check_cache(
             f"{download_dir_path}/{data_source_dict['title']}.pkl",
@@ -317,6 +324,19 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
             series_df.index = series_df.index + offset
 
         all_forecasts = {}
+
+        # Find period of the series and define the TimeSeriesRollingSplit instance
+        series_freq = getattr(series_df.index, "inferred_freq", None)
+        if series_freq is not None:
+            series_period = freq_to_period(series_freq)
+            series_h = forecast_len_map[series_period]
+        else:
+            series_period = None
+            series_h = default_forecast_len
+
+        series_cv = TimeSeriesRollingSplit(
+            h=series_h, p_to_use=p_to_use
+        )  # seperate TimeSeriesRollingSplit instance for each series to account for differences in frequencies
 
         for model_class in model_class_list:
 
@@ -337,6 +357,12 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                         "downloaded_dict": downloaded_dict,
                     }
                 )
+                # Add CV instance to list
+                cv_instance_list.append(series_cv)
+                # Add model parameters dictionary to list
+                model_params_list.append(
+                    {"h": series_h, "level": level, "period": series_period}
+                )
 
                 # Temporarily set result to empty
                 result = {}
@@ -350,13 +376,13 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
             "all_forecasts": all_forecasts,
         }
 
-    cv = TimeSeriesRollingSplit(h=forecast_len, p_to_use=p_to_use)
-    model_params = {"h": forecast_len, "level": level}
-
     pool = Pool(cpu_count())
-
     results = pool.starmap(
-        run_job, [[job_dict, cv, model_params] for job_dict in job_list]
+        run_job,
+        [
+            [job_list[i], cv_instance_list[i], model_params_list[i]]
+            for i in range(len(job_list))
+        ],
     )
 
     # Insert results of jobs into dictionary

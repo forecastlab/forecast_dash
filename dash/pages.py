@@ -671,17 +671,6 @@ class Series(BootstrapApp):
                                             id="model_selector",
                                             clearable=False,
                                         ),
-                                        dbc.FormGroup(
-                                            [
-                                                html.A(
-                                                    "Download Forecast Data",
-                                                    id="forecast_data_download_link",
-                                                    download="forecast_data.csv",
-                                                    href="",
-                                                    target="_blank",
-                                                )
-                                            ]
-                                        ),
                                         html.A(
                                             "Download Forecast Data",
                                             id="forecast_data_download_link",
@@ -745,7 +734,6 @@ class Series(BootstrapApp):
         @location_ignore_null(inputs, location_id="url")
         @series_input(inputs, location_id="url")
         def update_breadcrumb(series_data_dict):
-            print("breadcrumb update")
             return (
                 series_data_dict["data_source_dict"]["short_title"]
                 if "short_title" in series_data_dict["data_source_dict"]
@@ -927,7 +915,7 @@ class Series(BootstrapApp):
             forecast_dataframe = forecast_dataframe[
                 ["date", "model"] + forecast_dataframe.columns.tolist()[:-2]
             ]  # reorder columns so the date and model columns first
-            print(forecast_dataframe)
+
             return forecast_dataframe
 
         def create_CV_scores_table(series_data_dict):
@@ -956,7 +944,7 @@ class Series(BootstrapApp):
             )
             for model in list(series_data_dict["all_forecasts"].keys()):
                 for CV_score in list(
-                    series_data_dict["all_forecasts"]["MLP"]["cv_score"].keys()
+                    series_data_dict["all_forecasts"][model]["cv_score"].keys()
                 ):
                     if "Winkler" in CV_score:
                         if (
@@ -1122,7 +1110,6 @@ class Leaderboard(BootstrapApp):
         CV_scoring_functions = []
         for series_dict in series_list:
             forecast_series = get_forecast_data(series_dict["title"])
-            print(forecast_series["all_forecasts"].keys())
             for model in forecast_series["all_forecasts"].keys():
                 CV_scoring_functions += list(
                     forecast_series["all_forecasts"][model]["cv_score"].keys()

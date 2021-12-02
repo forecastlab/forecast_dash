@@ -12,7 +12,7 @@ from dash import dcc, html
 import humanize
 import numpy as np
 import pandas as pd
-import dash_table
+from dash import dash_table
 from common import BootstrapApp, header, breadcrumb_layout, footer
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
@@ -27,7 +27,6 @@ from util import (
 
 import io
 import base64
-import urllib.parse
 
 
 def dash_kwarg(inputs):
@@ -193,7 +192,7 @@ def get_thumbnail_figure(data_dict, lg=12):
         ),
         yaxis=dict(fixedrange=True, gridcolor="rgb(255,255,255)"),
         shapes=shapes,
-        margin={"l": 30, "r": 0, "t": 30},
+        margin={"l": 0, "r": 0},
         annotations=[
             dict(
                 name="watermark",
@@ -322,10 +321,9 @@ def component_figs_2col(row_title, series_titles):
         [
             dbc.Col(
                 [
-                    html.H2(row_title),
+                    html.H3(row_title, style={"text-align": "center"}),
                 ],
                 lg=12,
-                className="text-center",
             ),
         ]
         + [
@@ -479,36 +477,31 @@ class Index(BootstrapApp):
                 + [
                     dcc.Location(id="url", refresh=False),
                     # Mission Statement
-                    html.Div(
-                        dbc.Container(
-                            dbc.Row(
-                                dbc.Col(
-                                    [
-                                        html.H1(
-                                            "Our Mission",
-                                            className="display-4",
-                                        ),
-                                        html.Hr(),
-                                        html.P(
-                                            html.Ul(
-                                                [
-                                                    html.Li(
-                                                        "To make forecasting models accessible to everyone.",
-                                                        className="lead",
-                                                    ),
-                                                    html.Li(
-                                                        "To provide the latest economic and financial forecasts of commonly used time series.",
-                                                        className="lead",
-                                                    ),
-                                                ],
+                    dbc.Jumbotron(
+                        [
+                            dbc.Container(
+                                [
+                                    html.H1(
+                                        "Our Mission", className="display-4"
+                                    ),
+                                    html.Hr(),
+                                    html.Ul(
+                                        [
+                                            html.Li(
+                                                "To make forecasting models accessible to everyone.",
+                                                className="lead",
                                             ),
-                                        ),
-                                    ]
-                                ),
+                                            html.Li(
+                                                "To provide the latest economic and financial forecasts of commonly used time series.",
+                                                className="lead",
+                                            ),
+                                        ]
+                                    ),
+                                ]
                             ),
-                            className="px-4",
-                        ),
-                        className="bg-light rounded-3 py-5 mb-4",
+                        ],
+                        fluid=True,
+                        className="d-none d-md-block",
                     ),
                     # Main Body
                     dbc.Container(
@@ -540,29 +533,30 @@ class Index(BootstrapApp):
                                             ),
                                         ],
                                         lg=8,
+                                        # className="border-right",
                                     ),
                                     component_news_4col(),
                                 ],
+                                style={"margin-top": "16px"},
                             ),
+                            # Row 2 - US Snapshot
+                            component_figs_3col(
+                                "US Snapshot 🇺🇸",
+                                [
+                                    "US Unemployment",
+                                    "US GDP Growth",
+                                    "US Personal Consumption Expenditures: Chain-type Price Index (% Change, 1 Year)",
+                                ],
+                            ),
+                            # Row 3 - Leaderboard
                             dbc.Row(
                                 [
                                     dbc.Col(
                                         [
-                                            html.H2(
-                                                "US Recovery from COVID-19",
+                                            html.H3(
+                                                "US Unemployment",
+                                                style={"text-align": "center"},
                                             ),
-                                            html.A(
-                                                html.P(
-                                                    "View all US forecasts"
-                                                ),
-                                                href="/search/?name=&tags=US",
-                                            ),
-                                        ],
-                                        lg=4,
-                                        className="text-center align-self-center",
-                                    ),
-                                    dbc.Col(
-                                        [
                                             html.A(
                                                 [
                                                     dcc.Graph(
@@ -577,64 +571,27 @@ class Index(BootstrapApp):
                                                         },
                                                     )
                                                 ],
-                                                href=f"/series?{urlencode({'title': feature_series_title})}",
+                                                href=f"/series?{urlencode({'title': 'US Unemployment'})}",
                                             ),
                                         ],
                                         lg=8,
+                                        # className="border-right",
                                     ),
-                                ],
-                                className="d-flex",
-                            ),
-                            # Row 3 - Leaderboard
-                            dbc.Row(
-                                [
-                                    dbc.Col(
-                                        [
-                                            html.Div(
-                                                dbc.Container(
-                                                    dbc.Row(
-                                                        dbc.Col(
-                                                            [
-                                                                html.A(
-                                                                    [
-                                                                        html.H1(
-                                                                            "Leaderboard",
-                                                                            className="display-4",
-                                                                        ),
-                                                                    ],
-                                                                    href="/leaderboard/",
-                                                                    className="text-decoration-none text-reset",
-                                                                ),
-                                                                html.H4(
-                                                                    "We backtest every model on every series.",
-                                                                    className="mb-3",
-                                                                ),
-                                                                html.H4(
-                                                                    "Daily.",
-                                                                    className="mb-3",
-                                                                ),
-                                                                html.A(
-                                                                    html.P(
-                                                                        "Go to Leaderboard"
-                                                                    ),
-                                                                    href="/leaderboard/",
-                                                                ),
-                                                            ],
-                                                            className="text-center",
-                                                        ),
-                                                    ),
-                                                    className="px-4",
-                                                ),
-                                                className="bg-light rounded-3 py-5 mb-4",
-                                            ),
-                                        ],
-                                        lg=12,
-                                    )
+                                    component_leaderboard_4col(series_list),
                                 ]
+                            ),
+                            # Row 4 - Australia Snapshot
+                            component_figs_3col(
+                                "Australia Snapshot 🇦🇺",
+                                [
+                                    "Australian GDP Growth",
+                                    "Australian Inflation (CPI)",
+                                    "Australian Unemployment",
+                                ],
                             ),
                             # Row 5 - UK Snapshot
                             component_figs_2col(
-                                "UK Snapshot",
+                                "UK Snapshot 🇬🇧",
                                 [
                                     "UK Unemployment",
                                     "UK Inflation (RPI)",
@@ -666,20 +623,13 @@ class Series(BootstrapApp):
                             [
                                 dbc.Col(
                                     [
-                                        dbc.Label("Forecast Method"),
-                                        dcc.Dropdown(
-                                            id="model_selector",
-                                            clearable=False,
-                                        ),
                                         dbc.FormGroup(
                                             [
-                                                html.A(
-                                                    "Download Forecast Data",
-                                                    id="forecast_data_download_link",
-                                                    download="forecast_data.csv",
-                                                    href="",
-                                                    target="_blank",
-                                                )
+                                                dbc.Label("Forecast Method"),
+                                                dcc.Dropdown(
+                                                    id="model_selector",
+                                                    clearable=False,
+                                                ),
                                             ]
                                         ),
                                         dbc.FormGroup(
@@ -694,10 +644,7 @@ class Series(BootstrapApp):
                                             ]
                                         ),
                                         dcc.Loading(
-                                            html.Div(
-                                                id="meta_data_list",
-                                                className="py-3",
-                                            )
+                                            html.Div(id="meta_data_list")
                                         ),
                                     ],
                                     lg=6,
@@ -749,7 +696,7 @@ class Series(BootstrapApp):
         @location_ignore_null(inputs, location_id="url")
         @series_input(inputs, location_id="url")
         def update_breadcrumb(series_data_dict):
-            print("breadcrumb update")
+
             return (
                 series_data_dict["data_source_dict"]["short_title"]
                 if "short_title" in series_data_dict["data_source_dict"]
@@ -844,8 +791,8 @@ class Series(BootstrapApp):
                 [
                     dbc.ListGroupItem(
                         [
-                            html.H4("Model Details"),
-                            html.P(
+                            dbc.ListGroupItemHeading("Model Details"),
+                            dbc.ListGroupItemText(
                                 [
                                     html.P(model_name),
                                     html.P(model_description),
@@ -855,8 +802,8 @@ class Series(BootstrapApp):
                     ),
                     dbc.ListGroupItem(
                         [
-                            html.H4("Forecast Updated At"),
-                            html.P(
+                            dbc.ListGroupItemHeading("Forecast Updated At"),
+                            dbc.ListGroupItemText(
                                 series_data_dict["forecasted_at"].strftime(
                                     "%Y-%m-%d %H:%M:%S"
                                 )
@@ -865,8 +812,8 @@ class Series(BootstrapApp):
                     ),
                     dbc.ListGroupItem(
                         [
-                            html.H4("Data Collected At"),
-                            html.P(
+                            dbc.ListGroupItemHeading("Data Collected At"),
+                            dbc.ListGroupItemText(
                                 series_data_dict["downloaded_dict"][
                                     "downloaded_at"
                                 ].strftime("%Y-%m-%d %H:%M:%S")
@@ -875,8 +822,8 @@ class Series(BootstrapApp):
                     ),
                     dbc.ListGroupItem(
                         [
-                            html.H4("Data Source"),
-                            html.P(
+                            dbc.ListGroupItemHeading("Data Source"),
+                            dbc.ListGroupItemText(
                                 [
                                     html.A(
                                         series_data_dict["data_source_dict"][
@@ -980,7 +927,6 @@ class Series(BootstrapApp):
                             4,
                         )
             CV_score_df.sort_values(by=["MSE"], inplace=True)
-
             # Reorder columns so MSE is always first as this is the most popular scoring function for the conditional mean
             CV_score_df = CV_score_df[
                 ["MSE"]
@@ -1044,30 +990,6 @@ class Series(BootstrapApp):
             ],
             location_id="url",
         )
-        def update_download_link(series_data_dict, **kwargs):
-
-            table = create_forecast_table_df(series_data_dict, **kwargs)
-
-            csv_string = table.to_csv(index=False, encoding="utf-8")
-            csv_string = "data:text/csv;charset=utf-8," + urllib.parse.quote(
-                csv_string
-            )
-            return csv_string
-
-        @self.callback(
-            Output("forecast_data_download_link", "href"),
-            inputs + [Input("model_selector", "value")],
-            prevent_initial_call=True,
-        )
-        @location_ignore_null(inputs, location_id="url")
-        @series_input(
-            inputs
-            + [
-                Input("model_selector", "value"),
-            ],
-            location_id="url",
-        )
-
         def download_excel(series_data_dict, **kwargs):
             # Create DFs
             forecast_table = create_forecast_table_df(
@@ -1330,11 +1252,12 @@ class Search(BootstrapApp):
         )
 
         def filter_panel_children(params, tags, methods):
+
             children = [
-                html.Div(
+                html.H4("Filters"),
+                dbc.FormGroup(
                     [
-                        html.H4("Filters"),
-                        dbc.Label("Name", html_for="name"),
+                        dbc.Label("Name"),
                         apply_default_value(params)(dbc.Input)(
                             id="name",
                             placeholder="Name of a series...",
@@ -1342,23 +1265,21 @@ class Search(BootstrapApp):
                             value="",
                         ),
                         dbc.FormText("Type something in the box above"),
-                    ],
-                    className="mb-3",
+                    ]
                 ),
-                html.Div(
+                dbc.FormGroup(
                     [
-                        dbc.Label("Tags", html_for="tags"),
+                        dbc.Label("Tags"),
                         apply_default_value(params)(dbc.Checklist)(
                             options=[{"label": t, "value": t} for t in tags],
                             value=[],
                             id="tags",
                         ),
-                    ],
-                    className="mb-3",
+                    ]
                 ),
-                html.Div(
+                dbc.FormGroup(
                     [
-                        dbc.Label("Method", html_for="methods"),
+                        dbc.Label("Method"),
                         apply_default_value(params)(dbc.Checklist)(
                             options=[
                                 {"label": m, "value": m} for m in methods
@@ -1366,8 +1287,7 @@ class Search(BootstrapApp):
                             value=[],
                             id="methods",
                         ),
-                    ],
-                    className="mb-3",
+                    ]
                 ),
             ]
 

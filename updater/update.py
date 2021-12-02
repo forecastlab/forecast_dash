@@ -5,8 +5,8 @@ import shutil
 
 if __name__ == "__main__":
 
-    # print("Downloading Data")
-    # download_data("../shared_config/data_sources.json", "../data/downloads")
+    print("Downloading Data")
+    download_data("../shared_config/data_sources.json", "../data/downloads")
 
     print("Running Models")
     run_models(

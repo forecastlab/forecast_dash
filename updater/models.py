@@ -16,6 +16,8 @@ from keras.models import Sequential
 from keras.layers import Dense, SimpleRNN
 from tensorflow.keras.optimizers import RMSprop
 
+import warnings
+
 ### functions for the MLP and RNN models ###
 def split_into_train(y, lags):
     """
@@ -128,9 +130,10 @@ def remove_seasonality(y, h, period):
 
 
 class ForecastModel(BaseEstimator, ABC):
-    def __init__(self, h=None, level=None):
+    def __init__(self, h=None, level=None, period=None):
         self.h = h
         self.level = level
+        self.period = period
 
     @property
     @staticmethod
@@ -159,9 +162,9 @@ class MLP_M4_benchmark(ForecastModel):
     name = "MLP"
     method = "MLP M4 Competition Benchmark"
 
-    def __init__(self, h=1, level=[]):
+    def __init__(self, h=1, level=[], period=None):
         self.input_size = 3  # number of inputs to the forecasting model (lags of the time series)
-        super().__init__(h, level)
+        super().__init__(h, level, period)
 
     def description(self):
         return self.method
@@ -170,27 +173,24 @@ class MLP_M4_benchmark(ForecastModel):
         self.y = y
         self.y_tilde = y.copy()  # detrended and de-seasonalized copy of y
 
-        # Find period of y
-        freq = getattr(self.y.index, "inferred_freq", None)
-        self.period = freq_to_period(freq)
-
         # detrending
         self.a, self.b = detrend(self.y.values)
         for i in range(len(y)):
             self.y_tilde[i] = self.y_tilde[i] - ((self.a * i) + self.b)
 
         self.seasonal_bool = False
-        if (
-            (seasonality_test(self.y, self.period))
-            and ~(self.period is None)
-            and (len(self.y) > 2 * self.period)
-        ):
-            self.seasonal_bool = True
-            # remove seasonality and compute the required h-step ahead seasonal components
-            trend, seasonal, self.seasonal_forecasts = remove_seasonality(
-                self.y, self.h, self.period
-            )
-            self.y_tilde = self.y_tilde - seasonal
+        if self.period is not None:
+            if (
+                (seasonality_test(self.y, self.period))
+                and ~(self.period is None)
+                and (len(self.y) > 2 * self.period)
+            ):
+                self.seasonal_bool = True
+                # remove seasonality and compute the required h-step ahead seasonal components
+                trend, seasonal, self.seasonal_forecasts = remove_seasonality(
+                    self.y, self.h, self.period
+                )
+                self.y_tilde = self.y_tilde - seasonal
 
         # create X data matrix as 3 lags of y
         X_train, y_train = split_into_train(self.y_tilde, lags=self.input_size)
@@ -207,8 +207,11 @@ class MLP_M4_benchmark(ForecastModel):
             learning_rate="adaptive",
             learning_rate_init=0.001,
             random_state=42,
-        )  # raises some convergence warnings
-        self.model.fit(X_train, y_train)
+        )
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            self.model.fit(X_train, y_train)
+
         self.resids = (
             self.model.predict(X_train) - y_train
         )  # training sample residuals
@@ -288,9 +291,9 @@ class RNN_M4_benchmark(ForecastModel):
     name = "RNN"
     method = "RNN M4 Competition Benchmark"
 
-    def __init__(self, h=1, level=[]):
+    def __init__(self, h=1, level=[], period=None):
         self.input_size = 3  # number of inputs to the forecasting model (lags of the time series)
-        super().__init__(h, level)
+        super().__init__(h, level, period)
 
     def description(self):
         return self.method
@@ -311,17 +314,18 @@ class RNN_M4_benchmark(ForecastModel):
             self.y_tilde[i] = self.y_tilde[i] - ((self.a * i) + self.b)
 
         self.seasonal_bool = False
-        if (
-            (seasonality_test(self.y, self.period))
-            and ~(self.period is None)
-            and (len(self.y) > 2 * self.period)
-        ):
-            self.seasonal_bool = True
-            # remove seasonality and compute the required h-step ahead seasonal components
-            trend, seasonal, self.seasonal_forecasts = remove_seasonality(
-                self.y, self.h, self.period
-            )
-            self.y_tilde = self.y_tilde - seasonal
+        if self.period is not None:
+            if (
+                (seasonality_test(self.y, self.period))
+                and ~(self.period is None)
+                and (len(self.y) > 2 * self.period)
+            ):
+                self.seasonal_bool = True
+                # remove seasonality and compute the required h-step ahead seasonal components
+                trend, seasonal, self.seasonal_forecasts = remove_seasonality(
+                    self.y, self.h, self.period
+                )
+                self.y_tilde = self.y_tilde - seasonal
 
         # create X data matrix as input_size lags of y
         X_train, y_train = split_into_train(self.y_tilde, lags=self.input_size)
@@ -352,7 +356,8 @@ class RNN_M4_benchmark(ForecastModel):
         opt = RMSprop(learning_rate=0.001)
         early_stop_callback = tf.keras.callbacks.EarlyStopping(
             monitor="loss", patience=3, verbose=0
-        )  # callback to allow early stopping of training is loss does not keep improving
+        )  # callback to allow early stopping of training if loss does not keep improving
+
         self.model.compile(loss="mean_squared_error", optimizer=opt)
 
         # fit the model to the training data
@@ -446,9 +451,9 @@ class RModel(ForecastModel, ABC):
 
     forecast_model_params = {}
 
-    def __init__(self, h=1, level=[]):
+    def __init__(self, h=1, level=[], period=None):
 
-        super().__init__(h, level)
+        super().__init__(h, level, period)
 
         import rpy2.robjects as robjects
         from rpy2.robjects import pandas2ri
@@ -480,10 +485,6 @@ class RModel(ForecastModel, ABC):
         pass
 
     def fit(self, y):
-
-        # Find period of y
-        freq = getattr(self.y.index, "inferred_freq", None)
-        self.period = freq_to_period(freq)
 
         r_forecast_dict = self.get_r_forecast_dict()
 

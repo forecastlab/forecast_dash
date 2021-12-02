@@ -22,7 +22,8 @@ The available models are listed in the [Leaderboard](/leaderboard/).
 These are based on the benchmark models used in the M4 Competition \[0\].
 
 The models are run on each dataset according to the time series cross-validation
-scheme described in \[1\], Sect 3.4, with forecast horizons of length 1-8.
+scheme described in \[1\], Sect 3.4. The forecast horizon depends upon the frequency of the 
+underlying time series, that is 6 for yearly, 8 for quarterly and 18 for monthly data. 
 
 ![time series cross-validation](https://otexts.com/fpp2/fpp_files/figure-html/cv1-1.png)
 \(Image reproduced from \[1\] with permission.\)
@@ -170,7 +171,7 @@ This website is an intuitive tool that makes business forecasting accessible to 
                                                     "https://github.com/forecastlab/forecast_dash",
                                                     href="https://github.com/forecastlab/forecast_dash",
                                                 ),
-                                                " .",
+                                                ".",
                                             ]
                                         ),
                                     ],
@@ -178,21 +179,37 @@ This website is an intuitive tool that makes business forecasting accessible to 
                                 ),
                                 dbc.Col(
                                     [
-                                        dbc.Jumbotron(
-                                            [
-                                                html.H1("Our Mission"),
-                                                html.Ol(
-                                                    [
-                                                        html.Li(
-                                                            "To make forecasting models accessible to everyone."
-                                                        ),
-                                                        html.Li(
-                                                            "To provide the latest financial and economic forecasts of the commonly used time series."
-                                                        ),
-                                                    ]
+                                        html.Div(
+                                            dbc.Container(
+                                                dbc.Row(
+                                                    dbc.Col(
+                                                        [
+                                                            html.H1(
+                                                                "Our Mission",
+                                                                className="display-4",
+                                                            ),
+                                                            html.Hr(),
+                                                            html.P(
+                                                                html.Ul(
+                                                                    [
+                                                                        html.Li(
+                                                                            "To make forecasting models accessible to everyone.",
+                                                                            className="lead",
+                                                                        ),
+                                                                        html.Li(
+                                                                            "To provide the latest economic and financial forecasts of commonly used time series.",
+                                                                            className="lead",
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                            ),
+                                                        ]
+                                                    ),
                                                 ),
-                                            ]
-                                        )
+                                                className="px-4",
+                                            ),
+                                            className="bg-light rounded-3 py-5 mb-4",
+                                        ),
                                     ],
                                     lg=6,
                                 ),
@@ -232,7 +249,7 @@ This website is an intuitive tool that makes business forecasting accessible to 
                         dbc.Row(
                             dbc.Col(
                                 html.H2(
-                                    "Core Contributors",
+                                    "Contributors",
                                     style={"margin-bottom": "32px"},
                                 ),
                                 lg=12,

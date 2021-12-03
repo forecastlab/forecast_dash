@@ -4,7 +4,6 @@ from datetime import datetime
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 import dash_dangerously_set_inner_html
-import html2text
 import humanize
 import markdown2
 from common import BootstrapApp, header, breadcrumb_layout, footer
@@ -70,9 +69,13 @@ class Blog(BootstrapApp):
                 blog_posts, key=lambda x: x["attributes"]["date"], reverse=True
             )
 
+            from bs4 import BeautifulSoup
+
             # Render post previews
-            h = html2text.HTML2Text()
-            h.ignore_links = True
+            # For each blog post:
+            # - Convert body to HTML
+            # - Find <p> tags using bs4 and convert to text
+            # - Truncate where neccesary
 
             n_posts_per_page = 5
 
@@ -93,9 +96,9 @@ class Blog(BootstrapApp):
                     body_html = markdown2.markdown(
                         blog_post["body"], extras=markdown_extras
                     )
-
+                soup = BeautifulSoup(body_html, "html.parser")
                 preview = textwrap.shorten(
-                    h.handle(body_html), 280, placeholder="..."
+                    soup.find('p').get_text(), 280, placeholder="..."
                 )
 
                 body.append(

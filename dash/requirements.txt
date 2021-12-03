@@ -1,9 +1,9 @@
+beautifulsoup4
 dash
 dash-bootstrap-components
 dash-dangerously-set-inner-html
 dash-multi
 humanize
-html2text
 frontmatter
 gunicorn
 markdown2

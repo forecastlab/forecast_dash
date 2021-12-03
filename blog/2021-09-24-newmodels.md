@@ -5,7 +5,7 @@ author: Stephen Tierney
 type: html
 ---
 
-
+<p>
 We recently added the MLP and RNN benchmark models from the M4 competition, thus completing the suite of M4 benchmark models.
 </p>
 

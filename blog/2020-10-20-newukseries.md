@@ -1,10 +1,19 @@
 ---
-title:  "We've added three new UK series"
+title:  "New UK series"
 date: "2020-10-20"
 author: David Houseman
+type: html
 ---
 
-The new UK series are:
-* UK GDP Growth
-* UK Current Account Balance
-* UK Average Weekly Earnings Growth
+<p>
+We recently added three new macroeconimic series from the UK.
+</p>
+
+<p>
+They are as follows::
+<ul>
+<li>UK GDP Growth</li>
+<li>UK Current Account Balance</li>
+<li>UK Average Weekly Earnings Growth</li>
+</ul>
+</p>

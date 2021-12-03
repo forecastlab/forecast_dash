@@ -1,6 +1,6 @@
 ---
-title:  "New Benchmark Models"
-date: "2021-10-24"
+title:  "M4 Benchmark Models Completed"
+date: "2021-09-24"
 author: Stephen Tierney
 type: html
 ---
@@ -9,7 +9,7 @@ type: html
 We recently added the MLP and RNN benchmark models from the M4 competition, thus completing the suite of M4 benchmark models.
 </p>
 
-<h2>Model Definitions</h2>
+<h4>Model Definitions</h4>
 
 <p>
 The M4 Competitors Guide defined the models as:
@@ -26,6 +26,8 @@ Our implementations make some adjustments to the original implementations from t
 <p>
 Details of the implementations can be found in this PR <a href="https://github.com/forecastlab/forecast_dash/pull/77">https://github.com/forecastlab/forecast_dash/pull/77</a>.
 </p>
+
+<h4>Thanks</h4>
 
 <p>
 Thanks to <a href="https://github.com/rjames6023">Rob James</a> for integrating these models!

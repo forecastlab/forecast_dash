@@ -1,5 +1,5 @@
 {
-  "contributors": [
+  "active_contributors": [
     {
       "name": "Stephen Tierney",
       "affiliation": "The University of Sydney",
@@ -12,14 +12,12 @@
       }
     },
     {
-      "name": "David Houseman",
+      "name": "Robert James",
       "affiliation": "The University of Sydney",
-      "image_url": "assets/profiles/DavidHouseman.jpeg",
+      "image_url": "assets/profiles/RobertJames.jpg",
       "homepage": "",
-      "bio": "David Houseman has a PhD in theoretical physics from University College, London, and is a tutor in Business Analytics at the University of Sydney Business School. David's interests are financial time series and statistical modelling of stock returns.",
-      "links": {
-        "github": "https://github.com/david-houseman"
-      }
+      "bio": "Rob James is Postdoctoral Research Associate at University of Sydney.",
+      "links": {"github":"https://github.com/rjames6023"}
     }
   ],
   "research_team": [
@@ -30,6 +28,15 @@
       "bio": "Associate Professor Andrey Vasnev is Head of the Discipline of Business Analytics at the University of Sydney Business School. His main research area is forecast combination in business, finance and economic applications.",
       "links": {
         "university": "https://business.sydney.edu.au/staff/andrey.vasnev"
+      }
+    },
+    {
+      "name": "Anastasios Panagiotelis",
+      "affiliation": "The University of Sydney",
+      "image_url": "assets/profiles/AnastasiosPanagiotelis.jpeg",
+      "bio": "Anastasios Panagiotelis is an Associate Professor of Business Analytics at the University of Sydney Business School. He is also a Director of the International Institute of Forecasters. His work lies in the intersection of business analytics, statistics and econometrics.",
+      "links": {
+        "university": "https://www.sydney.edu.au/business/about/our-people/academic-staff/anastasios.panagiotelis.html"
       }
     },
     {
@@ -48,6 +55,18 @@
       "bio": "Richard Gerlach's research interests lie mainly in financial econometrics and time series. His work has concerned developing time series models for measuring, forecasting and managing risk in financial markets as well as computationally intensive Bayesian methods for inference, diagnosis, forecasting and model comparison for these models.",
       "links": {
         "university": "https://business.sydney.edu.au/staff/richard.gerlach"
+      }
+    }
+  ],
+  "past_contributors": [
+    {
+      "name": "David Houseman",
+      "affiliation": "The University of Sydney",
+      "image_url": "assets/profiles/DavidHouseman.jpeg",
+      "homepage": "",
+      "bio": "David Houseman has a PhD in theoretical physics from University College, London, and is a former contributor to the project. David's interests are financial time series and statistical modelling of stock returns.",
+      "links": {
+        "github": "https://github.com/david-houseman"
       }
     }
   ]

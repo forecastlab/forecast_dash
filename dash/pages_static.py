@@ -22,8 +22,8 @@ The available models are listed in the [Leaderboard](/leaderboard/).
 These are based on the benchmark models used in the M4 Competition \[0\].
 
 The models are run on each dataset according to the time series cross-validation
-scheme described in \[1\], Sect 3.4. The forecast horizon depends upon the frequency of the 
-underlying time series, that is 6 for yearly, 8 for quarterly and 18 for monthly data. 
+scheme described in \[1\], Sect 3.4. The forecast horizon depends upon the frequency of the
+underlying time series, that is 6 for yearly, 8 for quarterly and 18 for monthly data.
 
 ![time series cross-validation](https://otexts.com/fpp2/fpp_files/figure-html/cv1-1.png)
 \(Image reproduced from \[1\] with permission.\)
@@ -101,7 +101,7 @@ def parse_people(person_list):
             ],
             lg=4,
             sm=6,
-            className="text-center",
+            className="text-center mb-5",
         )
         for person_dict in person_list
     ]
@@ -140,12 +140,16 @@ def parse_poweredby(filepath):
 class About(BootstrapApp):
     def setup(self):
 
-        contributors = json.load(open("static_files/profiles.json"))[
-            "contributors"
+        active_contributors = json.load(open("static_files/profiles.json"))[
+            "active_contributors"
         ]
 
         research_team = json.load(open("static_files/profiles.json"))[
             "research_team"
+        ]
+
+        past_contributors = json.load(open("static_files/profiles.json"))[
+            "past_contributors"
         ]
 
         self.layout = html.Div(
@@ -249,13 +253,13 @@ This website is an intuitive tool that makes business forecasting accessible to 
                         dbc.Row(
                             dbc.Col(
                                 html.H2(
-                                    "Contributors",
+                                    "Active Contributors",
                                     style={"margin-bottom": "32px"},
                                 ),
                                 lg=12,
                             )
                         ),
-                        dbc.Row(parse_people(contributors)),
+                        dbc.Row(parse_people(active_contributors)),
                         dbc.Row(
                             dbc.Col(
                                 html.H2(
@@ -266,6 +270,16 @@ This website is an intuitive tool that makes business forecasting accessible to 
                             )
                         ),
                         dbc.Row(parse_people(research_team)),
+                        dbc.Row(
+                            dbc.Col(
+                                html.H2(
+                                    "Past Contributors",
+                                    style={"margin-bottom": "32px"},
+                                ),
+                                lg=12,
+                            )
+                        ),
+                        dbc.Row(parse_people(past_contributors)),
                     ]
                     + footer(),
                     style={"margin-bottom": "64px"},

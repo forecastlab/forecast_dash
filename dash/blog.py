@@ -98,7 +98,7 @@ class Blog(BootstrapApp):
                     )
                 soup = BeautifulSoup(body_html, "html.parser")
                 preview = textwrap.shorten(
-                    soup.find('p').get_text(), 280, placeholder="..."
+                    soup.find("p").get_text(), 280, placeholder="..."
                 )
 
                 body.append(

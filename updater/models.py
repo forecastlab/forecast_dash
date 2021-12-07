@@ -12,9 +12,7 @@ from statsmodels.tsa.tsatools import freq_to_period
 from sklearn.base import BaseEstimator
 from sklearn.neural_network import MLPRegressor
 
-from keras.models import Sequential
-from keras.layers import Dense, SimpleRNN
-from tensorflow.keras.optimizers import RMSprop
+import torch
 
 import warnings
 
@@ -276,6 +274,38 @@ class LinearRegressionForecast(ForecastModel):
         return forecast_dict
 
 
+class SimpleRNN(torch.nn.Module):
+    def __init__(self, input_size, output_size, hidden_dim, n_layers):
+        super(SimpleRNN, self).__init__()
+
+        self.hidden_dim = hidden_dim
+        self.n_layers = n_layers
+
+        self.rnn = torch.nn.RNN(
+            input_size, hidden_dim, n_layers, batch_first=True
+        )
+        self.fc = torch.nn.Linear(hidden_dim, output_size)
+
+    def forward(self, x):
+        # Initializing hidden state for first input using method defined below
+        batch_size = x.size(0)
+        hidden = self.init_hidden(batch_size)
+
+        # Passing in the input and hidden state into the model and obtaining outputs
+        out, hidden = self.rnn(x, hidden)
+
+        out = out.contiguous().view(-1, self.hidden_dim)
+        out = self.fc(out)
+
+        return out
+
+    def init_hidden(self, batch_size):
+        # This method generates the first hidden state of zeros which we'll use in the forward pass
+        # We'll send the tensor holding the hidden state to the device we specified earlier as well
+        hidden = torch.zeros(self.n_layers, batch_size, self.hidden_dim)
+        return hidden
+
+
 class RNN_M4_benchmark(ForecastModel):
     """
     Recurrent neural network model from the M4 forecasting competition benchmarks
@@ -325,58 +355,75 @@ class RNN_M4_benchmark(ForecastModel):
 
         # convert to np.array to match input dtype requirement for Keras RNN model
         X_train = X_train.values
+
         y_train = y_train.values
         # reshape to match expected input
-        X_train = np.reshape(X_train, (-1, self.input_size, 1))
+        X_train = np.reshape(X_train, (-1, 1, self.input_size))
 
-        # create the model
-        self.model = Sequential(
-            [
-                SimpleRNN(
-                    6,
-                    input_shape=(self.input_size, 1),
-                    activation="linear",
-                    use_bias=False,
-                    kernel_initializer="glorot_uniform",
-                    recurrent_initializer="orthogonal",
-                    bias_initializer="zeros",
-                    dropout=0.0,
-                    recurrent_dropout=0.0,
-                ),
-                Dense(1, use_bias=True, activation="linear"),
-            ]
+        X_train = torch.tensor(X_train, dtype=torch.float)
+        y_train = torch.tensor(y_train, dtype=torch.float)
+
+        # Create the training dataset
+        dataset = torch.utils.data.TensorDataset(X_train, y_train)
+        # Create a data loader
+        dataloader = torch.utils.data.DataLoader(
+            dataset, batch_size=X_train.shape[0], shuffle=True
         )
-        opt = RMSprop(learning_rate=0.001)
-        early_stop_callback = tf.keras.callbacks.EarlyStopping(
-            monitor="loss", patience=3, verbose=0
-        )  # callback to allow early stopping of training if loss does not keep improving
 
-        self.model.compile(loss="mean_squared_error", optimizer=opt)
+        self.model = SimpleRNN(self.input_size, 1, 6, 1)
 
-        # fit the model to the training data
-        self.model.fit(
-            X_train,
-            y_train,
-            epochs=100,
-            batch_size=1,
-            verbose=0,
-            callbacks=[early_stop_callback],
-        )
+        # Specify loss
+        loss_function = torch.nn.MSELoss()
+
+        # Specify optimizer and parameters
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
+
+        max_iter = 100
+        loss = []
+
+        for epoch in range(max_iter):
+            # Get a batch of data from data loader
+            for X_batch, y_batch in dataloader:
+                # Reset the gradients
+                optimizer.zero_grad()
+                # Forward pass
+                predictions = self.model(X_batch).squeeze()
+                # Calculate loss
+                l = loss_function(predictions, y_batch)
+                # Compute gradients
+                l.backward()
+                # Update using gradients
+                optimizer.step()
+
+                loss.append(l.item())
+
+        with torch.no_grad():
+            predictions = self.model(X_train)
+
         self.resids = (
-            self.model.predict(X_train) - y_train
-        )  # training sample residuals
+            predictions - y_train
+        ).numpy()  # training sample residuals
 
     def predict(self):
         self.y_tilde_hat = []
         X_test = self.y_tilde.iloc[-self.input_size :].values
-        X_test = X_test.reshape(-1, self.input_size, 1)
+
+        X_test_np = X_test.reshape(-1, self.input_size, 1)
+
+        X_test_torch = np.reshape(X_test, (-1, 1, self.input_size))
+        X_test_torch = torch.tensor(X_test_torch, dtype=torch.float)
+
         for i in range(
             self.h
         ):  # make h-step ahead predictions of detrended and de-seasonalized data
-            RNN_forecast = self.model.predict(X_test)[0]
+            with torch.no_grad():
+                # BUG HEREEEEE
+                RNN_forecast = self.model(X_test_torch).numpy()[0]
+
+            # RNN_forecast = self.model.predict(X_test)[0]
             # assign previous forecast as new X_test point
-            X_test[0, :] = np.roll(X_test[0], -1)
-            X_test[0, -1] = RNN_forecast
+            X_test_np[0, :] = np.roll(X_test_np[0], -1)
+            X_test_np[0, -1] = RNN_forecast
             self.y_tilde_hat.append(RNN_forecast)
 
         y_hat = np.array(self.y_tilde_hat).copy()

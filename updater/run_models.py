@@ -16,8 +16,8 @@ from models import (
     RTheta,
     RNaive2,
     RComb,
-    RNN_M4_benchmark,
     LinearRegressionForecast,
+    RNN_M4_benchmark,
 )
 from sklearn.metrics import mean_absolute_error
 from sklearn.utils.validation import indexable, _num_samples
@@ -34,15 +34,15 @@ level = [50, 75, 95]
 
 model_class_list = [
     RNaive,
-    RAutoARIMA,  # RAutoARIMA is very slow!
+    RAutoARIMA,
     RSimple,
     RHolt,
     RDamped,
     RTheta,
     RNaive2,
     RComb,
-    RNN_M4_benchmark,
     LinearRegressionForecast,
+    RNN_M4_benchmark,
 ]
 
 

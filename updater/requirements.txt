@@ -3,5 +3,6 @@ requests
 rpy2
 scikit-learn
 statsmodels
-tensorflow
+torch
+torch
 tzlocal

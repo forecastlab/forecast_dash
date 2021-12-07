@@ -1,6 +1,6 @@
 import textwrap
 from datetime import datetime
-
+from bs4 import BeautifulSoup
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 import dash_dangerously_set_inner_html
@@ -69,7 +69,7 @@ class Blog(BootstrapApp):
                 blog_posts, key=lambda x: x["attributes"]["date"], reverse=True
             )
 
-            from bs4 import BeautifulSoup
+
 
             # Render post previews
             # For each blog post:

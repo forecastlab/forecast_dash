@@ -69,8 +69,6 @@ class Blog(BootstrapApp):
                 blog_posts, key=lambda x: x["attributes"]["date"], reverse=True
             )
 
-
-
             # Render post previews
             # For each blog post:
             # - Convert body to HTML

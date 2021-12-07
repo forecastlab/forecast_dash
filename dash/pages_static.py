@@ -166,8 +166,12 @@ class About(BootstrapApp):
                                 dbc.Col(
                                     [
                                         html.H1("About"),
-                                        html.P("This website aims to make business forecasting accessible to the wider community. Here you can find predictions of commonly used time series and the uncertainty around them."),
-                                        html.P("The website implements classical forecasting models as well as the novel models developed by the members of the Time Series and Forecasting (TSF) research group in the University of Sydney Business School."),
+                                        html.P(
+                                            "This website aims to make business forecasting accessible to the wider community. Here you can find predictions of commonly used time series and the uncertainty around them."
+                                        ),
+                                        html.P(
+                                            "The website implements classical forecasting models as well as the novel models developed by the members of the Time Series and Forecasting (TSF) research group in the University of Sydney Business School."
+                                        ),
                                         html.P(
                                             [
                                                 """
@@ -235,7 +239,11 @@ class About(BootstrapApp):
                                                                 className="display-6",
                                                             ),
                                                             html.A(
-                                                                [html.Img(src="assets/USYD_logo.png")],
+                                                                [
+                                                                    html.Img(
+                                                                        src="assets/USYD_logo.png"
+                                                                    )
+                                                                ],
                                                                 href="https://www.sydney.edu.au/business/",
                                                             ),
                                                         ],
@@ -292,7 +300,7 @@ class About(BootstrapApp):
                         ),
                         dbc.Row(
                             parse_poweredby("static_files/poweredby.json"),
-                            className="mb-5"
+                            className="mb-5",
                         ),
                         dbc.Row(
                             dbc.Col(
@@ -304,12 +312,20 @@ class About(BootstrapApp):
                             )
                         ),
                         dbc.Row(
-                            dbc.Col([
-                                html.P("The University strives to keep information stored on this server up to date, but does not guarantee the accuracy, reliability or currency of the information. Any errors in the information that are brought to the University’s attention will be corrected as soon as possible. The University reserves the right to change at any time without notice any information stored on this server. This includes information about courses or units of study offered by the University."),
-                                html.P("The University of Sydney provides links to a number of external websites via this website. Monitoring and reviewing content of these third party external websites is not the responsibility of the University of Sydney nor does the University of Sydney endorse, approve or recommend the content, owners or operators of websites and applications available through this website."),
-                                html.P("The University accepts no liability for any loss or damage a person suffers because that person has directly or indirectly relied on any information stored on this server.")
-                            ])
-                        )
+                            dbc.Col(
+                                [
+                                    html.P(
+                                        "The University strives to keep information stored on this server up to date, but does not guarantee the accuracy, reliability or currency of the information. Any errors in the information that are brought to the University’s attention will be corrected as soon as possible. The University reserves the right to change at any time without notice any information stored on this server. This includes information about courses or units of study offered by the University."
+                                    ),
+                                    html.P(
+                                        "The University of Sydney provides links to a number of external websites via this website. Monitoring and reviewing content of these third party external websites is not the responsibility of the University of Sydney nor does the University of Sydney endorse, approve or recommend the content, owners or operators of websites and applications available through this website."
+                                    ),
+                                    html.P(
+                                        "The University accepts no liability for any loss or damage a person suffers because that person has directly or indirectly relied on any information stored on this server."
+                                    ),
+                                ]
+                            )
+                        ),
                     ]
                     + footer(),
                     style={"margin-bottom": "64px"},

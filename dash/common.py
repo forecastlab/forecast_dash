@@ -8,6 +8,7 @@ from dash import dcc, html
 from datetime import datetime
 import humanize
 
+
 def header():
     from app import nav_routes
 
@@ -90,7 +91,11 @@ def component_git_version():
         git_shorthash = git_output[1]
         git_time = git_output[2]
 
-        natural_time = humanize.naturaltime(datetime.strptime(git_time, "%Y-%m-%d %H:%M:%S %z").replace(tzinfo=None))
+        natural_time = humanize.naturaltime(
+            datetime.strptime(git_time, "%Y-%m-%d %H:%M:%S %z").replace(
+                tzinfo=None
+            )
+        )
 
     github_home_url = "https://github.com/forecastlab/forecast_dash/"
     github_patch_url = github_home_url + "commit/" + git_hash
@@ -99,22 +104,39 @@ def component_git_version():
         [
             dbc.Card(
                 [
-                    dbc.CardBody([
-                        html.H5(["Version ", html.A(git_shorthash, href=github_patch_url)], className='card-title'),
-                        html.H6(f"Committed {natural_time}", className='card-subtitle mb-2 text-muted'),
-                        html.P(
-                            [
-                                html.A("Development homepage", href=github_home_url),
-                                " on ",
-                                html.A("GitHub", href="https://github.com/")
-                            ]
-                        ),
-                    ])
+                    dbc.CardBody(
+                        [
+                            html.H5(
+                                [
+                                    "Version ",
+                                    html.A(
+                                        git_shorthash, href=github_patch_url
+                                    ),
+                                ],
+                                className="card-title",
+                            ),
+                            html.H6(
+                                f"Committed {natural_time}",
+                                className="card-subtitle mb-2 text-muted",
+                            ),
+                            html.P(
+                                [
+                                    html.A(
+                                        "Development homepage",
+                                        href=github_home_url,
+                                    ),
+                                    " on ",
+                                    html.A(
+                                        "GitHub", href="https://github.com/"
+                                    ),
+                                ]
+                            ),
+                        ]
+                    )
                 ],
                 color="dark",
                 outline=True,
             ),
-
         ]
     )
 

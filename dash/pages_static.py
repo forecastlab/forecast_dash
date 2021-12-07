@@ -165,14 +165,16 @@ class About(BootstrapApp):
                             [
                                 dbc.Col(
                                     [
-                                        html.H2("About"),
+                                        html.H1("About"),
+                                        html.P("This website aims to make business forecasting accessible to the wider community. Here you can find predictions of commonly used time series and the uncertainty around them."),
+                                        html.P("The website implements classical forecasting models as well as the novel models developed by the members of the Time Series and Forecasting (TSF) research group in the University of Sydney Business School."),
                                         html.P(
                                             [
                                                 """
-This website is an intuitive tool that makes business forecasting accessible to the wider community. You can easily obtain predictions of commonly used variables together with the uncertainty around them. The website implements classical forecasting models as well as the novel models and methods developed by the members of the Time Series and Forecasting (TSF) research group in the University of Sydney Business School. The website visualizes and summarizes the forecasting results in an easy-to-understand manner. The forecasts are updated daily and include the latest publicly available information. It is an open-source project under the AGPL license, see
+ The forecasts are updated daily and include the latest publicly available information. It is an open-source project, with code
                                                 """,
                                                 html.A(
-                                                    "https://github.com/forecastlab/forecast_dash",
+                                                    "available here",
                                                     href="https://github.com/forecastlab/forecast_dash",
                                                 ),
                                                 ".",
@@ -222,33 +224,32 @@ This website is an intuitive tool that makes business forecasting accessible to 
                         dbc.Row(
                             [
                                 dbc.Col(
-                                    html.H2(
-                                        "Built by the University of Sydney\n Discipline of Business Analytics"
-                                    ),
-                                    width=6,
-                                    align="center",
-                                ),
-                                dbc.Col(
-                                    html.A(
-                                        [html.Img(src="assets/USYD_logo.png")],
-                                        href="https://www.sydney.edu.au/business/",
-                                    ),
-                                    width=6,
-                                ),
-                            ],
-                            justify="between",
-                        ),
-                        dbc.Row(
-                            dbc.Col(
-                                html.H2(
-                                    "Powered By",
-                                    style={"margin-bottom": "32px"},
-                                ),
-                                lg=12,
-                            )
-                        ),
-                        dbc.Row(
-                            parse_poweredby("static_files/poweredby.json")
+                                    [
+                                        html.Div(
+                                            dbc.Container(
+                                                dbc.Row(
+                                                    dbc.Col(
+                                                        [
+                                                            html.H1(
+                                                                "Built by the Discipline of Business Analytics at the University of Sydney",
+                                                                className="display-6",
+                                                            ),
+                                                            html.A(
+                                                                [html.Img(src="assets/USYD_logo.png")],
+                                                                href="https://www.sydney.edu.au/business/",
+                                                            ),
+                                                        ],
+                                                        className="text-center",
+                                                    ),
+                                                ),
+                                                className="px-4",
+                                            ),
+                                            className="rounded-3 py-5 mb-4",
+                                        ),
+                                    ],
+                                    lg=12,
+                                )
+                            ]
                         ),
                         dbc.Row(
                             dbc.Col(
@@ -263,7 +264,7 @@ This website is an intuitive tool that makes business forecasting accessible to 
                         dbc.Row(
                             dbc.Col(
                                 html.H2(
-                                    "Research Group Leaders",
+                                    "Research Group",
                                     style={"margin-bottom": "32px"},
                                 ),
                                 lg=12,
@@ -280,6 +281,35 @@ This website is an intuitive tool that makes business forecasting accessible to 
                             )
                         ),
                         dbc.Row(parse_people(past_contributors)),
+                        dbc.Row(
+                            dbc.Col(
+                                html.H2(
+                                    "Powered By",
+                                    style={"margin-bottom": "32px"},
+                                ),
+                                lg=12,
+                            )
+                        ),
+                        dbc.Row(
+                            parse_poweredby("static_files/poweredby.json"),
+                            className="mb-5"
+                        ),
+                        dbc.Row(
+                            dbc.Col(
+                                html.H2(
+                                    "Disclaimer",
+                                    style={"margin-bottom": "32px"},
+                                ),
+                                lg=12,
+                            )
+                        ),
+                        dbc.Row(
+                            dbc.Col([
+                                html.P("The University strives to keep information stored on this server up to date, but does not guarantee the accuracy, reliability or currency of the information. Any errors in the information that are brought to the University’s attention will be corrected as soon as possible. The University reserves the right to change at any time without notice any information stored on this server. This includes information about courses or units of study offered by the University."),
+                                html.P("The University of Sydney provides links to a number of external websites via this website. Monitoring and reviewing content of these third party external websites is not the responsibility of the University of Sydney nor does the University of Sydney endorse, approve or recommend the content, owners or operators of websites and applications available through this website."),
+                                html.P("The University accepts no liability for any loss or damage a person suffers because that person has directly or indirectly relied on any information stored on this server.")
+                            ])
+                        )
                     ]
                     + footer(),
                     style={"margin-bottom": "64px"},

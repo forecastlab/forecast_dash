@@ -16,8 +16,8 @@ from models import (
     RTheta,
     RNaive2,
     RComb,
-    MLP_M4_benchmark,
     RNN_M4_benchmark,
+    LinearRegressionForecast
 )
 from sklearn.metrics import mean_absolute_error
 from sklearn.utils.validation import indexable, _num_samples
@@ -41,8 +41,8 @@ model_class_list = [
     RTheta,
     RNaive2,
     RComb,
-    MLP_M4_benchmark,
     RNN_M4_benchmark,
+    LinearRegressionForecast,
 ]
 
 

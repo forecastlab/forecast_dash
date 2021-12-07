@@ -153,14 +153,13 @@ class ForecastModel(BaseEstimator, ABC):
     def predict(self):
         pass
 
-
-class MLP_M4_benchmark(ForecastModel):
+class LinearRegressionForecast(ForecastModel):
     """
-    Multi-layer preceptron model from the M4 forecasting competition benchmarks
+    Linear regression model from the M4 forecasting competition benchmarks
     """
 
-    name = "MLP"
-    method = "MLP M4 Competition Benchmark"
+    name = "Linear Regression"
+    method = "Linear Regression"
 
     def __init__(self, h=1, level=[], period=None):
         self.input_size = 3  # number of inputs to the forecasting model (lags of the time series)
@@ -199,18 +198,11 @@ class MLP_M4_benchmark(ForecastModel):
         X_train = X_train.values
         y_train = y_train.values
 
-        self.model = MLPRegressor(
-            hidden_layer_sizes=6,
-            activation="identity",
-            solver="adam",
-            max_iter=100,
-            learning_rate="adaptive",
-            learning_rate_init=0.001,
-            random_state=42,
-        )
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            self.model.fit(X_train, y_train)
+        from sklearn.linear_model import LinearRegression
+
+        self.model = LinearRegression()
+
+        self.model.fit(X_train, y_train)
 
         self.resids = (
             self.model.predict(X_train) - y_train
@@ -281,7 +273,6 @@ class MLP_M4_benchmark(ForecastModel):
             forecast_dict[f"UB_{self.level[i]}"] = upper_CI
 
         return forecast_dict
-
 
 class RNN_M4_benchmark(ForecastModel):
     """

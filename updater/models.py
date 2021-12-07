@@ -153,6 +153,7 @@ class ForecastModel(BaseEstimator, ABC):
     def predict(self):
         pass
 
+
 class LinearRegressionForecast(ForecastModel):
     """
     Linear regression model from the M4 forecasting competition benchmarks
@@ -273,6 +274,7 @@ class LinearRegressionForecast(ForecastModel):
             forecast_dict[f"UB_{self.level[i]}"] = upper_CI
 
         return forecast_dict
+
 
 class RNN_M4_benchmark(ForecastModel):
     """

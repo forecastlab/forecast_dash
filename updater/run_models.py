@@ -17,7 +17,7 @@ from models import (
     RNaive2,
     RComb,
     RNN_M4_benchmark,
-    LinearRegressionForecast
+    LinearRegressionForecast,
 )
 from sklearn.metrics import mean_absolute_error
 from sklearn.utils.validation import indexable, _num_samples

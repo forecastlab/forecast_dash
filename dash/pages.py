@@ -12,7 +12,7 @@ from dash import dcc, html
 import humanize
 import numpy as np
 import pandas as pd
-import dash_table
+from dash import dash_table
 from common import BootstrapApp, header, breadcrumb_layout, footer
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate

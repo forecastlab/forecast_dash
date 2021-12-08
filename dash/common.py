@@ -7,6 +7,7 @@ from dash import dcc, html
 
 from datetime import datetime
 import humanize
+import pytz
 
 
 def header():
@@ -92,9 +93,8 @@ def component_git_version():
         git_time = git_output[2]
 
         natural_time = humanize.naturaltime(
-            datetime.strptime(git_time, "%Y-%m-%d %H:%M:%S %z").replace(
-                tzinfo=None
-            )
+            datetime.strptime(git_time, "%Y-%m-%d %H:%M:%S %z"),
+            when=datetime.now(tz=pytz.timezone("Australia/Sydney")),
         )
 
     github_home_url = "https://github.com/forecastlab/forecast_dash/"

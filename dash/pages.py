@@ -1086,13 +1086,13 @@ def get_leaderboard_df(series_list, CV_score_function="MSE"):
     unchosen_counts = pd.Series(
         data=np.zeros(len(unchosen_methods)),
         index=unchosen_methods,
-        name="Total",
+        name="Total Wins",
     )
 
     counts = pd.DataFrame(
         stats_raw["Method"]
         .value_counts()
-        .rename("Total")
+        .rename("Total Wins")
         .append(unchosen_counts)
     )
 
@@ -1157,11 +1157,17 @@ class Leaderboard(BootstrapApp):
             """
             construct the best model leaderboard based upon user selected scoring function
             """
-
             # Build leaderboard with chosen CV scoring function
             counts = get_leaderboard_df(series_list, CV_score)
 
-            counts["Proportion"] = counts["Total"] / counts["Total"].sum()
+            win_proportion = (
+                counts["Total Wins"] / counts["Total Wins"].sum() * 100
+            ).apply(lambda x: f" ({x:.2f}%)")
+
+            counts["Total Wins"] = (
+                counts["Total Wins"].apply(lambda x: f"{x:.0f}")
+                + win_proportion
+            )
 
             table = dbc.Table.from_dataframe(
                 counts, index=True, index_label="Method"

@@ -5,6 +5,9 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 
+from datetime import datetime
+import humanize
+
 
 def header():
     from app import nav_routes
@@ -87,39 +90,52 @@ def component_git_version():
         git_hash = git_output[0]
         git_shorthash = git_output[1]
         git_time = git_output[2]
-        git_author = git_output[3]
 
-        # Gotcha: git_subject might contain newlines
-        git_subject = "\n".join(git_output[4:])
+        natural_time = humanize.naturaltime(
+            datetime.strptime(git_time, "%Y-%m-%d %H:%M:%S %z").replace(
+                tzinfo=None
+            )
+        )
 
-    github_home_url = "https://github.com/sjtrny/forecast_dash/"
+    github_home_url = "https://github.com/forecastlab/forecast_dash/"
     github_patch_url = github_home_url + "commit/" + git_hash
 
     return dbc.Col(
         [
             dbc.Card(
                 [
-                    dbc.CardHeader(git_time),
                     dbc.CardBody(
                         [
-                            html.H6(git_subject, className="card-title"),
-                            html.P(f"by {git_author}", className="card-text"),
+                            html.H5(
+                                [
+                                    "Version ",
+                                    html.A(
+                                        git_shorthash, href=github_patch_url
+                                    ),
+                                ],
+                                className="card-title",
+                            ),
+                            html.H6(
+                                f"Committed {natural_time}",
+                                className="card-subtitle mb-2 text-muted",
+                            ),
+                            html.P(
+                                [
+                                    html.A(
+                                        "Development homepage",
+                                        href=github_home_url,
+                                    ),
+                                    " on ",
+                                    html.A(
+                                        "GitHub", href="https://github.com/"
+                                    ),
+                                ]
+                            ),
                         ]
-                    ),
-                    dbc.CardFooter(
-                        [
-                            dbc.CardLink(git_shorthash, href=github_patch_url),
-                        ]
-                    ),
+                    )
                 ],
                 color="dark",
                 outline=True,
-            ),
-            html.P(
-                [
-                    html.A("Development homepage", href=github_home_url),
-                    " on github.",
-                ]
             ),
         ]
     )

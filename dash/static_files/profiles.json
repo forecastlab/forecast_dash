@@ -27,7 +27,7 @@
       "image_url": "assets/profiles/AndreyVasnev.png",
       "bio": "Associate Professor Andrey Vasnev is Head of the Discipline of Business Analytics at the University of Sydney Business School. His main research area is forecast combination in business, finance and economic applications.",
       "links": {
-        "university": "https://business.sydney.edu.au/staff/andrey.vasnev"
+        "university": "https://www.sydney.edu.au/business/about/our-people/academic-staff/andrey-vasnev.html"
       }
     },
     {
@@ -45,7 +45,16 @@
       "image_url": "assets/profiles/ChaoWang.jpeg",
       "bio": "Dr Chao Wang received his PhD degree in Econometrics from The University of Sydney. He has two master degrees major in Machine Learning & Data Mining from Helsinki University of Technology and Mechatronic Engineering from Beijing Institute of Technology respectively.",
       "links": {
-        "university": "https://business.sydney.edu.au/staff/chao.wang"
+        "university": "https://www.sydney.edu.au/business/about/our-people/academic-staff/chao-wang.html"
+      }
+    },
+    {
+      "name": "Pablo Montero Manso",
+      "affiliation": "The University of Sydney",
+      "image_url": "assets/profiles/PabloMonteroManso.png",
+      "bio": "Pablo Montero-Manso is a Lecturer in the Discipline of Business Analytics, University of Sydney. His research interests focus on Machine Learning and Statistics for Time Series Analysis: clustering, classification and forecasting.",
+      "links": {
+        "university": "https://www.sydney.edu.au/business/about/our-people/academic-staff/pablo-monteromanso.html"
       }
     },
     {
@@ -54,7 +63,7 @@
       "image_url": "assets/profiles/RichardGerlach.jpeg",
       "bio": "Richard Gerlach's research interests lie mainly in financial econometrics and time series. His work has concerned developing time series models for measuring, forecasting and managing risk in financial markets as well as computationally intensive Bayesian methods for inference, diagnosis, forecasting and model comparison for these models.",
       "links": {
-        "university": "https://business.sydney.edu.au/staff/richard.gerlach"
+        "university": "https://www.sydney.edu.au/business/about/our-people/academic-staff/richard-gerlach.html"
       }
     }
   ],

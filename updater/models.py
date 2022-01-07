@@ -50,7 +50,7 @@ def seasonality_test(original_ts, ppy):
     for i in range(2, ppy):
         s = s + (acf(original_ts, i) ** 2)
 
-    limit = 1.645 * (np.sqrt((1 + 2 * (s**2)) / len(original_ts)))
+    limit = 1.645 * (np.sqrt((1 + 2 * (s ** 2)) / len(original_ts)))
 
     return (abs(acf(original_ts, ppy))) > limit
 

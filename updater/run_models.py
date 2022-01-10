@@ -83,16 +83,25 @@ class ScoringFunctions:
         see e.g., https://otexts.com/fpp3/distaccuracy.html
         """
         y1_mask = (self.y_true < lower_ci).astype(int)
-        y2_mask = ((self.y_true >= lower_ci) & (self.y_true <= upper_ci)).astype(int)
+        y2_mask = (
+            (self.y_true >= lower_ci) & (self.y_true <= upper_ci)
+        ).astype(int)
         y3_mask = (self.y_true > upper_ci).astype(int)
-        
-        w1 = ((upper_ci - lower_ci) + (2/alpha)*(lower_ci - self.y_true))*y1_mask
-        w2 = (upper_ci - lower_ci)*y2_mask
-        w3 = ((upper_ci - lower_ci) + (2/alpha)*(self.y_true - upper_ci))*y3_mask
-        
-        W = np.sum(w1) + np.sum(w2) + np.sum(w3) #Sum of individual all h-step Winkler scores
-    
+
+        w1 = (
+            (upper_ci - lower_ci) + (2 / alpha) * (lower_ci - self.y_true)
+        ) * y1_mask
+        w2 = (upper_ci - lower_ci) * y2_mask
+        w3 = (
+            (upper_ci - lower_ci) + (2 / alpha) * (self.y_true - upper_ci)
+        ) * y3_mask
+
+        W = (
+            np.sum(w1) + np.sum(w2) + np.sum(w3)
+        )  # Sum of individual all h-step Winkler scores
+
         return W
+
 
 def forecast_to_df(
     data_source_dict,

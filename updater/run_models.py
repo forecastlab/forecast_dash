@@ -33,14 +33,14 @@ p_to_use = 1
 level = [50, 75, 95]
 
 model_class_list = [
-    RNaive,
-    RAutoARIMA,
-    RSimple,
-    RHolt,
-    RDamped,
-    RTheta,
-    RNaive2,
-    RComb,
+    # RNaive,
+    # RAutoARIMA,
+    # RSimple,
+    # RHolt,
+    # RDamped,
+    # RTheta,
+    # RNaive2,
+    # RComb,
     LinearRegressionForecast,
     RNN_M4_benchmark,
 ]
@@ -80,19 +80,19 @@ class ScoringFunctions:
     def Winkler_score(self, upper_ci, lower_ci, alpha):
         """
         Winkler score for evaluating the quality of prediction intervals.
-        The quantile loss is not multiplied by 2 here. see e.g., https://otexts.com/fpp3/distaccuracy.html
+        see e.g., https://otexts.com/fpp3/distaccuracy.html
         """
-        lower_quantile_score = ((self.y_true <= lower_ci) - (alpha / 2)) * (
-            lower_ci - self.y_true
-        )
-        upper_quantile_score = (
-            (self.y_true <= upper_ci) - (1 - alpha / 2)
-        ) * (upper_ci - self.y_true)
-        Ws = np.sum(
-            (lower_quantile_score + upper_quantile_score) / alpha
-        )  # Sum of individual all h-step Winkler scores
-        return Ws
-
+        y1_mask = (self.y_true < lower_ci).astype(int)
+        y2_mask = ((self.y_true >= lower_ci) & (self.y_true <= upper_ci)).astype(int)
+        y3_mask = (self.y_true > upper_ci).astype(int)
+        
+        w1 = ((upper_ci - lower_ci) + (2/alpha)*(lower_ci - self.y_true))*y1_mask
+        w2 = (upper_ci - lower_ci)*y2_mask
+        w3 = ((upper_ci - lower_ci) + (2/alpha)*(self.y_true - upper_ci))*y3_mask
+        
+        W = np.sum(w1) + np.sum(w2) + np.sum(w3) #Sum of individual all h-step Winkler scores
+    
+        return W
 
 def forecast_to_df(
     data_source_dict,

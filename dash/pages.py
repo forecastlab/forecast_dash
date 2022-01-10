@@ -28,6 +28,7 @@ from util import (
 import io
 import base64
 
+
 def dash_kwarg(inputs):
     def accept_func(func):
         @wraps(func)
@@ -981,11 +982,11 @@ class Series(BootstrapApp):
 
             # Dictionary of scoring function descriptions to display when hovering over in the CV scores table.
             tooltip_header_text = {
-                 "MSE": "Mean Squared Error of the point forecasts",
-                 "MASE": "Mean Absolute Scaled Error of the point forecasts",
-                 "95% Winkler": "Winkler score for the 95% prediction interval",
-             }
-            
+                "MSE": "Mean Squared Error of the point forecasts",
+                "MASE": "Mean Absolute Scaled Error of the point forecasts",
+                "95% Winkler": "Winkler score for the 95% prediction interval",
+            }
+
             dataframe = create_CV_scores_table(series_data_dict)
             rounded_dataframe = dataframe.copy()
             # Round and format so that trailing zeros still appear
@@ -1019,10 +1020,10 @@ class Series(BootstrapApp):
                 ],
                 style_header={"fontWeight": "bold", "fontSize": 18},
                 style_header_conditional=[
-                     {"if": {"column_id": col}, "textDecoration": "underline"}
-                     for col in rounded_dataframe.columns
-                     if col != "Model"
-                 ],  # underline headers associated with tooltips
+                    {"if": {"column_id": col}, "textDecoration": "underline"}
+                    for col in rounded_dataframe.columns
+                    if col != "Model"
+                ],  # underline headers associated with tooltips
                 style_as_list_view=True,
             )
             return table

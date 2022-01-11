@@ -417,6 +417,7 @@ def component_news_4col():
                 html.A(
                     html.P(blog_post["attributes"]["title"], className="lead"),
                     href=f"/blog/post?title={blog_post['filename']}",
+                    className="text-decoration-none",
                 ),
             ]
         )
@@ -424,7 +425,13 @@ def component_news_4col():
     return dbc.Col(
         [html.H3("Latest News")]
         + body
-        + [html.A(html.P("View all posts"), href="/blog")],
+        + [
+            html.A(
+                html.P("View all posts"),
+                href="/blog",
+                className="text-decoration-none",
+            )
+        ],
         lg=4,
     )
 
@@ -551,10 +558,11 @@ class Index(BootstrapApp):
                                                 "US Recovery from COVID-19",
                                             ),
                                             html.A(
-                                                html.P(
+                                                html.H4(
                                                     "View all US forecasts"
                                                 ),
                                                 href="/search/?name=&tags=US",
+                                                className="text-decoration-none",
                                             ),
                                         ],
                                         lg=4,
@@ -604,19 +612,20 @@ class Index(BootstrapApp):
                                                                     href="/leaderboard/",
                                                                     className="text-decoration-none text-reset",
                                                                 ),
-                                                                html.H4(
+                                                                html.H2(
                                                                     "We backtest every model on every series.",
                                                                     className="mb-3",
                                                                 ),
-                                                                html.H4(
+                                                                html.H2(
                                                                     "Daily.",
                                                                     className="mb-3",
                                                                 ),
                                                                 html.A(
-                                                                    html.P(
+                                                                    html.H4(
                                                                         "Go to Leaderboard"
                                                                     ),
                                                                     href="/leaderboard/",
+                                                                    className="text-decoration-none",
                                                                 ),
                                                             ],
                                                             className="text-center",
@@ -638,6 +647,41 @@ class Index(BootstrapApp):
                                     "UK Unemployment",
                                     "UK Inflation (RPI)",
                                 ],
+                            ),
+                            # Bottom Row - links to all series
+                            dbc.Row(
+                                [
+                                    dbc.Col(
+                                        [
+                                            html.Div(
+                                                dbc.Container(
+                                                    dbc.Row(
+                                                        dbc.Col(
+                                                            [
+                                                                html.H2(
+                                                                    "Looking for Something?",
+                                                                    className="mb-3",
+                                                                ),
+                                                                html.A(
+                                                                    html.H4(
+                                                                        "Filter by name, country, tags and more!",
+                                                                        className="mb-3",
+                                                                    ),
+                                                                    href="/search/",
+                                                                    className="text-decoration-none",
+                                                                ),
+                                                            ],
+                                                            className="text-center",
+                                                        ),
+                                                    ),
+                                                    className="px-4",
+                                                ),
+                                                className="bg-light rounded-3 py-5 mb-4",
+                                            ),
+                                        ],
+                                        lg=12,
+                                    )
+                                ]
                             ),
                         ]
                         + footer()

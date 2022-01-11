@@ -33,14 +33,14 @@ p_to_use = 1
 level = [50, 75, 95]
 
 model_class_list = [
-    # RNaive,
-    # RAutoARIMA,
-    # RSimple,
-    # RHolt,
-    # RDamped,
-    # RTheta,
-    # RNaive2,
-    # RComb,
+    RNaive,
+    RAutoARIMA,
+    RSimple,
+    RHolt,
+    RDamped,
+    RTheta,
+    RNaive2,
+    RComb,
     LinearRegressionForecast,
     RNN_M4_benchmark,
 ]

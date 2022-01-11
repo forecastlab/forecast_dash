@@ -110,7 +110,9 @@ def component_git_version():
                                 [
                                     "Version ",
                                     html.A(
-                                        git_shorthash, href=github_patch_url, className="text-decoration-none"
+                                        git_shorthash,
+                                        href=github_patch_url,
+                                        className="text-decoration-none",
                                     ),
                                 ],
                                 className="card-title",
@@ -124,11 +126,13 @@ def component_git_version():
                                     html.A(
                                         "Development homepage",
                                         href=github_home_url,
-                                        className="text-decoration-none"
+                                        className="text-decoration-none",
                                     ),
                                     " on ",
                                     html.A(
-                                        "GitHub", href="https://github.com/", className="text-decoration-none"
+                                        "GitHub",
+                                        href="https://github.com/",
+                                        className="text-decoration-none",
                                     ),
                                 ]
                             ),

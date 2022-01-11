@@ -417,7 +417,7 @@ def component_news_4col():
                 html.A(
                     html.P(blog_post["attributes"]["title"], className="lead"),
                     href=f"/blog/post?title={blog_post['filename']}",
-                    className="text-decoration-none"
+                    className="text-decoration-none",
                 ),
             ]
         )
@@ -425,7 +425,13 @@ def component_news_4col():
     return dbc.Col(
         [html.H3("Latest News")]
         + body
-        + [html.A(html.P("View all posts"), href="/blog", className="text-decoration-none")],
+        + [
+            html.A(
+                html.P("View all posts"),
+                href="/blog",
+                className="text-decoration-none",
+            )
+        ],
         lg=4,
     )
 
@@ -556,7 +562,7 @@ class Index(BootstrapApp):
                                                     "View all US forecasts"
                                                 ),
                                                 href="/search/?name=&tags=US",
-                                                className="text-decoration-none"
+                                                className="text-decoration-none",
                                             ),
                                         ],
                                         lg=4,
@@ -656,7 +662,6 @@ class Index(BootstrapApp):
                                                                     "Looking for Something?",
                                                                     className="mb-3",
                                                                 ),
-
                                                                 html.A(
                                                                     html.H4(
                                                                         "Filter by name, country, tags and more!",

@@ -7,21 +7,12 @@ from multiprocessing import Pool, cpu_count
 
 import numpy as np
 import pandas as pd
-from models import (
-    RNaive,
-    RAutoARIMA,
-    RSimple,
-    RHolt,
-    RDamped,
-    RTheta,
-    RNaive2,
-    RComb,
-    LinearRegressionForecast,
-    RNN_M4_benchmark,
-)
+
 from sklearn.metrics import mean_absolute_error
 from sklearn.utils.validation import indexable, _num_samples
 from statsmodels.tsa.tsatools import freq_to_period
+
+import importlib
 
 # number of forecasts to make for series with different frequencies
 # monthly data (freq = 12): 18 forecasts
@@ -32,17 +23,23 @@ default_forecast_len = 8
 p_to_use = 1
 level = [50, 75, 95]
 
+model_str_list = [
+    "RNaive",
+    "RAutoARIMA",
+    "RSimple",
+    "RHolt",
+    "RDamped",
+    "RTheta",
+    "RNaive2",
+    "RComb",
+    "LinearRegressionForecast",
+    "RNN_M4_benchmark",
+]
+
+# import model classes
+models_module = __import__("models")
 model_class_list = [
-    RNaive,
-    RAutoARIMA,
-    RSimple,
-    RHolt,
-    RDamped,
-    RTheta,
-    RNaive2,
-    RComb,
-    LinearRegressionForecast,
-    RNN_M4_benchmark,
+    getattr(models_module, model_str) for model_str in model_str_list
 ]
 
 

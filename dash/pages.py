@@ -584,7 +584,7 @@ class Index(BootstrapApp):
                                                         },
                                                     )
                                                 ],
-                                                href=f"/series?{urlencode({'title': "US Unemployment"})}",
+                                                href=f"/series?{urlencode({'title': 'US Unemployment'})}",
                                             ),
                                         ],
                                         lg=8,

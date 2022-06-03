@@ -1,6 +1,6 @@
 ![Build Status](https://github.com/forecastlab/forecast_dash/actions/workflows/ci.yml/badge.svg)
 
-# USYD Forecasting Labadsasdasdasdas
+# USYD Forecasting Lab
 
 This is the repository for the [USYD Business Forecast Lab](https://business-forecast-lab.com).
 

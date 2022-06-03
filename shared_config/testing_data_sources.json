@@ -1,0 +1,68 @@
+[
+  {
+  "title": "GDP for Australia World Bank",
+  "source": "WorldBank",
+  "url": "https://api.worldbank.org/v2/country/AUS/indicator/NY.GDP.MKTP.KD",
+  "frequency": "A",
+  "tags": [
+    "World Bank Data",
+    "Economic",
+    "Testing"
+  ]
+  },
+    {
+  "title": "GDP for Latin America",
+  "source": "WorldBank",
+  "url": "https://api.worldbank.org/v2/country/LCN/indicator/NY.GDP.MKTP.KD",
+  "frequency": "A",
+  "tags": [
+    "World Bank Data",
+    "Economic",
+    "Testing"
+  ]
+  },
+    {
+  "title": "Unemployment for Least Developed Nations",
+  "source": "WorldBank",
+  "url": "https://api.worldbank.org/v2/country/LDC/indicator/SL.UEM.TOTL.ZS",
+  "frequency": "A",
+  "tags": [
+    "World Bank Data",
+    "Economic",
+    "Testing"
+  ]
+  },
+    {
+  "title": "Unemployment for Middle East and Africa",
+  "source": "WorldBank",
+  "url": "https://api.worldbank.org/v2/country/MEA/indicator/SL.UEM.TOTL.ZS",
+  "frequency": "A",
+  "tags": [
+    "World Bank Data",
+    "Economic",
+    "Testing"
+  ]
+  },
+    {
+  "title": "Inflation for Least Developed Nations",
+  "source": "WorldBank",
+  "url": "https://api.worldbank.org/v2/country/LDC/indicator/FP.CPI.TOTL.ZG",
+  "frequency": "A",
+  "tags": [
+    "World Bank Data",
+    "Economic",
+    "Testing"
+  ]
+  },
+    {
+  "title": "Inflation for Middle East and Africa",
+  "source": "WorldBank",
+  "url": "https://api.worldbank.org/v2/country/MEA/indicator/FP.CPI.TOTL.ZG",
+  "frequency": "A",
+  "tags": [
+    "World Bank Data",
+    "Economic",
+    "Testing"
+  ]
+  }
+]

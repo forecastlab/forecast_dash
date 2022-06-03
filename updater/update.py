@@ -2,15 +2,26 @@ from download import download_data
 from run_models import run_models
 import os
 import shutil
+import sys
 
 if __name__ == "__main__":
 
-    print("Downloading Data")
-    download_data("../shared_config/data_sources.json", "../data/downloads")
+    # // This is helpful for testing
+    devmode = True if sys.argv[1] == "devmode" else False
+    data_sources = (
+        "../shared_config/testing_data_sources.json"
+        if devmode
+        else "../shared_config/data_sources.json"
+    )
 
+    # This is helpful for testing //
+
+    print("Downloading Data")
+    download_data(data_sources, "../data/downloads")
+    # print(data_sources)
     print("Running Models")
     run_models(
-        "../shared_config/data_sources.json",
+        data_sources,
         "../data/downloads",
         "../data/forecasts",
     )

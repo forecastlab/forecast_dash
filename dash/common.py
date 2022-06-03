@@ -96,6 +96,10 @@ def component_git_version():
             datetime.strptime(git_time, "%Y-%m-%d %H:%M:%S %z"),
             when=datetime.now(tz=pytz.timezone("Australia/Sydney")),
         )
+    else:
+        natural_time = (
+            f"--- Dev Mode --- {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        )
 
     github_home_url = "https://github.com/forecastlab/forecast_dash/"
     github_patch_url = github_home_url + "commit/" + git_hash

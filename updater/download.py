@@ -11,6 +11,10 @@ import requests
 from requests.exceptions import HTTPError
 
 
+import wbgapi as wb  # for world bank data
+import re
+
+
 class DataSource(ABC):
     def __init__(
         self, download_path, title, url, frequency, tags, short_title=None
@@ -143,7 +147,38 @@ class Ons(DataSource):
         return df
 
 
+class WorldBankData(DataSource):
+    def download(self):
+        """
+        indicator: The series indicator. Full list is here = https://data.worldbank.org/indicator?tab=all
+        region: The region of interest.
+        """
+        url_cut = re.sub("https://api.worldbank.org/v2/", "", self.url)
+
+        indicator = url_cut.split("/")[3]
+        region = url_cut.split("/")[1].split(";")
+
+        df = wb.data.DataFrame(
+            indicator, region, numericTimeKeys=True, skipBlanks=True
+        )
+        df = df.transpose()
+        df.dropna(
+            how="all", inplace=True
+        )  # Sometimes the last date has not been entered yet.
+        df = pd.DataFrame(
+            df[region].values,
+            index=pd.to_datetime(df.index, format="%Y"),
+            columns=["value"],
+        )
+
+        return df
+
+
 def download_data(sources_path, download_path):
+
+    # Open a file with access mode 'a'
+    error_report = open("error_reporting.txt", "a")
+    error_report.write(f"\n\n{datetime.datetime.now()}")
 
     with open(sources_path) as data_sources_json_file:
 
@@ -155,6 +190,7 @@ def download_data(sources_path, download_path):
                 "AusMacroData": AusMacroData,
                 "Fred": Fred,
                 "Ons": Ons,
+                "WorldBank": WorldBankData,
             }
 
             source_class = all_source_classes[data_source_dict.pop("source")]
@@ -162,7 +198,15 @@ def download_data(sources_path, download_path):
 
             source = source_class(**data_source_dict)
 
-            source.fetch()
+            # add a try except to account for the ones it can't download.
+            try:
+                source.fetch()
+            except:
+                msg = f"Failed to access: {source.title}"
+                error_report.write("msg")
+                print(msg)
+    # Close the file
+    error_report.close()
 
 
 if __name__ == "__main__":

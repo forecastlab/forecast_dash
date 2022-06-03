@@ -50,7 +50,7 @@ def seasonality_test(original_ts, ppy):
     for i in range(2, ppy):
         s = s + (acf(original_ts, i) ** 2)
 
-    limit = 1.645 * (np.sqrt((1 + 2 * (s ** 2)) / len(original_ts)))
+    limit = 1.645 * (np.sqrt((1 + 2 * (s**2)) / len(original_ts)))
 
     return (abs(acf(original_ts, ppy))) > limit
 
@@ -169,7 +169,6 @@ class LinearRegressionForecast(ForecastModel):
     def fit(self, y):
         self.y = y
         self.y_tilde = y.copy()  # detrended and de-seasonalized copy of y
-
         # detrending
         self.a, self.b = detrend(self.y.values)
         for i in range(len(y)):
@@ -188,7 +187,6 @@ class LinearRegressionForecast(ForecastModel):
                     self.y, self.h, self.period
                 )
                 self.y_tilde = self.y_tilde - seasonal
-
         # create X data matrix as 3 lags of y
         X_train, y_train = split_into_train(self.y_tilde, lags=self.input_size)
 

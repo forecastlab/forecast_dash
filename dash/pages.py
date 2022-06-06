@@ -1016,6 +1016,10 @@ class Series(BootstrapApp):
 
             return CV_score_df
 
+        # Format to clean string so tables don't have very large numbers. anything larger than 4 characters can go to scientific notation. 
+        def cv_table_clean_notation(x):
+            return  "{:,.2f}".format(x) if len(str(int(x))) <= 4 else "{:,.2e}".format(x)
+
         @self.callback(Output("CV_scores_table", "children"), inputs)
         @location_ignore_null(inputs, location_id="url")
         @series_input(
@@ -1035,8 +1039,8 @@ class Series(BootstrapApp):
             rounded_dataframe = dataframe.copy()
             # Round and format so that trailing zeros still appear
             for col in rounded_dataframe.columns:
-                rounded_dataframe[col] = rounded_dataframe[col].map(
-                    "{:,.2f}".format
+                rounded_dataframe[col] = rounded_dataframe[col].apply(
+                    cv_table_clean_notation
                 )
             rounded_dataframe["Model"] = rounded_dataframe.index
             # Reorder columns for presentation

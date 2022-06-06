@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     print("Downloading Data")
     download_data(data_sources, "../data/downloads")
-    # print(data_sources)
+    print(data_sources)
     print("Running Models")
     run_models(
         data_sources,

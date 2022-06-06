@@ -202,8 +202,8 @@ def download_data(sources_path, download_path):
             try:
                 source.fetch()
             except:
-                msg = f"Failed to access: {source.title}"
-                error_report.write("msg")
+                msg = f"\n\tFailed to access: {source.title}"
+                error_report.write(msg)
                 print(msg)
     # Close the file
     error_report.close()

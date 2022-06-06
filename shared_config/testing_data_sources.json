@@ -1,68 +1,226 @@
 [
-  {
-  "title": "GDP for Australia World Bank",
-  "source": "WorldBank",
-  "url": "https://api.worldbank.org/v2/country/AUS/indicator/NY.GDP.MKTP.KD",
-  "frequency": "A",
-  "tags": [
-    "World Bank Data",
-    "Economic",
-    "Testing"
-  ]
-  },
-    {
-  "title": "GDP for Latin America",
-  "source": "WorldBank",
-  "url": "https://api.worldbank.org/v2/country/LCN/indicator/NY.GDP.MKTP.KD",
-  "frequency": "A",
-  "tags": [
-    "World Bank Data",
-    "Economic",
-    "Testing"
-  ]
-  },
-    {
-  "title": "Unemployment for Least Developed Nations",
-  "source": "WorldBank",
-  "url": "https://api.worldbank.org/v2/country/LDC/indicator/SL.UEM.TOTL.ZS",
-  "frequency": "A",
-  "tags": [
-    "World Bank Data",
-    "Economic",
-    "Testing"
-  ]
-  },
-    {
-  "title": "Unemployment for Middle East and Africa",
-  "source": "WorldBank",
-  "url": "https://api.worldbank.org/v2/country/MEA/indicator/SL.UEM.TOTL.ZS",
-  "frequency": "A",
-  "tags": [
-    "World Bank Data",
-    "Economic",
-    "Testing"
-  ]
-  },
-    {
-  "title": "Inflation for Least Developed Nations",
-  "source": "WorldBank",
-  "url": "https://api.worldbank.org/v2/country/LDC/indicator/FP.CPI.TOTL.ZG",
-  "frequency": "A",
-  "tags": [
-    "World Bank Data",
-    "Economic",
-    "Testing"
-  ]
-  },
-    {
-  "title": "Inflation for Middle East and Africa",
-  "source": "WorldBank",
-  "url": "https://api.worldbank.org/v2/country/MEA/indicator/FP.CPI.TOTL.ZG",
-  "frequency": "A",
-  "tags": [
-    "World Bank Data",
-    "Economic",
-    "Testing"
-  ]
-  }
+ {
+   "title": "GDP for Morocco (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/MAR/indicator/NY.GDP.MKTP.KD",
+   "frequency": "AS",
+   "tags": ["GDP","Morocco", "Economic","Africa" ]
+ },
+ {
+   "title": "GDP for Algeria (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/DZA/indicator/NY.GDP.MKTP.KD",
+   "frequency": "AS",
+   "tags": ["GDP","Algeria", "Economic","Africa" ]
+ },
+ {
+   "title": "GDP for Libya (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/LBY/indicator/NY.GDP.MKTP.KD",
+   "frequency": "AS",
+   "tags": ["GDP","Libya", "Economic","Africa" ]
+ },
+ {
+   "title": "GDP for Egypt (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/EGY/indicator/NY.GDP.MKTP.KD",
+   "frequency": "AS",
+   "tags": ["GDP","Egypt", "Economic","Africa" ]
+ },
+ {
+   "title": "GDP for South Africa (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/ZAF/indicator/NY.GDP.MKTP.KD",
+   "frequency": "AS",
+   "tags": ["GDP","Africa", "Economic","Africa" ]
+ },
+ {
+   "title": "GDP for Zambia (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/ZMB/indicator/NY.GDP.MKTP.KD",
+   "frequency": "AS",
+   "tags": ["GDP","Zambia", "Economic","Africa" ]
+ },
+ {
+   "title": "GDP for Tanzania (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/TZA/indicator/NY.GDP.MKTP.KD",
+   "frequency": "AS",
+   "tags": ["GDP","Tanzania", "Economic","Africa" ]
+ },
+ {
+   "title": "GDP for Kenya (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/KEN/indicator/NY.GDP.MKTP.KD",
+   "frequency": "AS",
+   "tags": ["GDP","Kenya", "Economic","Africa" ]
+ },
+ {
+   "title": "GDP for Madagascar (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/MDG/indicator/NY.GDP.MKTP.KD",
+   "frequency": "AS",
+   "tags": ["GDP","Madagascar", "Economic","Africa" ]
+ },
+ {
+   "title": "GDP for Brazil (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/BRA/indicator/NY.GDP.MKTP.KD",
+   "frequency": "AS",
+   "tags": ["GDP","Brazil", "Economic","South America" ]
+ },
+ {
+   "title": "GDP for Argentina (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/ARG/indicator/NY.GDP.MKTP.KD",
+   "frequency": "AS",
+   "tags": ["GDP","Argentina", "Economic","South America" ]
+ },
+ {
+   "title": "GDP for Mexico (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/MEX/indicator/NY.GDP.MKTP.KD",
+   "frequency": "AS",
+   "tags": ["GDP","Mexico", "Economic","North America" ]
+ },
+ {
+   "title": "GDP for Cuba (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/CUB/indicator/NY.GDP.MKTP.KD",
+   "frequency": "AS",
+   "tags": ["GDP","Cuba", "Economic","North America" ]
+ },
+ {
+   "title": "GDP for Indonesia (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/IDN/indicator/NY.GDP.MKTP.KD",
+   "frequency": "AS",
+   "tags": ["GDP","Indonesia", "Economic","Pacific" ]
+ },
+ {
+   "title": "GDP for Vietnam (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/VNM/indicator/NY.GDP.MKTP.KD",
+   "frequency": "AS",
+   "tags": ["GDP","Vietnam", "Economic","Pacific" ]
+ },
+ {
+   "title": "GDP for Thailand (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/THA/indicator/NY.GDP.MKTP.KD",
+   "frequency": "AS",
+   "tags": ["GDP","Thailand", "Economic","Pacific" ]
+ },
+ {
+   "title": "GDP for Malaysia (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/MYS/indicator/NY.GDP.MKTP.KD",
+   "frequency": "AS",
+   "tags": ["GDP","Malaysia", "Economic","Pacific" ]
+ },
+ {
+   "title": "Inflation for Morocco (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/MAR/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Morocco", "Inflation", "Economic","Africa" ]
+ },
+ {
+   "title": "Inflation for Algeria (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/DZA/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Algeria", "Inflation", "Economic","Africa" ]
+ },
+ {
+   "title": "Inflation for Libya (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/LBY/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Libya", "Inflation", "Economic","Africa" ]
+ },
+ {
+   "title": "Inflation for Egypt (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/EGY/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Egypt", "Inflation", "Economic","Africa" ]
+ },
+ {
+   "title": "Inflation for South Africa (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/ZAF/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Africa", "Inflation", "Economic","Africa" ]
+ },
+ {
+   "title": "Inflation for Zambia (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/ZMB/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Zambia", "Inflation", "Economic","Africa" ]
+ },
+ {
+   "title": "Inflation for Tanzania (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/TZA/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Tanzania", "Inflation", "Economic","Africa" ]
+ },
+ {
+   "title": "Inflation for Kenya (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/KEN/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Kenya", "Inflation", "Economic","Africa" ]
+ },
+ {
+   "title": "Inflation for Madagascar (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/MDG/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Madagascar", "Inflation", "Economic","Africa" ]
+ },
+ {
+   "title": "Inflation for Brazil (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/BRA/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Brazil", "Inflation", "Economic","South America" ]
+ },
+ {
+   "title": "Inflation for Mexico (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/MEX/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Mexico", "Inflation", "Economic","North America" ]
+ },
+ {
+   "title": "Inflation for Indonesia (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/IDN/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Indonesia", "Inflation", "Economic","Pacific" ]
+ },
+ {
+   "title": "Inflation for Vietnam (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/VNM/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Vietnam", "Inflation", "Economic","Pacific" ]
+ },
+ {
+   "title": "Inflation for Thailand (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/THA/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Thailand", "Inflation", "Economic","Pacific" ]
+ },
+ {
+   "title": "Inflation for Malaysia (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/MYS/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Malaysia", "Inflation", "Economic","Pacific" ]
+ }
 ]

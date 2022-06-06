@@ -1016,9 +1016,13 @@ class Series(BootstrapApp):
 
             return CV_score_df
 
-        # Format to clean string so tables don't have very large numbers. anything larger than 4 characters can go to scientific notation. 
+        # Format to clean string so tables don't have very large numbers. anything larger than 4 characters can go to scientific notation.
         def cv_table_clean_notation(x):
-            return  "{:,.2f}".format(x) if len(str(int(x))) <= 4 else "{:,.2e}".format(x)
+            return (
+                "{:,.2f}".format(x)
+                if len(str(int(x))) <= 4
+                else "{:,.2e}".format(x)
+            )
 
         @self.callback(Output("CV_scores_table", "children"), inputs)
         @location_ignore_null(inputs, location_id="url")

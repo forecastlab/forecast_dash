@@ -50,7 +50,7 @@ def seasonality_test(original_ts, ppy):
     for i in range(2, ppy):
         s = s + (acf(original_ts, i) ** 2)
 
-    limit = 1.645 * (np.sqrt((1 + 2 * (s ** 2)) / len(original_ts)))
+    limit = 1.645 * (np.sqrt((1 + 2 * (s**2)) / len(original_ts)))
 
     return (abs(acf(original_ts, ppy))) > limit
 
@@ -173,7 +173,9 @@ class LinearRegressionForecast(ForecastModel):
         # detrending
         self.a, self.b = detrend(self.y.values)
         for i in range(len(y)):
-            self.y_tilde.iloc[i] = self.y_tilde.iloc[i] - ((self.a * i) + self.b)
+            self.y_tilde.iloc[i] = self.y_tilde.iloc[i] - (
+                (self.a * i) + self.b
+            )
 
         self.seasonal_bool = False
         if self.period is not None:
@@ -333,7 +335,9 @@ class RNN_M4_benchmark(ForecastModel):
         self.a = a
         self.b = b
         for i in range(len(y)):
-            self.y_tilde.iloc[i] = self.y_tilde.iloc[i] - ((self.a * i) + self.b)
+            self.y_tilde.iloc[i] = self.y_tilde.iloc[i] - (
+                (self.a * i) + self.b
+            )
 
         self.seasonal_bool = False
         if self.period is not None:

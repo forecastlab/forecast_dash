@@ -24,7 +24,6 @@ class DataSource(ABC):
 
     def fetch(self):
 
-
         try:
             series_df = self.download()
             hashsum = sha256(series_df.to_csv().encode()).hexdigest()
@@ -44,7 +43,6 @@ class DataSource(ABC):
             state = "FAILED"
         finally:
             print(f"{self.title} - {state}")
-
 
     @abstractmethod
     def download(self):

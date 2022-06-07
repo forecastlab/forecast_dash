@@ -23,21 +23,28 @@ class DataSource(ABC):
         self.tags = tags
 
     def fetch(self):
-        print(self.title)
-        series_df = self.download()
 
-        hashsum = sha256(series_df.to_csv().encode()).hexdigest()
-        # print("  -", hashsum)
 
-        data = {
-            "hashsum": hashsum,
-            "series_df": series_df,
-            "downloaded_at": datetime.datetime.now(),
-        }
+        try:
+            series_df = self.download()
+            hashsum = sha256(series_df.to_csv().encode()).hexdigest()
+            # print("  -", hashsum)
 
-        f = open(f"{self.download_path}/{self.title}.pkl", "wb")
-        pickle.dump(data, f)
-        f.close()
+            data = {
+                "hashsum": hashsum,
+                "series_df": series_df,
+                "downloaded_at": datetime.datetime.now(),
+            }
+
+            f = open(f"{self.download_path}/{self.title}.pkl", "wb")
+            pickle.dump(data, f)
+            f.close()
+            state = "OK"
+        except:
+            state = "FAILED"
+        finally:
+            print(f"{self.title} - {state}")
+
 
     @abstractmethod
     def download(self):

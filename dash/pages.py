@@ -476,7 +476,7 @@ class Index(BootstrapApp):
         series_list = json.load(data_sources_json_file)
         data_sources_json_file.close()
 
-        feature_series_title = "Australian GDP Growth"
+        feature_series_title = "Australian Inflation (CPI)"
 
         def layout_func():
 
@@ -1166,11 +1166,16 @@ class Leaderboard(BootstrapApp):
         # grab the CV scoring function choices to populate dash dcc.Dropdown menu
         CV_scoring_functions = []
         for series_dict in series_list:
-            forecast_series = get_forecast_data(series_dict["title"])
-            for model in forecast_series["all_forecasts"].keys():
-                CV_scoring_functions += list(
-                    forecast_series["all_forecasts"][model]["cv_score"].keys()
-                )
+            try:
+                forecast_series = get_forecast_data(series_dict["title"])
+
+                for model in forecast_series["all_forecasts"].keys():
+                    CV_scoring_functions += list(
+                        forecast_series["all_forecasts"][model]["cv_score"].keys()
+                    )
+            except:
+                pass
+
         CV_scoring_functions = list(set(CV_scoring_functions))
         all_CV_scoring_function_options = dict(
             zip(CV_scoring_functions, CV_scoring_functions)

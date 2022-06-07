@@ -148,12 +148,18 @@ def select_best_model(data_dict, CV_score_function="MSE"):
     # Extract ( model_name, cv_score ) for each model.
     all_models = []
     all_cv_scores = []
-    for model_name, forecast_df in data_dict["all_forecasts"].items():
-        all_models.append(model_name)
-        if type(forecast_df["cv_score"]) == dict:
-            all_cv_scores.append(forecast_df["cv_score"][CV_score_function])
-        else:
-            all_cv_scores.append(forecast_df["cv_score"])
+    for model_name, forecast_dict in data_dict["all_forecasts"].items():
+        if forecast_dict:
+            all_models.append(model_name)
+            if (
+                forecast_dict["state"] == "OK"
+                and type(forecast_dict["cv_score"]) == dict
+            ):
+                all_cv_scores.append(
+                    forecast_dict["cv_score"][CV_score_function]
+                )
+            else:
+                all_cv_scores.append(forecast_dict["cv_score"])
 
     # Select the best model.
     model_name = all_models[np.argmin(all_cv_scores)]
@@ -834,9 +840,7 @@ class Series(BootstrapApp):
         def update_model_selector(series_data_dict):
 
             best_model_name = select_best_model(series_data_dict)
-
-            stats = get_forecast_data("statistics")
-            all_methods = sorted(stats["models_used"])
+            all_methods = list(series_data_dict["all_forecasts"].keys())
 
             all_methods_dict = dict(zip(all_methods, all_methods))
 
@@ -1171,7 +1175,9 @@ class Leaderboard(BootstrapApp):
 
                 for model in forecast_series["all_forecasts"].keys():
                     CV_scoring_functions += list(
-                        forecast_series["all_forecasts"][model]["cv_score"].keys()
+                        forecast_series["all_forecasts"][model][
+                            "cv_score"
+                        ].keys()
                     )
             except:
                 pass

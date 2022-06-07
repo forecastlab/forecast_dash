@@ -255,38 +255,42 @@ def check_cache(download_pickle, cache_pickle):
 
 def run_job(job_dict, cv, model_params):
 
-    print(f"{job_dict['title']} - {job_dict['model_cls']}")
+    try:
+        series_df = job_dict["downloaded_dict"]["series_df"]
 
-    series_df = job_dict["downloaded_dict"]["series_df"]
+        y = series_df["value"]
 
-    y = series_df["value"]
+        model = job_dict["model_cls"](**model_params)
 
-    model = job_dict["model_cls"](**model_params)
+        cv_score = cross_val_score(model, y, cv)
 
-    cv_score = cross_val_score(model, y, cv)
+        model.fit(y)
 
-    model.fit(y)
+        forecast_dict = model.predict_withci()
 
-    forecast_dict = model.predict_withci()
+        first_value = series_df["value"].iloc[-1]
+        first_time = series_df.index[-1]
 
-    first_value = series_df["value"].iloc[-1]
-    first_time = series_df.index[-1]
+        forecast_df = forecast_to_df(
+            job_dict["data_source_dict"],
+            forecast_dict,
+            first_value,
+            first_time,
+            model_params["h"],
+            levels=level,
+        )
 
-    forecast_df = forecast_to_df(
-        job_dict["data_source_dict"],
-        forecast_dict,
-        first_value,
-        first_time,
-        model_params["h"],
-        levels=level,
-    )
+        result = {
+            "state": "OK",
+            "model_description": model.description(),
+            "cv_score": cv_score,
+            "forecast_df": forecast_df,
+        }
 
-    result = {
-        "state": "OK",
-        "model_description": model.description(),
-        "cv_score": cv_score,
-        "forecast_df": forecast_df,
-    }
+    except:
+        result = {"state": "FAIL"}
+
+    print(f"{job_dict['title']} - {job_dict['model_cls']} - {result['state']}")
 
     return job_dict, result
 
@@ -369,7 +373,11 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                     cv_instance_list.append(series_cv)
                     # Add model parameters dictionary to list
                     model_params_list.append(
-                        {"h": series_h, "level": level, "period": series_period}
+                        {
+                            "h": series_h,
+                            "level": level,
+                            "period": series_period,
+                        }
                     )
 
                     # Temporarily set result to empty
@@ -397,12 +405,13 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
 
     # Insert results of jobs into dictionary
     for result in results:
+        model_name = result[0]["model_cls"].name
+        series_title = result[0]["title"]
+
         if result[1]["state"] == "OK":
-            series_title = result[0]["title"]
-
-            model_name = result[0]["model_cls"].name
-
             series_dict[series_title]["all_forecasts"][model_name] = result[1]
+        else:
+            series_dict[series_title]["all_forecasts"].pop(model_name, None)
 
     # Write all series pickles to disk
     for series_title, series_data in series_dict.items():

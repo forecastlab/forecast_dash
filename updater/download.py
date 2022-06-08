@@ -181,10 +181,6 @@ class WorldBankData(DataSource):
 
 def download_data(sources_path, download_path):
 
-    # Open a file with access mode 'a'
-    error_report = open("error_reporting.txt", "a")
-    error_report.write(f"\n\n{datetime.datetime.now()}")
-
     with open(sources_path) as data_sources_json_file:
 
         data_sources_list = json.load(data_sources_json_file)
@@ -203,15 +199,8 @@ def download_data(sources_path, download_path):
 
             source = source_class(**data_source_dict)
 
-            # add a try except to account for the ones it can't download.
-            try:
-                source.fetch()
-            except:
-                msg = f"\n\tFailed to access: {source.title}"
-                error_report.write(msg)
-                print(msg)
-    # Close the file
-    error_report.close()
+            source.fetch()
+
 
 
 if __name__ == "__main__":

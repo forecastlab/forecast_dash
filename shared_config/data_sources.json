@@ -100,7 +100,7 @@
     ]
   },
   {
-    "title": "US Personal Consumption Expenditures_ Chain-type Price Index (% Change, 1 Year)",
+    "title": "US Personal Consumption Expenditures: Chain-type Price Index (% Change, 1 Year)",
     "short_title": "US Inflation",
     "source": "Fred",
     "url": "https://api.stlouisfed.org/fred/series/observations?series_id=PCEPI&units=pc1",

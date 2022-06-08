@@ -98,7 +98,7 @@ def component_git_version():
         )
     else:
         natural_time = (
-            f"--- Dev Mode --- {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+            "Error Loading Timestamp"
         )
 
     github_home_url = "https://github.com/forecastlab/forecast_dash/"

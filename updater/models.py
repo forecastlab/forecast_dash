@@ -169,7 +169,6 @@ class LinearRegressionForecast(ForecastModel):
     def fit(self, y):
         self.y = y
         self.y_tilde = y.copy()  # detrended and de-seasonalized copy of y
-
         # detrending
         self.a, self.b = detrend(self.y.values)
         for i in range(len(y)):
@@ -190,7 +189,6 @@ class LinearRegressionForecast(ForecastModel):
                     self.y, self.h, self.period
                 )
                 self.y_tilde = self.y_tilde - seasonal
-
         # create X data matrix as 3 lags of y
         X_train, y_train = split_into_train(self.y_tilde, lags=self.input_size)
 

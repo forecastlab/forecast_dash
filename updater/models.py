@@ -172,7 +172,9 @@ class LinearRegressionForecast(ForecastModel):
         # detrending
         self.a, self.b = detrend(self.y.values)
         for i in range(len(y)):
-            self.y_tilde[i] = self.y_tilde[i] - ((self.a * i) + self.b)
+            self.y_tilde.iloc[i] = self.y_tilde.iloc[i] - (
+                (self.a * i) + self.b
+            )
 
         self.seasonal_bool = False
         if self.period is not None:
@@ -331,7 +333,9 @@ class RNN_M4_benchmark(ForecastModel):
         self.a = a
         self.b = b
         for i in range(len(y)):
-            self.y_tilde[i] = self.y_tilde[i] - ((self.a * i) + self.b)
+            self.y_tilde.iloc[i] = self.y_tilde.iloc[i] - (
+                (self.a * i) + self.b
+            )
 
         self.seasonal_bool = False
         if self.period is not None:

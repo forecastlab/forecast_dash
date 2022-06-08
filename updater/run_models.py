@@ -256,37 +256,42 @@ def check_cache(download_pickle, cache_pickle):
 
 def run_job(job_dict, cv, model_params):
 
-    print(f"{job_dict['title']} - {job_dict['model_cls']}")
+    try:
+        series_df = job_dict["downloaded_dict"]["series_df"]
 
-    series_df = job_dict["downloaded_dict"]["series_df"]
+        y = series_df["value"]
 
-    y = series_df["value"]
+        model = job_dict["model_cls"](**model_params)
 
-    model = job_dict["model_cls"](**model_params)
+        cv_score = cross_val_score(model, y, cv)
 
-    cv_score = cross_val_score(model, y, cv)
+        model.fit(y)
 
-    model.fit(y)
+        forecast_dict = model.predict_withci()
 
-    forecast_dict = model.predict_withci()
+        first_value = series_df["value"].iloc[-1]
+        first_time = series_df.index[-1]
 
-    first_value = series_df["value"].iloc[-1]
-    first_time = series_df.index[-1]
+        forecast_df = forecast_to_df(
+            job_dict["data_source_dict"],
+            forecast_dict,
+            first_value,
+            first_time,
+            model_params["h"],
+            levels=level,
+        )
 
-    forecast_df = forecast_to_df(
-        job_dict["data_source_dict"],
-        forecast_dict,
-        first_value,
-        first_time,
-        model_params["h"],
-        levels=level,
-    )
+        result = {
+            "state": "OK",
+            "model_description": model.description(),
+            "cv_score": cv_score,
+            "forecast_df": forecast_df,
+        }
 
-    result = {
-        "model_description": model.description(),
-        "cv_score": cv_score,
-        "forecast_df": forecast_df,
-    }
+    except:
+        result = {"state": "FAIL"}
+
+    print(f"{job_dict['title']} - {job_dict['model_cls']} - {result['state']}")
 
     return job_dict, result
 
@@ -317,71 +322,78 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
 
         # print(data_source_dict["title"])
 
-        downloaded_dict, cache_dict = check_cache(
-            f"{download_dir_path}/{data_source_dict['title']}.pkl",
-            f"{forecast_dir_path}/{data_source_dict['title']}.pkl",
-        )
+        try:
+            downloaded_dict, cache_dict = check_cache(
+                f"{download_dir_path}/{data_source_dict['title']}.pkl",
+                f"{forecast_dir_path}/{data_source_dict['title']}.pkl",
+            )
 
-        # Read local pickle that we created earlier
-        series_df = downloaded_dict["series_df"]
+            # Read local pickle that we created earlier
+            series_df = downloaded_dict["series_df"]
 
-        # Hack to align to the end of the quarter
-        if data_source_dict["frequency"] == "Q":
-            offset = pd.offsets.QuarterEnd()
-            series_df.index = series_df.index + offset
+            # Hack to align to the end of the quarter
+            if data_source_dict["frequency"] == "Q":
+                offset = pd.offsets.QuarterEnd()
+                series_df.index = series_df.index + offset
 
-        all_forecasts = {}
+            all_forecasts = {}
 
-        # Find period of the series and define the TimeSeriesRollingSplit instance
-        series_freq = getattr(series_df.index, "inferred_freq", None)
-        if series_freq is not None:
-            series_period = freq_to_period(series_freq)
-            series_h = forecast_len_map[series_period]
-        else:
-            series_period = None
-            series_h = default_forecast_len
-
-        series_cv = TimeSeriesRollingSplit(
-            h=series_h, p_to_use=p_to_use
-        )  # seperate TimeSeriesRollingSplit instance for each series to account for differences in frequencies
-
-        for model_class in model_class_list:
-
-            model_name = model_class.name
-
-            # Use cached results
-            if cache_dict and model_name in cache_dict["all_forecasts"]:
-                cached_forecasts = cache_dict["all_forecasts"]
-                result = cached_forecasts[model_name]
-
+            # Find period of the series and define the TimeSeriesRollingSplit instance
+            series_freq = getattr(series_df.index, "inferred_freq", None)
+            if series_freq is not None:
+                series_period = freq_to_period(series_freq)
+                series_h = forecast_len_map[series_period]
             else:
-                # Add to job list
-                job_list.append(
-                    {
-                        "title": data_source_dict["title"],
-                        "model_cls": model_class,
-                        "data_source_dict": data_source_dict,
-                        "downloaded_dict": downloaded_dict,
-                    }
-                )
-                # Add CV instance to list
-                cv_instance_list.append(series_cv)
-                # Add model parameters dictionary to list
-                model_params_list.append(
-                    {"h": series_h, "level": level, "period": series_period}
-                )
+                series_period = None
+                series_h = default_forecast_len
 
-                # Temporarily set result to empty
-                result = {}
+            series_cv = TimeSeriesRollingSplit(
+                h=series_h, p_to_use=p_to_use
+            )  # seperate TimeSeriesRollingSplit instance for each series to account for differences in frequencies
 
-            all_forecasts[model_name] = result
+            for model_class in model_class_list:
 
-        series_dict[data_source_dict["title"]] = {
-            "data_source_dict": data_source_dict,
-            "downloaded_dict": downloaded_dict,
-            "forecasted_at": datetime.datetime.now(),
-            "all_forecasts": all_forecasts,
-        }
+                model_name = model_class.name
+
+                # Use cached results
+                if cache_dict and model_name in cache_dict["all_forecasts"]:
+                    cached_forecasts = cache_dict["all_forecasts"]
+                    result = cached_forecasts[model_name]
+
+                else:
+                    # Add to job list
+                    job_list.append(
+                        {
+                            "title": data_source_dict["title"],
+                            "model_cls": model_class,
+                            "data_source_dict": data_source_dict,
+                            "downloaded_dict": downloaded_dict,
+                        }
+                    )
+                    # Add CV instance to list
+                    cv_instance_list.append(series_cv)
+                    # Add model parameters dictionary to list
+                    model_params_list.append(
+                        {
+                            "h": series_h,
+                            "level": level,
+                            "period": series_period,
+                        }
+                    )
+
+                    # Temporarily set result to empty
+                    result = {}
+
+                all_forecasts[model_name] = result
+
+            series_dict[data_source_dict["title"]] = {
+                "data_source_dict": data_source_dict,
+                "downloaded_dict": downloaded_dict,
+                "forecasted_at": datetime.datetime.now(),
+                "all_forecasts": all_forecasts,
+            }
+        except:
+            print(f"FAILED to setup jobs for: '{data_source_dict['title']}'")
 
     pool = Pool(cpu_count())
     results = pool.starmap(
@@ -394,12 +406,13 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
 
     # Insert results of jobs into dictionary
     for result in results:
-
+        model_name = result[0]["model_cls"].name
         series_title = result[0]["title"]
 
-        model_name = result[0]["model_cls"].name
-
-        series_dict[series_title]["all_forecasts"][model_name] = result[1]
+        if result[1]["state"] == "OK":
+            series_dict[series_title]["all_forecasts"][model_name] = result[1]
+        else:
+            series_dict[series_title]["all_forecasts"].pop(model_name, None)
 
     # Write all series pickles to disk
     for series_title, series_data in series_dict.items():

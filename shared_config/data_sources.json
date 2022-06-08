@@ -217,119 +217,119 @@
    {
    "title": "GDP for Morocco (World Bank)",
    "source": "WorldBank",
-   "url": "https://api.worldbank.org/v2/country/MAR/indicator/NY.GDP.MKTP.KD",
+   "url": "https://api.worldbank.org/v2/country/MAR/indicator/NY.GDP.MKTP.KD.ZG",
    "frequency": "AS",
    "tags": ["GDP","Morocco", "Economic","Africa" ]
  },
  {
    "title": "GDP for Algeria (World Bank)",
    "source": "WorldBank",
-   "url": "https://api.worldbank.org/v2/country/DZA/indicator/NY.GDP.MKTP.KD",
+   "url": "https://api.worldbank.org/v2/country/DZA/indicator/NY.GDP.MKTP.KD.ZG",
    "frequency": "AS",
    "tags": ["GDP","Algeria", "Economic","Africa" ]
  },
  {
    "title": "GDP for Libya (World Bank)",
    "source": "WorldBank",
-   "url": "https://api.worldbank.org/v2/country/LBY/indicator/NY.GDP.MKTP.KD",
+   "url": "https://api.worldbank.org/v2/country/LBY/indicator/NY.GDP.MKTP.KD.ZG",
    "frequency": "AS",
    "tags": ["GDP","Libya", "Economic","Africa" ]
  },
  {
    "title": "GDP for Egypt (World Bank)",
    "source": "WorldBank",
-   "url": "https://api.worldbank.org/v2/country/EGY/indicator/NY.GDP.MKTP.KD",
+   "url": "https://api.worldbank.org/v2/country/EGY/indicator/NY.GDP.MKTP.KD.ZG",
    "frequency": "AS",
    "tags": ["GDP","Egypt", "Economic","Africa" ]
  },
  {
    "title": "GDP for South Africa (World Bank)",
    "source": "WorldBank",
-   "url": "https://api.worldbank.org/v2/country/ZAF/indicator/NY.GDP.MKTP.KD",
+   "url": "https://api.worldbank.org/v2/country/ZAF/indicator/NY.GDP.MKTP.KD.ZG",
    "frequency": "AS",
    "tags": ["GDP","Africa", "Economic","Africa" ]
  },
  {
    "title": "GDP for Zambia (World Bank)",
    "source": "WorldBank",
-   "url": "https://api.worldbank.org/v2/country/ZMB/indicator/NY.GDP.MKTP.KD",
+   "url": "https://api.worldbank.org/v2/country/ZMB/indicator/NY.GDP.MKTP.KD.ZG",
    "frequency": "AS",
    "tags": ["GDP","Zambia", "Economic","Africa" ]
  },
  {
    "title": "GDP for Tanzania (World Bank)",
    "source": "WorldBank",
-   "url": "https://api.worldbank.org/v2/country/TZA/indicator/NY.GDP.MKTP.KD",
+   "url": "https://api.worldbank.org/v2/country/TZA/indicator/NY.GDP.MKTP.KD.ZG",
    "frequency": "AS",
    "tags": ["GDP","Tanzania", "Economic","Africa" ]
  },
  {
    "title": "GDP for Kenya (World Bank)",
    "source": "WorldBank",
-   "url": "https://api.worldbank.org/v2/country/KEN/indicator/NY.GDP.MKTP.KD",
+   "url": "https://api.worldbank.org/v2/country/KEN/indicator/NY.GDP.MKTP.KD.ZG",
    "frequency": "AS",
    "tags": ["GDP","Kenya", "Economic","Africa" ]
  },
  {
    "title": "GDP for Madagascar (World Bank)",
    "source": "WorldBank",
-   "url": "https://api.worldbank.org/v2/country/MDG/indicator/NY.GDP.MKTP.KD",
+   "url": "https://api.worldbank.org/v2/country/MDG/indicator/NY.GDP.MKTP.KD.ZG",
    "frequency": "AS",
    "tags": ["GDP","Madagascar", "Economic","Africa" ]
  },
  {
    "title": "GDP for Brazil (World Bank)",
    "source": "WorldBank",
-   "url": "https://api.worldbank.org/v2/country/BRA/indicator/NY.GDP.MKTP.KD",
+   "url": "https://api.worldbank.org/v2/country/BRA/indicator/NY.GDP.MKTP.KD.ZG",
    "frequency": "AS",
    "tags": ["GDP","Brazil", "Economic","South America" ]
  },
  {
    "title": "GDP for Argentina (World Bank)",
    "source": "WorldBank",
-   "url": "https://api.worldbank.org/v2/country/ARG/indicator/NY.GDP.MKTP.KD",
+   "url": "https://api.worldbank.org/v2/country/ARG/indicator/NY.GDP.MKTP.KD.ZG",
    "frequency": "AS",
    "tags": ["GDP","Argentina", "Economic","South America" ]
  },
  {
    "title": "GDP for Mexico (World Bank)",
    "source": "WorldBank",
-   "url": "https://api.worldbank.org/v2/country/MEX/indicator/NY.GDP.MKTP.KD",
+   "url": "https://api.worldbank.org/v2/country/MEX/indicator/NY.GDP.MKTP.KD.ZG",
    "frequency": "AS",
    "tags": ["GDP","Mexico", "Economic","North America" ]
  },
  {
    "title": "GDP for Cuba (World Bank)",
    "source": "WorldBank",
-   "url": "https://api.worldbank.org/v2/country/CUB/indicator/NY.GDP.MKTP.KD",
+   "url": "https://api.worldbank.org/v2/country/CUB/indicator/NY.GDP.MKTP.KD.ZG",
    "frequency": "AS",
    "tags": ["GDP","Cuba", "Economic","North America" ]
  },
  {
    "title": "GDP for Indonesia (World Bank)",
    "source": "WorldBank",
-   "url": "https://api.worldbank.org/v2/country/IDN/indicator/NY.GDP.MKTP.KD",
+   "url": "https://api.worldbank.org/v2/country/IDN/indicator/NY.GDP.MKTP.KD.ZG",
    "frequency": "AS",
    "tags": ["GDP","Indonesia", "Economic","Pacific" ]
  },
  {
    "title": "GDP for Vietnam (World Bank)",
    "source": "WorldBank",
-   "url": "https://api.worldbank.org/v2/country/VNM/indicator/NY.GDP.MKTP.KD",
+   "url": "https://api.worldbank.org/v2/country/VNM/indicator/NY.GDP.MKTP.KD.ZG",
    "frequency": "AS",
    "tags": ["GDP","Vietnam", "Economic","Pacific" ]
  },
  {
    "title": "GDP for Thailand (World Bank)",
    "source": "WorldBank",
-   "url": "https://api.worldbank.org/v2/country/THA/indicator/NY.GDP.MKTP.KD",
+   "url": "https://api.worldbank.org/v2/country/THA/indicator/NY.GDP.MKTP.KD.ZG",
    "frequency": "AS",
    "tags": ["GDP","Thailand", "Economic","Pacific" ]
  },
  {
    "title": "GDP for Malaysia (World Bank)",
    "source": "WorldBank",
-   "url": "https://api.worldbank.org/v2/country/MYS/indicator/NY.GDP.MKTP.KD",
+   "url": "https://api.worldbank.org/v2/country/MYS/indicator/NY.GDP.MKTP.KD.ZG",
    "frequency": "AS",
    "tags": ["GDP","Malaysia", "Economic","Pacific" ]
  },

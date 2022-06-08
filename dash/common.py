@@ -97,9 +97,7 @@ def component_git_version():
             when=datetime.now(tz=pytz.timezone("Australia/Sydney")),
         )
     else:
-        natural_time = (
-            "Error Loading Timestamp"
-        )
+        natural_time = "Error Loading Timestamp"
 
     github_home_url = "https://github.com/forecastlab/forecast_dash/"
     github_patch_url = github_home_url + "commit/" + git_hash

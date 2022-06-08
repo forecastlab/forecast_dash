@@ -202,6 +202,5 @@ def download_data(sources_path, download_path):
             source.fetch()
 
 
-
 if __name__ == "__main__":
     download_data("../shared_config/data_sources.json", "../data/downloads")

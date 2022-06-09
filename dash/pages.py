@@ -1041,6 +1041,9 @@ class Series(BootstrapApp):
                 "MSE": "Mean Squared Error of the point forecasts",
                 "MASE": "Mean Absolute Scaled Error of the point forecasts",
                 "95% Winkler": "Winkler score for the 95% prediction interval",
+                "wQL50": "The Weighted Quantile Loss metric for the 50% quantile",
+                "WAPE": "Weighted Absolute Percentage Error of the point forecasts",
+                "SMAPE": "Symmetric Mean Absolute Percentage Error of the point forecasts",
             }
 
             dataframe = create_CV_scores_table(series_data_dict)

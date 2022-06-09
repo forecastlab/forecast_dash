@@ -101,42 +101,46 @@ class ScoringFunctions:
         return W
 
     def weighted_quantile_loss(self, ytau, tau):
-        '''
+        """
         The Weighted Quantile Loss (wQL) metric measures the accuracy of a model at a specified quantile.
         see e.g., https://docs.aws.amazon.com/forecast/latest/dg/metrics.html
         The wQL metric cannot be calculated for the mean forecast.
-        '''
+        """
         lq = np.maximum(self.y_true - ytau, np.zeros(self.y_true.shape)) * tau
-        uq = np.maximum(ytau - self.y_true, np.zeros(self.y_true.shape)) * (1 - tau)
+        uq = np.maximum(ytau - self.y_true, np.zeros(self.y_true.shape)) * (
+            1 - tau
+        )
         return 2 * (lq.sum() + uq.sum()) / np.abs(self.y_true).sum()
 
     def weighted_absolute_percentage_error(self):
-        '''
+        """
         The Weighted Absolute Percentage Error (WAPE) measures the overall deviation of forecasted values from observed values.
         see: https://docs.aws.amazon.com/forecast/latest/dg/metrics.html
-        '''
+        """
         return np.abs(self.error).sum() / np.abs(self.y_true).sum()
 
     def mean_absolute_percentage_error(self):
-        '''
+        """
         mean value of the percentage error between observed and predicted values
-        '''
+        """
         return np.abs(1 - self.y_pred / self.y_true).mean()
 
     def symmetric_mean_absolute_percentage_error(self):
-        '''
+        """
         Symmetric mean absolute percentage error defined as
         ``(y - y_pred).abs() / (y.abs() + y_pred.abs())``
         https://en.wikipedia.org/wiki/Symmetric_mean_absolute_percentage_error
-        '''
+        """
         denominator = np.maximum(
-            np.abs(self.y_pred) + np.abs(self.y_true), np.ones(self.y_true.shape)*1e-8
+            np.abs(self.y_pred) + np.abs(self.y_true),
+            np.ones(self.y_true.shape) * 1e-8,
         )
         loss = (
             np.abs(self.y_pred - self.y_true) / denominator
         ).sum() / self.y_true.shape[0]
 
         return loss
+
 
 def forecast_to_df(
     data_source_dict,
@@ -217,8 +221,9 @@ def cross_val_score(model, y, cv, fit_params={}):
 
     errors = {
         score: []
-        for score in ["MSE", "MASE"] + [f"{x}% Winkler" for x in level]
-        + ['wQL50', 'WAPE', 'SMAPE']
+        for score in ["MSE", "MASE"]
+        + [f"{x}% Winkler" for x in level]
+        + ["wQL50", "WAPE", "SMAPE"]
     }  # list of scores for each scoring function
 
     for train_index, test_index in cv.split(y):
@@ -260,15 +265,15 @@ def cross_val_score(model, y, cv, fit_params={}):
             )
 
         # Scores for wQL50
-        errors['wQL50'].append(
+        errors["wQL50"].append(
             sf.weighted_quantile_loss(model_predictions, 0.5)
         )
 
         # Scores for WAPE
-        errors['WAPE'].append(sf.weighted_absolute_percentage_error())
+        errors["WAPE"].append(sf.weighted_absolute_percentage_error())
 
         # Scores for SMAPE
-        errors['SMAPE'].append(sf.symmetric_mean_absolute_percentage_error())
+        errors["SMAPE"].append(sf.symmetric_mean_absolute_percentage_error())
 
     mean_errors = {key: np.mean(value) for key, value in errors.items()}
     return mean_errors

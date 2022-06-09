@@ -125,12 +125,18 @@ class ScoringFunctions:
 
     def symmetric_mean_absolute_percentage_error(self):
         '''
-        Symmetric mean absolute percentage error based on Armstrong's definition
+        Symmetric mean absolute percentage error defined as
+        ``(y - y_pred).abs() / (y.abs() + y_pred.abs())``
         https://en.wikipedia.org/wiki/Symmetric_mean_absolute_percentage_error
         '''
-        abs_err = np.abs(self.y_pred - self.y_true)
-        SMAPE = 2 * abs_err / (self.y_true + self.y_pred) / self.y_pred.shape[0]
-        return 2 if SMAPE > 2 else SMAPE # the range for SMAPE: 0%-200%
+        denominator = np.maximum(
+            np.abs(self.y_pred) + np.abs(self.y_true), np.ones(self.y_true.shape)*1e-8
+        )
+        loss = (
+            np.abs(self.y_pred - self.y_true) / denominator
+        ).sum() / self.y_true.shape[0]
+
+        return loss
 
 def forecast_to_df(
     data_source_dict,

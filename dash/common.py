@@ -14,12 +14,25 @@ def header():
     from app import nav_routes
 
     return [
-        dbc.NavbarSimple(
-            children=[
-                dbc.NavItem(dbc.NavLink(x[1], href=x[2], external_link=True))
-                for x in nav_routes
-            ]
-            + [
+        dbc.Navbar(
+            dbc.Container([
+               dbc.Row([
+                    # dbc.Col(html.Img(src="/assets/USYD_coa_reversed.png", height="30px")),
+                    dbc.Col(html.A([html.Img(src="/assets/USYD_coa_reversed.png", height="30px")], href="https://www.sydney.edu.au/business/")), 
+                    dbc.Col(dbc.NavbarBrand("Forecast Lab", className="ms-2", href = "/"))
+                    ],align="center",
+                    className="g-0"),
+                    
+                
+                dbc.Col(
+                                dbc.Row(
+                [
+                    dbc.NavbarToggler(id="navbar-toggler"),
+                    dbc.Collapse(
+                        dbc.Nav(
+                            [ dbc.NavItem(dbc.NavLink(x[1], href=x[2], external_link=True))
+                                for x in nav_routes ] + 
+             [
                 dbc.NavItem(
                     dbc.NavLink(
                         html.I(className="fab fa-github fa-lg"),
@@ -28,13 +41,27 @@ def header():
                     )
                 )
             ],
-            brand="Forecast Lab",
-            brand_href="/",
-            brand_external_link=True,
-            color="dark",
-            dark=True,
-            expand="lg",
-        )
+
+                            # make sure nav takes up the full width for auto
+                            # margin to get applied
+                            className="w-100",
+                        ),
+                        id="navbar-collapse",
+                        is_open=False,
+                        navbar=True,
+                    ),
+                ],
+                # the row should expand to fill the available horizontal space
+                className="flex-grow-1",
+
+                    ), # close row   
+                    lg='expand'
+                ), # close col
+                ],
+    ), # close containter            
+    color="dark",
+    dark=True
+            )
     ]
 
 

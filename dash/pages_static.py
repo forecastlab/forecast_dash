@@ -15,6 +15,7 @@ Data are sourced from:
 - [Australian Macro Database](http://ausmacrodata.org)
 - [St Louis Federal Reserve](https://api.stlouisfed.org)
 - [UK Office of National Statistics](https://www.ons.gov.uk)
+- [World Bank](https://data.worldbank.org/)
 
 # Methodology
 
@@ -234,9 +235,10 @@ class About(BootstrapApp):
                                                 dbc.Row(
                                                     dbc.Col(
                                                         [
-                                                            html.H1(
-                                                                "Built by the Discipline of Business Analytics at the University of Sydney",
+                                                            html.H1([
+                                                                "Built by the ",html.A("Discipline of Business Analytics", href = "https://www.sydney.edu.au/business/our-research/research-areas/business-analytics.html")," at the University of Sydney"],
                                                                 className="display-6",
+                                                                
                                                             ),
                                                             html.A(
                                                                 [
@@ -322,6 +324,28 @@ class About(BootstrapApp):
                                     ),
                                     html.P(
                                         "The University accepts no liability for any loss or damage a person suffers because that person has directly or indirectly relied on any information stored on this server."
+                                    ),
+                                ]
+                            )
+                        ),
+                        dbc.Row(
+                            dbc.Col(
+                                html.H2(
+                                    "Contact Us",
+                                    style={"margin-bottom": "32px"},
+                                ),
+                                lg=12,
+                            )
+                        ),
+                        dbc.Row(
+                            dbc.Col(
+                                [
+                                    html.P([
+                                        "Questions or suggestions? Feel free to reach out to the team by emailing: ", html.A("app.forecasting-lab@sydney.edu.au",href = "app.forecasting-lab@sydney.edu.au"),
+                                        ]
+                                    ),
+                                    html.P(
+                                        "We will endeavour to address your query as soon as possible. "
                                     ),
                                 ]
                             )

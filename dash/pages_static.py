@@ -235,10 +235,16 @@ class About(BootstrapApp):
                                                 dbc.Row(
                                                     dbc.Col(
                                                         [
-                                                            html.H1([
-                                                                "Built by the ",html.A("Discipline of Business Analytics", href = "https://www.sydney.edu.au/business/our-research/research-areas/business-analytics.html")," at the University of Sydney"],
+                                                            html.H1(
+                                                                [
+                                                                    "Built by the ",
+                                                                    html.A(
+                                                                        "Discipline of Business Analytics",
+                                                                        href="https://www.sydney.edu.au/business/our-research/research-areas/business-analytics.html",
+                                                                    ),
+                                                                    " at the University of Sydney",
+                                                                ],
                                                                 className="display-6",
-                                                                
                                                             ),
                                                             html.A(
                                                                 [
@@ -340,8 +346,13 @@ class About(BootstrapApp):
                         dbc.Row(
                             dbc.Col(
                                 [
-                                    html.P([
-                                        "Questions or suggestions? Feel free to reach out to the team by emailing: ", html.A("app.forecasting-lab@sydney.edu.au",href = "app.forecasting-lab@sydney.edu.au"),
+                                    html.P(
+                                        [
+                                            "Questions or suggestions? Feel free to reach out to the team by emailing: ",
+                                            html.A(
+                                                "app.forecasting-lab@sydney.edu.au",
+                                                href="app.forecasting-lab@sydney.edu.au",
+                                            ),
                                         ]
                                     ),
                                     html.P(

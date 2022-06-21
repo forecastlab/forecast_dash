@@ -5,6 +5,8 @@ git pull
 touch shared_config/acme.json & chmod 600 shared_config/acme.json
 docker-compose down -f docker-compose.traefik.yml 
 docker-compose down
+docker-compose --project-name=blue stop
+docker-compose --project-name=green stop
 docker-compose up -f docker-compose.traefik.yml --force-recreate --build -d
 # docker-compose up --force-recreate --build -d
 chmod +x ./deployment.sh

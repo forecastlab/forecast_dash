@@ -11,14 +11,25 @@
         "github": "https://github.com/sjtrny"
       }
     },
-    {
-      "name": "Robert James",
+       {
+      "name": "Ardalan (Ardi) Mirzaei",
       "affiliation": "The University of Sydney",
-      "image_url": "assets/profiles/RobertJames.jpg",
-      "homepage": "",
-      "bio": "Rob James is Postdoctoral Research Associate at University of Sydney.",
-      "links": {"github":"https://github.com/rjames6023"}
-    }
+      "image_url": "assets/profiles/ArdiMirzaei.jpg",
+      "bio": "Ardi Mirzaei is a registered pharmacist and a PhD graduate of the University of Sydney. His research interests include healthcare, machine learning and psychometrics. ",
+      "links": {
+        "home": "https://ardimirzaei.com",
+        "github": "https://github.com/ardimirzaei"
+      }
+    },
+        {
+      "name": "Ziteng (Andy) Wang",
+      "affiliation": "The University of Sydney",
+      "image_url": "assets/profiles/AndyWang.png",
+      "bio": "",
+      "links": {
+        "github": "https://github.com/Andywang201605"
+      }
+    } 
   ],
   "research_team": [
     {
@@ -77,6 +88,14 @@
       "links": {
         "github": "https://github.com/david-houseman"
       }
+    },
+    {
+      "name": "Robert James",
+      "affiliation": "The University of Sydney",
+      "image_url": "assets/profiles/RobertJames.jpg",
+      "homepage": "",
+      "bio": "Rob James is Postdoctoral Research Associate at University of Sydney.",
+      "links": {"github":"https://github.com/rjames6023"}
     }
   ]
 }

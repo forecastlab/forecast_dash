@@ -15,6 +15,10 @@ We have hand selected a handful of countries in each region and are providing fo
 </p>
 
 <p>
+<a href="/search">View and search all series here.</a>
+</p>
+
+<p>
 We are looking forward to increasing the number of countries served and broadening
 our forecasts to other series of interest.
 </p>

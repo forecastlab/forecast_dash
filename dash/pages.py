@@ -1020,6 +1020,57 @@ class Series(BootstrapApp):
 
             return CV_score_df
 
+        def infer_frequency_from_forecast(series_data_dict, **kwargs):
+            '''
+            Not an efficient way of getting the periods frequency but can work for now. 
+            TODO: Add frequency into series_data_dict  
+
+            '''
+            model_name = kwargs["model_selector"]
+
+            forecast_dataframe = series_data_dict["all_forecasts"][model_name][
+                "forecast_df"
+            ]
+
+            # Select last two time points
+            _forecasts = len(forecast_dataframe.index) -1
+            # print(_forecasts)
+            # last_two_times = pd.to_datetime(forecast_dataframe.index.strftime(
+                # "%Y-%m-%d"
+            # )[0:2]) 
+
+            # Map days to frequency reverse
+            forecast_len_map_numbers = {13: 52, 18: 12, 8: 4, 4: 1}
+            forecast_len_map_names = {13: "Weekly", 18: "Monthly", 8: "Quarterly", 4: "Yearly"}
+
+            return forecast_len_map_numbers[_forecasts], forecast_len_map_names[_forecasts]
+
+
+        def create_metadata_table(series_data_dict, **kwargs):
+            
+
+            metadata_df = {}
+
+            metadata_df['Forecast Date'] = series_data_dict["forecasted_at"].strftime(
+                                    "%Y-%m-%d %H:%M:%S"
+                                )
+            metadata_df['Download Date'] = series_data_dict["downloaded_dict"][
+                                    "downloaded_at"
+                                ].strftime("%Y-%m-%d %H:%M:%S")
+
+
+            metadata_df['Period Frequency'], metadata_df['Period Frequency Name'] = infer_frequency_from_forecast(series_data_dict, **kwargs)
+
+            metadata_df['Data Source'] = series_data_dict["data_source_dict"][
+                                            "url"
+                                        ]             
+            metadata_df['Forecast Source'] = "https://business-forecast-lab.com/"
+
+            metadata_df = pd.DataFrame.from_dict(metadata_df,orient='index')
+            metadata_df.columns = ["Value"]
+            
+            return metadata_df
+
         # Format to clean string so tables don't have very large numbers. anything larger than 4 characters can go to scientific notation.
         def cv_table_clean_notation(x):
             return (
@@ -1109,6 +1160,7 @@ class Series(BootstrapApp):
             series_data = create_historical_series_table_df(
                 series_data_dict, **kwargs
             )
+            metadata_table = create_metadata_table(series_data_dict,  **kwargs)
 
             xlsx_io = io.BytesIO()
             writer = pd.ExcelWriter(xlsx_io)
@@ -1118,6 +1170,10 @@ class Series(BootstrapApp):
             )
             CV_scores_table.to_excel(writer, sheet_name="CV_scores")
             series_data.to_excel(writer, sheet_name="series_data", index=False)
+
+            metadata_table.to_excel(
+                writer, sheet_name="metadata"
+            )
 
             writer.save()
             xlsx_io.seek(0)

@@ -33,13 +33,13 @@ class DataSource(ABC):
             hashsum = sha256(series_df.to_csv().encode()).hexdigest()
             # print("  -", hashsum)
             data_version = self.data_versioning()
-           
+
             data = {
                 "hashsum": hashsum,
                 "series_df": series_df,
                 "downloaded_at": datetime.datetime.now(),
-                "data_version" : data_version,
-                "frequency" : self.frequency,
+                "data_version": data_version,
+                "frequency": self.frequency,
             }
 
             f = open(f"{self.download_path}/{self.title}.pkl", "wb")
@@ -57,9 +57,9 @@ class DataSource(ABC):
             previous_download = pickle.load(f)
             f.close()
 
-            if not self.hashsum == previous_download['hashsum']:
+            if not self.hashsum == previous_download["hashsum"]:
                 if "version" in previous_download:
-                    data_version += 1 
+                    data_version += 1
                     print(f"{self.title} - Version Updated")
         except:
             data_version = 100000
@@ -67,7 +67,6 @@ class DataSource(ABC):
             print(f"{self.title} - {data_version}")
 
         return data_version
-
 
     @abstractmethod
     def download(self):

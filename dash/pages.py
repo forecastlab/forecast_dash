@@ -1023,7 +1023,6 @@ class Series(BootstrapApp):
         def infer_frequency_from_forecast(series_data_dict, **kwargs):
             """
             Not an efficient way of getting the periods frequency but can work for now.
-            TODO: Add frequency into series_data_dict
 
             """
             model_name = kwargs["model_selector"]
@@ -1032,12 +1031,8 @@ class Series(BootstrapApp):
                 "forecast_df"
             ]
 
-            # Select last two time points
-            _forecasts = len(forecast_dataframe.index) - 1
-            # print(_forecasts)
-            # last_two_times = pd.to_datetime(forecast_dataframe.index.strftime(
-            # "%Y-%m-%d"
-            # )[0:2])
+            # Select the number of forecasts made
+            forecasts_len = len(forecast_dataframe.index) - 1
 
             # Map days to frequency reverse
             forecast_len_map_numbers = {13: 52, 18: 12, 8: 4, 4: 1}
@@ -1049,8 +1044,8 @@ class Series(BootstrapApp):
             }
 
             return (
-                forecast_len_map_numbers[_forecasts],
-                forecast_len_map_names[_forecasts],
+                forecast_len_map_numbers[forecasts_len],
+                forecast_len_map_names[forecasts_len],
             )
 
         def create_metadata_table(series_data_dict, **kwargs):

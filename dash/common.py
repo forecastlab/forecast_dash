@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 import dash
 import dash_bootstrap_components as dbc
-from dash import dcc, html
+from dash import dcc, html, Input, Output, State
 
 from datetime import datetime
 import humanize
@@ -33,7 +33,10 @@ def header():
                             ),
                             dbc.Col(
                                 dbc.NavbarBrand(
-                                    "Forecast Lab", className="ms-2", href="/"
+                                    "Forecast Lab",
+                                    className="ms-2",
+                                    href="/",
+                                    external_link=True,
                                 )
                             ),
                         ],
@@ -257,6 +260,17 @@ class BootstrapApp(dash.Dash, ABC):
                 }
             ],
         )
+
+        # add callback for toggling the collapse on small screens
+        @self.callback(
+            Output("navbar-collapse", "is_open"),
+            [Input("navbar-toggler", "n_clicks")],
+            [State("navbar-collapse", "is_open")],
+        )
+        def toggle_navbar_collapse(n, is_open):
+            if n:
+                return not is_open
+            return is_open
 
         self.title = name
 

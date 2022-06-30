@@ -7,7 +7,7 @@ from functools import wraps
 from urllib.parse import urlencode
 
 import dash_bootstrap_components as dbc
-from dash import dcc, html
+from dash import dcc, html, callback_context
 
 import humanize
 import numpy as np
@@ -700,6 +700,30 @@ class Index(BootstrapApp):
 
 class Series(BootstrapApp):
     def setup(self):
+        white_button_style = {
+            "background": "#fff",
+            "backface-visibility": "hidden",
+            "border-radius": ".375rem",
+            "border-style": "solid",
+            "border-width": ".1rem",  # .125rem
+            "box-sizing": "border-box",
+            "color": "#212121",
+            "cursor": "pointer",
+            "display": "inline-block",
+            # "font-family": "Circular,Helvetica,sans-serif",
+            "font-size": "1.125rem",
+            "font-weight": "500",  # 700
+            "letter-spacing": "-.01em",
+            "line-height": "1.3",
+            # "padding": ".875rem 1.125rem",
+            "position": "relative",
+            "text-align": "center",
+            "text-decoration": "none",
+            "transform": "translateZ(0) scale(1)",
+            "transition": "transform .2s",
+            "height": "40px",
+            "width": "200px",
+        }
 
         self.layout = html.Div(
             header()
@@ -738,11 +762,37 @@ class Series(BootstrapApp):
                                 ),
                                 dbc.Col(
                                     [
-                                        dbc.Label(
-                                            "Model Cross Validation Scores"
+                                        dbc.Row(
+                                            [
+                                                dbc.Label(
+                                                    "Model Cross Validation Scores"
+                                                )
+                                            ],
                                         ),
-                                        dcc.Loading(
-                                            html.Div(id="CV_scores_table")
+                                        dbc.Row(
+                                            [
+                                                html.Button(
+                                                    "Relative Scores",
+                                                    id="relative-val",
+                                                    n_clicks=0,
+                                                    style=white_button_style,
+                                                ),
+                                                html.Button(
+                                                    "Raw Scores",
+                                                    id="raw-val",
+                                                    n_clicks=0,
+                                                    style=white_button_style,
+                                                ),
+                                            ]
+                                        ),
+                                        dbc.Row(
+                                            [
+                                                dcc.Loading(
+                                                    html.Div(
+                                                        id="CV_scores_table"
+                                                    )
+                                                ),
+                                            ]
                                         ),
                                     ],
                                     lg=6,
@@ -1081,20 +1131,52 @@ class Series(BootstrapApp):
             return metadata_df
 
         # Format to clean string so tables don't have very large numbers. anything larger than 4 characters can go to scientific notation.
+        # If using 2 decimal places, add this to the map function.
         def cv_table_clean_notation(x):
-            return (
-                "{:,.2f}".format(x)
-                if len(str(int(x))) <= 4
-                else "{:,.2e}".format(x)
-            )
+            # return (
+            #     "{:,.2f}".format(x)
+            #     if len(str(int(x))) <= 4
+            #     else "{:,.2e}".format(x)
+            # )
+            return "{:,.2f}".format(x)
 
-        @self.callback(Output("CV_scores_table", "children"), inputs)
+        def cv_table_by_benchmark(df, benchmark_col=None, **kwargs):
+            """
+            Sets the validation scores relative to the best score or a column of your choosing.
+            """
+            if benchmark_col is None:
+                benchmark_col = kwargs["model_selector"]
+            for col in df.columns:
+                x = df[col]
+                bm = x[benchmark_col]
+                x = x / bm
+                df[col] = x
+            return df
+
+        @self.callback(
+            Output("CV_scores_table", "children"),
+            inputs
+            + [
+                Input("model_selector", "value"),
+                Input("relative-val", "n_clicks"),
+                Input("raw-val", "n_clicks"),
+            ],
+        )
         @location_ignore_null(inputs, location_id="url")
         @series_input(
-            inputs,
+            inputs
+            + [
+                Input("model_selector", "value"),
+                Input("relative-val", "n_clicks"),
+                Input("raw-val", "n_clicks"),
+            ],
             location_id="url",
         )
         def update_CV_scores_table(series_data_dict, **kwargs):
+
+            best_model_name = kwargs["model_selector"]
+            changed_id = [p["prop_id"] for p in callback_context.triggered][0]
+            relative_values = False if "raw-val" in changed_id else True
 
             # Dictionary of scoring function descriptions to display when hovering over in the CV scores table.
             tooltip_header_text = {
@@ -1108,6 +1190,11 @@ class Series(BootstrapApp):
 
             dataframe = create_CV_scores_table(series_data_dict)
             rounded_dataframe = dataframe.copy()
+
+            if relative_values:
+                rounded_dataframe = cv_table_by_benchmark(
+                    rounded_dataframe, **kwargs
+                )
             # Round and format so that trailing zeros still appear
             for col in rounded_dataframe.columns:
                 rounded_dataframe[col] = rounded_dataframe[col].apply(
@@ -1126,7 +1213,7 @@ class Series(BootstrapApp):
                     {"name": i, "id": i} for i in rounded_dataframe.columns
                 ],
                 sort_action="native",
-                sort_mode="multi",
+                # sort_mode="multi",
                 style_cell={
                     "textAlign": "left",
                     "fontSize": 16,
@@ -1143,6 +1230,17 @@ class Series(BootstrapApp):
                     for col in rounded_dataframe.columns
                     if col != "Model"
                 ],  # underline headers associated with tooltips
+                # style_data_conditional=[
+                #     {
+                #         "if": {
+                #             "filter_query": "{{Model}} = {}".format(
+                #                 best_model_name
+                #             ), "column_id": "Model"
+                #         },
+                #         "backgroundColor": "powderblue",
+                #         "color": "white",
+                #     },
+                # ],
                 style_as_list_view=True,
             )
             return table

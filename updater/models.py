@@ -688,7 +688,7 @@ class FBProphet(ForecastModel):
 
     def predict_withci(self):
         future = self._make_future()
-        forecast_dict = {"forcast": self.predict()}
+        forecast_dict = {"forecast": self.predict()}
 
         for i in range(len(self.level)):
             self.model.interval_width = self.level[i] * 0.01

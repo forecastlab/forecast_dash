@@ -28,6 +28,9 @@ from util import (
 import io
 import base64
 
+import plotly.graph_objects as go
+from base64 import b64encode
+
 
 def dash_kwarg(inputs):
     def accept_func(func):
@@ -216,7 +219,13 @@ def get_thumbnail_figure(data_dict, lg=12):
         ],
     )
 
-    return dict(data=data, layout=layout)
+    fig = go.Figure(dict(data=data, layout=layout))
+    img_bytes = fig.to_image(format="png")
+    encoding = base64.b64encode(img_bytes).decode()
+    img_b64 = "data:image/png;base64," + encoding
+    return img_b64
+
+    # return dict(data=data, layout=layout)
 
 
 def get_series_figure(data_dict, model_name):
@@ -1513,9 +1522,9 @@ class Search(BootstrapApp):
                 dbc.Container(
                     [
                         breadcrumb_layout([("Home", "/"), ("Filter", "")]),
+                        dbc.Row(dbc.Col(id="filter_panel", lg=12, sm=12)),
                         dbc.Row(
                             [
-                                dbc.Col(id="filter_panel", lg=3, sm=3),
                                 dbc.Col(
                                     [
                                         html.H4("Results"),
@@ -1523,8 +1532,8 @@ class Search(BootstrapApp):
                                             html.Div(id="filter_results")
                                         ),
                                     ],
-                                    lg=9,
-                                    sm=9,
+                                    lg=12,
+                                    sm=12,
                                 ),
                             ]
                         ),
@@ -1536,43 +1545,52 @@ class Search(BootstrapApp):
 
         def filter_panel_children(params, tags, methods):
             children = [
-                html.Div(
-                    [
-                        html.H4("Filters"),
-                        dbc.Label("Name", html_for="name"),
-                        apply_default_value(params)(dbc.Input)(
-                            id="name",
-                            placeholder="Name of a series...",
-                            type="search",
-                            value="",
-                        ),
-                        dbc.FormText("Type something in the box above"),
-                    ],
-                    className="mb-3",
+                dbc.Col(
+                    html.Div(
+                        [
+                            html.H4("Filters"),
+                            dbc.Label("Name", html_for="name"),
+                            apply_default_value(params)(dbc.Input)(
+                                id="name",
+                                placeholder="Name of a series...",
+                                type="search",
+                                value="",
+                            ),
+                            dbc.FormText("Type something in the box above"),
+                        ],
+                        className="mb-3",
+                    )
                 ),
-                html.Div(
-                    [
-                        dbc.Label("Tags", html_for="tags"),
-                        apply_default_value(params)(dbc.Checklist)(
-                            options=[{"label": t, "value": t} for t in tags],
-                            value=[],
-                            id="tags",
-                        ),
-                    ],
-                    className="mb-3",
+                dbc.Col(
+                    html.Div(
+                        [
+                            dbc.Label("Tags", html_for="tags"),
+                            apply_default_value(params)(dbc.Checklist)(
+                                options=[
+                                    {"label": t, "value": t} for t in tags[:3]
+                                ],
+                                value=[],
+                                id="tags",
+                            ),
+                        ],
+                        className="mb-3",
+                    )
                 ),
-                html.Div(
-                    [
-                        dbc.Label("Method", html_for="methods"),
-                        apply_default_value(params)(dbc.Checklist)(
-                            options=[
-                                {"label": m, "value": m} for m in methods
-                            ],
-                            value=[],
-                            id="methods",
-                        ),
-                    ],
-                    className="mb-3",
+                dbc.Col(
+                    html.Div(
+                        [
+                            dbc.Label("Method", html_for="methods"),
+                            apply_default_value(params)(dbc.Checklist)(
+                                options=[
+                                    {"label": m, "value": m}
+                                    for m in methods[:3]
+                                ],
+                                value=[],
+                                id="methods",
+                            ),
+                        ],
+                        className="mb-3",
+                    )
                 ),
             ]
 
@@ -1655,36 +1673,89 @@ class Search(BootstrapApp):
 
             if len(unique_series_titles) > 0:
 
+                # def make_card(item_title, url_title):
+                #     return html.Div(
+                #             [
+                #                 html.A(
+                #                     [
+                #                         html.H5(item_title),
+                # dcc.Graph(
+                #     figure=thumbnail_figure,
+                #     config={"displayModeBar": False},
+                # ),
+                #                     ],
+                #                     href=f"/series?{url_title}",
+                #                 ),
+                #                 html.Hr(),
+                #             ]
+                #         )
+                def make_card(item_title, url_title, thumbnail_figure):
+                    return dbc.Card(
+                        [
+                            html.A(
+                                [
+                                    dbc.CardImg(
+                                        src=thumbnail_figure,
+                                        # dcc.Graph(
+                                        #     figure=thumbnail_figure,
+                                        #     config={"displayModeBar": False},
+                                        # ),
+                                        # src = "https://dash-bootstrap-components.opensource.faculty.ai/static/images/placeholder286x180.png",
+                                        top=True,
+                                        style={"opacity": 0.3},
+                                    ),
+                                    dbc.CardImgOverlay(
+                                        dbc.CardBody(
+                                            [
+                                                html.H4(
+                                                    item_title,
+                                                    className="card-title",
+                                                ),
+                                                # html.P(
+                                                #     "Some quick example text to build on the card title and "
+                                                #     "make up the bulk of the card's content.",
+                                                #     className="card-text",
+                                                # ),
+                                            ]
+                                        ),
+                                    ),
+                                ],
+                                href=f"/series?{url_title}",
+                                style={
+                                    "color": "black",
+                                    "font-weight": "bold",
+                                    "text-align": "center",
+                                },
+                            )
+                        ]
+                    )
+
+                n_series = len(unique_series_titles)
+
                 results_list = []
 
                 for item_title in unique_series_titles:
+
                     series_data = forecast_series_dicts[item_title]
                     url_title = urlencode({"title": item_title})
-                    thumbnail_figure = get_thumbnail_figure(series_data)
+
+                    thumbnail_figure = open(
+                        f"../data/thumbnails/{item_title}.pkl", "rb"
+                    )
+                    thumbnail_figure = pickle.load(thumbnail_figure)
 
                     results_list.append(
-                        html.Div(
-                            [
-                                html.A(
-                                    [
-                                        html.H5(item_title),
-                                        dcc.Graph(
-                                            figure=thumbnail_figure,
-                                            config={"displayModeBar": False},
-                                        ),
-                                    ],
-                                    href=f"/series?{url_title}",
-                                ),
-                                html.Hr(),
-                            ]
-                        )
+                        dbc.Col(
+                            make_card(item_title, url_title, thumbnail_figure),
+                            sm=3,
+                        ),
                     )
 
                 results = [
                     html.P(
-                        f"{len(unique_series_titles)} result{'s' if len(unique_series_titles) > 1 else ''} found"
+                        f"{n_series} result{'s' if n_series > 1 else ''} found"
                     ),
-                    html.Div(results_list),
+                    html.Div(dbc.Row(results_list)),
                 ]
             else:
                 results = [html.P("No results found")]

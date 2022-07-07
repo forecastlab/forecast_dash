@@ -219,13 +219,13 @@ def get_thumbnail_figure(data_dict, lg=12):
         ],
     )
 
-    fig = go.Figure(dict(data=data, layout=layout))
-    img_bytes = fig.to_image(format="png")
-    encoding = base64.b64encode(img_bytes).decode()
-    img_b64 = "data:image/png;base64," + encoding
-    return img_b64
+    # fig = go.Figure(dict(data=data, layout=layout))
+    # img_bytes = fig.to_image(format="png")
+    # encoding = base64.b64encode(img_bytes).decode()
+    # img_b64 = "data:image/png;base64," + encoding
+    # return img_b64
 
-    # return dict(data=data, layout=layout)
+    return dict(data=data, layout=layout)
 
 
 def get_series_figure(data_dict, model_name):

@@ -46,7 +46,8 @@ class DataSource(ABC):
             pickle.dump(data, f)
             f.close()
             state = "OK"
-        except:
+        except Exception as e:
+            print(f"{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}")
             state = "FAILED"
         finally:
             print(f"{self.title} - {state}")
@@ -214,31 +215,14 @@ class ABSData(DataSource):
 
     def download(self):
 
-        url_cut = self.url
-
-        url = "https://api.data.abs.gov.au/data/ABS_LABOUR_ACCT/M11.AUS..A"
-        # To download as json, change extention to '...+json'
-        headers = {"accept": "application/vnd.sdmx.data+csv"}
-        response = requests.get(url, headers=headers)
-
-        # Some Data Cleaning
-        df = [i.split(",") for i in response.text.splitlines()]
-        df = pd.DataFrame(data=df[1:], columns=df[0])
-
-        df = df[df["LABOURACCT_IND"] == "TOTAL"]
-
-        # Convert strings to numbers
-        df["TIME_PERIOD"] = df["TIME_PERIOD"].astype(
-            "int"
-        )  # The example link is in years. Change this to Parse datetime data.
-        df["OBS_VALUE"] = pd.to_numeric(df["OBS_VALUE"])
-        df.groupby("TIME_PERIOD").mean()["OBS_VALUE"]
+        df = pd.read_csv(self.url)
 
         df = pd.DataFrame(
             df["OBS_VALUE"].values,
-            index=pd.to_datetime(df["TIME_PERIOD"], format="%Y"),
+            index=pd.to_datetime(df["TIME_PERIOD"]),
             columns=["value"],
         )
+        df.index.name = "date"
 
         return df
 
@@ -269,3 +253,4 @@ def download_data(sources_path, download_path):
 
 if __name__ == "__main__":
     download_data("../shared_config/data_sources.json", "../data/downloads")
+    # download_data("../shared_config/testing_data_sources.json", "../data/downloads")

@@ -21,8 +21,8 @@
   },
   {
     "title": "Australian Unemployment",
-    "source": "AusMacroData",
-    "url": "http://ausmacrodata.org/Data/6202.0/urplfssasam.csv",
+    "source": "ABS",
+    "url": "https://api.data.abs.gov.au/data/ABS,LF,1.0.0/M13.3.1599.20.AUS.M?format=csv",
     "frequency": "MS",
     "tags": [
       "Australia",

@@ -377,7 +377,7 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
     for data_source_dict in data_sources_list:
 
         # print(data_source_dict["title"])
-        data_filename = slugify(data_source_dict['title'])
+        data_filename = slugify(data_source_dict["title"])
 
         try:
             downloaded_dict, cache_dict = check_cache(
@@ -473,7 +473,7 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
 
     # Write all series pickles to disk
     for series_title, series_data in series_dict.items():
-        data_filename = slugify(series_data['data_source_dict']['title'])
+        data_filename = slugify(series_data["data_source_dict"]["title"])
 
         f = open(
             f"{forecast_dir_path}/{data_filename}.pkl",

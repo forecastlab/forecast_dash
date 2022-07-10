@@ -30,6 +30,7 @@ import base64
 
 from slugify import slugify
 
+
 def dash_kwarg(inputs):
     def accept_func(func):
         @wraps(func)

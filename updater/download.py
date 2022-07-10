@@ -47,7 +47,9 @@ class DataSource(ABC):
             f.close()
             state = "OK"
         except Exception as e:
-            print(f"{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}")
+            print(
+                f"{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}"
+            )
             state = "FAILED"
         finally:
             print(f"{self.title} - {state}")

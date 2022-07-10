@@ -14,6 +14,8 @@ from statsmodels.tsa.tsatools import freq_to_period
 
 import importlib
 
+from slugify import slugify
+
 # number of forecasts to make for series with different frequencies
 # monthly data (freq = 12): 18 forecasts
 # quarterly data (freq = 4): 8 forecasts
@@ -375,11 +377,12 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
     for data_source_dict in data_sources_list:
 
         # print(data_source_dict["title"])
+        data_filename = slugify(data_source_dict['title'])
 
         try:
             downloaded_dict, cache_dict = check_cache(
-                f"{download_dir_path}/{data_source_dict['title']}.pkl",
-                f"{forecast_dir_path}/{data_source_dict['title']}.pkl",
+                f"{download_dir_path}/{data_filename}.pkl",
+                f"{forecast_dir_path}/{data_filename}.pkl",
             )
 
             # Read local pickle that we created earlier
@@ -470,9 +473,10 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
 
     # Write all series pickles to disk
     for series_title, series_data in series_dict.items():
+        data_filename = slugify(series_data['data_source_dict']['title'])
 
         f = open(
-            f"{forecast_dir_path}/{series_data['data_source_dict']['title']}.pkl",
+            f"{forecast_dir_path}/{data_filename}.pkl",
             "wb",
         )
         pickle.dump(series_data, f)

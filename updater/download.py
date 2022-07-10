@@ -14,6 +14,8 @@ from requests.exceptions import HTTPError
 import wbgapi as wb  # for world bank data
 import re
 
+from slugify import slugify
+
 
 class DataSource(ABC):
     def __init__(
@@ -25,6 +27,9 @@ class DataSource(ABC):
         self.url = url
         self.frequency = frequency
         self.tags = tags
+
+        # slugify title
+        self.filename = slugify(title)
 
     def fetch(self):
 
@@ -39,7 +44,7 @@ class DataSource(ABC):
                 "downloaded_at": datetime.datetime.now(),
             }
 
-            f = open(f"{self.download_path}/{self.title}.pkl", "wb")
+            f = open(f"{self.download_path}/{self.filename}.pkl", "wb")
             pickle.dump(data, f)
             f.close()
             state = "OK"

@@ -28,6 +28,7 @@ from util import (
 import io
 import base64
 
+from slugify import slugify
 
 def dash_kwarg(inputs):
     def accept_func(func):
@@ -313,6 +314,7 @@ def get_series_figure(data_dict, model_name):
 
 
 def get_forecast_data(title):
+    title = slugify(title)
     f = open(f"../data/forecasts/{title}.pkl", "rb")
     data_dict = pickle.load(f)
     return data_dict

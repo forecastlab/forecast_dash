@@ -29,3 +29,4 @@ tzdata==2022.1
 tzlocal==4.2
 urllib3==1.26.9
 wbgapi==1.0.7
+python-slugify==6.1.2

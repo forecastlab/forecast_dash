@@ -3,16 +3,23 @@ from abc import ABC, abstractmethod
 
 import dash
 import dash_bootstrap_components as dbc
-from dash import dcc, html
+from dash import dcc, html, Input, Output, State
 
 from datetime import datetime
 import humanize
 import pytz
 
+home_route = ("Business Forecast Lab", "/")
+
+nav_routes = [
+    ("Find a Series", "/search/"),
+    ("Leaderboard", "/leaderboard/"),
+    ("Blog", "/blog"),
+    ("Methodology", "/methodology/"),
+    ("About", "/about/"),
+]
 
 def header():
-    from app import nav_routes
-
     return [
         dbc.Navbar(
             dbc.Container(
@@ -33,7 +40,10 @@ def header():
                             ),
                             dbc.Col(
                                 dbc.NavbarBrand(
-                                    "Forecast Lab", className="ms-2", href="/"
+                                    "Forecast Lab",
+                                    className="ms-2",
+                                    href="/",
+                                    external_link=True,
                                 )
                             ),
                         ],
@@ -49,8 +59,8 @@ def header():
                                         [
                                             dbc.NavItem(
                                                 dbc.NavLink(
-                                                    x[1],
-                                                    href=x[2],
+                                                    x[0],
+                                                    href=x[1],
                                                     external_link=True,
                                                 )
                                             )
@@ -90,7 +100,6 @@ def header():
 
 
 def breadcrumb_layout(crumbs):
-
     return dbc.Nav(
         [
             html.Ol(
@@ -200,7 +209,6 @@ def component_git_version():
 
 
 def footer():
-    from app import home_route, nav_routes
 
     return [
         dbc.Row(
@@ -214,7 +222,7 @@ def footer():
                             [
                                 dbc.NavItem(
                                     dbc.NavLink(
-                                        x[1], href=x[2], external_link=True
+                                        x[0], href=x[1], external_link=True
                                     )
                                 )
                                 for x in [home_route] + nav_routes
@@ -232,62 +240,73 @@ def footer():
     ]
 
 
-class BootstrapApp(dash.Dash, ABC):
-    def __init__(self, name, server, url_base_pathname):
+# class BootstrapApp(dash.Dash, ABC):
+#     def __init__(self, name, server, url_base_pathname):
 
-        external_scripts = [
-            {
-                "src": "https://kit.fontawesome.com/b4d76f3ee0.js",
-                "crossorigin": "anonymous",
-            }
-        ]
+#         external_scripts = [
+#             {
+#                 "src": "https://kit.fontawesome.com/b4d76f3ee0.js",
+#                 "crossorigin": "anonymous",
+#             }
+#         ]
 
-        external_stylesheets = [dbc.themes.BOOTSTRAP]
+#         external_stylesheets = [dbc.themes.BOOTSTRAP]
 
-        super().__init__(
-            name=name,
-            server=server,
-            url_base_pathname=url_base_pathname,
-            external_stylesheets=external_stylesheets,
-            external_scripts=external_scripts,
-            meta_tags=[
-                {
-                    "name": "viewport",
-                    "content": "width=device-width, initial-scale=1",
-                }
-            ],
-        )
+#         super().__init__(
+#             name=name,
+#             server=server,
+#             url_base_pathname=url_base_pathname,
+#             external_stylesheets=external_stylesheets,
+#             external_scripts=external_scripts,
+#             meta_tags=[
+#                 {
+#                     "name": "viewport",
+#                     "content": "width=device-width, initial-scale=1",
+#                 }
+#             ],
+#         )
 
-        self.title = name
+#         # add callback for toggling the collapse on small screens
+#         @self.callback(
+#             Output("navbar-collapse", "is_open"),
+#             [Input("navbar-toggler", "n_clicks")],
+#             [State("navbar-collapse", "is_open")],
+#         )
+#         def toggle_navbar_collapse(n, is_open):
+#             if n:
+#                 return not is_open
+#             return is_open
 
-        self.setup()
+#         self.title = name
 
-    @abstractmethod
-    def setup(self):
-        pass
+#         self.setup()
+
+#     @abstractmethod
+#     def setup(self):
+#         pass
 
 
-class MarkdownApp(BootstrapApp):
-    @property
-    @classmethod
-    @abstractmethod
-    def markdown(cls):
-        return NotImplementedError
+# class MarkdownApp(BootstrapApp):
+#     @property
+#     @classmethod
+#     @abstractmethod
+#     def markdown(cls):
+#         return NotImplementedError
 
-    def setup(self):
+#     def setup(self):
 
-        self.layout = html.Div(
-            header()
-            + [
-                dcc.Location(id="url", refresh=False),
-                dbc.Container(
-                    [
-                        breadcrumb_layout(
-                            [("Home", "/"), (f"{self.title}", "")]
-                        ),
-                        dcc.Markdown(type(self).markdown),
-                    ]
-                    + footer()
-                ),
-            ]
-        )
+#         self.layout = html.Div(
+#             header()
+#             + [
+#                 dcc.Location(id="url", refresh=False),
+#                 dbc.Container(
+#                     [
+#                         breadcrumb_layout(
+#                             [("Home", "/"), (f"{self.title}", "")]
+#                         ),
+#                         dcc.Markdown(type(self).markdown),
+#                     ]
+#                     + footer()
+#                 ),
+#             ]
+#         )

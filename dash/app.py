@@ -23,9 +23,9 @@ app = Dash(
 )
 
 app.layout = html.Div([
-    *header(),
+    header(), 
     dash.page_container,
-    *footer(), # footer has two elements
+    footer(), 
 ])
 
 if __name__ == "__main__":

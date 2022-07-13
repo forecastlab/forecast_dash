@@ -18,7 +18,7 @@ from modelutil import (
 dash.register_page(
     __name__, 
     path='/',
-    title="[DEBUG] Business Forecast Lab"
+    title="Business Forecast Lab"
 )
 
 # load data source

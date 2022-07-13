@@ -40,7 +40,7 @@ import base64
 
 dash.register_page(
     __name__, 
-    title="[DEBUG] Find a Series"
+    title="Find a Series"
 )
 
 component_ids = ["name", "tags", "methods"]

@@ -244,7 +244,7 @@ def body(value):
 
 ### final layout function
 def layout(page=None, post=None):
-    return [
+    return html.Div([
         dcc.Location(id="url", refresh=False),
         _blog_layout(),
-    ]
+    ])

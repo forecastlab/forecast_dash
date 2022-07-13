@@ -237,73 +237,15 @@ def footer():
     ])
 
 
-# class BootstrapApp(dash.Dash, ABC):
-#     def __init__(self, name, server, url_base_pathname):
-
-#         external_scripts = [
-#             {
-#                 "src": "https://kit.fontawesome.com/b4d76f3ee0.js",
-#                 "crossorigin": "anonymous",
-#             }
-#         ]
-
-#         external_stylesheets = [dbc.themes.BOOTSTRAP]
-
-#         super().__init__(
-#             name=name,
-#             server=server,
-#             url_base_pathname=url_base_pathname,
-#             external_stylesheets=external_stylesheets,
-#             external_scripts=external_scripts,
-#             meta_tags=[
-#                 {
-#                     "name": "viewport",
-#                     "content": "width=device-width, initial-scale=1",
-#                 }
-#             ],
-#         )
-
-#         # add callback for toggling the collapse on small screens
-#         @self.callback(
-#             Output("navbar-collapse", "is_open"),
-#             [Input("navbar-toggler", "n_clicks")],
-#             [State("navbar-collapse", "is_open")],
-#         )
-#         def toggle_navbar_collapse(n, is_open):
-#             if n:
-#                 return not is_open
-#             return is_open
-
-#         self.title = name
-
-#         self.setup()
-
-#     @abstractmethod
-#     def setup(self):
-#         pass
-
-
-# class MarkdownApp(BootstrapApp):
-#     @property
-#     @classmethod
-#     @abstractmethod
-#     def markdown(cls):
-#         return NotImplementedError
-
-#     def setup(self):
-
-#         self.layout = html.Div(
-#             header()
-#             + [
-#                 dcc.Location(id="url", refresh=False),
-#                 dbc.Container(
-#                     [
-#                         breadcrumb_layout(
-#                             [("Home", "/"), (f"{self.title}", "")]
-#                         ),
-#                         dcc.Markdown(type(self).markdown),
-#                     ]
-#                     + footer()
-#                 ),
-#             ]
-#         )
+def markdown_layout(title, markdown_content):
+    return html.Div([
+        dcc.Location(id="url", refresh=False),
+        dbc.Container(
+            [
+                breadcrumb_layout(
+                    [("Home", "/"), (title, "")]
+                ),
+                dcc.Markdown(markdown_content),
+            ]
+        ),
+    ])

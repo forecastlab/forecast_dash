@@ -133,7 +133,7 @@ def update_content(url):
     ]
 
 def layout(title=None):
-    return [
+    return html.Div([
         dcc.Location(id="url", refresh=False),
         _post_layout(),
-    ]
+    ])

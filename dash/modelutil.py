@@ -29,31 +29,6 @@ from util import (
 import io
 import base64
 
-##### model selection
-def select_best_model(data_dict, CV_score_function="MSE"):
-    # use the MSE as the default scoring function for identifying the best model.
-    # Extract ( model_name, cv_score ) for each model.
-    all_models = []
-    all_cv_scores = []
-    for model_name, forecast_dict in data_dict["all_forecasts"].items():
-        if forecast_dict:
-            all_models.append(model_name)
-            if (
-                forecast_dict["state"] == "OK"
-                and type(forecast_dict["cv_score"]) == dict
-            ):
-                all_cv_scores.append(
-                    forecast_dict["cv_score"][CV_score_function]
-                )
-            else:
-                all_cv_scores.append(forecast_dict["cv_score"])
-
-    # Select the best model.
-    model_name = all_models[np.argmin(all_cv_scores)]
-
-    return model_name
-
-##### model visualisation
 def get_forecast_plot_data(series_df, forecast_df):
 
     # Plot series history
@@ -118,6 +93,7 @@ def get_forecast_plot_data(series_df, forecast_df):
 
     return data
 
+
 def get_plot_shapes(series_df, forecast_df):
 
     shapes = [
@@ -152,6 +128,31 @@ def get_plot_shapes(series_df, forecast_df):
     ]
 
     return shapes
+
+
+def select_best_model(data_dict, CV_score_function="MSE"):
+    # use the MSE as the default scoring function for identifying the best model.
+    # Extract ( model_name, cv_score ) for each model.
+    all_models = []
+    all_cv_scores = []
+    for model_name, forecast_dict in data_dict["all_forecasts"].items():
+        if forecast_dict:
+            all_models.append(model_name)
+            if (
+                forecast_dict["state"] == "OK"
+                and type(forecast_dict["cv_score"]) == dict
+            ):
+                all_cv_scores.append(
+                    forecast_dict["cv_score"][CV_score_function]
+                )
+            else:
+                all_cv_scores.append(forecast_dict["cv_score"])
+
+    # Select the best model.
+    model_name = all_models[np.argmin(all_cv_scores)]
+
+    return model_name
+
 
 def get_thumbnail_figure(data_dict, lg=12):
     watermark_config = (
@@ -204,12 +205,179 @@ def get_thumbnail_figure(data_dict, lg=12):
 
     return dict(data=data, layout=layout)
 
+
+def get_series_figure(data_dict, model_name):
+    watermark_config = watermark_information()
+
+    series_df = data_dict["downloaded_dict"]["series_df"]
+    forecast_df = data_dict["all_forecasts"][model_name]["forecast_df"]
+
+    data = get_forecast_plot_data(series_df, forecast_df)
+    shapes = get_plot_shapes(series_df, forecast_df)
+
+    time_difference_forecast_to_start = (
+        forecast_df.index[-1].to_pydatetime()
+        - series_df.index[0].to_pydatetime()
+    )
+
+    title = (
+        data_dict["data_source_dict"]["short_title"]
+        if "short_title" in data_dict["data_source_dict"]
+        else data_dict["data_source_dict"]["title"]
+    )
+
+    layout = dict(
+        title=title,
+        height=720,
+        xaxis=dict(
+            fixedrange=True,
+            type="date",
+            gridcolor="rgb(255,255,255)",
+            range=[
+                series_df.index[
+                    -16
+                ].to_pydatetime(),  # Recent point in history
+                forecast_df.index[-1].to_pydatetime(),  # End of forecast range
+            ],
+            rangeselector=dict(
+                buttons=list(
+                    [
+                        dict(
+                            count=5,
+                            label="5y",
+                            step="year",
+                            stepmode="backward",
+                        ),
+                        dict(
+                            count=10,
+                            label="10y",
+                            step="year",
+                            stepmode="backward",
+                        ),
+                        dict(
+                            count=time_difference_forecast_to_start.days,
+                            label="all",
+                            step="day",
+                            stepmode="backward",
+                        ),
+                    ]
+                )
+            ),
+            rangeslider=dict(
+                visible=True,
+                range=[
+                    series_df.index[0].to_pydatetime(),
+                    forecast_df.index[-1].to_pydatetime(),
+                ],
+            ),
+        ),
+        yaxis=dict(
+            # Will disable all zooming and movement controls if True
+            fixedrange=True,
+            autorange=True,
+            gridcolor="rgb(255,255,255)",
+        ),
+        annotations=[
+            dict(
+                name="watermark",
+                text=watermark_config["text"],
+                opacity=0.2,
+                font=dict(
+                    color="black", size=watermark_config["font_size"][12]
+                ),
+                xref="paper",
+                yref="paper",
+                x=0.025,  # x axis location relative to bottom left hand corner between (0,1)
+                y=0.025,  # y axis location relative to bottom left hand corner between (0,1)
+                showarrow=False,
+            )
+        ],
+        shapes=shapes,
+        modebar={"color": "rgba(0,0,0,1)"},
+    )
+
+    return dict(data=data, layout=layout)
+
+
 def get_forecast_data(title):
     f = open(f"../data/forecasts/{title}.pkl", "rb")
     data_dict = pickle.load(f)
     return data_dict
 
-##### news
+
+def component_figs_2col(row_title, series_titles):
+
+    if len(series_titles) != 2:
+        raise ValueError("series_titles must have 3 elements")
+
+    return dbc.Row(
+        [
+            dbc.Col(
+                [
+                    html.H2(row_title),
+                ],
+                lg=12,
+                className="text-center",
+            ),
+        ]
+        + [
+            dbc.Col(
+                [
+                    html.A(
+                        [
+                            dcc.Graph(
+                                figure=get_thumbnail_figure(
+                                    get_forecast_data(series_title), lg=6
+                                ),
+                                config={"displayModeBar": False},
+                            )
+                        ],
+                        href=f"/series?{urlencode({'title': series_title})}",
+                    )
+                ],
+                lg=6,
+            )
+            for series_title in series_titles
+        ]
+    )
+
+
+def component_figs_3col(row_title, series_titles):
+
+    if len(series_titles) != 3:
+        raise ValueError("series_titles must have 3 elements")
+
+    return dbc.Row(
+        [
+            dbc.Col(
+                [
+                    html.H3(row_title, style={"text-align": "center"}),
+                ],
+                lg=12,
+            ),
+        ]
+        + [
+            dbc.Col(
+                [
+                    html.A(
+                        [
+                            dcc.Graph(
+                                figure=get_thumbnail_figure(
+                                    get_forecast_data(series_title), lg=4
+                                ),
+                                config={"displayModeBar": False},
+                            )
+                        ],
+                        href=f"/series?{urlencode({'title': series_title})}",
+                    )
+                ],
+                lg=4,
+            )
+            for series_title in series_titles
+        ]
+    )
+
+
 def component_news_4col():
 
     filenames = glob_re(r".*.md", "../blog")
@@ -260,39 +428,34 @@ def component_news_4col():
         lg=4,
     )
 
-def component_figs_2col(row_title, series_titles):
 
-    if len(series_titles) != 2:
-        raise ValueError("series_titles must have 3 elements")
+def component_leaderboard_4col(series_list):
 
-    return dbc.Row(
-        [
-            dbc.Col(
-                [
-                    html.H2(row_title),
-                ],
-                lg=12,
-                className="text-center",
-            ),
-        ]
-        + [
-            dbc.Col(
-                [
-                    html.A(
-                        [
-                            dcc.Graph(
-                                figure=get_thumbnail_figure(
-                                    get_forecast_data(series_title), lg=6
-                                ),
-                                config={"displayModeBar": False},
-                            )
-                        ],
-                        href=f"/series?{urlencode({'title': series_title})}",
-                    )
-                ],
-                lg=6,
+    leaderboard_counts = get_leaderboard_df(series_list).iloc[:10, :]
+
+    body = []
+
+    for index, row in leaderboard_counts.iterrows():
+        body.append(
+            html.Li(
+                index,
+                className="lead",
             )
-            for series_title in series_titles
-        ]
+        )
+
+    return dbc.Col(
+        [
+            html.H3("Leaderboard"),
+            html.P(
+                "Ranked by number of times each method was selected as the best performer",
+                className="subtitle text-muted",
+            ),
+            html.Ol(body),
+            html.A(
+                html.P("View full leaderboard"),
+                href="/leaderboard",
+            ),
+        ],
+        lg=4,
     )
 

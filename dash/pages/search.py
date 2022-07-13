@@ -297,7 +297,7 @@ def filter_results(**kwargs):
 
 ### final layout
 def layout(name=None,tags=None,methods=None):
-    return [
+    return html.Div([
         dcc.Location(id="url", refresh=False),
         result_layout(),
-    ]
+    ])

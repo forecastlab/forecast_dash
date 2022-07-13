@@ -242,8 +242,8 @@ def main_body(feature_series_title):
 ### The layout variable
 feature_series_title = "Australian Inflation (CPI)"
 
-layout = [
+layout = html.Div([
     dcc.Location(id="url", refresh=False),
     mission_statement(),
     main_body(feature_series_title),
-]
+])

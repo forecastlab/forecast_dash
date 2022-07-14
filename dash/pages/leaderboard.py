@@ -15,14 +15,12 @@ from common import (
     get_leaderboard_df,
 )
 
-dash.register_page(
-    __name__, 
-    title="Leaderboard"
-)
+dash.register_page(__name__, title="Leaderboard")
 
 # load data source
 with open("../shared_config/data_sources.json") as data_sources_json_file:
     series_list = json.load(data_sources_json_file)
+
 
 def _get_scoring_functions():
     CV_scoring_functions = []
@@ -32,14 +30,13 @@ def _get_scoring_functions():
 
             for model in forecast_series["all_forecasts"].keys():
                 CV_scoring_functions += list(
-                    forecast_series["all_forecasts"][model][
-                        "cv_score"
-                    ].keys()
+                    forecast_series["all_forecasts"][model]["cv_score"].keys()
                 )
         except:
             pass
 
     return CV_scoring_functions
+
 
 def _make_model_select_options(CV_scoring_functions):
     CV_scoring_functions = list(set(CV_scoring_functions))
@@ -52,14 +49,14 @@ def _make_model_select_options(CV_scoring_functions):
     ]
 
     return model_select_options
-    
+
+
 ### layout functions
 def _cv_table_layout():
     model_select_options = _make_model_select_options(_get_scoring_functions())
-    return dbc.Container([
-            breadcrumb_layout(
-                [("Home", "/"), ("Leaderboard", "")]
-            ),
+    return dbc.Container(
+        [
+            breadcrumb_layout([("Home", "/"), ("Leaderboard", "")]),
             html.H2("Leaderboard"),
             dcc.Dropdown(
                 id="leaderboard_CV_score_selector",
@@ -68,7 +65,9 @@ def _cv_table_layout():
                 value="MSE",
             ),
             dbc.Row([dbc.Col(id="leaderboard_CV_table")]),
-    ])
+        ]
+    )
+
 
 @callback(
     Output("leaderboard_CV_table", "children"),
@@ -87,27 +86,25 @@ def update_leaderboard_df(CV_score):
     ).apply(lambda x: f" ({x:.2f}%)")
 
     counts["Total Wins"] = (
-        counts["Total Wins"].apply(lambda x: f"{x:.0f}")
-        + win_proportion
+        counts["Total Wins"].apply(lambda x: f"{x:.0f}") + win_proportion
     )
 
-    table = dbc.Table.from_dataframe(
-        counts, index=True, index_label="Method"
-    )
+    table = dbc.Table.from_dataframe(counts, index=True, index_label="Method")
 
     # Apply URLS to index
     for row in table.children[1].children:
-        state = urlencode(
-            {"methods": [row.children[0].children]}, doseq=True
-        )
+        state = urlencode({"methods": [row.children[0].children]}, doseq=True)
         row.children[0].children = html.A(
             row.children[0].children, href=f"/search/?{state}"
         )
 
     return table
 
+
 ### final layout variable
-layout = html.Div([
-    dcc.Location(id="url", refresh=False),
-    _cv_table_layout(),
-])
+layout = html.Div(
+    [
+        dcc.Location(id="url", refresh=False),
+        _cv_table_layout(),
+    ]
+)

@@ -22,11 +22,8 @@ from util import (
 
 markdown_extras = ["cuddled-lists"]
 
-dash.register_page(
-    __name__, 
-    title="Blog",
-    path='/blog/'
-)
+dash.register_page(__name__, title="Blog", path="/blog/")
+
 
 def _blog_layout():
     return dbc.Container(
@@ -42,6 +39,7 @@ def _blog_layout():
         style={"margin-bottom": "64px"},
     )
 
+
 ### work out the parameters
 def _find_page_number(value):
     parse_result = parse_state(value)
@@ -49,7 +47,8 @@ def _find_page_number(value):
     if "page" not in parse_result:
         parse_result["page"] = ["1"]
 
-    return int(parse_result["page"][0]) # page_int
+    return int(parse_result["page"][0])  # page_int
+
 
 def _collect_blog_posts():
     filenames = glob_re(r".*.md", "../blog")
@@ -69,6 +68,7 @@ def _collect_blog_posts():
 
     return blog_posts, n_posts
 
+
 # format post review
 def _post_review_title(blog_post):
     return html.A(
@@ -80,6 +80,7 @@ def _post_review_title(blog_post):
         id=blog_post["filename"],
     )
 
+
 def _post_review_author(blog_post):
     return html.P(
         [
@@ -89,15 +90,14 @@ def _post_review_author(blog_post):
             humanize.naturaltime(
                 datetime.now()
                 - datetime.strptime(
-                    blog_post["attributes"][
-                        "date"
-                    ],
+                    blog_post["attributes"]["date"],
                     "%Y-%m-%d",
                 )
             ),
         ],
         className="subtitle mt-0 text-muted small",
     )
+
 
 def _post_review_abstract(blog_post):
     # load blog into bs4 format
@@ -115,9 +115,8 @@ def _post_review_abstract(blog_post):
         soup.find("p").get_text(), 280, placeholder="..."
     )
 
-    return html.Div(
-        preview, style={"padding-bottom": "8px"}
-    )
+    return html.Div(preview, style={"padding-bottom": "8px"})
+
 
 def _post_review_readmore(blog_post):
     return html.A(
@@ -130,6 +129,7 @@ def _post_review_readmore(blog_post):
         ),
         href=f"/blog/post?title={blog_post['filename']}",
     )
+
 
 # add bottom navigation
 # Previous | Page X of Y | Earlier
@@ -145,7 +145,11 @@ def _navigation_previous(page_int, n_pages):
         else []
     )
 
-    return dbc.Col(previous_link, lg=2,)
+    return dbc.Col(
+        previous_link,
+        lg=2,
+    )
+
 
 def _navigation_pagecount(page_int, n_pages):
     return dbc.Col(
@@ -155,6 +159,7 @@ def _navigation_pagecount(page_int, n_pages):
         ),
         lg=4,
     )
+
 
 def _navigation_earlier(page_int):
     earlier_link = (
@@ -167,13 +172,14 @@ def _navigation_earlier(page_int):
         if page_int > 1
         else []
     )
-    
-    return dbc.Col(earlier_link, lg=2,)
 
-def _render_post_reviews(
-        value, # value from url
-        n_posts_per_page=5
-    ):
+    return dbc.Col(
+        earlier_link,
+        lg=2,
+    )
+
+
+def _render_post_reviews(value, n_posts_per_page=5):  # value from url
     page_int = _find_page_number(value)
     blog_posts, n_posts = _collect_blog_posts()
 
@@ -200,28 +206,34 @@ def _render_post_reviews(
                 )
             )
         )
-    
+
     ### bottom navigation
     n_pages = math.ceil(n_posts / n_posts_per_page)
 
     body.append(
-        dbc.Row([
-            _navigation_previous(page_int, n_pages),
-            _navigation_pagecount(page_int, n_pages),
-            _navigation_earlier(page_int),
-        ])
+        dbc.Row(
+            [
+                _navigation_previous(page_int, n_pages),
+                _navigation_pagecount(page_int, n_pages),
+                _navigation_earlier(page_int),
+            ]
+        )
     )
 
     return body
+
 
 @callback(Output("body", "children"), [Input("url", "href")])
 @location_ignore_null([Input("url", "href")], "url")
 def body(value):
     return _render_post_reviews(value)
 
+
 ### final layout function
 def layout(page=None, post=None):
-    return html.Div([
-        dcc.Location(id="url", refresh=False),
-        _blog_layout(),
-    ])
+    return html.Div(
+        [
+            dcc.Location(id="url", refresh=False),
+            _blog_layout(),
+        ]
+    )

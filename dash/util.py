@@ -70,6 +70,7 @@ def watermark_information():
     }
     return watermark_dict
 
+
 def dash_kwarg(inputs):
     def accept_func(func):
         @wraps(func)

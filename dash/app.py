@@ -14,15 +14,17 @@ app = Dash(
     use_pages=True,
     external_stylesheets=[
         dbc.themes.BOOTSTRAP,
-        'https://use.fontawesome.com/releases/v5.8.1/css/all.css'
+        "https://use.fontawesome.com/releases/v5.8.1/css/all.css",
     ],
 )
 
-app.layout = html.Div([
-    header(), 
-    dash.page_container,
-    footer(), 
-])
+app.layout = html.Div(
+    [
+        header(),
+        dash.page_container,
+        footer(),
+    ]
+)
 
 ### callback for toggling the collapse on small screens
 @callback(

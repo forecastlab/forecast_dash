@@ -5,7 +5,7 @@ from common import markdown_layout
 title = "Methodology"
 
 dash.register_page(
-    __name__, 
+    __name__,
     title=title,
 )
 
@@ -49,6 +49,4 @@ selected from the drop-down menu in each Series page.
 
 """
 
-layout = markdown_layout(
-    title, markdown
-)
+layout = markdown_layout(title, markdown)

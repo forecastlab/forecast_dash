@@ -21,10 +21,7 @@ from common import (
     get_forecast_data,
 )
 
-dash.register_page(
-    __name__, 
-    title="Find a Series"
-)
+dash.register_page(__name__, title="Find a Series")
 
 component_ids = ["name", "tags", "methods"]
 
@@ -43,16 +40,16 @@ def result_layout():
                     dbc.Col(
                         [
                             html.H4("Results"),
-                            dcc.Loading(
-                                html.Div(id="filter_results")
-                            ),
+                            dcc.Loading(html.Div(id="filter_results")),
                         ],
                         lg=9,
                         sm=9,
                     ),
                 ]
             ),
-    ])
+        ]
+    )
+
 
 ### functions for filtering, result displaying
 def filter_panel_children(params, tags, methods):
@@ -86,9 +83,7 @@ def filter_panel_children(params, tags, methods):
             [
                 dbc.Label("Method", html_for="methods"),
                 apply_default_value(params)(dbc.Checklist)(
-                    options=[
-                        {"label": m, "value": m} for m in methods
-                    ],
+                    options=[{"label": m, "value": m} for m in methods],
                     value=[],
                     id="methods",
                 ),
@@ -98,6 +93,7 @@ def filter_panel_children(params, tags, methods):
     ]
 
     return children
+
 
 def match_names(forecast_dicts, name_input):
     if not name_input or name_input == "":
@@ -130,6 +126,7 @@ def match_names(forecast_dicts, name_input):
 
     return set(matched_series_names)
 
+
 def match_tags(forecast_dicts, tags):
     if not tags or tags == "":
         return set(forecast_dicts.keys())
@@ -149,6 +146,7 @@ def match_tags(forecast_dicts, tags):
 
     return set(matched_series_names)
 
+
 def match_methods(forecast_dicts, methods):
     if not methods or methods == "":
         return set(forecast_dicts.keys())
@@ -167,8 +165,9 @@ def match_methods(forecast_dicts, methods):
 
     return set(matched_series_names)
 
+
 @callback(
-    Output("filter_panel", "children"), 
+    Output("filter_panel", "children"),
     Input("url", "href"),
 )
 @location_ignore_null([Input("url", "href")], "url")
@@ -189,6 +188,7 @@ def filter_panel(value):
 
     return filter_panel_children(parse_result, all_tags, all_methods)
 
+
 @callback(
     Output("url", "search"),
     inputs=[Input(i, "value") for i in component_ids],
@@ -199,6 +199,7 @@ def update_url_state(**kwargs):
     state = urlencode(kwargs, doseq=True)
 
     return f"?{state}"
+
 
 @callback(
     Output("filter_results", "children"),
@@ -216,9 +217,9 @@ def filter_results(**kwargs):
 
     for series_dict in series_list:
         try:
-            forecast_series_dicts[
+            forecast_series_dicts[series_dict["title"]] = get_forecast_data(
                 series_dict["title"]
-            ] = get_forecast_data(series_dict["title"])
+            )
         except FileNotFoundError:
             continue
 
@@ -236,9 +237,7 @@ def filter_results(**kwargs):
         )
         list_filter_matches.append(matched_series_names)
 
-    unique_series_titles = list(
-        sorted(set.intersection(*list_filter_matches))
-    )
+    unique_series_titles = list(sorted(set.intersection(*list_filter_matches)))
 
     if len(unique_series_titles) > 0:
 
@@ -278,9 +277,12 @@ def filter_results(**kwargs):
 
     return results
 
+
 ### final layout
-def layout(name=None,tags=None,methods=None):
-    return html.Div([
-        dcc.Location(id="url", refresh=False),
-        result_layout(),
-    ])
+def layout(name=None, tags=None, methods=None):
+    return html.Div(
+        [
+            dcc.Location(id="url", refresh=False),
+            result_layout(),
+        ]
+    )

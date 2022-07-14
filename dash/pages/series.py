@@ -24,10 +24,7 @@ from common import (
 import io
 import base64
 
-dash.register_page(
-    __name__, 
-    title="Series"
-)
+dash.register_page(__name__, title="Series")
 
 # button style
 white_button_style = {
@@ -54,6 +51,7 @@ white_button_style = {
     "height": "40px",
     "width": "200px",
 }
+
 
 def _forecast_info_layout():
     return dbc.Col(
@@ -85,11 +83,7 @@ def _forecast_performance_layout():
     return dbc.Col(
         [
             dbc.Row(
-                [
-                    dbc.Label(
-                        "Model Cross Validation Scores"
-                    )
-                ],
+                [dbc.Label("Model Cross Validation Scores")],
             ),
             dbc.Row(
                 [
@@ -109,16 +103,13 @@ def _forecast_performance_layout():
             ),
             dbc.Row(
                 [
-                    dcc.Loading(
-                        html.Div(
-                            id="CV_scores_table"
-                        )
-                    ),
+                    dcc.Loading(html.Div(id="CV_scores_table")),
                 ]
             ),
         ],
         lg=6,
     )
+
 
 ### callback for updating `breadcrumb does not work...
 ### Use this function instead
@@ -137,18 +128,20 @@ def _get_series_title(title):
 
 def _series_layout(title=None):
     breadcrumb_content = _get_series_title(title)
-    return dbc.Container([
-        breadcrumb_layout(
-            [("Home", "/"), (breadcrumb_content, "")]
-        ),
-        dcc.Loading( 
-            dbc.Row([dbc.Col(id="series_graph", lg=12)]) 
-        ), # Series figure
-        dbc.Row([
-            _forecast_info_layout(),
-            _forecast_performance_layout(),
-        ]),
-    ])
+    return dbc.Container(
+        [
+            breadcrumb_layout([("Home", "/"), (breadcrumb_content, "")]),
+            dcc.Loading(
+                dbc.Row([dbc.Col(id="series_graph", lg=12)])
+            ),  # Series figure
+            dbc.Row(
+                [
+                    _forecast_info_layout(),
+                    _forecast_performance_layout(),
+                ]
+            ),
+        ]
+    )
 
 
 # ### functions for loading data etc.
@@ -166,6 +159,7 @@ def create_historical_series_table_df(series_data_dict, **kwargs):
     ]  # reorder columns so the date is first
 
     return dataframe
+
 
 def create_forecast_table_df(series_data_dict, **kwargs):
     """
@@ -192,6 +186,7 @@ def create_forecast_table_df(series_data_dict, **kwargs):
     ]  # reorder columns so the date and model columns first
 
     return forecast_dataframe
+
 
 def create_CV_scores_table(series_data_dict):
     """
@@ -226,27 +221,27 @@ def create_CV_scores_table(series_data_dict):
                     "95" in CV_score
                 ):  # only present the 95% CV score in the table
                     CV_score_df.at[model, "95% Winkler"] = np.round(
-                        series_data_dict["all_forecasts"][model][
-                            "cv_score"
-                        ][CV_score],
+                        series_data_dict["all_forecasts"][model]["cv_score"][
+                            CV_score
+                        ],
                         4,
                     )
             else:
                 CV_score_df.at[model, CV_score] = np.round(
-                    series_data_dict["all_forecasts"][model][
-                        "cv_score"
-                    ][CV_score],
+                    series_data_dict["all_forecasts"][model]["cv_score"][
+                        CV_score
+                    ],
                     4,
                 )
     CV_score_df.sort_values(by=["MSE"], inplace=True)
 
     # Reorder columns so MSE is always first as this is the most popular scoring function for the conditional mean
     CV_score_df = CV_score_df[
-        ["MSE"]
-        + [x for x in CV_score_df.columns.tolist() if x != "MSE"]
+        ["MSE"] + [x for x in CV_score_df.columns.tolist() if x != "MSE"]
     ]
 
     return CV_score_df
+
 
 def infer_frequency_from_forecast(series_data_dict, **kwargs):
     """
@@ -276,13 +271,14 @@ def infer_frequency_from_forecast(series_data_dict, **kwargs):
         forecast_len_map_names[forecasts_len],
     )
 
+
 def create_metadata_table(series_data_dict, **kwargs):
 
     metadata_df = {}
 
-    metadata_df["Forecast Date"] = series_data_dict[
-        "forecasted_at"
-    ].strftime("%Y-%m-%d %H:%M:%S")
+    metadata_df["Forecast Date"] = series_data_dict["forecasted_at"].strftime(
+        "%Y-%m-%d %H:%M:%S"
+    )
     metadata_df["Download Date"] = series_data_dict["downloaded_dict"][
         "downloaded_at"
     ].strftime("%Y-%m-%d %H:%M:%S")
@@ -292,17 +288,14 @@ def create_metadata_table(series_data_dict, **kwargs):
         metadata_df["Period Frequency Name"],
     ) = infer_frequency_from_forecast(series_data_dict, **kwargs)
 
-    metadata_df["Data Source"] = series_data_dict["data_source_dict"][
-        "url"
-    ]
-    metadata_df[
-        "Forecast Source"
-    ] = "https://business-forecast-lab.com/"
+    metadata_df["Data Source"] = series_data_dict["data_source_dict"]["url"]
+    metadata_df["Forecast Source"] = "https://business-forecast-lab.com/"
 
     metadata_df = pd.DataFrame.from_dict(metadata_df, orient="index")
     metadata_df.columns = ["Value"]
 
     return metadata_df
+
 
 # Format to clean string so tables don't have very large numbers. anything larger than 4 characters can go to scientific notation.
 # If using 2 decimal places, add this to the map function.
@@ -313,6 +306,7 @@ def cv_table_clean_notation(x):
     #     else "{:,.2e}".format(x)
     # )
     return "{:,.2f}".format(x)
+
 
 def cv_table_by_benchmark(df, benchmark_col=None, **kwargs):
     """
@@ -326,6 +320,7 @@ def cv_table_by_benchmark(df, benchmark_col=None, **kwargs):
         x = x / bm
         df[col] = x
     return df
+
 
 ### functions for updating page content
 def series_input(inputs, location_id="url"):
@@ -350,6 +345,7 @@ def series_input(inputs, location_id="url"):
 
     return accept_func
 
+
 inputs = [Input("url", "href")]
 
 # # @callback(Output("test-callback", "children"), inputs)
@@ -363,10 +359,9 @@ inputs = [Input("url", "href")]
 #         else series_data_dict["data_source_dict"]["title"]
 #     )
 ##### NOT SURE WHY THIS DOES NOT WORK #####
-# Everything will crash using the callback here... 
+# Everything will crash using the callback here...
 # But it works fine when updating some other elements...
 # Use function `_get_series_title` instead
-
 
 
 @callback(
@@ -374,9 +369,7 @@ inputs = [Input("url", "href")]
     inputs + [Input("model_selector", "value")],
 )
 @location_ignore_null(inputs, location_id="url")
-@series_input(
-    inputs + [Input("model_selector", "value")], location_id="url"
-)
+@series_input(inputs + [Input("model_selector", "value")], location_id="url")
 def update_series_graph(series_data_dict, **kwargs):
 
     model_name = kwargs["model_selector"]
@@ -408,6 +401,7 @@ def update_series_graph(series_data_dict, **kwargs):
 
     return series_graph
 
+
 @callback(
     [
         Output("model_selector", "options"),
@@ -424,9 +418,7 @@ def update_model_selector(series_data_dict):
 
     all_methods_dict = dict(zip(all_methods, all_methods))
 
-    all_methods_dict[
-        best_model_name
-    ] = f"{best_model_name} - Best Model (MSE)"
+    all_methods_dict[best_model_name] = f"{best_model_name} - Best Model (MSE)"
 
     model_select_options = [
         {"label": v, "value": k} for k, v in all_methods_dict.items()
@@ -434,14 +426,13 @@ def update_model_selector(series_data_dict):
 
     return model_select_options, best_model_name
 
+
 @callback(
     Output("meta_data_list", "children"),
     inputs + [Input("model_selector", "value")],
 )
 @location_ignore_null(inputs, location_id="url")
-@series_input(
-    inputs + [Input("model_selector", "value")], location_id="url"
-)
+@series_input(inputs + [Input("model_selector", "value")], location_id="url")
 def update_meta_data_list(series_data_dict, **kwargs):
     model_name = kwargs["model_selector"]
 
@@ -490,12 +481,10 @@ def update_meta_data_list(series_data_dict, **kwargs):
                     html.P(
                         [
                             html.A(
-                                series_data_dict["data_source_dict"][
+                                series_data_dict["data_source_dict"]["url"],
+                                href=series_data_dict["data_source_dict"][
                                     "url"
                                 ],
-                                href=series_data_dict[
-                                    "data_source_dict"
-                                ]["url"],
                             )
                         ]
                     ),
@@ -503,6 +492,7 @@ def update_meta_data_list(series_data_dict, **kwargs):
             ),
         ]
     )
+
 
 @callback(
     Output("CV_scores_table", "children"),
@@ -543,9 +533,7 @@ def update_CV_scores_table(series_data_dict, **kwargs):
     rounded_dataframe = dataframe.copy()
 
     if relative_values:
-        rounded_dataframe = cv_table_by_benchmark(
-            rounded_dataframe, **kwargs
-        )
+        rounded_dataframe = cv_table_by_benchmark(rounded_dataframe, **kwargs)
     # Round and format so that trailing zeros still appear
     for col in rounded_dataframe.columns:
         rounded_dataframe[col] = rounded_dataframe[col].apply(
@@ -560,9 +548,7 @@ def update_CV_scores_table(series_data_dict, **kwargs):
     table = dash_table.DataTable(
         id="CV_scores_datatable",
         data=rounded_dataframe.to_dict("records"),
-        columns=[
-            {"name": i, "id": i} for i in rounded_dataframe.columns
-        ],
+        columns=[{"name": i, "id": i} for i in rounded_dataframe.columns],
         sort_action="native",
         # sort_mode="multi",
         style_cell={
@@ -596,6 +582,7 @@ def update_CV_scores_table(series_data_dict, **kwargs):
     )
     return table
 
+
 @callback(
     Output("forecast_data_download_link", "href"),
     inputs + [Input("model_selector", "value")],
@@ -611,21 +598,15 @@ def update_CV_scores_table(series_data_dict, **kwargs):
 )
 def download_excel(series_data_dict, **kwargs):
     # Create DFs
-    forecast_table = create_forecast_table_df(
-        series_data_dict, **kwargs
-    )
+    forecast_table = create_forecast_table_df(series_data_dict, **kwargs)
     CV_scores_table = create_CV_scores_table(series_data_dict)
-    series_data = create_historical_series_table_df(
-        series_data_dict, **kwargs
-    )
+    series_data = create_historical_series_table_df(series_data_dict, **kwargs)
     metadata_table = create_metadata_table(series_data_dict, **kwargs)
 
     xlsx_io = io.BytesIO()
     writer = pd.ExcelWriter(xlsx_io)
 
-    forecast_table.to_excel(
-        writer, sheet_name="forecasts", index=False
-    )
+    forecast_table.to_excel(writer, sheet_name="forecasts", index=False)
     CV_scores_table.to_excel(writer, sheet_name="CV_scores")
     series_data.to_excel(writer, sheet_name="series_data", index=False)
 
@@ -633,14 +614,18 @@ def download_excel(series_data_dict, **kwargs):
 
     writer.save()
     xlsx_io.seek(0)
-    media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    media_type = (
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
     data = base64.b64encode(xlsx_io.read()).decode("utf-8")
     href_data_downloadable = f"data:{media_type};base64,{data}"
     return href_data_downloadable
 
 
 def layout(title=None):
-    return html.Div([
-        dcc.Location(id="url", refresh=False),
-        _series_layout(title),
-    ])
+    return html.Div(
+        [
+            dcc.Location(id="url", refresh=False),
+            _series_layout(title),
+        ]
+    )

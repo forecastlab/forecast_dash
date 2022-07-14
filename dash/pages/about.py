@@ -6,19 +6,14 @@ import dash
 
 from common import breadcrumb_layout
 
-dash.register_page(
-    __name__, 
-    title="About"
-)
+dash.register_page(__name__, title="About")
 
 ### load contributors, reasearch team
 active_contributors = json.load(open("static_files/profiles.json"))[
     "active_contributors"
 ]
 
-research_team = json.load(open("static_files/profiles.json"))[
-    "research_team"
-]
+research_team = json.load(open("static_files/profiles.json"))["research_team"]
 
 past_contributors = json.load(open("static_files/profiles.json"))[
     "past_contributors"
@@ -50,6 +45,7 @@ The forecasts are updated daily and include the latest publicly available inform
         ],
         lg=6,
     )
+
 
 def _mission():
     return dbc.Col(
@@ -89,6 +85,7 @@ def _mission():
         lg=6,
     )
 
+
 def _builtby():
     return dbc.Col(
         [
@@ -109,11 +106,7 @@ def _builtby():
                                     className="display-6",
                                 ),
                                 html.A(
-                                    [
-                                        html.Img(
-                                            src="/assets/USYD_logo.png"
-                                        )
-                                    ],
+                                    [html.Img(src="/assets/USYD_logo.png")],
                                     href="https://www.sydney.edu.au/business/",
                                 ),
                             ],
@@ -128,6 +121,7 @@ def _builtby():
         lg=12,
     )
 
+
 def _section_title(title):
     return dbc.Col(
         html.H2(
@@ -136,6 +130,7 @@ def _section_title(title):
         ),
         lg=12,
     )
+
 
 def parse_people(person_list):
 
@@ -196,6 +191,7 @@ def parse_people(person_list):
         for person_dict in person_list
     ]
 
+
 def parse_poweredby(filepath):
 
     with open(filepath) as poweredby_file:
@@ -225,6 +221,7 @@ def parse_poweredby(filepath):
             for poweredby_dict in poweredby_list
         ]
 
+
 def _disclaimer():
     return dbc.Col(
         [
@@ -239,6 +236,7 @@ def _disclaimer():
             ),
         ]
     )
+
 
 def _contactus():
     return dbc.Col(
@@ -258,16 +256,17 @@ def _contactus():
         ]
     )
 
+
 def body_layout():
     return dbc.Container(
         [
-            breadcrumb_layout(
-                [("Home", "/"), ("About", "")]
+            breadcrumb_layout([("Home", "/"), ("About", "")]),
+            dbc.Row(
+                [
+                    _about(),
+                    _mission(),
+                ]
             ),
-            dbc.Row([
-                _about(),
-                _mission(),
-            ]),
             dbc.Row([_builtby()]),
             dbc.Row(_section_title("Active Contributors")),
             dbc.Row(parse_people(active_contributors)),
@@ -289,7 +288,5 @@ def body_layout():
         className="mb-5",
     )
 
-layout = html.Div([
-    dcc.Location(id="url", refresh=False),
-    body_layout()
-])
+
+layout = html.Div([dcc.Location(id="url", refresh=False), body_layout()])

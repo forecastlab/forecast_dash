@@ -34,6 +34,7 @@ nav_routes = [
     ("About", "/about/"),
 ]
 
+
 def header():
     return dbc.Navbar(
         dbc.Container(
@@ -222,48 +223,50 @@ def component_git_version():
 
 
 def footer():
-    return dbc.Container([
-        dbc.Row(
-            dbc.Col(html.Hr(style={"margin-top": "64px"}), lg=12),
-        ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        dbc.Nav(
-                            [
-                                dbc.NavItem(
-                                    dbc.NavLink(
-                                        x[0], href=x[1], external_link=True
+    return dbc.Container(
+        [
+            dbc.Row(
+                dbc.Col(html.Hr(style={"margin-top": "64px"}), lg=12),
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        [
+                            dbc.Nav(
+                                [
+                                    dbc.NavItem(
+                                        dbc.NavLink(
+                                            x[0], href=x[1], external_link=True
+                                        )
                                     )
-                                )
-                                for x in [home_route] + nav_routes
-                            ],
-                            vertical="md",
-                        )
-                    ],
-                    lg=7,
-                    style={"margin-bottom": "16px"},
-                ),
-                component_git_version(),
-            ],
-            style={"margin-bottom": "64px"},
-        ),
-    ])
+                                    for x in [home_route] + nav_routes
+                                ],
+                                vertical="md",
+                            )
+                        ],
+                        lg=7,
+                        style={"margin-bottom": "16px"},
+                    ),
+                    component_git_version(),
+                ],
+                style={"margin-bottom": "64px"},
+            ),
+        ]
+    )
 
 
 def markdown_layout(title, markdown_content):
-    return html.Div([
-        dcc.Location(id="url", refresh=False),
-        dbc.Container(
-            [
-                breadcrumb_layout(
-                    [("Home", "/"), (title, "")]
-                ),
-                dcc.Markdown(markdown_content),
-            ]
-        ),
-    ])
+    return html.Div(
+        [
+            dcc.Location(id="url", refresh=False),
+            dbc.Container(
+                [
+                    breadcrumb_layout([("Home", "/"), (title, "")]),
+                    dcc.Markdown(markdown_content),
+                ]
+            ),
+        ]
+    )
 
 
 ### model selection & visulisation related
@@ -740,4 +743,3 @@ def component_leaderboard_4col(series_list):
         ],
         lg=4,
     )
-

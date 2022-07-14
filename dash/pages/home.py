@@ -8,7 +8,7 @@ from urllib.parse import urlencode
 import json
 
 ### utils
-from modelutil import (
+from common import (
     get_thumbnail_figure,
     get_forecast_data,
     component_news_4col,

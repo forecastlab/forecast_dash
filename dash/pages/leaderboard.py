@@ -1,42 +1,19 @@
 import json
-import pickle
-import re
 
-from datetime import datetime
-from functools import wraps
 from urllib.parse import urlencode
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html, callback
 import dash
 
-import humanize
-import numpy as np
-import pandas as pd
-from dash import dash_table
 from common import breadcrumb_layout
 from dash.dependencies import Input, Output
-from dash.exceptions import PreventUpdate
-from frontmatter import Frontmatter
-from util import (
-    glob_re,
-    location_ignore_null,
-    parse_state,
-    apply_default_value,
-    watermark_information,
-    dash_kwarg,
-)
-from modelutil import (
-    select_best_model,
-    get_thumbnail_figure,
+from util import location_ignore_null
+
+from common import (
     get_forecast_data,
-    component_news_4col,
-    component_figs_2col,
+    get_leaderboard_df,
 )
-
-
-import io
-import base64
 
 dash.register_page(
     __name__, 
@@ -46,49 +23,6 @@ dash.register_page(
 # load data source
 with open("../shared_config/data_sources.json") as data_sources_json_file:
     series_list = json.load(data_sources_json_file)
-
-def get_leaderboard_df(series_list, CV_score_function="MSE"):
-    try:
-        stats = get_forecast_data("statistics")
-        all_methods = stats["models_used"]
-    except FileNotFoundError:
-        all_methods = []
-
-    forecast_series_dicts = {}
-
-    for series_dict in series_list:
-        try:
-            forecast_series_dicts[series_dict["title"]] = get_forecast_data(
-                series_dict["title"]
-            )
-        except FileNotFoundError:
-            continue
-
-    chosen_methods = []
-
-    for series_title, forecast_data in forecast_series_dicts.items():
-        model_name = select_best_model(
-            forecast_data, CV_score_function=CV_score_function
-        )
-        chosen_methods.append(model_name)
-
-    stats_raw = pd.DataFrame({"Method": chosen_methods})
-
-    unchosen_methods = list(set(all_methods) - set(chosen_methods))
-    unchosen_counts = pd.Series(
-        data=np.zeros(len(unchosen_methods)),
-        index=unchosen_methods,
-        name="Total Wins",
-    )
-
-    counts = pd.DataFrame(
-        stats_raw["Method"]
-        .value_counts()
-        .rename("Total Wins")
-        .append(unchosen_counts)
-    )
-
-    return counts
 
 def _get_scoring_functions():
     CV_scoring_functions = []

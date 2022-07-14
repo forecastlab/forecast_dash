@@ -1,37 +1,23 @@
-import json
-import pickle
-import re
-
-from datetime import datetime
 from functools import wraps
-from urllib.parse import urlencode
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html, callback, callback_context
 import dash
 
-import humanize
 import numpy as np
 import pandas as pd
 from dash import dash_table
 from common import breadcrumb_layout
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
-from frontmatter import Frontmatter
 from util import (
-    glob_re,
     location_ignore_null,
     parse_state,
-    apply_default_value,
-    watermark_information,
-    dash_kwarg,
 )
-from modelutil import (
+from common import (
     select_best_model,
     get_series_figure,
     get_forecast_data,
-    component_news_4col,
-    component_figs_2col,
 )
 
 
@@ -134,11 +120,26 @@ def _forecast_performance_layout():
         lg=6,
     )
 
+### callback for updating `breadcrumb does not work...
+### Use this function instead
+def _get_series_title(title):
+    try:
+        series_data_dict = get_forecast_data(title)
+    except:
+        return "Series"
 
-def _series_layout():
+    return (
+        series_data_dict["data_source_dict"]["short_title"]
+        if "short_title" in series_data_dict["data_source_dict"]
+        else series_data_dict["data_source_dict"]["title"]
+    )
+
+
+def _series_layout(title=None):
+    breadcrumb_content = _get_series_title(title)
     return dbc.Container([
         breadcrumb_layout(
-            [("Home", "/"), ("Series", "")]
+            [("Home", "/"), (breadcrumb_content, "")]
         ),
         dcc.Loading( 
             dbc.Row([dbc.Col(id="series_graph", lg=12)]) 
@@ -146,8 +147,7 @@ def _series_layout():
         dbc.Row([
             _forecast_info_layout(),
             _forecast_performance_layout(),
-        ])
-
+        ]),
     ])
 
 
@@ -352,15 +352,22 @@ def series_input(inputs, location_id="url"):
 
 inputs = [Input("url", "href")]
 
-@callback(Output("breadcrumb", "children"), inputs)
-@location_ignore_null(inputs, location_id="url")
-@series_input(inputs, location_id="url")
-def update_breadcrumb(series_data_dict):
-    return (
-        series_data_dict["data_source_dict"]["short_title"]
-        if "short_title" in series_data_dict["data_source_dict"]
-        else series_data_dict["data_source_dict"]["title"]
-    )
+# # @callback(Output("test-callback", "children"), inputs)
+# @callback(Output("breadcrumb", "children"), inputs)
+# @location_ignore_null(inputs, location_id="url")
+# @series_input(inputs, location_id="url")
+# def update_breadcrumb(series_data_dict):
+#     return (
+#         series_data_dict["data_source_dict"]["short_title"]
+#         if "short_title" in series_data_dict["data_source_dict"]
+#         else series_data_dict["data_source_dict"]["title"]
+#     )
+##### NOT SURE WHY THIS DOES NOT WORK #####
+# Everything will crash using the callback here... 
+# But it works fine when updating some other elements...
+# Use function `_get_series_title` instead
+
+
 
 @callback(
     Output("series_graph", "children"),
@@ -635,5 +642,5 @@ def download_excel(series_data_dict, **kwargs):
 def layout(title=None):
     return html.Div([
         dcc.Location(id="url", refresh=False),
-        _series_layout(),
+        _series_layout(title),
     ])

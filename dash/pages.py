@@ -43,7 +43,10 @@ def dash_kwarg(inputs):
 
     return accept_func
 
-def sort_filter_results(unique_series_titles, forecast_series_dicts, sort_by = 'a_z', *kwargs):
+
+def sort_filter_results(
+    unique_series_titles, forecast_series_dicts, sort_by="a_z", *kwargs
+):
 
     df = []
 
@@ -55,11 +58,11 @@ def sort_filter_results(unique_series_titles, forecast_series_dicts, sort_by = '
 
         df.append([title, best_model, mse])
 
-    df = pd.DataFrame(df, columns = ['Title','BestModel','MSE'])
+    df = pd.DataFrame(df, columns=["Title", "BestModel", "MSE"])
 
     if sort_by == "a_z":
         df.sort_values(by=["Title"], ascending=True, inplace=True)
-    
+
     if sort_by == "z_a":
         df.sort_values(by=["Title"], ascending=False, inplace=True)
 
@@ -70,8 +73,9 @@ def sort_filter_results(unique_series_titles, forecast_series_dicts, sort_by = '
     # if sort_by == "mse_desc":
     #     df.sort_values(by=["MSE"], ascending=False, inplace=True)
 
-    sort_unique_series_title = df['Title'].values
+    sort_unique_series_title = df["Title"].values
     return sort_unique_series_title
+
 
 def get_forecast_plot_data(series_df, forecast_df):
 
@@ -1124,7 +1128,7 @@ class Series(BootstrapApp):
                 8: "Quarterly",
                 4: "Yearly",
             }
-            
+
             return (
                 forecast_len_map_numbers[forecasts_len],
                 forecast_len_map_names[forecasts_len],
@@ -1506,9 +1510,8 @@ def match_names(forecast_dicts, name_input):
         if re_results is not None:
             matched_series_names.append(series_title)
 
-
-
     return set(matched_series_names)
+
 
 class Search(BootstrapApp):
     def setup(self):
@@ -1532,29 +1535,44 @@ class Search(BootstrapApp):
                             [
                                 dbc.Col(
                                     [
-                                        dbc.Row([
-                                            dbc.Col([html.H4("Results")],), 
-                                            dbc.Col(["Sort by:",
-                                                dcc.Dropdown(
-                                                    id='results_sort_input',
-                                                    clearable=False,
-                                                    options=[
-                                                        {'label': 'A-Z Ascending', 'value': 'a_z'},
-                                                        {'label': 'A-Z Descending', 'value': 'z_a'},
-                                                        # {'label': 'MSE Ascending', 'value': 'mse_asc'},
-                                                        # {'label': 'MSE Descending', 'value': 'mse_desc'},
-                                                    ],
-                                                    value='a_z'
-                                                )],
-                                                align = "left",lg=2, sm=1
+                                        dbc.Row(
+                                            [
+                                                dbc.Col(
+                                                    [html.H4("Results")],
                                                 ),
-
+                                                dbc.Col(
+                                                    [
+                                                        "Sort by:",
+                                                        dcc.Dropdown(
+                                                            id="results_sort_input",
+                                                            clearable=False,
+                                                            options=[
+                                                                {
+                                                                    "label": "A-Z Ascending",
+                                                                    "value": "a_z",
+                                                                },
+                                                                {
+                                                                    "label": "A-Z Descending",
+                                                                    "value": "z_a",
+                                                                },
+                                                                # {'label': 'MSE Ascending', 'value': 'mse_asc'},
+                                                                # {'label': 'MSE Descending', 'value': 'mse_desc'},
+                                                            ],
+                                                            value="a_z",
+                                                        ),
+                                                    ],
+                                                    align="left",
+                                                    lg=2,
+                                                    sm=1,
+                                                ),
                                             ],
-                                        className="flex-grow-1",),
-                                        dbc.Row(dcc.Loading(
-                                            html.Div(id="filter_results")
+                                            className="flex-grow-1",
                                         ),
-                                        )
+                                        dbc.Row(
+                                            dcc.Loading(
+                                                html.Div(id="filter_results")
+                                            ),
+                                        ),
                                     ],
                                     lg=12,
                                     sm=12,
@@ -1569,23 +1587,28 @@ class Search(BootstrapApp):
 
         def filter_panel_children(params, tags, methods):
             children = [
-            dbc.Row([
-                dbc.Col(
-                    html.Div(
-                        [
-                            html.H4("Filters"),
-                            dbc.Label("Name", html_for="name"),
-                            apply_default_value(params)(dbc.Input)(
-                                id="name",
-                                placeholder="Name of a series or method...",
-                                type="search",
-                                value="",
-                            ),
-                            dbc.FormText("Type something in the box above"),
-                        ],
-                        className="mb-3",
-                    )
-                ),],),
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            html.Div(
+                                [
+                                    html.H4("Filters"),
+                                    dbc.Label("Name", html_for="name"),
+                                    apply_default_value(params)(dbc.Input)(
+                                        id="name",
+                                        placeholder="Name of a series or method...",
+                                        type="search",
+                                        value="",
+                                    ),
+                                    dbc.FormText(
+                                        "Type something in the box above"
+                                    ),
+                                ],
+                                className="mb-3",
+                            )
+                        ),
+                    ],
+                ),
                 # dbc.Col(
                 #     html.Div(
                 #         [
@@ -1621,7 +1644,7 @@ class Search(BootstrapApp):
 
             return children
 
-        component_ids = ["name"] #, "tags", "methods"]
+        component_ids = ["name"]  # , "tags", "methods"]
 
         @self.callback(
             Output("filter_panel", "children"), [Input("url", "href")]
@@ -1657,11 +1680,14 @@ class Search(BootstrapApp):
 
         @self.callback(
             Output("filter_results", "children"),
-            inputs = [Input(i, "value") for i in component_ids] + [Input('results_sort_input', 'value')],
+            inputs=[Input(i, "value") for i in component_ids]
+            + [Input("results_sort_input", "value")],
         )
-        @dash_kwarg([Input(i, "value") for i in component_ids] + [Input('results_sort_input', 'value')])
+        @dash_kwarg(
+            [Input(i, "value") for i in component_ids]
+            + [Input("results_sort_input", "value")]
+        )
         def filter_results(**kwargs):
-
 
             # Fix up name
             if type(kwargs["name"]) == list:
@@ -1697,11 +1723,17 @@ class Search(BootstrapApp):
                 sorted(set.intersection(*list_filter_matches))
             )
 
-            unique_series_titles = sort_filter_results(unique_series_titles, forecast_series_dicts, sort_by = kwargs['results_sort_input'], )
+            unique_series_titles = sort_filter_results(
+                unique_series_titles,
+                forecast_series_dicts,
+                sort_by=kwargs["results_sort_input"],
+            )
 
             if len(unique_series_titles) > 0:
 
-                def make_card(item_title, url_title, thumbnail_figure, best_model):
+                def make_card(
+                    item_title, url_title, thumbnail_figure, best_model
+                ):
                     return dbc.Card(
                         [
                             html.A(
@@ -1714,7 +1746,9 @@ class Search(BootstrapApp):
                                         # ),
                                         # src = "https://dash-bootstrap-components.opensource.faculty.ai/static/images/placeholder286x180.png",
                                         top=True,
-                                        style={"opacity": 0.3,},
+                                        style={
+                                            "opacity": 0.3,
+                                        },
                                     ),
                                     dbc.CardImgOverlay(
                                         dbc.CardBody(
@@ -1722,36 +1756,31 @@ class Search(BootstrapApp):
                                                 html.H4(
                                                     item_title,
                                                     className="card-title align-item-start",
-                                                                                    style={
-                                    "color": "black",
-                                    "font-weight": "bold",
-                                    "text-align": "center",
-                                },
-                                                ),html.P(),
+                                                    style={
+                                                        "color": "black",
+                                                        "font-weight": "bold",
+                                                        "text-align": "center",
+                                                    },
+                                                ),
+                                                html.P(),
                                                 html.P(
-                                                   
                                                     f"{best_model}",
                                                     className="card-text align-item-end",
                                                     style={
-                                    "color": "black",
-                                    "font-weight": "italic",
-                                    "text-align": "right",
-                                },
+                                                        "color": "black",
+                                                        "font-weight": "italic",
+                                                        "text-align": "right",
+                                                    },
                                                 ),
                                             ],
-                                            className = "card-img-overlay d-flex flex-column justify-content-end",
+                                            className="card-img-overlay d-flex flex-column justify-content-end",
                                         ),
                                     ),
-
                                 ],
-                                
                                 href=f"/series?{url_title}",
-
                             )
                         ]
                     )
-
-
 
                 n_series = len(unique_series_titles)
 
@@ -1763,10 +1792,10 @@ class Search(BootstrapApp):
                     url_title = urlencode({"title": item_title})
 
                     title = (
-                                series_data["data_source_dict"]["short_title"]
-                                if "short_title" in series_data["data_source_dict"]
-                                else series_data["data_source_dict"]["title"]
-                            )
+                        series_data["data_source_dict"]["short_title"]
+                        if "short_title" in series_data["data_source_dict"]
+                        else series_data["data_source_dict"]["title"]
+                    )
 
                     try:
                         thumbnail_figure = open(
@@ -1777,11 +1806,15 @@ class Search(BootstrapApp):
                         # if no thumbnail image generated
                         thumbnail_figure = "https://dash-bootstrap-components.opensource.faculty.ai/static/images/placeholder286x180.png"
 
-                    best_model = select_best_model(forecast_series_dicts[item_title])
+                    best_model = select_best_model(
+                        forecast_series_dicts[item_title]
+                    )
 
                     results_list.append(
                         dbc.Col(
-                            make_card(title, url_title, thumbnail_figure, best_model),
+                            make_card(
+                                title, url_title, thumbnail_figure, best_model
+                            ),
                             sm=3,
                         ),
                     )

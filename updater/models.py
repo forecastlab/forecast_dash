@@ -663,28 +663,27 @@ class RComb(RDirectForecastModel):
 
     r_forecast_model_name = "comb"
 
+
 # prophet model
 class FBProphet(ForecastModel):
-    name = 'facebook-prophet'
+    name = "facebook-prophet"
 
-    method = 'facebook-prophet'
+    method = "facebook-prophet"
 
     def fit(self, y):
         # rename two column as `date` and `y` per prophet requirement
-        self.y = y.reset_index().rename(columns={'date':'ds', 'value':'y'})
+        self.y = y.reset_index().rename(columns={"date": "ds", "value": "y"})
 
         self.model = Prophet().fit(self.y)
 
     def _make_future(self):
-        '''make future dataframe for prediction'''
-        return self.model.make_future_dataframe(
-            periods=self.h
-        ).tail(self.h)
-        
+        """make future dataframe for prediction"""
+        return self.model.make_future_dataframe(periods=self.h).tail(self.h)
+
     def predict(self):
         # make future prediction dataframe
         future = self._make_future()
-        return self.model.predict(future)['yhat'].to_numpy()
+        return self.model.predict(future)["yhat"].to_numpy()
 
     def predict_withci(self):
         future = self._make_future()
@@ -695,11 +694,14 @@ class FBProphet(ForecastModel):
             forecast_df = self.model.predict(future)
 
             # add intervals
-            forecast_dict[f"LB_{self.level[i]}"] = forecast_df['yhat_lower'].to_numpy()
-            forecast_dict[f"UB_{self.level[i]}"] = forecast_df['yhat_upper'].to_numpy()
+            forecast_dict[f"LB_{self.level[i]}"] = forecast_df[
+                "yhat_lower"
+            ].to_numpy()
+            forecast_dict[f"UB_{self.level[i]}"] = forecast_df[
+                "yhat_upper"
+            ].to_numpy()
 
         return forecast_dict
 
     def description(self):
         return self.model
-

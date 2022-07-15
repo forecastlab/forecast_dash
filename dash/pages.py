@@ -28,7 +28,8 @@ from util import (
 import io
 import base64
 
-from slugify import slugify
+import plotly.graph_objects as go
+from base64 import b64encode
 
 
 def dash_kwarg(inputs):
@@ -43,6 +44,35 @@ def dash_kwarg(inputs):
 
     return accept_func
 
+def sort_filter_results(unique_series_titles, forecast_series_dicts, sort_by = 'a_z', *kwargs):
+
+    df = []
+
+    for item_title in unique_series_titles:
+        series_data = forecast_series_dicts[item_title]
+        title = series_data["data_source_dict"]["title"]
+        best_model = select_best_model(forecast_series_dicts[item_title])
+        mse = series_data["all_forecasts"][best_model]["cv_score"]["MSE"]
+
+        df.append([title, best_model, mse])
+
+    df = pd.DataFrame(df, columns = ['Title','BestModel','MSE'])
+
+    if sort_by == "a_z":
+        df.sort_values(by=["Title"], ascending=True, inplace=True)
+    
+    if sort_by == "z_a":
+        df.sort_values(by=["Title"], ascending=False, inplace=True)
+
+    # Keeping this for the moment, but not currently active
+    # if sort_by == "mse_asc":
+    #     df.sort_values(by=["MSE"], ascending=True, inplace=True)
+
+    # if sort_by == "mse_desc":
+    #     df.sort_values(by=["MSE"], ascending=False, inplace=True)
+
+    sort_unique_series_title = df['Title'].values
+    return sort_unique_series_title
 
 def get_forecast_plot_data(series_df, forecast_df):
 
@@ -315,7 +345,6 @@ def get_series_figure(data_dict, model_name):
 
 
 def get_forecast_data(title):
-    title = slugify(title)
     f = open(f"../data/forecasts/{title}.pkl", "rb")
     data_dict = pickle.load(f)
     return data_dict
@@ -1096,48 +1125,6 @@ class Series(BootstrapApp):
                 4: "Yearly",
             }
 
-
-
-            return (
-                forecast_len_map_numbers[forecasts_len],
-                forecast_len_map_names[forecasts_len],
-            )
-
-        def create_metadata_table(series_data_dict, **kwargs):
-
-            metadata_df = {}
-
-            metadata_df["Forecast Date"] = series_data_dict[
-                "forecasted_at"
-            ].strftime("%Y-%m-%d %H:%M:%S")
-            metadata_df["Download Date"] = series_data_dict["downloaded_dict"][
-                "downloaded_at"
-            ].strftime("%Y-%m-%d %H:%M:%S")
-
-            metadata_df["Version"] = series_data_dict["downloaded_dict"][
-                "data_version"
-            ]
-
-            (
-                metadata_df["Period Frequency"],
-                metadata_df["Period Frequency Name"],
-            ) = infer_frequency_from_forecast(series_data_dict, **kwargs)
-
-            metadata_df["Data Source"] = series_data_dict["data_source_dict"][
-                "url"
-            ]
-            metadata_df[
-                "Forecast Source"
-            ] = "https://business-forecast-lab.com/"
-
-            metadata_df = pd.DataFrame.from_dict(metadata_df, orient="index")
-            metadata_df.columns = ["Value"]
-
-            return metadata_df
-
-        # Format to clean string so tables don't have very large numbers. anything larger than 4 characters can go to scientific notation.
-        def cv_table_clean_notation(x):
-
             return (
                 forecast_len_map_numbers[forecasts_len],
                 forecast_len_map_names[forecasts_len],
@@ -1183,7 +1170,7 @@ class Series(BootstrapApp):
             #     if len(str(int(x))) <= 4
             #     else "{:,.2e}".format(x)
             # )
-            return "{:,.2f}".format(x)
+            return np.round(x, 2) #"{:,.2f}".format(x)
 
         def cv_table_by_benchmark(df, benchmark_col=None, **kwargs):
             """
@@ -1228,7 +1215,7 @@ class Series(BootstrapApp):
                 "MSE": "Mean Squared Error of the point forecasts",
                 "MASE": "Mean Absolute Scaled Error of the point forecasts",
                 "95% Winkler": "Winkler score for the 95% prediction interval",
-                "wQL25": "The Weighted Quantile Loss metric for the 25% quantile",
+                "wQL50": "The Weighted Quantile Loss metric for the 50% quantile",
                 "WAPE": "Weighted Absolute Percentage Error of the point forecasts",
                 "SMAPE": "Symmetric Mean Absolute Percentage Error of the point forecasts",
             }
@@ -1499,47 +1486,29 @@ def match_names(forecast_dicts, name_input):
             if re_results is not None:
                 matched_series_names.append(series_title)
 
-    return set(matched_series_names)
-
-
-def match_tags(forecast_dicts, tags):
-    if not tags or tags == "":
-        return set(forecast_dicts.keys())
-
-    matched_series_names = []
-
-    if type(tags) == str:
-        tags = tags.split(",")
-
-    tags = set(tags)
-
-    for series_title, forecast_dict in forecast_dicts.items():
-        series_tags = forecast_dict["data_source_dict"]["tags"]
-
-        if tags.issubset(set(series_tags)):
+        # Search tags
+        series_tags = " ".join(forecast_dict["data_source_dict"]["tags"])
+        re_results = re.search(
+            name_terms,
+            series_tags,
+            re.IGNORECASE,
+        )
+        # print(f"{series_title}, and tages :{series_tags}")
+        if re_results is not None:
             matched_series_names.append(series_title)
 
-    return set(matched_series_names)
-
-
-def match_methods(forecast_dicts, methods):
-    if not methods or methods == "":
-        return set(forecast_dicts.keys())
-
-    matched_series_names = []
-
-    if type(methods) == str:
-        methods = methods.split(",")
-
-    methods = set(methods)
-
-    for series_title, forecast_dict in forecast_dicts.items():
-
-        if select_best_model(forecast_dict) in methods:
+        # Search methods
+        re_results = re.search(
+            name_terms,
+            select_best_model(forecast_dict),
+            re.IGNORECASE,
+        )
+        if re_results is not None:
             matched_series_names.append(series_title)
 
-    return set(matched_series_names)
 
+
+    return set(matched_series_names)
 
 class Search(BootstrapApp):
     def setup(self):
@@ -1558,18 +1527,37 @@ class Search(BootstrapApp):
                 dbc.Container(
                     [
                         breadcrumb_layout([("Home", "/"), ("Filter", "")]),
+                        dbc.Row(dbc.Col(id="filter_panel", lg=12, sm=12)),
                         dbc.Row(
                             [
-                                dbc.Col(id="filter_panel", lg=3, sm=3),
                                 dbc.Col(
                                     [
-                                        html.H4("Results"),
-                                        dcc.Loading(
+                                        dbc.Row([
+                                            dbc.Col([html.H4("Results")],), 
+                                            dbc.Col(["Sort by:",
+                                                dcc.Dropdown(
+                                                    id='results_sort_input',
+                                                    clearable=False,
+                                                    options=[
+                                                        {'label': 'A-Z Ascending', 'value': 'a_z'},
+                                                        {'label': 'A-Z Descending', 'value': 'z_a'},
+                                                        # {'label': 'MSE Ascending', 'value': 'mse_asc'},
+                                                        # {'label': 'MSE Descending', 'value': 'mse_desc'},
+                                                    ],
+                                                    value='a_z'
+                                                )],
+                                                align = "left",lg=2, sm=1
+                                                ),
+
+                                            ],
+                                        className="flex-grow-1",),
+                                        dbc.Row(dcc.Loading(
                                             html.Div(id="filter_results")
                                         ),
+                                        )
                                     ],
-                                    lg=9,
-                                    sm=9,
+                                    lg=12,
+                                    sm=12,
                                 ),
                             ]
                         ),
@@ -1581,49 +1569,59 @@ class Search(BootstrapApp):
 
         def filter_panel_children(params, tags, methods):
             children = [
-                html.Div(
-                    [
-                        html.H4("Filters"),
-                        dbc.Label("Name", html_for="name"),
-                        apply_default_value(params)(dbc.Input)(
-                            id="name",
-                            placeholder="Name of a series...",
-                            type="search",
-                            value="",
-                        ),
-                        dbc.FormText("Type something in the box above"),
-                    ],
-                    className="mb-3",
-                ),
-                html.Div(
-                    [
-                        dbc.Label("Tags", html_for="tags"),
-                        apply_default_value(params)(dbc.Checklist)(
-                            options=[{"label": t, "value": t} for t in tags],
-                            value=[],
-                            id="tags",
-                        ),
-                    ],
-                    className="mb-3",
-                ),
-                html.Div(
-                    [
-                        dbc.Label("Method", html_for="methods"),
-                        apply_default_value(params)(dbc.Checklist)(
-                            options=[
-                                {"label": m, "value": m} for m in methods
-                            ],
-                            value=[],
-                            id="methods",
-                        ),
-                    ],
-                    className="mb-3",
-                ),
+            dbc.Row([
+                dbc.Col(
+                    html.Div(
+                        [
+                            html.H4("Filters"),
+                            dbc.Label("Name", html_for="name"),
+                            apply_default_value(params)(dbc.Input)(
+                                id="name",
+                                placeholder="Name of a series or method...",
+                                type="search",
+                                value="",
+                            ),
+                            dbc.FormText("Type something in the box above"),
+                        ],
+                        className="mb-3",
+                    )
+                ),],),
+                # dbc.Col(
+                #     html.Div(
+                #         [
+                #             dbc.Label("Tags", html_for="tags"),
+                #             apply_default_value(params)(dbc.Checklist)(
+                #                 options=[
+                #                     {"label": t, "value": t} for t in tags[:1]
+                #                 ],
+                #                 value=[],
+                #                 id="tags",
+                #             ),
+                #         ],
+                #         className="mb-3",
+                #     )
+                # # ),
+                # dbc.Row(
+                #     html.Div(
+                #         [
+                #             # dbc.Label("Method", html_for="methods"),
+                #             # apply_default_value(params)(dbc.Checklist)(
+                #             dbc.Checklist(
+                #                 options=[
+                #                     {"label": "Sort by MSE", "value": "mse"}
+                #                 ],
+                #                 value=[],
+                #                 id="sortingoption",
+                #             ),
+                #         ],
+                #         className="mb-3",
+                #     )
+                # ),
             ]
 
             return children
 
-        component_ids = ["name", "tags", "methods"]
+        component_ids = ["name"] #, "tags", "methods"]
 
         @self.callback(
             Output("filter_panel", "children"), [Input("url", "href")]
@@ -1659,10 +1657,11 @@ class Search(BootstrapApp):
 
         @self.callback(
             Output("filter_results", "children"),
-            [Input(i, "value") for i in component_ids],
+            inputs = [Input(i, "value") for i in component_ids] + [Input('results_sort_input', 'value')],
         )
-        @dash_kwarg([Input(i, "value") for i in component_ids])
+        @dash_kwarg([Input(i, "value") for i in component_ids] + [Input('results_sort_input', 'value')])
         def filter_results(**kwargs):
+
 
             # Fix up name
             if type(kwargs["name"]) == list:
@@ -1682,8 +1681,8 @@ class Search(BootstrapApp):
 
             filters = {
                 "name": match_names,
-                "tags": match_tags,
-                "methods": match_methods,
+                # "tags": match_tags,
+                # "methods": match_methods,
             }
 
             list_filter_matches = []
@@ -1698,38 +1697,100 @@ class Search(BootstrapApp):
                 sorted(set.intersection(*list_filter_matches))
             )
 
+            unique_series_titles = sort_filter_results(unique_series_titles, forecast_series_dicts, sort_by = kwargs['results_sort_input'], )
+
             if len(unique_series_titles) > 0:
+
+                def make_card(item_title, url_title, thumbnail_figure, best_model):
+                    return dbc.Card(
+                        [
+                            html.A(
+                                [
+                                    dbc.CardImg(
+                                        src=thumbnail_figure,
+                                        # dcc.Graph(
+                                        #     figure=thumbnail_figure,
+                                        #     config={"displayModeBar": False},
+                                        # ),
+                                        # src = "https://dash-bootstrap-components.opensource.faculty.ai/static/images/placeholder286x180.png",
+                                        top=True,
+                                        style={"opacity": 0.3,},
+                                    ),
+                                    dbc.CardImgOverlay(
+                                        dbc.CardBody(
+                                            [
+                                                html.H4(
+                                                    item_title,
+                                                    className="card-title align-item-start",
+                                                                                    style={
+                                    "color": "black",
+                                    "font-weight": "bold",
+                                    "text-align": "center",
+                                },
+                                                ),html.P(),
+                                                html.P(
+                                                   
+                                                    f"{best_model}",
+                                                    className="card-text align-item-end",
+                                                    style={
+                                    "color": "black",
+                                    "font-weight": "italic",
+                                    "text-align": "right",
+                                },
+                                                ),
+                                            ],
+                                            className = "card-img-overlay d-flex flex-column justify-content-end",
+                                        ),
+                                    ),
+
+                                ],
+                                
+                                href=f"/series?{url_title}",
+
+                            )
+                        ]
+                    )
+
+
+
+                n_series = len(unique_series_titles)
 
                 results_list = []
 
                 for item_title in unique_series_titles:
+
                     series_data = forecast_series_dicts[item_title]
                     url_title = urlencode({"title": item_title})
-                    thumbnail_figure = get_thumbnail_figure(series_data)
+
+                    title = (
+                                series_data["data_source_dict"]["short_title"]
+                                if "short_title" in series_data["data_source_dict"]
+                                else series_data["data_source_dict"]["title"]
+                            )
+
+                    try:
+                        thumbnail_figure = open(
+                            f"../data/thumbnails/{item_title}.pkl", "rb"
+                        )
+                        thumbnail_figure = pickle.load(thumbnail_figure)
+                    except:
+                        # if no thumbnail image generated
+                        thumbnail_figure = "https://dash-bootstrap-components.opensource.faculty.ai/static/images/placeholder286x180.png"
+
+                    best_model = select_best_model(forecast_series_dicts[item_title])
 
                     results_list.append(
-                        html.Div(
-                            [
-                                html.A(
-                                    [
-                                        html.H5(item_title),
-                                        dcc.Graph(
-                                            figure=thumbnail_figure,
-                                            config={"displayModeBar": False},
-                                        ),
-                                    ],
-                                    href=f"/series?{url_title}",
-                                ),
-                                html.Hr(),
-                            ]
-                        )
+                        dbc.Col(
+                            make_card(title, url_title, thumbnail_figure, best_model),
+                            sm=3,
+                        ),
                     )
 
                 results = [
                     html.P(
-                        f"{len(unique_series_titles)} result{'s' if len(unique_series_titles) > 1 else ''} found"
+                        f"{n_series} result{'s' if n_series > 1 else ''} found"
                     ),
-                    html.Div(results_list),
+                    html.Div(dbc.Row(results_list)),
                 ]
             else:
                 results = [html.P("No results found")]

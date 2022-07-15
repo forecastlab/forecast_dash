@@ -351,7 +351,7 @@ class About(BootstrapApp):
                                             "Questions or suggestions? Feel free to reach out to the team by emailing: ",
                                             html.A(
                                                 "app.forecasting-lab@sydney.edu.au",
-                                                href="app.forecasting-lab@sydney.edu.au",
+                                                href="mailto:app.forecasting-lab@sydney.edu.au",
                                             ),
                                         ]
                                     ),

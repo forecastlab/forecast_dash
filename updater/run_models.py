@@ -18,7 +18,7 @@ import importlib
 # monthly data (freq = 12): 18 forecasts
 # quarterly data (freq = 4): 8 forecasts
 # weekly data (freq = 52): 13 forecasts
-# annual data (freq = 1): 4 forecasts # TODO do we want 4? added this because of WB data.
+# annual data (freq = 1): 4 forecasts
 forecast_len_map = {52: 13, 12: 18, 4: 8, 1: 4}
 default_forecast_len = 8
 p_to_use = 1

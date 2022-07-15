@@ -14,6 +14,8 @@ from requests.exceptions import HTTPError
 import wbgapi as wb  # for world bank data
 import re
 
+from slugify import slugify
+
 
 class DataSource(ABC):
     def __init__(
@@ -26,23 +28,26 @@ class DataSource(ABC):
         self.frequency = frequency
         self.tags = tags
 
+        # slugify title
+        self.filename = slugify(title)
+
     def fetch(self):
 
         try:
             series_df = self.download()
-            hashsum = sha256(series_df.to_csv().encode()).hexdigest()
+            self.hashsum = sha256(series_df.to_csv().encode()).hexdigest()
             # print("  -", hashsum)
             data_version = self.data_versioning()
 
             data = {
-                "hashsum": hashsum,
+                "hashsum": self.hashsum,
                 "series_df": series_df,
                 "downloaded_at": datetime.datetime.now(),
                 "data_version": data_version,
                 "frequency": self.frequency,
             }
 
-            f = open(f"{self.download_path}/{self.title}.pkl", "wb")
+            f = open(f"{self.download_path}/{self.filename}.pkl", "wb")
             pickle.dump(data, f)
             f.close()
             state = "OK"
@@ -58,9 +63,11 @@ class DataSource(ABC):
             f.close()
 
             if not self.hashsum == previous_download["hashsum"]:
-                if "version" in previous_download:
+                if "data_version" in previous_download:
                     data_version += 1
                     print(f"{self.title} - Version Updated")
+                else:
+                    data_version = previous_download["data_version"]
         except:
             data_version = 100000
         finally:

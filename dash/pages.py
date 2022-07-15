@@ -28,6 +28,8 @@ from util import (
 import io
 import base64
 
+from slugify import slugify
+
 
 def dash_kwarg(inputs):
     def accept_func(func):
@@ -313,6 +315,7 @@ def get_series_figure(data_dict, model_name):
 
 
 def get_forecast_data(title):
+    title = slugify(title)
     f = open(f"../data/forecasts/{title}.pkl", "rb")
     data_dict = pickle.load(f)
     return data_dict
@@ -1101,7 +1104,7 @@ class Series(BootstrapApp):
                 "MSE": "Mean Squared Error of the point forecasts",
                 "MASE": "Mean Absolute Scaled Error of the point forecasts",
                 "95% Winkler": "Winkler score for the 95% prediction interval",
-                "wQL50": "The Weighted Quantile Loss metric for the 50% quantile",
+                "wQL25": "The Weighted Quantile Loss metric for the 25% quantile",
                 "WAPE": "Weighted Absolute Percentage Error of the point forecasts",
                 "SMAPE": "Symmetric Mean Absolute Percentage Error of the point forecasts",
             }

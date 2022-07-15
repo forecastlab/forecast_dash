@@ -64,6 +64,7 @@ def sort_filter_results(unique_series_titles, forecast_series_dicts, sort_by = '
     if sort_by == "z_a":
         df.sort_values(by=["Title"], ascending=False, inplace=True)
 
+    # Keeping this for the moment, but not currently active
     if sort_by == "mse_asc":
         df.sort_values(by=["MSE"], ascending=True, inplace=True)
 
@@ -246,12 +247,6 @@ def get_thumbnail_figure(data_dict, lg=12):
             )
         ],
     )
-
-    # fig = go.Figure(dict(data=data, layout=layout))
-    # img_bytes = fig.to_image(format="png")
-    # encoding = base64.b64encode(img_bytes).decode()
-    # img_b64 = "data:image/png;base64," + encoding
-    # return img_b64
 
     return dict(data=data, layout=layout)
 
@@ -1515,46 +1510,6 @@ def match_names(forecast_dicts, name_input):
 
     return set(matched_series_names)
 
-
-# def match_tags(forecast_dicts, tags):
-#     if not tags or tags == "":
-#         return set(forecast_dicts.keys())
-
-#     matched_series_names = []
-
-#     if type(tags) == str:
-#         tags = tags.split(",")
-
-#     tags = set(tags)
-
-#     for series_title, forecast_dict in forecast_dicts.items():
-#         series_tags = forecast_dict["data_source_dict"]["tags"]
-
-#         if tags.issubset(set(series_tags)):
-#             matched_series_names.append(series_title)
-
-#     return set(matched_series_names)
-
-
-# def match_methods(forecast_dicts, methods):
-#     if not methods or methods == "":
-#         return set(forecast_dicts.keys())
-
-#     matched_series_names = []
-
-#     if type(methods) == str:
-#         methods = methods.split(",")
-
-#     methods = set(methods)
-
-#     for series_title, forecast_dict in forecast_dicts.items():
-
-#         if select_best_model(forecast_dict) in methods:
-#             matched_series_names.append(series_title)
-
-#     return set(matched_series_names)
-
-
 class Search(BootstrapApp):
     def setup(self):
 
@@ -1746,22 +1701,6 @@ class Search(BootstrapApp):
 
             if len(unique_series_titles) > 0:
 
-                # def make_card(item_title, url_title):
-                #     return html.Div(
-                #             [
-                #                 html.A(
-                #                     [
-                #                         html.H5(item_title),
-                # dcc.Graph(
-                #     figure=thumbnail_figure,
-                #     config={"displayModeBar": False},
-                # ),
-                #                     ],
-                #                     href=f"/series?{url_title}",
-                #                 ),
-                #                 html.Hr(),
-                #             ]
-                #         )
                 def make_card(item_title, url_title, thumbnail_figure, best_model):
                     return dbc.Card(
                         [
@@ -1807,11 +1746,7 @@ class Search(BootstrapApp):
                                 ],
                                 
                                 href=f"/series?{url_title}",
-                                # style={
-                                #     "color": "black",
-                                #     "font-weight": "bold",
-                                #     "text-align": "center",
-                                # },
+
                             )
                         ]
                     )

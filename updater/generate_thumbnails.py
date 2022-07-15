@@ -153,7 +153,7 @@ def select_best_model(data_dict, CV_score_function="MSE"):
     return model_name
 
 
-def get_thumbnail_figure(data_dict, lg=12):
+def get_static_thumbnail_figure(data_dict, lg=12):
     watermark_config = (
         watermark_information()
     )  # Grab the watermark text and fontsize information
@@ -216,31 +216,31 @@ def get_forecast_data(title):
     data_dict = pickle.load(f)
     return data_dict
 
+# Previous files are from pages.py
+def generate_static_thumbnail(sources_path, download_path):
+    if not os.path.exists(download_path):
+        os.mkdir(download_path)
 
-########## START HERE
-if not os.path.exists("../data/thumbnails"):
-    os.mkdir("../data/thumbnails")
+    data_sources_json_file = open(sources_path)
+    series_list = json.load(data_sources_json_file)
 
-data_sources_json_file = open("../shared_config/data_sources.json")
-series_list = json.load(data_sources_json_file)
+    data_sources_json_file.close()
 
-data_sources_json_file.close()
+    forecast_series_dicts = {}
+    series_titles = []
+    for series_dict in series_list:
+        try:
+            forecast_series_dicts[series_dict["title"]] = get_forecast_data(
+                series_dict["title"]
+            )
+            series_titles.append(series_dict["title"])
+        except FileNotFoundError:
+            continue
 
-forecast_series_dicts = {}
-series_titles = []
-for series_dict in series_list:
-    try:
-        forecast_series_dicts[series_dict["title"]] = get_forecast_data(
-            series_dict["title"]
-        )
-        series_titles.append(series_dict["title"])
-    except FileNotFoundError:
-        continue
+    for item_title in series_titles:
 
-for item_title in series_titles:
-
-    series_data = forecast_series_dicts[item_title]
-    img_b64 = get_thumbnail_figure(series_data)
-    f = open(f"../data/thumbnails/{item_title}.pkl", "wb")
-    pickle.dump(img_b64, f)
-    f.close()
+        series_data = forecast_series_dicts[item_title]
+        img_b64 = get_static_thumbnail_figure(series_data)
+        f = open(f"{download_path}/{item_title}.pkl", "wb")
+        pickle.dump(img_b64, f)
+        f.close()

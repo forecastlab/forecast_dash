@@ -216,6 +216,7 @@ def get_forecast_data(title):
     data_dict = pickle.load(f)
     return data_dict
 
+
 # Previous files are from pages.py
 def generate_static_thumbnail(sources_path, download_path):
     if not os.path.exists(download_path):

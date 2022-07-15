@@ -1,6 +1,6 @@
 from download import download_data
 from run_models import run_models
-from impo
+from generate_thumbnails import generate_static_thumbnail
 import os
 import shutil
 import sys
@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     print("Downloading Data")
     download_data("../shared_config/data_sources.json", "../data/downloads")
-    # print("../shared_config/data_sources.json")
+
     print("Running Models")
     run_models(
         "../shared_config/data_sources.json",
@@ -28,7 +28,9 @@ if __name__ == "__main__":
     )
 
     print("Creating Thumbnails")
-    generate_static_thumbnail("../shared_config/data_sources.json", "../data/thumbnails")
+    generate_static_thumbnail(
+        "../shared_config/data_sources.json", "../data/thumbnails"
+    )
 
     if os.path.isdir("/nginx_cache"):
         print("Clearing Cache")

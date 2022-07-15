@@ -1815,7 +1815,10 @@ class Search(BootstrapApp):
                             make_card(
                                 title, url_title, thumbnail_figure, best_model
                             ),
-                            sm=3,
+                            sm=12,
+                            md=6,
+                            lg=4,
+                            xl=3,
                         ),
                     )
 

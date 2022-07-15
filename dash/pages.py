@@ -28,6 +28,8 @@ from util import (
 import io
 import base64
 
+from slugify import slugify
+
 
 def dash_kwarg(inputs):
     def accept_func(func):
@@ -313,6 +315,7 @@ def get_series_figure(data_dict, model_name):
 
 
 def get_forecast_data(title):
+    title = slugify(title)
     f = open(f"../data/forecasts/{title}.pkl", "rb")
     data_dict = pickle.load(f)
     return data_dict
@@ -1093,6 +1096,48 @@ class Series(BootstrapApp):
                 4: "Yearly",
             }
 
+
+
+            return (
+                forecast_len_map_numbers[forecasts_len],
+                forecast_len_map_names[forecasts_len],
+            )
+
+        def create_metadata_table(series_data_dict, **kwargs):
+
+            metadata_df = {}
+
+            metadata_df["Forecast Date"] = series_data_dict[
+                "forecasted_at"
+            ].strftime("%Y-%m-%d %H:%M:%S")
+            metadata_df["Download Date"] = series_data_dict["downloaded_dict"][
+                "downloaded_at"
+            ].strftime("%Y-%m-%d %H:%M:%S")
+
+            metadata_df["Version"] = series_data_dict["downloaded_dict"][
+                "data_version"
+            ]
+
+            (
+                metadata_df["Period Frequency"],
+                metadata_df["Period Frequency Name"],
+            ) = infer_frequency_from_forecast(series_data_dict, **kwargs)
+
+            metadata_df["Data Source"] = series_data_dict["data_source_dict"][
+                "url"
+            ]
+            metadata_df[
+                "Forecast Source"
+            ] = "https://business-forecast-lab.com/"
+
+            metadata_df = pd.DataFrame.from_dict(metadata_df, orient="index")
+            metadata_df.columns = ["Value"]
+
+            return metadata_df
+
+        # Format to clean string so tables don't have very large numbers. anything larger than 4 characters can go to scientific notation.
+        def cv_table_clean_notation(x):
+
             return (
                 forecast_len_map_numbers[forecasts_len],
                 forecast_len_map_names[forecasts_len],
@@ -1183,7 +1228,7 @@ class Series(BootstrapApp):
                 "MSE": "Mean Squared Error of the point forecasts",
                 "MASE": "Mean Absolute Scaled Error of the point forecasts",
                 "95% Winkler": "Winkler score for the 95% prediction interval",
-                "wQL50": "The Weighted Quantile Loss metric for the 50% quantile",
+                "wQL25": "The Weighted Quantile Loss metric for the 25% quantile",
                 "WAPE": "Weighted Absolute Percentage Error of the point forecasts",
                 "SMAPE": "Symmetric Mean Absolute Percentage Error of the point forecasts",
             }

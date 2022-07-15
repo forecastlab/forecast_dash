@@ -20,7 +20,7 @@ from slugify import slugify
 # monthly data (freq = 12): 18 forecasts
 # quarterly data (freq = 4): 8 forecasts
 # weekly data (freq = 52): 13 forecasts
-# annual data (freq = 1): 4 forecasts # TODO do we want 4? added this because of WB data.
+# annual data (freq = 1): 4 forecasts
 forecast_len_map = {52: 13, 12: 18, 4: 8, 1: 4}
 default_forecast_len = 8
 p_to_use = 1
@@ -37,6 +37,7 @@ model_str_list = [
     "RComb",
     "LinearRegressionForecast",
     "RNN_M4_benchmark",
+    "FBProphet",
 ]
 
 # import model classes
@@ -225,7 +226,7 @@ def cross_val_score(model, y, cv, fit_params={}):
         score: []
         for score in ["MSE", "MASE"]
         + [f"{x}% Winkler" for x in level]
-        + ["wQL50", "WAPE", "SMAPE"]
+        + ["wQL25", "WAPE", "SMAPE"]
     }  # list of scores for each scoring function
 
     for train_index, test_index in cv.split(y):
@@ -267,8 +268,13 @@ def cross_val_score(model, y, cv, fit_params={}):
             )
 
         # Scores for wQL50
-        errors["wQL50"].append(
-            sf.weighted_quantile_loss(model_predictions, 0.5)
+        # errors["wQL50"].append(
+        #     sf.weighted_quantile_loss(model_predictions, 0.5)
+        # )
+
+        # Scores for wQL25
+        errors["wQL25"].append(
+            sf.weighted_quantile_loss(forecast_dict_index["LB_50"], 0.25)
         )
 
         # Scores for WAPE
@@ -346,6 +352,11 @@ def run_job(job_dict, cv, model_params):
 
     except:
         result = {"state": "FAIL"}
+
+    # ### Following block was used for debug
+    # except Exception as e:
+    #     print(f"{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}")
+    #     result = {"state": "FAIL"}
 
     print(f"{job_dict['title']} - {job_dict['model_cls']} - {result['state']}")
 

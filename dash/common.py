@@ -9,6 +9,8 @@ import pytz
 
 import pickle
 
+from slugify import slugify
+
 from datetime import datetime
 from urllib.parse import urlencode
 
@@ -541,6 +543,7 @@ def get_series_figure(data_dict, model_name):
 
 
 def get_forecast_data(title):
+    title = slugify(title)
     f = open(f"../data/forecasts/{title}.pkl", "rb")
     data_dict = pickle.load(f)
     return data_dict

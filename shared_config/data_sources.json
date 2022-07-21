@@ -85,7 +85,7 @@
     "url": "https://api.stlouisfed.org/fred/series/observations?series_id=UNRATE",
     "frequency": "MS",
     "tags": [
-      "US",
+      "United States",
       "Economic"
     ]
   },
@@ -95,7 +95,7 @@
     "url": "https://api.stlouisfed.org/fred/series/observations?series_id=CPGDPAI",
     "frequency": "Q",
     "tags": [
-      "US",
+      "United States",
       "Economic"
     ]
   },
@@ -106,7 +106,7 @@
     "url": "https://api.stlouisfed.org/fred/series/observations?series_id=PCEPI&units=pc1",
     "frequency": "MS",
     "tags": [
-      "US",
+      "United States",
       "Economic"
     ]
   },
@@ -117,7 +117,7 @@
     "url": "https://api.stlouisfed.org/fred/series/observations?series_id=GPDI",
     "frequency": "MS",
     "tags": [
-      "US",
+      "United States",
       "Economic"
     ]
   },
@@ -128,7 +128,7 @@
     "url": "https://api.stlouisfed.org/fred/series/observations?series_id=BPCCRO1Q156NBEA",
     "frequency": "MS",
     "tags": [
-      "US",
+      "United States",
       "Economic"
     ]
   },
@@ -139,7 +139,7 @@
     "url": "https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&frequency=m",
     "frequency": "MS",
     "tags": [
-      "US",
+      "United States",
       "Economic"
     ]
   },
@@ -150,7 +150,7 @@
     "url": "https://api.stlouisfed.org/fred/series/observations?series_id=RRSFS&frequency=m",
     "frequency": "MS",
     "tags": [
-      "US",
+      "United States",
       "Economic"
     ]
   },
@@ -160,7 +160,7 @@
     "url": "https://api.ons.gov.uk/timeseries/czbh/dataset/mm23/data",
     "frequency": "MS",
     "tags": [
-      "UK",
+      "United Kingdom",
       "Economic"
     ]
   },
@@ -170,7 +170,7 @@
     "url": "https://api.ons.gov.uk/timeseries/mgsx/dataset/lms/data",
     "frequency": "MS",
     "tags": [
-      "UK",
+      "United Kingdom",
       "Economic"
     ]
   },
@@ -180,7 +180,7 @@
     "url": "https://api.ons.gov.uk/timeseries/ihyq/dataset/qna/data",
     "frequency": "Q",
     "tags": [
-      "UK",
+      "United Kingdom",
       "Economic"
     ]
   },
@@ -190,7 +190,7 @@
     "url": "https://api.ons.gov.uk/timeseries/hbop/dataset/pnbp/data",
     "frequency": "Q",
     "tags": [
-      "UK",
+      "United Kingdom",
       "Economic"
     ]
   },
@@ -200,7 +200,7 @@
     "url": "https://api.ons.gov.uk/timeseries/kac3/dataset/lms/data",
     "frequency": "MS",
     "tags": [
-      "UK",
+      "United Kingdom",
       "Economic"
     ]
   },
@@ -210,7 +210,7 @@
     "url": "https://api.ons.gov.uk/timeseries/j5c4/dataset/drsi/data",
     "frequency": "MS",
     "tags": [
-      "UK",
+      "United Kingdom",
       "Economic"
     ]
   },

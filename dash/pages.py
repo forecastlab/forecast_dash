@@ -29,6 +29,7 @@ import io
 import base64
 
 from slugify import slugify
+import plotly.express as px
 
 
 def dash_kwarg(inputs):
@@ -348,7 +349,7 @@ def get_series_figure(data_dict, model_name):
 
 
 def get_forecast_data(title):
-    title = slugify(title)
+    # title = slugify(title)
     f = open(f"../data/forecasts/{title}.pkl", "rb")
     data_dict = pickle.load(f)
     return data_dict
@@ -509,6 +510,56 @@ def component_leaderboard_4col(series_list):
     )
 
 
+def world_map_of_forecasts():
+    with open("../shared_config/data_sources.json") as data_json:
+        df = json.load(data_json)
+
+    # Load the list of countries
+    countries_dict = {}
+    countries = pd.read_csv("../data/CountriesList.csv")
+    for c in countries["Country"]:
+        countries_dict[c] = {"Series": 0, "Titles": []}
+
+    tags_lists = {}
+    # Update Dynamic with new countries
+    for d in df:
+        for tag in d["tags"]:
+            if tag in countries_dict:
+                countries_dict[tag]["Series"] += 1
+                countries_dict[tag]["Titles"] += [d["title"]]
+
+    # Basic cleaning for plotly
+    country_data = pd.DataFrame.from_dict(countries_dict, orient="index")
+    country_data["Country"] = country_data.index
+    country_data["Titles"] = [
+        "<br>".join(i) for i in country_data["Titles"].values
+    ]
+    country_data = country_data[country_data["Series"] > 0]
+    country_data = country_data.merge(countries)
+
+    # Plotly express is clean for this
+    fig = px.choropleth(
+        data_frame=country_data,
+        locations="Code",
+        color="Series",
+        hover_name="Country",
+        color_continuous_scale="burgyl",
+        projection="natural earth",
+        hover_data=["Titles"],
+    )
+
+    fig.update_layout(
+        coloraxis_showscale=False,
+        hoverlabel=dict(bgcolor="white", font_size=16, font_family="Rockwell"),
+    )
+
+    fig.update_traces(
+        hovertemplate="<b>%{hovertext}</b><br><br><i>Series: %{z}</i><br>%{customdata[0]}<extra></extra>"
+    )
+
+    return fig
+
+
 class Index(BootstrapApp):
     def setup(self):
 
@@ -567,24 +618,19 @@ class Index(BootstrapApp):
                                     dbc.Col(
                                         [
                                             html.H3(
-                                                "Featured Series",
+                                                "World Map of Featured Series",
                                                 style={"text-align": "center"},
                                             ),
                                             html.A(
                                                 [
                                                     dcc.Graph(
-                                                        figure=get_thumbnail_figure(
-                                                            get_forecast_data(
-                                                                feature_series_title
-                                                            ),
-                                                            lg=8,
-                                                        ),
+                                                        figure=world_map_of_forecasts(),
                                                         config={
                                                             "displayModeBar": False
                                                         },
                                                     )
                                                 ],
-                                                href=f"/series?{urlencode({'title': feature_series_title})}",
+                                                href=f"/search",
                                             ),
                                         ],
                                         lg=8,

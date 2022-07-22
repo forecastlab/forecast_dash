@@ -2,61 +2,61 @@
   {
     "name": "R/forecast",
     "url": "https://cran.r-project.org/package=forecast",
-    "image_url": "assets/poweredby/rforecast.png"
+    "image_url": "/assets/poweredby/rforecast.png"
   },
   {
     "name": "scikit-learn",
     "url": "https://scikit-learn.org/",
-    "image_url": "assets/poweredby/scikitlearn.png"
+    "image_url": "/assets/poweredby/scikitlearn.png"
   },
   {
     "name": "rpy2",
     "url": "https://rpy2.github.io/",
-    "image_url": "assets/poweredby/rpy2.png"
+    "image_url": "/assets/poweredby/rpy2.png"
   },
   {
     "name": "Plotly Dash",
     "url": "https://plotly.com/dash/",
-    "image_url": "assets/poweredby/plotly.png"
+    "image_url": "/assets/poweredby/plotly.png"
   },
   {
     "name": "pandas",
     "url": "https://pandas.pydata.org",
-    "image_url": "assets/poweredby/pandas.png"
+    "image_url": "/assets/poweredby/pandas.png"
   },
   {
     "name": "numpy",
     "url": "https://numpy.org",
-    "image_url": "assets/poweredby/numpy.png"
+    "image_url": "/assets/poweredby/numpy.png"
   },
   {
     "name": "Python",
     "url": "https://www.python.org",
-    "image_url": "assets/poweredby/python.png"
+    "image_url": "/assets/poweredby/python.png"
   },
   {
     "name": "R",
     "url": "https://www.r-project.org",
-    "image_url": "assets/poweredby/r.png"
+    "image_url": "/assets/poweredby/r.png"
   },
   {
     "name": "NGINX",
     "url": "https://www.nginx.com",
-    "image_url": "assets/poweredby/nginx.png"
+    "image_url": "/assets/poweredby/nginx.png"
   },
   {
     "name": "gunicorn",
     "url": "https://gunicorn.org",
-    "image_url": "assets/poweredby/gunicorn.png"
+    "image_url": "/assets/poweredby/gunicorn.png"
   },
   {
     "name": "traefik",
     "url": "https://traefik.io",
-    "image_url": "assets/poweredby/traefik.png"
+    "image_url": "/assets/poweredby/traefik.png"
   },
   {
     "name": "docker",
     "url": "https://www.docker.com/",
-    "image_url": "assets/poweredby/docker.png"
+    "image_url": "/assets/poweredby/docker.png"
   }
 ]

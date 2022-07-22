@@ -25,6 +25,8 @@ from util import (
     glob_re,
     watermark_information,
 )
+import plotly.express as px
+import json
 
 home_route = ("Business Forecast Lab", "/")
 
@@ -98,6 +100,9 @@ def header():
                                     # margin to get applied
                                     className="w-100",
                                 ),
+                                id="navbar-collapse",
+                                is_open=False,
+                                navbar=True,
                             ),
                         ],
                         # the row should expand to fill the available horizontal space
@@ -743,3 +748,53 @@ def component_leaderboard_4col(series_list):
         ],
         lg=4,
     )
+
+
+def world_map_of_forecasts():
+    with open("../shared_config/data_sources.json") as data_json:
+        df = json.load(data_json)
+
+    # Load the list of countries
+    countries_dict = {}
+    countries = pd.read_csv("../data/CountriesList.csv")
+    for c in countries["Country"]:
+        countries_dict[c] = {"Series": 0, "Titles": []}
+
+    tags_lists = {}
+    # Update dynamically with new countries
+    for d in df:
+        for tag in d["tags"]:
+            if tag in countries_dict:
+                countries_dict[tag]["Series"] += 1
+                countries_dict[tag]["Titles"] += [d["title"]]
+
+    # Basic cleaning for plotly
+    country_data = pd.DataFrame.from_dict(countries_dict, orient="index")
+    country_data["Country"] = country_data.index
+    country_data["Titles"] = [
+        "<br>".join(i) for i in country_data["Titles"].values
+    ]
+    country_data = country_data[country_data["Series"] > 0]
+    country_data = country_data.merge(countries)
+
+    # Plotly express is clean for this
+    fig = px.choropleth(
+        data_frame=country_data,
+        locations="Code",
+        color="Series",
+        hover_name="Country",
+        color_continuous_scale="burgyl",
+        projection="natural earth",
+        hover_data=["Titles"],
+    )
+
+    fig.update_layout(
+        coloraxis_showscale=False,
+        hoverlabel=dict(bgcolor="white", font_size=12, font_family="Rockwell"),
+    )
+
+    fig.update_traces(
+        hovertemplate="<b>%{hovertext}</b><br><br><i>Series: %{z}</i><br>%{customdata[0]}<extra></extra>"
+    )
+
+    return fig

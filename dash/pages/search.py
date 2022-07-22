@@ -22,6 +22,8 @@ from common import (
     get_thumbnail_figure,
     get_forecast_data,
 )
+from slugify import slugify
+
 
 def sort_filter_results(
     unique_series_titles, forecast_series_dicts, sort_by="a_z", *kwargs
@@ -55,9 +57,10 @@ def sort_filter_results(
     sort_unique_series_title = df["Title"].values
     return sort_unique_series_title
 
+
 dash.register_page(__name__, title="Find a Series")
 
-component_ids = ["name"]#, "tags", "methods"]
+component_ids = ["name"]  # , "tags", "methods"]
 
 # load data source
 with open("../shared_config/data_sources.json") as data_sources_json_file:
@@ -107,9 +110,7 @@ def result_layout():
                                 className="flex-grow-1",
                             ),
                             dbc.Row(
-                                dcc.Loading(
-                                    html.Div(id="filter_results")
-                                ),
+                                dcc.Loading(html.Div(id="filter_results")),
                             ),
                         ],
                         lg=12,
@@ -136,11 +137,9 @@ def filter_panel_children(params, tags, methods):
                                 placeholder="Name of a series or method...",
                                 type="search",
                                 value="",
-                                autocomplete="off"
+                                autocomplete="on",
                             ),
-                            dbc.FormText(
-                                "Type something in the box above"
-                            ),
+                            dbc.FormText("Type something in the box above"),
                         ],
                         className="mb-3",
                     )
@@ -319,13 +318,13 @@ def update_url_state(**kwargs):
     + [Input("results_sort_input", "value")]
 )
 def filter_results(**kwargs):
-#
-# @callback(
-#     Output("filter_results", "children"),
-#     [Input(i, "value") for i in component_ids],
-# )
-# @dash_kwarg([Input(i, "value") for i in component_ids])
-# def filter_results(**kwargs):
+    #
+    # @callback(
+    #     Output("filter_results", "children"),
+    #     [Input(i, "value") for i in component_ids],
+    # )
+    # @dash_kwarg([Input(i, "value") for i in component_ids])
+    # def filter_results(**kwargs):
     # Fix up name
     if type(kwargs["name"]) == list:
         kwargs["name"] = "".join(kwargs["name"])
@@ -336,9 +335,9 @@ def filter_results(**kwargs):
 
     for series_dict in series_list:
         try:
-            forecast_series_dicts[
+            forecast_series_dicts[series_dict["title"]] = get_forecast_data(
                 series_dict["title"]
-            ] = get_forecast_data(series_dict["title"])
+            )
         except FileNotFoundError:
             continue
 
@@ -356,9 +355,7 @@ def filter_results(**kwargs):
         )
         list_filter_matches.append(matched_series_names)
 
-    unique_series_titles = list(
-        sorted(set.intersection(*list_filter_matches))
-    )
+    unique_series_titles = list(sorted(set.intersection(*list_filter_matches)))
 
     unique_series_titles = sort_filter_results(
         unique_series_titles,
@@ -368,9 +365,7 @@ def filter_results(**kwargs):
 
     if len(unique_series_titles) > 0:
 
-        def make_card(
-            item_title, url_title, thumbnail_figure, best_model
-        ):
+        def make_card(item_title, url_title, thumbnail_figure, best_model):
             return dbc.Card(
                 [
                     html.A(
@@ -399,10 +394,10 @@ def filter_results(**kwargs):
                                                 "text-align": "center",
                                             },
                                         ),
-                                        html.P(),
-                                        html.P(
+                                        # html.P(),
+                                        html.H6(
                                             f"{best_model}",
-                                            className="card-text align-item-end",
+                                            className="card-text mt-auto",
                                             style={
                                                 "color": "black",
                                                 "font-weight": "italic",
@@ -410,7 +405,7 @@ def filter_results(**kwargs):
                                             },
                                         ),
                                     ],
-                                    className="card-img-overlay d-flex flex-column justify-content-end",
+                                    className="card-img-overlay d-flex flex-column justify-content",
                                 ),
                             ),
                         ],
@@ -435,8 +430,9 @@ def filter_results(**kwargs):
             )
 
             try:
+
                 thumbnail_figure = open(
-                    f"./../data/thumbnails/{item_title}.pkl", "rb"
+                    f"./../data/thumbnails/{slugify(item_title)}.pkl", "rb"
                 )
                 thumbnail_figure = pickle.load(thumbnail_figure)
             except Exception as e:
@@ -445,26 +441,20 @@ def filter_results(**kwargs):
 
             # print(f"../data/thumbnails/{item_title}.pkl", thumbnail_figure)
 
-            best_model = select_best_model(
-                forecast_series_dicts[item_title]
-            )
+            best_model = select_best_model(forecast_series_dicts[item_title])
 
             results_list.append(
                 dbc.Col(
-                    make_card(
-                        title, url_title, thumbnail_figure, best_model
-                    ),
+                    make_card(title, url_title, thumbnail_figure, best_model),
                     sm=12,
                     md=6,
                     lg=4,
-                    xl=3,
+                    xl=4,
                 ),
             )
 
         results = [
-            html.P(
-                f"{n_series} result{'s' if n_series > 1 else ''} found"
-            ),
+            html.P(f"{n_series} result{'s' if n_series > 1 else ''} found"),
             html.Div(dbc.Row(results_list)),
         ]
     else:

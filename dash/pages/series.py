@@ -597,7 +597,6 @@ def update_sorting_for_table(sort_by, data):
         # No sort is applied
         dff = rounded_dataframe
 
-    print(dff)
     # Round and format so that trailing zeros still appear
     for col in dff.columns[1:]:  # first col is the model name
         dff[col] = dff[col].apply(cv_table_clean_notation)

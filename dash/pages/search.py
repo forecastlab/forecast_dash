@@ -196,6 +196,8 @@ def match_names(forecast_dicts, name_input):
     print(name_input)
     # name_terms = "|".join(name_input.split(" "))
     name_terms = name_input  # for single search
+    name_terms = name_terms.replace("(","\\(")
+    name_terms = name_terms.replace(")","\\)")
     print(name_terms)
 
     for series_title, forecast_dict in forecast_dicts.items():

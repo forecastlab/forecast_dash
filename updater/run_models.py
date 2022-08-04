@@ -86,6 +86,7 @@ def git_model_version():
 
     return git_shorthash
 
+
 class ScoringFunctions:
     """
     Scoring functions to use in the CV function
@@ -518,7 +519,9 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
 
         if result[1]["state"] == "OK":
             series_dict[series_title]["all_forecasts"][model_name] = result[1]
-            series_dict[series_title]["all_forecasts"][model_name]['model_version'] = git_model_version()
+            series_dict[series_title]["all_forecasts"][model_name][
+                "model_version"
+            ] = git_model_version()
         else:
             series_dict[series_title]["all_forecasts"].pop(model_name, None)
 

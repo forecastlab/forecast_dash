@@ -277,14 +277,14 @@ def create_metadata_table(series_data_dict, **kwargs):
     model_name = kwargs["model_selector"]
 
     metadata_df = {
-        "Forecast Date":"",
-        "Model Version" :"",
-        "Download Date":"",
-        "Data Version":"",
-        "Period Frequency":"",
-        "Period Frequency Name":"",
-        "Data Source":"",
-        "Forecast Source":"",
+        "Forecast Date": "",
+        "Model Version": "",
+        "Download Date": "",
+        "Data Version": "",
+        "Period Frequency": "",
+        "Period Frequency Name": "",
+        "Data Source": "",
+        "Forecast Source": "",
     }
 
     # Forecast Date
@@ -293,9 +293,9 @@ def create_metadata_table(series_data_dict, **kwargs):
     )
     # Model Version
     try:
-        metadata_df["Model Version"] = series_data_dict["all_forecasts"][model_name][
-        "model_version"
-    ]
+        metadata_df["Model Version"] = series_data_dict["all_forecasts"][
+            model_name
+        ]["model_version"]
     except:
         metadata_df["Model Version"] = "No model version"
 
@@ -307,8 +307,8 @@ def create_metadata_table(series_data_dict, **kwargs):
     # Data Version
     try:
         metadata_df["Data Version"] = series_data_dict["downloaded_dict"][
-                "data_version"
-    ]
+            "data_version"
+        ]
     except:
         metadata_df["Data Version"] = "No data version"
     # Period Frequency

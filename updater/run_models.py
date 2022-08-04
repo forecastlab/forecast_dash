@@ -47,6 +47,45 @@ model_class_list = [
 ]
 
 
+### Model versioning
+def git_model_version():
+    # git_hash = ""
+    git_shorthash = "Unknown commit"
+    # git_time = "00:00"
+    # git_author = "Unknown author"
+    # git_subject = ""
+
+    # Get the current git status
+    # %n: literal newline
+    # %H: commit hash
+    # %h: abbreviated commit hash
+    # %ai: author date
+    # %an: author name
+    # %s: subject
+    # Gotcha: The seemingly redundant --git-dir ../.git is a workaround for
+    # docker container isolation: .git is exported to /.git as read-only volume.
+    git_cmd = (
+        'git --git-dir ../.git show --no-patch --format="%H%n%h%n%ai%n%an%n%s"'
+    )
+    git_output = os.popen(git_cmd).read().splitlines()
+
+    if len(git_output) >= 5:
+        # git_hash = git_output[0]
+        git_shorthash = git_output[1]
+    #     git_time = git_output[2]
+
+    #     natural_time = humanize.naturaltime(
+    #         datetime.strptime(git_time, "%Y-%m-%d %H:%M:%S %z"),
+    #         when=datetime.now(tz=pytz.timezone("Australia/Sydney")),
+    #     )
+    # else:
+    #     natural_time = "Error Loading Timestamp"
+
+    # github_home_url = "https://github.com/forecastlab/forecast_dash/"
+    # github_patch_url = github_home_url + "commit/" + git_hash
+
+    return git_shorthash
+
 class ScoringFunctions:
     """
     Scoring functions to use in the CV function
@@ -479,6 +518,7 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
 
         if result[1]["state"] == "OK":
             series_dict[series_title]["all_forecasts"][model_name] = result[1]
+            series_dict[series_title]["all_forecasts"][model_name]['model_version'] = git_model_version()
         else:
             series_dict[series_title]["all_forecasts"].pop(model_name, None)
 

@@ -6,11 +6,14 @@ from urllib.parse import urlencode
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html, callback
+from dash.exceptions import PreventUpdate
+
 import dash
 import pandas as pd
 
+
 from common import breadcrumb_layout
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 from util import (
     location_ignore_null,
     parse_state,
@@ -132,12 +135,15 @@ def filter_panel_children(params, tags, methods):
                         [
                             html.H4("Filters"),
                             dbc.Label("Name", html_for="name"),
-                            apply_default_value(params)(dbc.Input)(
+                            apply_default_value(params)(dcc.Dropdown)(
                                 id="name",
+                                clearable=True,
                                 placeholder="Name of a series or method...",
-                                type="search",
+                                # type="search",
                                 value="",
-                                autocomplete="on",
+                                # autocomplete="on",
+                                # multi=True,
+                                options=[],
                             ),
                             dbc.FormText("Type something in the box above"),
                         ],
@@ -178,7 +184,6 @@ def filter_panel_children(params, tags, methods):
         #     )
         # ),
     ]
-    print(children)
     return children
 
 
@@ -188,7 +193,10 @@ def match_names(forecast_dicts, name_input):
 
     matched_series_names = []
 
-    name_terms = "|".join(name_input.split(" "))
+    print(name_input)
+    # name_terms = "|".join(name_input.split(" "))
+    name_terms = name_input  # for single search
+    print(name_terms)
 
     for series_title, forecast_dict in forecast_dicts.items():
 
@@ -274,11 +282,55 @@ def match_methods(forecast_dicts, methods):
 
 
 @callback(
+    Output("name", "options"),
+    Input("name", "search_value"),
+    State("name", "value"),
+)
+def update_multi_options(search_value, value):
+    # print(search_value, value)
+    if not search_value:
+        raise PreventUpdate
+
+    all_tags = []
+
+    for series_dict in series_list:
+        all_tags.extend(series_dict["tags"])
+
+    all_tags = sorted(set(all_tags))
+
+    # Dynamically load methods
+    stats = get_forecast_data("statistics")
+    all_methods = sorted(stats["models_used"])
+
+    all_titles = []
+    for series_dict in series_list:
+        all_titles.append(series_dict["title"])
+        # all_titles.append(series_dict["short_title"])
+
+    # all_options = [o+"X" for o in sorted(all_tags + all_methods + all_titles)]
+    all_options = [o for o in sorted(all_tags + all_methods + all_titles)]
+
+    # Make sure that the set values are in the option list, else they will disappear
+    # from the shown select list, but still part of the `value`.
+    # return [
+    #     o for o in options
+    #     if search_value in o["label"] or o["value"] in (value or [])
+    # ] + [{
+    #     "label": t,
+    #     "value": t
+    # } for t in search_value.split(" ")]
+    return all_options
+
+
+@callback(
     Output("filter_panel", "children"),
     Input("url", "href"),
 )
 @location_ignore_null([Input("url", "href")], "url")
 def filter_panel(value):
+
+    # Remove the comma
+    # value = value.replace("%2C","")
 
     parse_result = parse_state(value)
 

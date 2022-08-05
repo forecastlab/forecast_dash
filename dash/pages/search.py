@@ -126,7 +126,7 @@ def result_layout():
 
 
 ### functions for filtering, result displaying
-def filter_panel_children(params, tags, methods):
+def filter_panel_children(params):
     children = [
         dbc.Row(
             [
@@ -139,11 +139,9 @@ def filter_panel_children(params, tags, methods):
                                 id="name",
                                 clearable=True,
                                 placeholder="Name of a series or method...",
-                                # type="search",
                                 value="",
-                                # autocomplete="on",
                                 # multi=True,
-                                options=[],
+                                options=add_dropdown_search_options(),
                             ),
                             dbc.FormText("Type something in the box above"),
                         ],
@@ -194,7 +192,7 @@ def match_names(forecast_dicts, name_input):
     matched_series_names = []
 
     print(name_input)
-    # name_terms = "|".join(name_input.split(" "))
+    # name_terms = "|".join(name_input.split(" ")) # keep for later use. 
     name_terms = name_input  # for single search
     name_terms = name_terms.replace("(", "\\(")
     name_terms = name_terms.replace(")", "\\)")
@@ -283,44 +281,36 @@ def match_methods(forecast_dicts, methods):
     return set(matched_series_names)
 
 
-@callback(
-    Output("name", "options"),
-    Input("name", "search_value"),
-    State("name", "value"),
-)
-def update_multi_options(search_value, value):
-    # print(search_value, value)
-    if not search_value:
-        raise PreventUpdate
+
+def add_dropdown_search_options():
 
     all_tags = []
 
-    for series_dict in series_list:
+    for series_dict in series_list: 
         all_tags.extend(series_dict["tags"])
 
     all_tags = sorted(set(all_tags))
+    all_tags = [ {'label': tag , 'value': tag} for tag in all_tags]
 
     # Dynamically load methods
     stats = get_forecast_data("statistics")
     all_methods = sorted(stats["models_used"])
+    all_methods = [ {'label': f"Winning Method - {method}" , 'value': method} for method in all_methods]
+
 
     all_titles = []
     for series_dict in series_list:
         all_titles.append(series_dict["title"])
-        # all_titles.append(series_dict["short_title"])
-
+        try:
+            all_titles.append(series_dict["short_title"])
+        except:
+            pass
+    
+    all_titles = [ {'label': title, 'value': title} for title in all_titles]
+    
     # all_options = [o+"X" for o in sorted(all_tags + all_methods + all_titles)]
-    all_options = [o for o in sorted(all_tags + all_methods + all_titles)]
-
-    # Make sure that the set values are in the option list, else they will disappear
-    # from the shown select list, but still part of the `value`.
-    # return [
-    #     o for o in options
-    #     if search_value in o["label"] or o["value"] in (value or [])
-    # ] + [{
-    #     "label": t,
-    #     "value": t
-    # } for t in search_value.split(" ")]
+    all_options =  all_tags + all_methods + all_titles  
+    
     return all_options
 
 
@@ -330,9 +320,6 @@ def update_multi_options(search_value, value):
 )
 @location_ignore_null([Input("url", "href")], "url")
 def filter_panel(value):
-
-    # Remove the comma
-    # value = value.replace("%2C","")
 
     parse_result = parse_state(value)
 
@@ -347,7 +334,7 @@ def filter_panel(value):
     stats = get_forecast_data("statistics")
     all_methods = sorted(stats["models_used"])
 
-    return filter_panel_children(parse_result, all_tags, all_methods)
+    return filter_panel_children(parse_result)
 
 
 @callback(
@@ -426,11 +413,6 @@ def filter_results(**kwargs):
                         [
                             dbc.CardImg(
                                 src=thumbnail_figure,
-                                # dcc.Graph(
-                                #     figure=thumbnail_figure,
-                                #     config={"displayModeBar": False},
-                                # ),
-                                # src = "https://dash-bootstrap-components.opensource.faculty.ai/static/images/placeholder286x180.png",
                                 top=True,
                                 style={
                                     "opacity": 0.3,
@@ -492,8 +474,6 @@ def filter_results(**kwargs):
             except Exception as e:
                 # if no thumbnail image generated
                 thumbnail_figure = "https://dash-bootstrap-components.opensource.faculty.ai/static/images/placeholder286x180.png"
-
-            # print(f"../data/thumbnails/{item_title}.pkl", thumbnail_figure)
 
             best_model = select_best_model(forecast_series_dicts[item_title])
 

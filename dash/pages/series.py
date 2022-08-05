@@ -270,21 +270,52 @@ def infer_frequency_from_forecast(series_data_dict, **kwargs):
 
 def create_metadata_table(series_data_dict, **kwargs):
 
-    metadata_df = {}
+    model_name = kwargs["model_selector"]
 
+    metadata_df = {
+        "Forecast Date": "",
+        "Model Version": "",
+        "Download Date": "",
+        "Data Version": "",
+        "Period Frequency": "",
+        "Period Frequency Name": "",
+        "Data Source": "",
+        "Forecast Source": "",
+    }
+
+    # Forecast Date
     metadata_df["Forecast Date"] = series_data_dict["forecasted_at"].strftime(
         "%Y-%m-%d %H:%M:%S"
     )
+    # Model Version
+    try:
+        metadata_df["Model Version"] = series_data_dict["all_forecasts"][
+            model_name
+        ]["model_version"]
+    except:
+        metadata_df["Model Version"] = "No model version"
+
+    # Download Date
     metadata_df["Download Date"] = series_data_dict["downloaded_dict"][
         "downloaded_at"
     ].strftime("%Y-%m-%d %H:%M:%S")
 
+    # Data Version
+    try:
+        metadata_df["Data Version"] = series_data_dict["downloaded_dict"][
+            "data_version"
+        ]
+    except:
+        metadata_df["Data Version"] = "No data version"
+    # Period Frequency
     (
         metadata_df["Period Frequency"],
         metadata_df["Period Frequency Name"],
     ) = infer_frequency_from_forecast(series_data_dict, **kwargs)
 
+    # Data Source URL
     metadata_df["Data Source"] = series_data_dict["data_source_dict"]["url"]
+    # Forecast Source URL
     metadata_df["Forecast Source"] = "https://business-forecast-lab.com/"
 
     metadata_df = pd.DataFrame.from_dict(metadata_df, orient="index")

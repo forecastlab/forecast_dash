@@ -1,14 +1,19 @@
 import json
+import pickle
 import re
 
 from urllib.parse import urlencode
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html, callback
+from dash.exceptions import PreventUpdate
+
 import dash
+import pandas as pd
+
 
 from common import breadcrumb_layout
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 from util import (
     location_ignore_null,
     parse_state,
@@ -20,10 +25,45 @@ from common import (
     get_thumbnail_figure,
     get_forecast_data,
 )
+from slugify import slugify
+
+
+def sort_filter_results(
+    unique_series_titles, forecast_series_dicts, sort_by="a_z", *kwargs
+):
+
+    df = []
+
+    for item_title in unique_series_titles:
+        series_data = forecast_series_dicts[item_title]
+        title = series_data["data_source_dict"]["title"]
+        best_model = select_best_model(forecast_series_dicts[item_title])
+        mse = series_data["all_forecasts"][best_model]["cv_score"]["MSE"]
+
+        df.append([title, best_model, mse])
+
+    df = pd.DataFrame(df, columns=["Title", "BestModel", "MSE"])
+
+    if sort_by == "a_z":
+        df.sort_values(by=["Title"], ascending=True, inplace=True)
+
+    if sort_by == "z_a":
+        df.sort_values(by=["Title"], ascending=False, inplace=True)
+
+    # Keeping this for the moment, but not currently active
+    # if sort_by == "mse_asc":
+    #     df.sort_values(by=["MSE"], ascending=True, inplace=True)
+
+    # if sort_by == "mse_desc":
+    #     df.sort_values(by=["MSE"], ascending=False, inplace=True)
+
+    sort_unique_series_title = df["Title"].values
+    return sort_unique_series_title
+
 
 dash.register_page(__name__, title="Find a Series")
 
-component_ids = ["name", "tags", "methods"]
+component_ids = ["name"]  # , "tags", "methods"]
 
 # load data source
 with open("../shared_config/data_sources.json") as data_sources_json_file:
@@ -34,16 +74,50 @@ def result_layout():
     return dbc.Container(
         [
             breadcrumb_layout([("Home", "/"), ("Filter", "")]),
+            dbc.Row(dbc.Col(id="filter_panel", lg=12, sm=12)),
             dbc.Row(
                 [
-                    dbc.Col(id="filter_panel", lg=3, sm=3),
                     dbc.Col(
                         [
-                            html.H4("Results"),
-                            dcc.Loading(html.Div(id="filter_results")),
+                            dbc.Row(
+                                [
+                                    dbc.Col(
+                                        [html.H4("Results")],
+                                    ),
+                                    dbc.Col(
+                                        [
+                                            "Sort by:",
+                                            dcc.Dropdown(
+                                                id="results_sort_input",
+                                                clearable=False,
+                                                options=[
+                                                    {
+                                                        "label": "A-Z Ascending",
+                                                        "value": "a_z",
+                                                    },
+                                                    {
+                                                        "label": "A-Z Descending",
+                                                        "value": "z_a",
+                                                    },
+                                                    # {'label': 'MSE Ascending', 'value': 'mse_asc'},
+                                                    # {'label': 'MSE Descending', 'value': 'mse_desc'},
+                                                ],
+                                                value="a_z",
+                                            ),
+                                        ],
+                                        align="left",
+                                        lg=2,
+                                        sm=1,
+                                    ),
+                                ],
+                                className="flex-grow-1",
+                            ),
+                            dbc.Row(
+                                dcc.Loading(html.Div(id="filter_results")),
+                            ),
                         ],
-                        lg=9,
-                        sm=9,
+                        lg=12,
+                        sm=12,
                     ),
                 ]
             ),
@@ -52,46 +126,31 @@ def result_layout():
 
 
 ### functions for filtering, result displaying
-def filter_panel_children(params, tags, methods):
+def filter_panel_children(params):
     children = [
-        html.Div(
+        dbc.Row(
             [
-                html.H4("Filters"),
-                dbc.Label("Name", html_for="name"),
-                apply_default_value(params)(dbc.Input)(
-                    id="name",
-                    placeholder="Name of a series...",
-                    type="search",
-                    value="",
-                ),
-                dbc.FormText("Type something in the box above"),
-            ],
-            className="mb-3",
-        ),
-        html.Div(
-            [
-                dbc.Label("Tags", html_for="tags"),
-                apply_default_value(params)(dbc.Checklist)(
-                    options=[{"label": t, "value": t} for t in tags],
-                    value=[],
-                    id="tags",
+                dbc.Col(
+                    html.Div(
+                        [
+                            html.H4("Filters"),
+                            dbc.Label("Name", html_for="name"),
+                            apply_default_value(params)(dcc.Dropdown)(
+                                id="name",
+                                clearable=True,
+                                placeholder="Name of a series or method...",
+                                value="",
+                                # multi=True,
+                                options=add_dropdown_search_options(),
+                            ),
+                            dbc.FormText("Type something in the box above"),
+                        ],
+                        className="mb-3",
+                    )
                 ),
             ],
-            className="mb-3",
-        ),
-        html.Div(
-            [
-                dbc.Label("Method", html_for="methods"),
-                apply_default_value(params)(dbc.Checklist)(
-                    options=[{"label": m, "value": m} for m in methods],
-                    value=[],
-                    id="methods",
-                ),
-            ],
-            className="mb-3",
         ),
     ]
-
     return children
 
 
@@ -101,7 +160,10 @@ def match_names(forecast_dicts, name_input):
 
     matched_series_names = []
 
-    name_terms = "|".join(name_input.split(" "))
+    # name_terms = "|".join(name_input.split(" ")) # keep for later use.
+    name_terms = name_input  # for single search
+    name_terms = name_terms.replace("(", "\\(")
+    name_terms = name_terms.replace(")", "\\)")
 
     for series_title, forecast_dict in forecast_dicts.items():
 
@@ -123,6 +185,26 @@ def match_names(forecast_dicts, name_input):
             )
             if re_results is not None:
                 matched_series_names.append(series_title)
+
+        # Search tags
+        series_tags = " ".join(forecast_dict["data_source_dict"]["tags"])
+        re_results = re.search(
+            name_terms,
+            series_tags,
+            re.IGNORECASE,
+        )
+
+        if re_results is not None:
+            matched_series_names.append(series_title)
+
+        # Search methods
+        re_results = re.search(
+            name_terms,
+            select_best_model(forecast_dict),
+            re.IGNORECASE,
+        )
+        if re_results is not None:
+            matched_series_names.append(series_title)
 
     return set(matched_series_names)
 
@@ -166,6 +248,38 @@ def match_methods(forecast_dicts, methods):
     return set(matched_series_names)
 
 
+def add_dropdown_search_options():
+
+    all_tags = []
+
+    for series_dict in series_list:
+        all_tags.extend(series_dict["tags"])
+
+    all_tags = [{"label": tag, "value": tag} for tag in sorted(set(all_tags))]
+
+    # Load methods
+    stats = get_forecast_data("statistics")
+    all_methods = [
+        {"label": f"Winning Method - {method}", "value": method}
+        for method in sorted(stats["models_used"])
+    ]
+
+    all_titles = []
+    for series_dict in series_list:
+        all_titles.append(series_dict["title"])
+        try:
+            all_titles.append(series_dict["short_title"])
+        except:
+            pass
+
+    all_titles = [{"label": title, "value": title} for title in all_titles]
+
+    all_options = all_tags + all_methods + all_titles
+    all_options = sorted(all_options, key=lambda d: d["label"])
+
+    return all_options
+
+
 @callback(
     Output("filter_panel", "children"),
     Input("url", "href"),
@@ -186,7 +300,7 @@ def filter_panel(value):
     stats = get_forecast_data("statistics")
     all_methods = sorted(stats["models_used"])
 
-    return filter_panel_children(parse_result, all_tags, all_methods)
+    return filter_panel_children(parse_result)
 
 
 @callback(
@@ -203,10 +317,15 @@ def update_url_state(**kwargs):
 
 @callback(
     Output("filter_results", "children"),
-    [Input(i, "value") for i in component_ids],
+    inputs=[Input(i, "value") for i in component_ids]
+    + [Input("results_sort_input", "value")],
 )
-@dash_kwarg([Input(i, "value") for i in component_ids])
+@dash_kwarg(
+    [Input(i, "value") for i in component_ids]
+    + [Input("results_sort_input", "value")]
+)
 def filter_results(**kwargs):
+
     # Fix up name
     if type(kwargs["name"]) == list:
         kwargs["name"] = "".join(kwargs["name"])
@@ -225,8 +344,8 @@ def filter_results(**kwargs):
 
     filters = {
         "name": match_names,
-        "tags": match_tags,
-        "methods": match_methods,
+        # "tags": match_tags,
+        # "methods": match_methods,
     }
 
     list_filter_matches = []
@@ -239,38 +358,98 @@ def filter_results(**kwargs):
 
     unique_series_titles = list(sorted(set.intersection(*list_filter_matches)))
 
+    unique_series_titles = sort_filter_results(
+        unique_series_titles,
+        forecast_series_dicts,
+        sort_by=kwargs["results_sort_input"],
+    )
+
     if len(unique_series_titles) > 0:
+
+        def make_card(item_title, url_title, thumbnail_figure, best_model):
+            return dbc.Card(
+                [
+                    html.A(
+                        [
+                            dbc.CardImg(
+                                src=thumbnail_figure,
+                                top=True,
+                                style={
+                                    "opacity": 0.3,
+                                },
+                            ),
+                            dbc.CardImgOverlay(
+                                dbc.CardBody(
+                                    [
+                                        html.H4(
+                                            item_title,
+                                            className="card-title align-item-start",
+                                            style={
+                                                "color": "black",
+                                                "font-weight": "bold",
+                                                "text-align": "center",
+                                            },
+                                        ),
+                                        # html.P(),
+                                        html.H6(
+                                            f"{best_model}",
+                                            className="card-text mt-auto",
+                                            style={
+                                                "color": "black",
+                                                "font-weight": "italic",
+                                                "text-align": "right",
+                                            },
+                                        ),
+                                    ],
+                                    className="card-img-overlay d-flex flex-column justify-content",
+                                ),
+                            ),
+                        ],
+                        href=f"/series?{url_title}",
+                    )
+                ]
+            )
+
+        n_series = len(unique_series_titles)
 
         results_list = []
 
         for item_title in unique_series_titles:
+
             series_data = forecast_series_dicts[item_title]
             url_title = urlencode({"title": item_title})
-            thumbnail_figure = get_thumbnail_figure(series_data)
+
+            title = (
+                series_data["data_source_dict"]["short_title"]
+                if "short_title" in series_data["data_source_dict"]
+                else series_data["data_source_dict"]["title"]
+            )
+
+            try:
+
+                thumbnail_figure = open(
+                    f"./../data/thumbnails/{slugify(item_title)}.pkl", "rb"
+                )
+                thumbnail_figure = pickle.load(thumbnail_figure)
+            except Exception as e:
+                # if no thumbnail image generated
+                thumbnail_figure = "https://dash-bootstrap-components.opensource.faculty.ai/static/images/placeholder286x180.png"
+
+            best_model = select_best_model(forecast_series_dicts[item_title])
 
             results_list.append(
-                html.Div(
-                    [
-                        html.A(
-                            [
-                                html.H5(item_title),
-                                dcc.Graph(
-                                    figure=thumbnail_figure,
-                                    config={"displayModeBar": False},
-                                ),
-                            ],
-                            href=f"/series?{url_title}",
-                        ),
-                        html.Hr(),
-                    ]
-                )
+                dbc.Col(
+                    make_card(title, url_title, thumbnail_figure, best_model),
+                    sm=12,
+                    md=6,
+                    lg=4,
+                    xl=4,
+                ),
             )
 
         results = [
-            html.P(
-                f"{len(unique_series_titles)} result{'s' if len(unique_series_titles) > 1 else ''} found"
-            ),
-            html.Div(results_list),
+            html.P(f"{n_series} result{'s' if n_series > 1 else ''} found"),
+            html.Div(dbc.Row(results_list)),
         ]
     else:
         results = [html.P("No results found")]

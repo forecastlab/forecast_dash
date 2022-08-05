@@ -206,6 +206,48 @@ class WorldBankData(DataSource):
         return df
 
 
+class ABSData(DataSource):
+    """
+    The API data guide is avaialble here: https://www.abs.gov.au/about/data-services/application-programming-interfaces-apis/data-api-user-guide
+
+    The basic syntax is  /data/{dataflowIdentifier}/{dataKey}
+    dataflowIdentifier: The necessary dataflow canbe found from this website: https://api.data.abs.gov.au/dataflow
+    dataKey: The data key takes paramters for the search. Usually have to have a inital one and the rest can be separated out by '.'. The parameters to use can be found from https://api.data.abs.gov.au/datastructure/ABS/{dataflowIdentifier}. Use https://api.data.abs.gov.au/datastructure/ABS/{dataflowIdentifier}?references=codelist to find what values to use. The first one usually starts with 'M' and is the Measure.
+
+    More complex queries can be used.
+    """
+
+    def download(self):
+
+        url_cut = self.url
+
+        url = "https://api.data.abs.gov.au/data/ABS_LABOUR_ACCT/M11.AUS..A"
+        # To download as json, change extention to '...+json'
+        headers = {"accept": "application/vnd.sdmx.data+csv"}
+        response = requests.get(url, headers=headers)
+
+        # Some Data Cleaning
+        df = [i.split(",") for i in response.text.splitlines()]
+        df = pd.DataFrame(data=df[1:], columns=df[0])
+
+        df = df[df["LABOURACCT_IND"] == "TOTAL"]
+
+        # Convert strings to numbers
+        df["TIME_PERIOD"] = df["TIME_PERIOD"].astype(
+            "int"
+        )  # The example link is in years. Change this to Parse datetime data.
+        df["OBS_VALUE"] = pd.to_numeric(df["OBS_VALUE"])
+        df.groupby("TIME_PERIOD").mean()["OBS_VALUE"]
+
+        df = pd.DataFrame(
+            df["OBS_VALUE"].values,
+            index=pd.to_datetime(df["TIME_PERIOD"], format="%Y"),
+            columns=["value"],
+        )
+
+        return df
+
+
 def download_data(sources_path, download_path):
 
     with open(sources_path) as data_sources_json_file:
@@ -219,6 +261,7 @@ def download_data(sources_path, download_path):
                 "Fred": Fred,
                 "Ons": Ons,
                 "WorldBank": WorldBankData,
+                "ABS": ABSData,
             }
 
             source_class = all_source_classes[data_source_dict.pop("source")]

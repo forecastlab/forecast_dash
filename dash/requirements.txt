@@ -31,4 +31,5 @@ soupsieve==2.3.2.post1
 tenacity==8.0.1
 Werkzeug==2.1.2
 zipp==3.8.0
+kaleido==0.2.1
 python-slugify==6.1.2

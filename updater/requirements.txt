@@ -29,5 +29,7 @@ tzdata==2022.1
 tzlocal==4.2
 urllib3==1.26.9
 wbgapi==1.0.7
-prophet==1.0
+plotly==5.8.0
+kaleido==0.2.1
+prophet==1.1
 python-slugify==6.1.2

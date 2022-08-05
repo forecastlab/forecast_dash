@@ -87,17 +87,13 @@ def _forecast_performance_layout():
             ),
             dbc.Row(
                 [
-                    html.Button(
-                        "Relative Scores",
-                        id="relative-val",
-                        n_clicks=0,
-                        style=white_button_style,
-                    ),
-                    html.Button(
-                        "Raw Scores",
-                        id="raw-val",
-                        n_clicks=0,
-                        style=white_button_style,
+                    dbc.Checklist(
+                        options=[
+                            {"label": "Raw Scores", "value": 1},
+                        ],
+                        value=[0],
+                        id="display_scores_input",
+                        switch=True,
                     ),
                 ]
             ),
@@ -305,7 +301,7 @@ def cv_table_clean_notation(x):
     #     if len(str(int(x))) <= 4
     #     else "{:,.2e}".format(x)
     # )
-    return "{:,.2f}".format(x)
+    return "{:,.2f}".format(x)  # np.round(x, 2)  #
 
 
 def cv_table_by_benchmark(df, benchmark_col=None, **kwargs):
@@ -499,8 +495,7 @@ def update_meta_data_list(series_data_dict, **kwargs):
     inputs
     + [
         Input("model_selector", "value"),
-        Input("relative-val", "n_clicks"),
-        Input("raw-val", "n_clicks"),
+        Input("display_scores_input", "value"),
     ],
 )
 @location_ignore_null(inputs, location_id="url")
@@ -508,16 +503,14 @@ def update_meta_data_list(series_data_dict, **kwargs):
     inputs
     + [
         Input("model_selector", "value"),
-        Input("relative-val", "n_clicks"),
-        Input("raw-val", "n_clicks"),
+        Input("display_scores_input", "value"),
     ],
     location_id="url",
 )
 def update_CV_scores_table(series_data_dict, **kwargs):
 
     best_model_name = kwargs["model_selector"]
-    changed_id = [p["prop_id"] for p in callback_context.triggered][0]
-    relative_values = False if "raw-val" in changed_id else True
+    relative_values = True if kwargs["display_scores_input"] == [0] else False
 
     # Dictionary of scoring function descriptions to display when hovering over in the CV scores table.
     tooltip_header_text = {
@@ -534,11 +527,7 @@ def update_CV_scores_table(series_data_dict, **kwargs):
 
     if relative_values:
         rounded_dataframe = cv_table_by_benchmark(rounded_dataframe, **kwargs)
-    # Round and format so that trailing zeros still appear
-    for col in rounded_dataframe.columns:
-        rounded_dataframe[col] = rounded_dataframe[col].apply(
-            cv_table_clean_notation
-        )
+
     rounded_dataframe["Model"] = rounded_dataframe.index
     # Reorder columns for presentation
     rounded_dataframe = rounded_dataframe[
@@ -549,8 +538,9 @@ def update_CV_scores_table(series_data_dict, **kwargs):
         id="CV_scores_datatable",
         data=rounded_dataframe.to_dict("records"),
         columns=[{"name": i, "id": i} for i in rounded_dataframe.columns],
-        sort_action="native",
-        # sort_mode="multi",
+        sort_action="custom",
+        sort_by=[],
+        sort_mode="single",
         style_cell={
             "textAlign": "left",
             "fontSize": 16,
@@ -580,7 +570,38 @@ def update_CV_scores_table(series_data_dict, **kwargs):
         # ],
         style_as_list_view=True,
     )
+
     return table
+
+
+@callback(
+    Output("CV_scores_datatable", "data"),
+    Input("CV_scores_datatable", "sort_by"),
+    Input("CV_scores_datatable", "data"),
+)
+def update_sorting_for_table(sort_by, data):
+    """This is an ugly hack, but it seems to work"""
+    rounded_dataframe = pd.DataFrame(data)
+    for col in rounded_dataframe.columns[1:]:  # first col is the model name
+        rounded_dataframe[col] = rounded_dataframe[col].apply(
+            lambda x: float(str(x).replace(",", ""))
+        )
+
+    if len(sort_by):
+        dff = rounded_dataframe.sort_values(
+            sort_by[0]["column_id"],
+            ascending=sort_by[0]["direction"] == "asc",
+            inplace=False,
+        )
+    else:
+        # No sort is applied
+        dff = rounded_dataframe
+
+    # Round and format so that trailing zeros still appear
+    for col in dff.columns[1:]:  # first col is the model name
+        dff[col] = dff[col].apply(cv_table_clean_notation)
+
+    return dff.to_dict("records")
 
 
 @callback(

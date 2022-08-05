@@ -150,37 +150,6 @@ def filter_panel_children(params):
                 ),
             ],
         ),
-        # dbc.Col(
-        #     html.Div(
-        #         [
-        #             dbc.Label("Tags", html_for="tags"),
-        #             apply_default_value(params)(dbc.Checklist)(
-        #                 options=[
-        #                     {"label": t, "value": t} for t in tags[:1]
-        #                 ],
-        #                 value=[],
-        #                 id="tags",
-        #             ),
-        #         ],
-        #         className="mb-3",
-        #     )
-        # # ),
-        # dbc.Row(
-        #     html.Div(
-        #         [
-        #             # dbc.Label("Method", html_for="methods"),
-        #             # apply_default_value(params)(dbc.Checklist)(
-        #             dbc.Checklist(
-        #                 options=[
-        #                     {"label": "Sort by MSE", "value": "mse"}
-        #                 ],
-        #                 value=[],
-        #                 id="sortingoption",
-        #             ),
-        #         ],
-        #         className="mb-3",
-        #     )
-        # ),
     ]
     return children
 
@@ -191,12 +160,10 @@ def match_names(forecast_dicts, name_input):
 
     matched_series_names = []
 
-    print(name_input)
-    # name_terms = "|".join(name_input.split(" ")) # keep for later use. 
+    # name_terms = "|".join(name_input.split(" ")) # keep for later use.
     name_terms = name_input  # for single search
     name_terms = name_terms.replace("(", "\\(")
     name_terms = name_terms.replace(")", "\\)")
-    print(name_terms)
 
     for series_title, forecast_dict in forecast_dicts.items():
 
@@ -226,7 +193,7 @@ def match_names(forecast_dicts, name_input):
             series_tags,
             re.IGNORECASE,
         )
-        # print(f"{series_title}, and tages :{series_tags}")
+
         if re_results is not None:
             matched_series_names.append(series_title)
 
@@ -281,22 +248,21 @@ def match_methods(forecast_dicts, methods):
     return set(matched_series_names)
 
 
-
 def add_dropdown_search_options():
 
     all_tags = []
 
-    for series_dict in series_list: 
+    for series_dict in series_list:
         all_tags.extend(series_dict["tags"])
 
-    all_tags = sorted(set(all_tags))
-    all_tags = [ {'label': tag , 'value': tag} for tag in all_tags]
+    all_tags = [{"label": tag, "value": tag} for tag in sorted(set(all_tags))]
 
-    # Dynamically load methods
+    # Load methods
     stats = get_forecast_data("statistics")
-    all_methods = sorted(stats["models_used"])
-    all_methods = [ {'label': f"Winning Method - {method}" , 'value': method} for method in all_methods]
-
+    all_methods = [
+        {"label": f"Winning Method - {method}", "value": method}
+        for method in sorted(stats["models_used"])
+    ]
 
     all_titles = []
     for series_dict in series_list:
@@ -305,12 +271,12 @@ def add_dropdown_search_options():
             all_titles.append(series_dict["short_title"])
         except:
             pass
-    
-    all_titles = [ {'label': title, 'value': title} for title in all_titles]
-    
-    # all_options = [o+"X" for o in sorted(all_tags + all_methods + all_titles)]
-    all_options =  all_tags + all_methods + all_titles  
-    
+
+    all_titles = [{"label": title, "value": title} for title in all_titles]
+
+    all_options = all_tags + all_methods + all_titles
+    all_options = sorted(all_options, key=lambda d: d["label"])
+
     return all_options
 
 
@@ -359,13 +325,7 @@ def update_url_state(**kwargs):
     + [Input("results_sort_input", "value")]
 )
 def filter_results(**kwargs):
-    #
-    # @callback(
-    #     Output("filter_results", "children"),
-    #     [Input(i, "value") for i in component_ids],
-    # )
-    # @dash_kwarg([Input(i, "value") for i in component_ids])
-    # def filter_results(**kwargs):
+
     # Fix up name
     if type(kwargs["name"]) == list:
         kwargs["name"] = "".join(kwargs["name"])

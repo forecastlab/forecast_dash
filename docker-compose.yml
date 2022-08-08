@@ -10,6 +10,7 @@ services:
       - ./updater:/updater
       - ./data:/data
       - ./shared_config:/shared_config
+      - ./.git:/.git/:ro
       - nginx_cache:/nginx_cache:rw
 
   gunicorn:

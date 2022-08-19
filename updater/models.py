@@ -597,17 +597,19 @@ class RForecastModel(RModel):
 class RSmoothForecastModel(RModel):
     def get_r_forecast_dict(self):
 
-        r_level = [i/100 for i in self.r_level] # CES reads levels as decimals
+        r_level = [
+            i / 100 for i in self.r_level
+        ]  # CES reads levels as decimals
 
         return dict(
-            self.forecast_func(y=self.y, h=self.h, level=r_level).items() 
+            self.forecast_func(y=self.y, h=self.h, level=r_level).items()
         )
 
     def fit(self, y):
 
         self.y = y
 
-        r_forecast_dict = self.get_r_forecast_dict() 
+        r_forecast_dict = self.get_r_forecast_dict()
 
         self.method = "CES"
 
@@ -723,6 +725,7 @@ class FBProphet(ForecastModel):
 
     def description(self):
         return self.model
+
 
 class RCES(RSmoothForecastModel):
     name = "Complex Exponential Smoothing"

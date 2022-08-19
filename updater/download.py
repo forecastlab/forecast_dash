@@ -12,7 +12,7 @@ from requests.exceptions import HTTPError
 
 
 import wbgapi as wb  # for world bank data
-import warnings # for the world bank FutureWarnings
+import warnings  # for the world bank FutureWarnings
 import re
 
 from slugify import slugify
@@ -190,8 +190,8 @@ class WorldBankData(DataSource):
 
         indicator = url_cut.split("/")[3]
         region = url_cut.split("/")[1].split(";")
-        with warnings.catch_warnings(): # FutureWarnings Error in the wb package. Issue with loading an empty series. 
-            warnings.simplefilter(action='ignore', category=FutureWarning)
+        with warnings.catch_warnings():  # FutureWarnings Error in the wb package. Issue with loading an empty series.
+            warnings.simplefilter(action="ignore", category=FutureWarning)
 
             df = wb.data.DataFrame(
                 indicator, region, numericTimeKeys=True, skipBlanks=True

@@ -730,6 +730,6 @@ class FBProphet(ForecastModel):
 class RCES(RSmoothForecastModel):
     name = "Complex Exponential Smoothing"
 
-    r_forecast_lib = "smooth_functions.R"
+    r_forecast_lib = "smooth_package.R"
 
     r_forecast_model_name = "complex_es"

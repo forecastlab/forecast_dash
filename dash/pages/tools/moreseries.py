@@ -24,7 +24,7 @@ dash.register_page(__name__)
 ### plot function just for the double series case here
 def get_forecast_plot_data(series_df, forecast_df, color_index=0):
 
-    alpha = 0.5
+    alpha = 0.1
 
     colors_group = [
         [
@@ -126,14 +126,20 @@ def get_series_figure(data_dict, model_name, data_dict2, model_name2):
         - series_df.index[0].to_pydatetime()
     )
 
-    title = (
+    title1 = (
         data_dict["data_source_dict"]["short_title"]
         if "short_title" in data_dict["data_source_dict"]
         else data_dict["data_source_dict"]["title"]
     )
 
+    title2 = (
+        data_dict2["data_source_dict"]["short_title"]
+        if "short_title" in data_dict2["data_source_dict"]
+        else data_dict2["data_source_dict"]["title"]
+    )
+
     layout = dict(
-        title=title,
+        title=f'{title1} vs {title2}',
         height=720,
         xaxis=dict(
             fixedrange=True,
@@ -413,49 +419,48 @@ def update_series2_methods(series_title):
 #     return f'?{query}'
 
 
-# ### Plotting callbacks
-# @callback(
-#     Output("series_graph", "children"),
-#     Input("series1-title-dropdown", 'value'),
-#     Input("series1-method-dropdown", "value"),
-#     Input("series2-title-dropdown", 'value'),
-#     Input("series2-method-dropdown", "value"),
-# )
-# def update_series_graph(series_title1, method1, series_title2, method2):
+### Plotting callbacks
+@callback(
+    Output("seriesgraph", "children"),
+    Input("series1-title-dropdown", 'value'),
+    Input("series1-method-dropdown", "value"),
+    Input("series2-title-dropdown", 'value'),
+    Input("series2-method-dropdown", "value"),
+)
+def update_series_graph(series_title1, method1, series_title2, method2):
+    if series_title1 is None or series_title2 is None:
+        raise PreventUpdate
 
-#     if series_title1 is None or series_title2 is None:
-#         raise PreventUpdate
+    series_data_dict1 = get_forecast_data(series_title1)
+    series_data_dict2 = get_forecast_data(series_title2)
+    series_figure = get_series_figure(
+        series_data_dict1, method1, series_data_dict2, method2
+    )
 
-#     series_data_dict1 = get_forecast_data(series_title1)
-#     series_data_dict2 = get_forecast_data(series_title2)
-#     series_figure = get_series_figure(
-#         series_data_dict1, method1, series_data_dict2, method2
-#     )
+    series_graph = dcc.Graph(
+        figure=series_figure,
+        config={
+            "modeBarButtonsToRemove": [
+                "sendDataToCloud",
+                "autoScale2d",
+                "hoverClosestCartesian",
+                "hoverCompareCartesian",
+                "lasso2d",
+                "select2d",
+                "toggleSpikelines",
+            ],
+            "displaylogo": False,
+            "displayModeBar": True,
+            "toImageButtonOptions": dict(
+                filename=f"{series_title1} vs {series_title2}",
+                format="svg",
+                width=1024,
+                height=768,
+            ),
+        },
+    )
 
-#     series_graph = dcc.Graph(
-#         figure=series_figure,
-#         config={
-#             "modeBarButtonsToRemove": [
-#                 "sendDataToCloud",
-#                 "autoScale2d",
-#                 "hoverClosestCartesian",
-#                 "hoverCompareCartesian",
-#                 "lasso2d",
-#                 "select2d",
-#                 "toggleSpikelines",
-#             ],
-#             "displaylogo": False,
-#             "displayModeBar": True,
-#             "toImageButtonOptions": dict(
-#                 filename=f"{series_title1} vs {series_title2}",
-#                 format="svg",
-#                 width=1024,
-#                 height=768,
-#             ),
-#         },
-#     )
-
-#     return series_graph
+    return series_graph
     
     
 ### final layout
@@ -464,7 +469,7 @@ def layout():
         [
             dcc.Location(id="url", refresh=False),
             series_selection_layout(),
-            dbc.Row([dbc.Col(id="series_graph", lg=12)]),
+            dcc.Loading(dbc.Row([dbc.Col(id="seriesgraph")])),
         ]
     )
 

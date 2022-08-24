@@ -24,7 +24,7 @@ dash.register_page(__name__)
 ### plot function just for the double series case here
 def get_forecast_plot_data(series_df, forecast_df, color_index=0):
 
-    alpha = 0.1
+    alpha = 0.3
 
     colors_group = [
         [
@@ -139,7 +139,7 @@ def get_series_figure(data_dict, model_name, data_dict2, model_name2):
     )
 
     layout = dict(
-        title=f'{title1} vs {title2}',
+        title=f'(R) {title1} vs (B) {title2}',
         height=720,
         xaxis=dict(
             fixedrange=True,
@@ -281,7 +281,7 @@ def series_double_dropdown(id_prefix, text, tag, series):
         value=tag,
         placeholder='Select Tags',
         id=f'{id_prefix}-tag-dropdown',
-        multi=True
+        multi=True,
     )
 
     multi_dropdown = dbc.Row(
@@ -296,7 +296,7 @@ def series_double_dropdown(id_prefix, text, tag, series):
         unique_titles,
         value=series,
         placeholder="Select a Series",
-        id=f'{id_prefix}-title-dropdown'
+        id=f'{id_prefix}-title-dropdown',
     )
 
     title_dropdown = dbc.Row(
@@ -309,7 +309,7 @@ def series_double_dropdown(id_prefix, text, tag, series):
     ### method selection
     method_dropdown = dcc.Dropdown(
         placeholder="Select a Method",
-        id=f'{id_prefix}-method-dropdown'
+        id=f'{id_prefix}-method-dropdown',
     )
 
     method_dropdown = dbc.Row(
@@ -327,18 +327,18 @@ def series_double_dropdown(id_prefix, text, tag, series):
             dbc.Row(method_dropdown),
         ],
         align='center',
-        lg=4,
-        sm=1,
+        # lg=4,
+        # sm=1,
     )
 
 
-def series_selection_layout(tag1=None, series1=None, tag2=None, series2=None):
-    return dbc.Row(
+def series_selection_layout(series1=None, series2=None, tag1=None, tag2=None):
+    return dbc.Col(
         [
             series_double_dropdown('series1', 'Series 1', tag1, series1),
             series_double_dropdown('series2', 'Series 2', tag2, series2),
         ],
-        justify="evenly",
+        # justify="evenly",
     )
 
 
@@ -382,12 +382,13 @@ def update_filtered_series2(tags_selected):
 )
 def update_series1_methods(series_title):
     if series_title is None:
-        raise PreventUpdate
-        # return None, None
-        # This line will stop updating...
-    data_dict = get_forecast_data(series_title)
-    methods = get_series_methods(data_dict)
-    return methods, methods[0]
+        return [], None
+    try:
+        data_dict = get_forecast_data(series_title)
+        methods = get_series_methods(data_dict)
+        return methods, methods[0]
+    except:
+        return [], None
 
 
 @callback(
@@ -397,38 +398,42 @@ def update_series1_methods(series_title):
 )
 def update_series2_methods(series_title):
     if series_title is None:
-        raise PreventUpdate
-        # return None, None
-        # This line will stop updating...
-    data_dict = get_forecast_data(series_title)
-    methods = get_series_methods(data_dict)
-    return methods, methods[0]
+        return [], None
+    try:
+        data_dict = get_forecast_data(series_title)
+        methods = get_series_methods(data_dict)
+        return methods, methods[0]
+    except:
+        return [], None
 
 # ### update url query
 # @callback(
-#     Output("url", 'search'),
+#     Output("urltest", 'search'),
 #     Input("series1-title-dropdown", "value"),
 #     Input("series2-title-dropdown", "value"),
 # )
 # def update_url_query(title1, title2):
-#     if title1 is None or title2 is None:
-#         raise PreventUpdate
+#     # if title1 is None or title2 is None:
+#     #     raise PreventUpdate
 
-#     query = urlencode(("title1", title1), ("title2", title2))
+#     query = urlencode(
+#         [("title1", title1), ("title2", title2)],
+#         doseq=True
+#     )
 
 #     return f'?{query}'
 
 
 ### Plotting callbacks
 @callback(
-    Output("seriesgraph", "children"),
+    Output("series-graph", "children"),
     Input("series1-title-dropdown", 'value'),
     Input("series1-method-dropdown", "value"),
     Input("series2-title-dropdown", 'value'),
     Input("series2-method-dropdown", "value"),
 )
 def update_series_graph(series_title1, method1, series_title2, method2):
-    if series_title1 is None or series_title2 is None:
+    if not (series_title1 and series_title2 and method1 and method2):
         raise PreventUpdate
 
     series_data_dict1 = get_forecast_data(series_title1)
@@ -464,12 +469,12 @@ def update_series_graph(series_title1, method1, series_title2, method2):
     
     
 ### final layout
-def layout():
+def layout(title1=None, title2=None,):
     return dbc.Container(
         [
-            dcc.Location(id="url", refresh=False),
-            series_selection_layout(),
-            dcc.Loading(dbc.Row([dbc.Col(id="seriesgraph")])),
+            dcc.Location(id="urltest", refresh=False),
+            series_selection_layout(series1=None, series2=None),
+            dcc.Loading(dbc.Row([dbc.Col(id="series-graph")])),
         ]
     )
 

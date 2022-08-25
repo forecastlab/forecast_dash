@@ -1,0 +1,16 @@
+Downloading Data
+Australian GDP Growth - 100000
+Australian GDP Growth - OK
+Australian Inflation (CPI) - 100000
+Australian Inflation (CPI) - OK
+US Unemployment - 100000
+US Unemployment - OK
+Inflation for Malaysia (World Bank) - 100000
+Inflation for Malaysia (World Bank) - OK
+Running Models
+Generating Statistics
+Creating Thumbnails
+Writing File: ../data/thumbnails/australian-gdp-growth.pkl
+Writing File: ../data/thumbnails/australian-inflation-cpi.pkl
+Writing File: ../data/thumbnails/us-unemployment.pkl
+Writing File: ../data/thumbnails/inflation-for-malaysia-world-bank.pkl

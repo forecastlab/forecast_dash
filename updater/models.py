@@ -520,6 +520,8 @@ class RModel(ForecastModel, ABC):
                 self.forecast_lib, type(self).r_forecast_model_name
             )
 
+            self.r_generics_lib = importr("generics") # as of forecast 8.17, generics pacakges does the forecasting.
+
     def description(self):
         return self.method
 
@@ -579,12 +581,10 @@ class RDirectForecastModel(RModel):
 # Examples are forecast::ets and forecast::auto.arima .
 class RForecastModel(RModel):
     def get_r_forecast_dict(self):
-        return dict(
-            self.forecast_lib.forecast(
+        return dict(self.r_generics_lib.forecast(
                 self.fit_results, h=self.h, level=self.r_level
-            ).items()
-        )
-
+            ).items())
+        
     def fit(self, y):
 
         fit_params = {"y": y, **type(self).forecast_model_params}

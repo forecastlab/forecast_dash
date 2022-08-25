@@ -520,7 +520,9 @@ class RModel(ForecastModel, ABC):
                 self.forecast_lib, type(self).r_forecast_model_name
             )
 
-            self.r_generics_lib = importr("generics") # as of forecast 8.17, generics pacakges does the forecasting.
+            self.r_generics_lib = importr(
+                "generics"
+            )  # as of forecast 8.17, generics pacakges does the forecasting.
 
     def description(self):
         return self.method

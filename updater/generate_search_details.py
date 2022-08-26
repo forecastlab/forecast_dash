@@ -36,7 +36,7 @@ def select_best_model(data_dict, CV_score_function="MSE"):
 searchable_details = {}
 for data in data_sources:
     searchable_details[data["title"]] = [data["title"]]
-    title = data['title']
+    title = data["title"]
     try:
         [data["short_title"]] = [data["title"]]
     except:
@@ -56,5 +56,5 @@ for data in data_sources:
     else:
         searchable_details[best_method] = [data["title"]]
 
-with open('../shared_config/search_a_series.json', 'w') as searches_json_file:
-     searches_json_file.write(json.dumps(searchable_details))
+with open("../shared_config/search_a_series.json", "w") as searches_json_file:
+    searches_json_file.write(json.dumps(searchable_details))

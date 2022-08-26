@@ -28,9 +28,7 @@ from common import (
 from slugify import slugify
 
 
-def sort_filter_results(
-    unique_series_titles, sort_by="a_z", **kwargs
-):
+def sort_filter_results(unique_series_titles, sort_by="a_z", **kwargs):
 
     # df = []
 
@@ -42,7 +40,9 @@ def sort_filter_results(
 
     #     df.append([title] #, best_model, mse])
 
-    df = pd.DataFrame(unique_series_titles, columns=["Title"]) #, "BestModel", "MSE"])
+    df = pd.DataFrame(
+        unique_series_titles, columns=["Title"]
+    )  # , "BestModel", "MSE"])
 
     if sort_by == "a_z":
         df.sort_values(by=["Title"], ascending=True, inplace=True)
@@ -69,8 +69,8 @@ component_ids = ["name"]  # , "tags", "methods"]
 with open("../shared_config/data_sources.json") as data_sources_json_file:
     series_list = json.load(data_sources_json_file)
 
-with open('../shared_config/search_a_series.json') as searches_json_file:
-        searchable_details = json.load(searches_json_file)
+with open("../shared_config/search_a_series.json") as searches_json_file:
+    searchable_details = json.load(searches_json_file)
 
 ### result layout
 def result_layout():
@@ -115,12 +115,21 @@ def result_layout():
                                 ],
                                 className="flex-grow-1",
                             ),
-                            dbc.Row([
-                                dcc.Loading(html.Div(id="filter_results")),
-                            ]),
-                            dbc.Row([
-                                html.Button("Load more",id='load_new_content',n_clicks=0, className= "fill",),
-                            ])
+                            dbc.Row(
+                                [
+                                    dcc.Loading(html.Div(id="filter_results")),
+                                ]
+                            ),
+                            dbc.Row(
+                                [
+                                    html.Button(
+                                        "Load more",
+                                        id="load_new_content",
+                                        n_clicks=0,
+                                        className="fill",
+                                    ),
+                                ]
+                            ),
                         ],
                         lg=12,
                         sm=12,
@@ -162,7 +171,7 @@ def filter_panel_children(params):
 
 def match_names(searchable_details, name_input):
     if not name_input or name_input == "":
-        all_titles = [s['title'] for s in series_list]
+        all_titles = [s["title"] for s in series_list]
         return set(all_titles)
 
     matched_series_names = []
@@ -181,7 +190,7 @@ def match_names(searchable_details, name_input):
             re.IGNORECASE,
         )
         if re_results is not None:
-            matched_series_names += result_titles # now a list
+            matched_series_names += result_titles  # now a list
 
         # # Search short_title
         # if "short_title" in forecast_dict["data_source_dict"]:
@@ -263,7 +272,7 @@ def add_dropdown_search_options():
 
     all_tags = [
         {
-            "label": tag, #html.Div(
+            "label": tag,  # html.Div(
             #     [
             #         html.Div(className="fa fa-hashtag"),
             #         html.Div(tag, style={"font-size": 15, "padding-left": 10}),
@@ -313,7 +322,7 @@ def add_dropdown_search_options():
 
     all_titles = [
         {
-            "label": title, #html.Div(
+            "label": title,  # html.Div(
             #     [
             #         html.Div(className="fa fa-globe"),
             #         html.Div(
@@ -378,12 +387,12 @@ def update_url_state(**kwargs):
     Output("filter_results", "children"),
     inputs=[Input(i, "value") for i in component_ids]
     + [Input("results_sort_input", "value")]
-    + [Input("load_new_content","n_clicks")],
+    + [Input("load_new_content", "n_clicks")],
 )
 @dash_kwarg(
     [Input(i, "value") for i in component_ids]
     + [Input("results_sort_input", "value")]
-    + [Input("load_new_content","n_clicks")]
+    + [Input("load_new_content", "n_clicks")]
 )
 def filter_results(**kwargs):
 
@@ -394,8 +403,8 @@ def filter_results(**kwargs):
     # Filtering by AND-ing conditions together
 
     forecast_series_dicts = {}
-    
-    n_clicks=kwargs['load_new_content']
+
+    n_clicks = kwargs["load_new_content"]
 
     # Maybe no need to get forecast data
     # for series_dict in series_list[:(n_clicks+1)*9]:
@@ -422,7 +431,6 @@ def filter_results(**kwargs):
 
     unique_series_titles = list(sorted(set.intersection(*list_filter_matches)))
 
-
     unique_series_titles = sort_filter_results(
         unique_series_titles,
         # forecast_series_dicts,
@@ -440,7 +448,9 @@ def filter_results(**kwargs):
         #         raise PreventUpdate
         #     return [html.Div('Thing {}'.format(n_clicks))]
 
-        for item_title in unique_series_titles[0:(30 + (n_clicks+1)*9)]: # show first thirty
+        for item_title in unique_series_titles[
+            0 : (30 + (n_clicks + 1) * 9)
+        ]:  # show first thirty
             try:
                 forecast_series_dicts[item_title] = get_forecast_data(
                     item_title
@@ -465,11 +475,15 @@ def filter_results(**kwargs):
                     # if no thumbnail image generated
                     thumbnail_figure = "https://dash-bootstrap-components.opensource.faculty.ai/static/images/placeholder286x180.png"
 
-                best_model = select_best_model(forecast_series_dicts[item_title])
+                best_model = select_best_model(
+                    forecast_series_dicts[item_title]
+                )
 
                 results_list.append(
                     dbc.Col(
-                        make_card(title, url_title, thumbnail_figure, best_model),
+                        make_card(
+                            title, url_title, thumbnail_figure, best_model
+                        ),
                         sm=12,
                         md=6,
                         lg=4,
@@ -532,6 +546,7 @@ def make_card(item_title, url_title, thumbnail_figure, best_model):
             )
         ]
     )
+
 
 ### final layout
 def layout(name=None, tags=None, methods=None):

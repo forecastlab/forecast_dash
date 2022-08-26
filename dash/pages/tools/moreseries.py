@@ -272,24 +272,7 @@ def get_series_methods(data_dict, CV_score_function="MSE"):
     return [f'WIN-{best_model}'] + other_models
 
 ### layout function
-def series_double_dropdown(id_prefix, text, tag, series):
-    if isinstance(tag, str): tag = [tag]
-
-    ### tags selection
-    multi_dropdown = dcc.Dropdown(
-        unique_tags,
-        value=tag,
-        placeholder='Select Tags',
-        id=f'{id_prefix}-tag-dropdown',
-        multi=True,
-    )
-
-    multi_dropdown = dbc.Row(
-        [
-            dbc.Col(html.P("TAGS"), lg=2, sm=1,),
-            dbc.Col(multi_dropdown),
-        ]
-    )
+def series_double_dropdown(id_prefix, text, series):
 
     ### series selection
     title_dropdown = dcc.Dropdown(
@@ -322,7 +305,6 @@ def series_double_dropdown(id_prefix, text, tag, series):
     return dbc.Col(
         [
             html.H4(text),
-            dbc.Row(multi_dropdown),
             dbc.Row(title_dropdown),
             dbc.Row(method_dropdown),
         ],
@@ -332,15 +314,44 @@ def series_double_dropdown(id_prefix, text, tag, series):
     )
 
 
-def series_selection_layout(series1=None, series2=None, tag1=None, tag2=None):
+def series_selection_layout(series1=None, series2=None):
     return dbc.Col(
         [
-            series_double_dropdown('series1', 'Series 1', tag1, series1),
-            series_double_dropdown('series2', 'Series 2', tag2, series2),
+            series_double_dropdown('series1', 'Series 1', series1),
+            series_double_dropdown('series2', 'Series 2', series2),
         ],
         # justify="evenly",
     )
 
+
+def twin_axes_switch_layout():
+    return dbc.Checklist(
+        options=[
+            {"label": "Twin Axes", "value": 1},
+        ],
+        value=[0],
+        id="twin_axes_input",
+        switch=True,
+    )
+
+
+def series_link_layout(link_name, link_id):
+    return html.A(
+            link_name,
+            href=None,
+            id=link_id,
+        )
+
+
+def extra_info_row_layout():
+    return dbc.Row(
+        [
+            dbc.Col([twin_axes_switch_layout()]),
+            dbc.Col([series_link_layout("Series 1", "series1-link")]),
+            dbc.Col([series_link_layout("Series 2", "series2-link")]),
+        ],
+        style = {"margin-top" :"20px", "margin-bottom" :"20px"}
+    )
 
 ### callbacks related
 def _update_series_list(tags_selected):
@@ -351,27 +362,27 @@ def _update_series_list(tags_selected):
 
     return filtered_item, first_item
 
-@callback(
-    Output("series1-title-dropdown", "options"),
-    Output("series1-title-dropdown", "value"),
-    Input("series1-tag-dropdown", "value"),
-    prevent_initial_call=True,
-)
-def update_filtered_series1(tags_selected):
-    series_filtered = _update_series_list(tags_selected)
-    return series_filtered
+# @callback(
+#     Output("series1-title-dropdown", "options"),
+#     Output("series1-title-dropdown", "value"),
+#     Input("series1-tag-dropdown", "value"),
+#     prevent_initial_call=True,
+# )
+# def update_filtered_series1(tags_selected):
+#     series_filtered = _update_series_list(tags_selected)
+#     return series_filtered
 
-# for series2 - assure that two dropdown menu are not updated together
-@callback(
-    Output("series2-title-dropdown", "options"),
-    Output("series2-title-dropdown", "value"),
-    Input("series2-tag-dropdown", "value"),
-    prevent_initial_call=True,
-)
-#get_filtered_titles(tags_select, unique_titles, tag_titles)
-def update_filtered_series2(tags_selected):
-    series_filtered = _update_series_list(tags_selected)
-    return series_filtered
+# # for series2 - assure that two dropdown menu are not updated together
+# @callback(
+#     Output("series2-title-dropdown", "options"),
+#     Output("series2-title-dropdown", "value"),
+#     Input("series2-tag-dropdown", "value"),
+#     prevent_initial_call=True,
+# )
+# #get_filtered_titles(tags_select, unique_titles, tag_titles)
+# def update_filtered_series2(tags_selected):
+#     series_filtered = _update_series_list(tags_selected)
+#     return series_filtered
 
 
 ### update methods
@@ -405,6 +416,29 @@ def update_series2_methods(series_title):
         return methods, methods[0]
     except:
         return [], None
+
+
+### update links
+@callback(
+    Output("series1-link", 'href'),
+    Input("series1-title-dropdown", 'value'),
+)
+def update_series1_methods(series_title):
+    if series_title is None:
+        return None
+    return f'/series?title={series_title}'
+
+
+### update links
+@callback(
+    Output("series2-link", 'href'),
+    Input("series2-title-dropdown", 'value'),
+)
+def update_series1_methods(series_title):
+    if series_title is None:
+        return None
+    return f'/series?title={series_title}'
+
 
 # ### update url query
 # @callback(
@@ -473,7 +507,8 @@ def layout(title1=None, title2=None,):
     return dbc.Container(
         [
             dcc.Location(id="urltest", refresh=False),
-            series_selection_layout(series1=None, series2=None),
+            series_selection_layout(title1, title2),
+            extra_info_row_layout(),
             dcc.Loading(dbc.Row([dbc.Col(id="series-graph")])),
         ]
     )

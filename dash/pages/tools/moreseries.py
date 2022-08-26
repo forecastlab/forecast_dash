@@ -17,12 +17,13 @@ from common import (
     select_best_model,
     get_plot_shapes,
     watermark_information,
+    breadcrumb_layout,
 )
 
 dash.register_page(__name__)
 
 ### plot function just for the double series case here
-def get_forecast_plot_data(series_df, forecast_df, color_index=0):
+def get_forecast_plot_data(series_df, forecast_df, color_index=0, yaxis='y'):
 
     alpha = 0.3
 
@@ -51,6 +52,7 @@ def get_forecast_plot_data(series_df, forecast_df, color_index=0):
         name="Historical",
         mode="lines+markers",
         line=dict(color=colors_group[color_index][0]),
+        yaxis=yaxis,
     )
 
     forecast_error_x = list(forecast_df.index) + list(
@@ -67,6 +69,7 @@ def get_forecast_plot_data(series_df, forecast_df, color_index=0):
         fillcolor=colors_group[color_index][1],
         line=dict(color="rgba(255,255,255,0)"),
         name="50% CI",
+        yaxis=yaxis,
     )
 
     # Plot CI75
@@ -78,6 +81,7 @@ def get_forecast_plot_data(series_df, forecast_df, color_index=0):
         fillcolor=colors_group[color_index][2],
         line=dict(color="rgba(255,255,255,0)"),
         name="75% CI",
+        yaxis=yaxis,
     )
 
     # Plot CI95
@@ -89,6 +93,7 @@ def get_forecast_plot_data(series_df, forecast_df, color_index=0):
         fillcolor=colors_group[color_index][3],
         line=dict(color="rgba(255,255,255,0)"),
         name="95% CI",
+        yaxis=yaxis,
     )
 
     # Plot forecast
@@ -99,6 +104,7 @@ def get_forecast_plot_data(series_df, forecast_df, color_index=0):
         name="Forecast",
         mode="lines",
         line=dict(color=colors_group[color_index][0], dash="2px"),
+        yaxis=yaxis,
     )
 
     data = [error_95, error_75, error_50, line_forecast, line_history]
@@ -106,9 +112,17 @@ def get_forecast_plot_data(series_df, forecast_df, color_index=0):
     return data
 
 
-def get_series_figure(data_dict, model_name, data_dict2, model_name2):
+### format title
+def _format_figure_title(title, color):
+    title_color = f'''<b><span style="color:{color}">{title}</span></b>'''
+    return f'''<a href="/series?title={title}">{title_color}</a>'''
+
+
+def get_series_figure(data_dict, model_name, data_dict2, model_name2, twin_axes=False):
     model_name = model_name.replace('WIN-', '')
     model_name2 = model_name2.replace('WIN-', '')
+
+    series2_yaxis = 'y2' if twin_axes else 'y'
 
     watermark_config = watermark_information()
 
@@ -118,7 +132,7 @@ def get_series_figure(data_dict, model_name, data_dict2, model_name2):
     forecast_df2 = data_dict2["all_forecasts"][model_name2]["forecast_df"]
 
     data = get_forecast_plot_data(series_df, forecast_df)
-    data += get_forecast_plot_data(series_df2, forecast_df2, color_index=1)
+    data += get_forecast_plot_data(series_df2, forecast_df2, color_index=1, yaxis=series2_yaxis)
     shapes = get_plot_shapes(series_df, forecast_df)
 
     time_difference_forecast_to_start = (
@@ -139,7 +153,7 @@ def get_series_figure(data_dict, model_name, data_dict2, model_name2):
     )
 
     layout = dict(
-        title=f'(R) {title1} vs (B) {title2}',
+        title=f'''{_format_figure_title(title1, "red")} VS {_format_figure_title(title2, "blue")}''',
         height=720,
         xaxis=dict(
             fixedrange=True,
@@ -207,6 +221,14 @@ def get_series_figure(data_dict, model_name, data_dict2, model_name2):
         shapes=shapes,
         modebar={"color": "rgba(0,0,0,1)"},
     )
+
+    ### add twin axes
+    if twin_axes:
+        layout['yaxis2'] = {
+            'anchor': 'x',
+            'overlaying': 'y',
+            'side': 'right',
+        }
 
     return dict(data=data, layout=layout)
 
@@ -309,6 +331,7 @@ def series_double_dropdown(id_prefix, text, series):
             dbc.Row(method_dropdown),
         ],
         align='center',
+        style={"margin-top":"20px"}
         # lg=4,
         # sm=1,
     )
@@ -335,9 +358,17 @@ def twin_axes_switch_layout():
     )
 
 
-def series_link_layout(link_name, link_id):
+def series_link_layout(link_name, link_id, color):
     return html.A(
-            link_name,
+            html.Button(
+                link_name, 
+                style={
+                    "background-color": color, 
+                    "color":"white",
+                    "border": "none",
+                    "padding": "15px 32px",
+                }
+            ),
             href=None,
             id=link_id,
         )
@@ -347,8 +378,8 @@ def extra_info_row_layout():
     return dbc.Row(
         [
             dbc.Col([twin_axes_switch_layout()]),
-            dbc.Col([series_link_layout("Series 1", "series1-link")]),
-            dbc.Col([series_link_layout("Series 2", "series2-link")]),
+            dbc.Col([series_link_layout("Link to Series 1", "series1-link", "#00A6FF")]),
+            dbc.Col([series_link_layout("Link to Series 2", "series2-link", "#FF4200")]),
         ],
         style = {"margin-top" :"20px", "margin-bottom" :"20px"}
     )
@@ -464,15 +495,18 @@ def update_url_query(title1, title2):
     Input("series1-method-dropdown", "value"),
     Input("series2-title-dropdown", 'value'),
     Input("series2-method-dropdown", "value"),
+    Input("twin_axes_input", "value"),
 )
-def update_series_graph(series_title1, method1, series_title2, method2):
+def update_series_graph(series_title1, method1, series_title2, method2, twin_axes_input):
     if not (series_title1 and series_title2 and method1 and method2):
         raise PreventUpdate
+
+    twin_axes = False if twin_axes_input==[0] else True
 
     series_data_dict1 = get_forecast_data(series_title1)
     series_data_dict2 = get_forecast_data(series_title2)
     series_figure = get_series_figure(
-        series_data_dict1, method1, series_data_dict2, method2
+        series_data_dict1, method1, series_data_dict2, method2, twin_axes,
     )
 
     series_graph = dcc.Graph(
@@ -506,6 +540,7 @@ def layout(title1=None, title2=None,):
     return dbc.Container(
         [
             dcc.Location(id="URL", refresh=False), # not sure what happened here, lower case does not work...
+            breadcrumb_layout([("Home", "/"), ("More Series", "")]),
             series_selection_layout(title1, title2),
             extra_info_row_layout(),
             dcc.Loading(dbc.Row([dbc.Col(id="series-graph")])),

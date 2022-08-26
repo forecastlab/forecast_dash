@@ -79,9 +79,28 @@ def _forecast_info_layout():
     )
 
 
-def _forecast_performance_layout():
+def _forecast_performance_layout(title=None):
     return dbc.Col(
         [
+            dbc.Row(
+                [
+                    html.A(
+                        html.Button(
+                            "Compare to Another Series", 
+                            style={
+                                "background-color": "#D5D5D5", 
+                                "color":"black",
+                                "border": "none",
+                                "padding": "12px 30px",
+                                "font-weight": "bold",
+                            }
+                        ),
+                        id='chart-builder-button',
+                        href=f"/tools/moreseries?title1={title}&title2=None",
+                    ),
+                ],
+                style={"margin-bottom": "30px"},
+            ),
             dbc.Row(
                 [dbc.Label("Model Cross Validation Scores")],
             ),
@@ -133,7 +152,7 @@ def _series_layout(title=None):
             dbc.Row(
                 [
                     _forecast_info_layout(),
-                    _forecast_performance_layout(),
+                    _forecast_performance_layout(title=title),
                 ]
             ),
         ]

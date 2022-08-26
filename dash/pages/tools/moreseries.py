@@ -440,22 +440,21 @@ def update_series1_methods(series_title):
     return f'/series?title={series_title}'
 
 
-# ### update url query
-# @callback(
-#     Output("urltest", 'search'),
-#     Input("series1-title-dropdown", "value"),
-#     Input("series2-title-dropdown", "value"),
-# )
-# def update_url_query(title1, title2):
-#     # if title1 is None or title2 is None:
-#     #     raise PreventUpdate
+### update url query
+@callback(
+    Output("URL", 'search'),
+    Input("series1-title-dropdown", "value"),
+    Input("series2-title-dropdown", "value"),
+)
+def update_url_query(title1, title2):
+    # if title1 is None or title2 is None:
+    #     raise PreventUpdate
 
-#     query = urlencode(
-#         [("title1", title1), ("title2", title2)],
-#         doseq=True
-#     )
+    query = urlencode(
+        [("title1", title1), ("title2", title2)],
+    )
 
-#     return f'?{query}'
+    return f'?{query}'
 
 
 ### Plotting callbacks
@@ -506,7 +505,7 @@ def update_series_graph(series_title1, method1, series_title2, method2):
 def layout(title1=None, title2=None,):
     return dbc.Container(
         [
-            dcc.Location(id="urltest", refresh=False),
+            dcc.Location(id="URL", refresh=False), # not sure what happened here, lower case does not work...
             series_selection_layout(title1, title2),
             extra_info_row_layout(),
             dcc.Loading(dbc.Row([dbc.Col(id="series-graph")])),

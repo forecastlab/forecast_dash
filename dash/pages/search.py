@@ -81,9 +81,7 @@ def result_layout():
                         [
                             dbc.Row(
                                 [
-                                    dbc.Col(
-                                        [html.H4("Results")],
-                                    ),
+                                    dbc.Col([html.H4("Results")],),
                                     dbc.Col(
                                         [
                                             "Sort by:",
@@ -188,20 +186,14 @@ def match_names(forecast_dicts, name_input):
 
         # Search tags
         series_tags = " ".join(forecast_dict["data_source_dict"]["tags"])
-        re_results = re.search(
-            name_terms,
-            series_tags,
-            re.IGNORECASE,
-        )
+        re_results = re.search(name_terms, series_tags, re.IGNORECASE,)
 
         if re_results is not None:
             matched_series_names.append(series_title)
 
         # Search methods
         re_results = re.search(
-            name_terms,
-            select_best_model(forecast_dict),
-            re.IGNORECASE,
+            name_terms, select_best_model(forecast_dict), re.IGNORECASE,
         )
         if re_results is not None:
             matched_series_names.append(series_title)
@@ -281,8 +273,7 @@ def add_dropdown_search_options():
 
 
 @callback(
-    Output("filter_panel", "children"),
-    Input("url", "href"),
+    Output("filter_panel", "children"), Input("url", "href"),
 )
 @location_ignore_null([Input("url", "href")], "url")
 def filter_panel(value):
@@ -304,8 +295,7 @@ def filter_panel(value):
 
 
 @callback(
-    Output("url", "search"),
-    inputs=[Input(i, "value") for i in component_ids],
+    Output("url", "search"), inputs=[Input(i, "value") for i in component_ids],
 )
 @dash_kwarg([Input(i, "value") for i in component_ids])
 def update_url_state(**kwargs):
@@ -374,9 +364,7 @@ def filter_results(**kwargs):
                             dbc.CardImg(
                                 src=thumbnail_figure,
                                 top=True,
-                                style={
-                                    "opacity": 0.3,
-                                },
+                                style={"opacity": 0.3,},
                             ),
                             dbc.CardImgOverlay(
                                 dbc.CardBody(
@@ -459,9 +447,4 @@ def filter_results(**kwargs):
 
 ### final layout
 def layout(name=None, tags=None, methods=None):
-    return html.Div(
-        [
-            dcc.Location(id="url", refresh=False),
-            result_layout(),
-        ]
-    )
+    return html.Div([dcc.Location(id="url", refresh=False), result_layout(),])

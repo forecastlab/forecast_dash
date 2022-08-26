@@ -18,13 +18,7 @@ app = Dash(
     ],
 )
 
-app.layout = html.Div(
-    [
-        header(),
-        dash.page_container,
-        footer(),
-    ]
-)
+app.layout = html.Div([header(), dash.page_container, footer(),])
 
 ### callback for toggling the collapse on small screens
 @callback(

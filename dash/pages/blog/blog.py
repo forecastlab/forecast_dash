@@ -29,11 +29,7 @@ def _blog_layout():
     return dbc.Container(
         [
             breadcrumb_layout([("Home", "/"), ("Blog", "")]),
-            dbc.Row(
-                [
-                    dbc.Col([html.H1("Recent posts"), html.Hr()]),
-                ]
-            ),
+            dbc.Row([dbc.Col([html.H1("Recent posts"), html.Hr()]),]),
             html.Div(id="body"),
         ],
         style={"margin-bottom": "64px"},
@@ -73,8 +69,7 @@ def _collect_blog_posts():
 def _post_review_title(blog_post):
     return html.A(
         html.H2(
-            blog_post["attributes"]["title"],
-            style={"padding-top": "8px"},
+            blog_post["attributes"]["title"], style={"padding-top": "8px"},
         ),
         href=f"/blog/post?title={blog_post['filename']}",
         id=blog_post["filename"],
@@ -90,8 +85,7 @@ def _post_review_author(blog_post):
             humanize.naturaltime(
                 datetime.now()
                 - datetime.strptime(
-                    blog_post["attributes"]["date"],
-                    "%Y-%m-%d",
+                    blog_post["attributes"]["date"], "%Y-%m-%d",
                 )
             ),
         ],
@@ -121,10 +115,7 @@ def _post_review_abstract(blog_post):
 def _post_review_readmore(blog_post):
     return html.A(
         html.P(
-            html.Strong(
-                "Read more",
-                className="text-left",
-            ),
+            html.Strong("Read more", className="text-left",),
             style={"padding-bottom": "24px"},
         ),
         href=f"/blog/post?title={blog_post['filename']}",
@@ -145,18 +136,12 @@ def _navigation_previous(page_int, n_pages):
         else []
     )
 
-    return dbc.Col(
-        previous_link,
-        lg=2,
-    )
+    return dbc.Col(previous_link, lg=2,)
 
 
 def _navigation_pagecount(page_int, n_pages):
     return dbc.Col(
-        html.P(
-            f"Page {page_int} of {n_pages}",
-            className="text-center",
-        ),
+        html.P(f"Page {page_int} of {n_pages}", className="text-center",),
         lg=4,
     )
 
@@ -173,10 +158,7 @@ def _navigation_earlier(page_int):
         else []
     )
 
-    return dbc.Col(
-        earlier_link,
-        lg=2,
-    )
+    return dbc.Col(earlier_link, lg=2,)
 
 
 def _render_post_reviews(value, n_posts_per_page=5):  # value from url
@@ -231,9 +213,4 @@ def body(value):
 
 ### final layout function
 def layout(page=None, post=None):
-    return html.Div(
-        [
-            dcc.Location(id="url", refresh=False),
-            _blog_layout(),
-        ]
-    )
+    return html.Div([dcc.Location(id="url", refresh=False), _blog_layout(),])

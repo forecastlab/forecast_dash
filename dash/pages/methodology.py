@@ -5,8 +5,7 @@ from common import markdown_layout
 title = "Methodology"
 
 dash.register_page(
-    __name__,
-    title=title,
+    __name__, title=title,
 )
 
 ### markdown content ###

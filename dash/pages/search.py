@@ -280,6 +280,7 @@ def add_dropdown_search_options():
         #     "value": method,
         # }
         {"label": f"Winning Method - {method}", "value": method}
+
         for method in sorted(stats["models_used"])
     ]
 
@@ -306,6 +307,7 @@ def add_dropdown_search_options():
             #         "justify-content": "center",
             #     },
             # ),
+
             "value": title,
         }
         for title in all_titles

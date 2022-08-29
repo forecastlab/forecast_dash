@@ -255,12 +255,45 @@ def add_dropdown_search_options():
     for series_dict in series_list:
         all_tags.extend(series_dict["tags"])
 
-    all_tags = [{"label": tag, "value": tag} for tag in sorted(set(all_tags))]
+    all_tags = [
+        {
+            "label": html.Div(
+                [
+                    html.Div(className="fa fa-hashtag"),
+                    html.Div(tag, style={"font-size": 15, "padding-left": 10}),
+                ],
+                style={
+                    "display": "flex",
+                    "align-items": "center",
+                    "justify-content": "center",
+                },
+            ),
+            "value": tag,
+        }
+        for tag in sorted(set(all_tags))
+    ]
 
     # Load methods
     stats = get_forecast_data("statistics")
     all_methods = [
-        {"label": f"Winning Method - {method}", "value": method}
+        {
+            "label": html.Div(
+                [
+                    html.Div(className="fa fa-wrench"),
+                    html.Div(
+                        f"Winning Method - {method}",
+                        style={"font-size": 15, "padding-left": 10},
+                    ),
+                ],
+                style={
+                    "display": "flex",
+                    "align-items": "center",
+                    "justify-content": "center",
+                },
+            ),
+            "value": method,
+        }
+        # {"label": f"Winning Method - {method}", "value": method}
         for method in sorted(stats["models_used"])
     ]
 
@@ -272,10 +305,30 @@ def add_dropdown_search_options():
         except:
             pass
 
-    all_titles = [{"label": title, "value": title} for title in all_titles]
+    all_titles = [
+        {
+            "label": html.Div(
+                [
+                    html.Div(className="fa fa-globe"),
+                    html.Div(
+                        title, style={"font-size": 15, "padding-left": 10}
+                    ),
+                ],
+                style={
+                    "display": "flex",
+                    "align-items": "center",
+                    "justify-content": "center",
+                },
+            ),
+            "value": title,
+        }
+        for title in all_titles
+    ]
 
     all_options = all_tags + all_methods + all_titles
-    all_options = sorted(all_options, key=lambda d: d["label"])
+    all_options = sorted(
+        all_options, key=lambda d: d["value"]
+    )  # previous was 'label', can't order by html.Div
 
     return all_options
 

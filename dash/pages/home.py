@@ -13,6 +13,7 @@ from common import (
     get_forecast_data,
     component_news_4col,
     component_figs_2col,
+    world_map_of_forecasts,
 )
 
 dash.register_page(__name__, path="/", title="Business Forecast Lab")
@@ -20,6 +21,7 @@ dash.register_page(__name__, path="/", title="Business Forecast Lab")
 # load data source
 with open("../shared_config/data_sources.json") as data_sources_json_file:
     series_list = json.load(data_sources_json_file)
+
 
 ### functions for different part of layout
 # section 1: mission statement
@@ -65,22 +67,17 @@ def _featured_latest_news(feature_series_title):
                 dbc.Col(
                     [
                         html.H3(
-                            "Featured Series",
+                            "World Map of Featured Series",
                             style={"text-align": "center"},
                         ),
                         html.A(
                             [
                                 dcc.Graph(
-                                    figure=get_thumbnail_figure(
-                                        get_forecast_data(
-                                            feature_series_title
-                                        ),
-                                        lg=8,
-                                    ),
+                                    figure=world_map_of_forecasts(),
                                     config={"displayModeBar": False},
                                 )
                             ],
-                            href=f"/series?{urlencode({'title': feature_series_title})}",
+                            href="/search/",
                         ),
                     ],
                     lg=8,
@@ -234,7 +231,7 @@ def main_body(feature_series_title):
 
 
 ### The layout variable
-feature_series_title = "Australian Inflation (CPI)"
+feature_series_title = "Australian Inflation (CPI)"  # can remove this
 
 layout = html.Div(
     [

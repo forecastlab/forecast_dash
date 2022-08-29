@@ -30,8 +30,7 @@ from slugify import slugify
 
 def sort_filter_results(unique_series_titles, sort_by="a_z", **kwargs):
 
-    # df = []
-
+    # Load all the forecast data slows this down. Keep this for now, if you are going to use any sorting by MSE
     # for item_title in unique_series_titles:
     #     series_data = forecast_series_dicts[item_title]
     #     title = series_data["data_source_dict"]["title"]
@@ -192,35 +191,6 @@ def match_names(searchable_details, name_input):
         if re_results is not None:
             matched_series_names += result_titles  # now a list
 
-        # # Search short_title
-        # if "short_title" in forecast_dict["data_source_dict"]:
-        #     re_results = re.search(
-        #         name_terms,
-        #         forecast_dict["data_source_dict"]["short_title"],
-        #         re.IGNORECASE,
-        #     )
-        #     if re_results is not None:
-        #         matched_series_names.append(series_title)
-
-        # # Search tags
-        # series_tags = " ".join(forecast_dict["data_source_dict"]["tags"])
-        # re_results = re.search(
-        #     name_terms,
-        #     series_tags,
-        #     re.IGNORECASE,
-        # )
-
-        # if re_results is not None:
-        #     matched_series_names.append(series_title)
-
-        # # Search methods
-        # re_results = re.search(
-        #     name_terms,
-        #     select_best_model(forecast_dict),
-        #     re.IGNORECASE,
-        # )
-        # if re_results is not None:
-        #     matched_series_names.append(series_title)
     return set(matched_series_names)
 
 
@@ -270,6 +240,7 @@ def add_dropdown_search_options():
     for series_dict in series_list:
         all_tags.extend(series_dict["tags"])
 
+    # The code below has been disabled for now, until a work around is possible.
     all_tags = [
         {
             "label": tag,  # html.Div(
@@ -406,15 +377,6 @@ def filter_results(**kwargs):
 
     n_clicks = kwargs["load_new_content"]
 
-    # Maybe no need to get forecast data
-    # for series_dict in series_list[:(n_clicks+1)*9]:
-    #     try:
-    #         forecast_series_dicts[series_dict["title"]] = get_forecast_data(
-    #             series_dict["title"]
-    #         )
-    #     except FileNotFoundError:
-    #         continue
-
     filters = {
         "name": match_names,
         # "tags": match_tags,
@@ -443,14 +405,9 @@ def filter_results(**kwargs):
 
         results_list = []
 
-        # def more_output(n_clicks):
-        #     if n_clicks==0:
-        #         raise PreventUpdate
-        #     return [html.Div('Thing {}'.format(n_clicks))]
-
         for item_title in unique_series_titles[
             0 : (30 + (n_clicks + 1) * 9)
-        ]:  # show first thirty
+        ]:  # show first thirty nine
             try:
                 forecast_series_dicts[item_title] = get_forecast_data(
                     item_title

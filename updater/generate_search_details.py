@@ -33,28 +33,31 @@ def select_best_model(data_dict, CV_score_function="MSE"):
     return model_name
 
 
-searchable_details = {}
-for data in data_sources:
-    searchable_details[data["title"]] = [data["title"]]
-    title = data["title"]
-    try:
-        [data["short_title"]] = [data["title"]]
-    except:
-        pass
-    for tag in data["tags"]:
-        if tag in searchable_details.keys():
-            searchable_details[tag] += [data["title"]]
+if __name__ == "__main__":
+    searchable_details = {}
+    for data in data_sources:
+        searchable_details[data["title"]] = [data["title"]]
+        title = data["title"]
+        try:
+            [data["short_title"]] = [data["title"]]
+        except:
+            pass
+        for tag in data["tags"]:
+            if tag in searchable_details.keys():
+                searchable_details[tag] += [data["title"]]
+            else:
+                searchable_details[tag] = [data["title"]]
+        f = open(f"../data/forecasts/{slugify(title)}.pkl", "rb")
+        downloaded_dict = pickle.load(f)
+        f.close()
+        best_method = select_best_model(downloaded_dict)
+        # print(best_method)
+        if best_method in searchable_details.keys():
+            searchable_details[best_method] += [data["title"]]
         else:
-            searchable_details[tag] = [data["title"]]
-    f = open(f"../data/forecasts/{slugify(title)}.pkl", "rb")
-    downloaded_dict = pickle.load(f)
-    f.close()
-    best_method = select_best_model(downloaded_dict)
-    print(best_method)
-    if best_method in searchable_details.keys():
-        searchable_details[best_method] += [data["title"]]
-    else:
-        searchable_details[best_method] = [data["title"]]
+            searchable_details[best_method] = [data["title"]]
 
-with open("../shared_config/search_a_series.json", "w") as searches_json_file:
-    searches_json_file.write(json.dumps(searchable_details))
+    with open(
+        "../shared_config/search_a_series.json", "w"
+    ) as searches_json_file:
+        searches_json_file.write(json.dumps(searchable_details))

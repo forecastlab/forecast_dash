@@ -630,8 +630,6 @@
   "frequency" : "AS",
   "tags" : ["Colombia", "Inflation", "Economic", "South/Latin America", "World Bank" ]
   },
-
-
 {"title":"Inflation for Costa Rica (World Bank)",
   "source":"WorldBank",
   "url":"https://api.worldbank.org/v2/country/CRI/indicator/FP.CPI.TOTL.ZG",
@@ -668,10 +666,6 @@
   "frequency" : "AS",
   "tags" : ["Denmark", "Inflation", "Economic", "Europe", "World Bank" ]
   },
-
-
-
-
 {"title":"Inflation for Dominican Republic (World Bank)",
   "source":"WorldBank",
   "url":"https://api.worldbank.org/v2/country/DOM/indicator/FP.CPI.TOTL.ZG",
@@ -834,8 +828,6 @@
   "frequency" : "AS",
   "tags" : ["Iran, Islamic Rep.", "Inflation", "Economic", "Middle east", "World Bank" ]
   },
-
-
 {"title":"Inflation for Ireland (World Bank)",
   "source":"WorldBank",
   "url":"https://api.worldbank.org/v2/country/IRL/indicator/FP.CPI.TOTL.ZG",
@@ -902,8 +894,6 @@
   "frequency" : "AS",
   "tags" : ["Lebanon", "Inflation", "Economic", "Middle east", "World Bank" ]
   },
-
-
 {"title":"Inflation for Lithuania (World Bank)",
   "source":"WorldBank",
   "url":"https://api.worldbank.org/v2/country/LTU/indicator/FP.CPI.TOTL.ZG",
@@ -1108,8 +1098,6 @@
   "frequency" : "AS",
   "tags" : ["Russian Federation", "Inflation", "Economic", "Europe", "World Bank" ]
   },
-
-
 {"title":"Inflation for Samoa (World Bank)",
   "source":"WorldBank",
   "url":"https://api.worldbank.org/v2/country/WSM/indicator/FP.CPI.TOTL.ZG",
@@ -1476,8 +1464,6 @@
   "frequency" : "AS",
   "tags" : ["Cameroon", "Inflation", "Economic", "Africa", "World Bank" ]
   },
-
-
 { "title" : "GDP for Cayman Islands (World Bank)",
   "source" : "WorldBank",
   "url" : "https://api.worldbank.org/v2/country/CYM/indicator/NY.GDP.MKTP.KD.ZG",
@@ -1658,8 +1644,6 @@
   "frequency" : "AS",
   "tags" : ["France", "Inflation", "Economic", "Europe", "World Bank" ]
   },
-
-
 { "title" : "GDP for Gabon (World Bank)",
   "source" : "WorldBank",
   "url" : "https://api.worldbank.org/v2/country/GAB/indicator/NY.GDP.MKTP.KD.ZG",
@@ -1750,8 +1734,6 @@
   "frequency" : "AS",
   "tags" : ["Hungary", "Inflation", "Economic", "Europe", "World Bank" ]
   },
-
-
 { "title" : "GDP for India (World Bank)",
   "source" : "WorldBank",
   "url" : "https://api.worldbank.org/v2/country/IND/indicator/NY.GDP.MKTP.KD.ZG",
@@ -1788,8 +1770,6 @@
   "frequency" : "AS",
   "tags" : ["Isle of Man", "Inflation", "Economic", "Europe", "World Bank" ]
   },
-
-
 { "title" : "GDP for Italy (World Bank)",
   "source" : "WorldBank",
   "url" : "https://api.worldbank.org/v2/country/ITA/indicator/NY.GDP.MKTP.KD.ZG",
@@ -2192,8 +2172,6 @@
   "frequency" : "AS",
   "tags" : ["Solomon Islands", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
   },
-
-
 { "title" : "GDP for South Africa (World Bank)",
   "source" : "WorldBank",
   "url" : "https://api.worldbank.org/v2/country/ZAF/indicator/NY.GDP.MKTP.KD.ZG",

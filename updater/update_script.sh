@@ -2,4 +2,5 @@
 
 cd /updater
 /usr/local/bin/pip install -r requirements.txt
-/usr/local/bin/python -u update.py
+/usr/bin/r requirements.R
+/usr/local/bin/python -u update.py > updater_ouput.log

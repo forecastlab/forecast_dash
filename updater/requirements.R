@@ -4,5 +4,5 @@ ipak <- function(pkg){
         install.packages(new.pkg, dependencies = TRUE)
 }
 
-packages <- c()
+packages <- c('smooth')
 ipak(packages)

@@ -37,7 +37,7 @@ ENV APTOPTS "-y -t testing --no-install-recommends"
 
 # Install R and dependencies
 COPY ./requirements-bin.txt .
-RUN apt-get update &&  apt-get -y install build-essential libopenblas-base r-base r-cran-forecast
+RUN apt-get update && cat requirements-bin.txt | xargs apt-get $APTOPTS install
 
 # Install remaining R packages from source
 COPY ./requirements.R ./

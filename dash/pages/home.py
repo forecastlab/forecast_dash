@@ -77,7 +77,7 @@ def _featured_latest_news(feature_series_title):
                                     figure=world_map_of_forecasts(),
                                     config={"displayModeBar": False}, id='choropleth',
                                 ), id = 'myDiv'),
-                                html.Div(id='TEST')
+                                html.Div(id='LinkOutCountry')
                             # ],
                             # href="/search/",
                         # ),
@@ -127,7 +127,7 @@ def _featured_latest_news(feature_series_title):
 
 
 @callback(
-    Output('TEST', 'children'),
+    Output('LinkOutCountry', 'children'),
     [Input('choropleth', 'clickData')])
 def update_figure(clickData):
     countries = pd.read_csv("../data/CountriesList.csv")
@@ -141,18 +141,7 @@ def update_figure(clickData):
         # else:
         #     selections.remove(location)
         
-    return f"outputinng the follow: {selection}"
-
-# clientside_callback(
-#     """
-#     async function(clickData) {
-#     # location = clickData['points'][0]['location']
-#     window.open('www.google.com')
-#     }
-#     """,
-#     Output('TEST', 'children'),
-#     Input('choropleth', 'clickData'),
-# )
+    return html.A([f"Check out the forecast series in the {selection}"],href = f"search/?name={selection}")
 
 def _leaderboard():
     return dbc.Row(

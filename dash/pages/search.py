@@ -177,8 +177,8 @@ def match_names(searchable_details, name_input):
     print(name_input)
     # name_terms = "|".join(name_input.split(" ")) # keep for later use.
     name_terms = name_input  # for single search
-    name_terms = [name_term.replace("(", "\\(") for name_term in name_terms]
-    name_terms = [name_term.replace(")", "\\)") for name_term in name_terms]
+    # name_terms = [name_term.replace("(", "\\(") for name_term in name_terms]
+    # name_terms = [name_term.replace(")", "\\)") for name_term in name_terms]
 
     for _name in name_terms:
         result_titles = searchable_details[_name]

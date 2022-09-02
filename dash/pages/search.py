@@ -322,7 +322,7 @@ def update_url_state(**kwargs):
 )
 def filter_results(**kwargs):
 
-    # Fix up name # keep as list now. 
+    # Fix up name # keep as list now.
     # if type(kwargs["name"]) == list:
     #     kwargs["name"] = "".join(kwargs["name"])
 

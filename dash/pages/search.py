@@ -180,59 +180,12 @@ def match_names(searchable_details, name_input):
     name_terms = [name_term.replace("(", "\\(") for name_term in name_terms]
     name_terms = [name_term.replace(")", "\\)") for name_term in name_terms]
 
-    # for search_term, result_titles in searchable_details.items():
-
-    #     # Search title
-    #     re_results = re.search(
-    #         name_terms,
-    #         search_term,
-    #         re.IGNORECASE,
-    #     )
     for _name in name_terms:
         result_titles = searchable_details[_name]
         if result_titles is not None:
             matched_series_names += result_titles  # now a list
 
     return set(matched_series_names)
-
-
-# def match_tags(forecast_dicts, tags):
-#     if not tags or tags == "":
-#         return set(forecast_dicts.keys())
-
-#     matched_series_names = []
-
-#     if type(tags) == str:
-#         tags = tags.split(",")
-
-#     tags = set(tags)
-
-#     for series_title, forecast_dict in forecast_dicts.items():
-#         series_tags = forecast_dict["data_source_dict"]["tags"]
-
-#         if tags.issubset(set(series_tags)):
-#             matched_series_names.append(series_title)
-
-#     return set(matched_series_names)
-
-
-# def match_methods(forecast_dicts, methods):
-#     if not methods or methods == "":
-#         return set(forecast_dicts.keys())
-
-#     matched_series_names = []
-
-#     if type(methods) == str:
-#         methods = methods.split(",")
-
-#     methods = set(methods)
-
-#     for series_title, forecast_dict in forecast_dicts.items():
-
-#         if select_best_model(forecast_dict) in methods:
-#             matched_series_names.append(series_title)
-
-#     return set(matched_series_names)
 
 
 def add_dropdown_search_options():
@@ -330,16 +283,16 @@ def filter_panel(value):
 
     parse_result = parse_state(value)
 
-    all_tags = []
+    # all_tags = []
 
-    for series_dict in series_list:
-        all_tags.extend(series_dict["tags"])
+    # for series_dict in series_list:
+    #     all_tags.extend(series_dict["tags"])
 
-    all_tags = sorted(set(all_tags))
+    # all_tags = sorted(set(all_tags))
 
-    # Dynamically load methods
-    stats = get_forecast_data("statistics")
-    all_methods = sorted(stats["models_used"])
+    # # Dynamically load methods
+    # stats = get_forecast_data("statistics")
+    # all_methods = sorted(stats["models_used"])
 
     return filter_panel_children(parse_result)
 
@@ -369,7 +322,7 @@ def update_url_state(**kwargs):
 )
 def filter_results(**kwargs):
 
-    # Fix up name
+    # Fix up name # keep as list now. 
     # if type(kwargs["name"]) == list:
     #     kwargs["name"] = "".join(kwargs["name"])
 

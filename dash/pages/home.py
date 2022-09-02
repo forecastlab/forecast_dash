@@ -1,11 +1,12 @@
 ### dash related
-from dash import html, dcc
+from dash import html, dcc, callback, Output, Input
 import dash
 import dash_bootstrap_components as dbc
 
 from urllib.parse import urlencode
 
 import json
+import pandas as pd
 
 ### utils
 from common import (
@@ -70,15 +71,16 @@ def _featured_latest_news(feature_series_title):
                             "World Map of Featured Series",
                             style={"text-align": "center"},
                         ),
-                        html.A(
-                            [
-                                dcc.Graph(
+                        # html.A(
+                        #     [
+                                html.Div(dcc.Graph(
                                     figure=world_map_of_forecasts(),
-                                    config={"displayModeBar": False},
-                                )
-                            ],
-                            href="/search/",
-                        ),
+                                    config={"displayModeBar": False}, id='choropleth',
+                                ), id = 'myDiv'),
+                                html.Div(id='TEST')
+                            # ],
+                            # href="/search/",
+                        # ),
                     ],
                     lg=8,
                 ),
@@ -123,6 +125,34 @@ def _featured_latest_news(feature_series_title):
         ),
     ]
 
+
+@callback(
+    Output('TEST', 'children'),
+    [Input('choropleth', 'clickData')])
+def update_figure(clickData):
+    countries = pd.read_csv("../data/CountriesList.csv")
+
+    if clickData is not None:            
+        location = clickData['points'][0]['location']
+        selection = countries['Country'][countries['Code'] ==location].values[0]
+
+        # if location not in selections:
+        #     selections.add(location)
+        # else:
+        #     selections.remove(location)
+        
+    return f"outputinng the follow: {selection}"
+
+# clientside_callback(
+#     """
+#     async function(clickData) {
+#     # location = clickData['points'][0]['location']
+#     window.open('www.google.com')
+#     }
+#     """,
+#     Output('TEST', 'children'),
+#     Input('choropleth', 'clickData'),
+# )
 
 def _leaderboard():
     return dbc.Row(

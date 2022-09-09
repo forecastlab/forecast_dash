@@ -73,13 +73,17 @@ def _featured_latest_news(feature_series_title):
                         ),
                         # html.A(
                         #     [
-                                html.Div(dcc.Graph(
-                                    figure=world_map_of_forecasts(),
-                                    config={"displayModeBar": False}, id='choropleth',
-                                ), id = 'myDiv'),
-                                html.Div(id='LinkOutCountry')
-                            # ],
-                            # href="/search/",
+                        html.Div(
+                            dcc.Graph(
+                                figure=world_map_of_forecasts(),
+                                config={"displayModeBar": False},
+                                id="choropleth",
+                            ),
+                            id="myDiv",
+                        ),
+                        html.Div(id="LinkOutCountry")
+                        # ],
+                        # href="/search/",
                         # ),
                     ],
                     lg=8,
@@ -127,21 +131,27 @@ def _featured_latest_news(feature_series_title):
 
 
 @callback(
-    Output('LinkOutCountry', 'children'),
-    [Input('choropleth', 'clickData')])
+    Output("LinkOutCountry", "children"), [Input("choropleth", "clickData")]
+)
 def update_figure(clickData):
     countries = pd.read_csv("../data/CountriesList.csv")
 
-    if clickData is not None:            
-        location = clickData['points'][0]['location']
-        selection = countries['Country'][countries['Code'] ==location].values[0]
+    if clickData is not None:
+        location = clickData["points"][0]["location"]
+        selection = countries["Country"][countries["Code"] == location].values[
+            0
+        ]
 
         # if location not in selections:
         #     selections.add(location)
         # else:
         #     selections.remove(location)
-        
-    return html.A([f"Check out the forecast series in the {selection}"],href = f"search/?name={selection}")
+
+    return html.A(
+        [f"Check out the forecast series in the {selection}"],
+        href=f"search/?name={selection}",
+    )
+
 
 def _leaderboard():
     return dbc.Row(

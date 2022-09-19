@@ -18,7 +18,11 @@ results = []
 for data_source in data_sources_list:
     title = data_source["title"]
     url = data_source["url"]
-    status = requests.get(url).status_code
+    try:
+        status = requests.get(url, timeout=(6.05, 12)).status_code
+    except:
+        status = 'Timeout'
+    print(f'{title} - {status}')
     results.append([title, url, status])
 
 results = pd.DataFrame(results)

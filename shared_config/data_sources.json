@@ -2345,5 +2345,15 @@
   "url" : "https://api.worldbank.org/v2/country/ZWE/indicator/NY.GDP.MKTP.KD.ZG",
   "frequency" : "AS",
   "tags" : ["Zimbabwe", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{
+  "title": "US Nonfarm Payroll",
+  "source": "Fred",
+  "url": "https://api.stlouisfed.org/fred/series/observations?series_id=PAYEMS",
+  "frequency": "MS",
+  "tags": [
+    "United States",
+    "Economic"
+  ]
   }
 ]

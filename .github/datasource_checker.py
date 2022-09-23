@@ -28,7 +28,7 @@ for data_source in data_sources_list:
             url, timeout=(6.05, 12), params=payload
         ).status_code
     except requests.Timeout:
-        status = "Timeout"
+        status = 99
     except Exception as e:
         print(e)
 
@@ -39,7 +39,7 @@ results = pd.DataFrame(results)
 
 #%%
 results.columns = ["Title", "URL", "Status"]
-results.replace({"Status": {"Timeout": 99}})
+
 #%%
 results_grouped = results["Status"].value_counts().reset_index()
 

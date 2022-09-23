@@ -2,7 +2,9 @@ name: Check Data Sources
 
 on:
   push:
-    branches: [ "staging" ]
+    branches:
+      - master
+      - staging
 
 permissions:
   contents: read

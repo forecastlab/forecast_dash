@@ -21,17 +21,21 @@ for data_source in data_sources_list:
     try:
         status = requests.get(url, timeout=(6.05, 12)).status_code
     except:
-        status = 'Timeout'
-    print(f'{title} - {status}')
+        status = "Timeout"
+    print(f"{title} - {status}")
     results.append([title, url, status])
 
 results = pd.DataFrame(results)
 
 #%%
 results.columns = ["Title", "URL", "Status"]
+results.replace({"Status": {"Timeout": 99}})
 #%%
 results_grouped = results["Status"].value_counts().reset_index()
 
+print(
+    f"There are {results_grouped['Status'][results_grouped['index'] == 99].sum()} that were not reached because they timed out"
+)
 print(
     f"There are { results_grouped['Status'][(results_grouped['index'] >= 200) & (results_grouped['index'] <= 400)].sum()} data sources that are reachable."
 )

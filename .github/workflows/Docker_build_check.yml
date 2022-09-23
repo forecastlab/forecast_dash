@@ -22,10 +22,10 @@ jobs:
         with:
           python-version: '3.9'
 
-      # - name: Create and start virtual environment
-      #   run: |
-      #     python -m venv venv
-      #     source venv/bin/activate
+      - name: Create and start virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
       
       - name: Run Docker
         run: |

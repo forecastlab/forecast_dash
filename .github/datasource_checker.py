@@ -17,7 +17,7 @@ with open("./shared_config/data_sources.json") as data_sources_json_file:
 
 results = []
 for data_source in data_sources_list:
-    paylod = None
+    payload = None
     title = data_source["title"]
     url = data_source["url"]
     if data_source["source"] == "Fred":

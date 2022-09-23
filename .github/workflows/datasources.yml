@@ -23,5 +23,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests pandas
     - name: Check Data Sources
+      env:
+        FRED_API_KEY: ${{ secrets.FRED_API_KEY}}
       run: |
         python .github/datasource_checker.py

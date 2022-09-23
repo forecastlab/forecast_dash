@@ -9,6 +9,7 @@ import json
 import requests
 import pandas as pd
 import os
+
 with open("./shared_config/data_sources.json") as data_sources_json_file:
     data_sources_list = json.load(data_sources_json_file)
 
@@ -19,20 +20,18 @@ for data_source in data_sources_list:
     paylod = None
     title = data_source["title"]
     url = data_source["url"]
-    if data_source["source"] =="Fred":
-        FRED_API = os.environ['FRED_API_KEY']
+    if data_source["source"] == "Fred":
+        FRED_API = os.environ["FRED_API_KEY"]
         payload = {"api_key": FRED_API, "file_type": "json"}
     try:
         status = requests.get(
-            url, 
-            timeout=(6.05, 12),
-            params=payload
-            ).status_code
+            url, timeout=(6.05, 12), params=payload
+        ).status_code
     except requests.Timeout:
         status = "Timeout"
-    except e:
+    except Exception as e:
         print(e)
-        
+
     print(f"{title} - {status}")
     results.append([title, url, status])
 

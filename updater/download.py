@@ -231,49 +231,66 @@ class ABSData(DataSource):
 
         return df
 
+
 # not sure the best way to handle fuel dataset
 # the api is hard to use to access all the data
 # the excel files are with different formattings...
 class FuelNSWData(DataSource):
     def _check_header_row(self, df, key="PriceUpdatedDate", rowlimit=5):
-        '''find the index of the header row'''
+        """find the index of the header row"""
         # check if header is wrong
         header_wrong = False
         for column_name in df.columns:
             if "Unnamed" in column_name:
                 header_wrong = True
-                
-        if not header_wrong: return 0
-                
+
+        if not header_wrong:
+            return 0
+
         for row in range(rowlimit):
             for value in df.iloc[row]:
                 if value == key:
                     return row + 1
 
     def _extract_series(self, excel_url, verbose=True):
-        if verbose: print("Downloading fuel data from {} ...".format(excel_url))
-        df = pd.read_excel(excel_url).iloc[:,-3:]
+        if verbose:
+            print("Downloading fuel data from {} ...".format(excel_url))
+        df = pd.read_excel(excel_url).iloc[:, -3:]
         header_row = self._check_header_row(df)
         # check if there are two extra columns
         if header_row > 0:
-            df = pd.read_excel(excel_url, header=header_row).iloc[:,-3:]
-        return df.dropna().rename(columns={"FuelType": "FuelCode"}), header_row   
+            df = pd.read_excel(excel_url, header=header_row).iloc[:, -3:]
+        return df.dropna().rename(columns={"FuelType": "FuelCode"}), header_row
 
-    def _clean_series(self, excel_url, columns=["week", "month"], fueltype="U91"):
+    def _clean_series(
+        self, excel_url, columns=["week", "month"], fueltype="U91"
+    ):
         series, header_row = self._extract_series(excel_url)
         series = series.query("FuelCode == @fueltype").reset_index(drop=True)
-        if header_row == 2 and pd.api.types.is_object_dtype(series["PriceUpdatedDate"]):
-            series["PriceUpdatedDate"] = pd.to_datetime(series["PriceUpdatedDate"], dayfirst=True)
+        if header_row == 2 and pd.api.types.is_object_dtype(
+            series["PriceUpdatedDate"]
+        ):
+            series["PriceUpdatedDate"] = pd.to_datetime(
+                series["PriceUpdatedDate"], dayfirst=True
+            )
         elif pd.api.types.is_object_dtype(series["PriceUpdatedDate"]):
-            series["PriceUpdatedDate"] = pd.to_datetime(series["PriceUpdatedDate"])       
+            series["PriceUpdatedDate"] = pd.to_datetime(
+                series["PriceUpdatedDate"]
+            )
 
         # add month
         series_date = series["PriceUpdatedDate"].iloc[0]
-        series["PriceMonth"] = pd.to_datetime("{}-{:0>2}".format(series_date.year, series_date.month))
+        series["PriceMonth"] = pd.to_datetime(
+            "{}-{:0>2}".format(series_date.year, series_date.month)
+        )
         # add week
         refer_date = pd.to_datetime("2022-09-05")
-        week_delta = (series["PriceUpdatedDate"] - refer_date).apply(lambda x:x.days) // 7
-        series["PriceWeek"] = refer_date + week_delta * pd.Timedelta(7, unit="days")
+        week_delta = (series["PriceUpdatedDate"] - refer_date).apply(
+            lambda x: x.days
+        ) // 7
+        series["PriceWeek"] = refer_date + week_delta * pd.Timedelta(
+            7, unit="days"
+        )
         return series
 
     def _fetch_file_links(self):
@@ -281,14 +298,20 @@ class FuelNSWData(DataSource):
         fuelfiles_json = requests.get(fuelfiles_json_url).json()
         fuelfiles_df = pd.DataFrame(fuelfiles_json["result"]["resources"])
 
-        return fuelfiles_df[fuelfiles_df["name"].apply(lambda x:("price history" in x.lower()))]["url"].to_list()
+        return fuelfiles_df[
+            fuelfiles_df["name"].apply(
+                lambda x: ("price history" in x.lower())
+            )
+        ]["url"].to_list()
 
     def download(self):
-        series_list = [self._clean_series(url) for url in self._fetch_file_links()]
+        series_list = [
+            self._clean_series(url) for url in self._fetch_file_links()
+        ]
         df = pd.concat(series_list)
-        if self.frequency == "M": # month?
+        if self.frequency == "M":  # month?
             df = df.groupby("PriceMonth").median()[["Price"]]
-        else: # week
+        else:  # week
             df = df.groupby("PriceWeek").median()[["Price"]]
 
         df.index.name = "date"

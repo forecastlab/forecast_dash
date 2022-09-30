@@ -437,4 +437,11 @@
    "url": "https://api.worldbank.org/v2/country/MYS/indicator/FP.CPI.TOTL.ZG",
    "frequency": "AS",
    "tags": ["Malaysia", "Inflation", "Economic","Pacific" ]
- }]
+ },
+ {
+  "title": "Australian NSW Fuel Price (Weekly)",
+  "source": "FuelNSW",
+  "url": "None",
+  "frequency": "W",
+  "tags": ["Australia", "Economic", "Fuel"]
+}]

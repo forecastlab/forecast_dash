@@ -64,7 +64,7 @@ def _cv_table_layout():
                 options=model_select_options,
                 value="MSE",
             ),
-            dbc.Row([dbc.Col(id="leaderboard_CV_table")]),
+            dbc.Row(dcc.Loading([dbc.Col(id="leaderboard_CV_table")])),
         ]
     )
 
@@ -93,7 +93,7 @@ def update_leaderboard_df(CV_score):
 
     # Apply URLS to index
     for row in table.children[1].children:
-        state = urlencode({"methods": [row.children[0].children]}, doseq=True)
+        state = urlencode({"name": [row.children[0].children]}, doseq=True)
         row.children[0].children = html.A(
             row.children[0].children, href=f"/search/?{state}"
         )

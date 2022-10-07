@@ -1,7 +1,5 @@
 version: "3"
-
 services:
-
   updater:
     build:
       context: updater

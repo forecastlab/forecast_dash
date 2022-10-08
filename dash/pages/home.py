@@ -147,10 +147,12 @@ def update_figure(clickData):
         # else:
         #     selections.remove(location)
 
-    return html.A(
-        [f"Check out the forecast series in the {selection}"],
-        href=f"search/?name={selection}",
-    )
+        return html.A(
+            [f"Check out the forecast series in the {selection}"],
+            href=f"search/?name={selection}",
+        )
+    else:
+        return ""
 
 
 def _leaderboard():

@@ -124,6 +124,31 @@ def _featured_latest_news(feature_series_title):
     ]
 
 
+@callback(
+    Output("LinkOutCountry", "children"), [Input("choropleth", "clickData")]
+)
+def update_figure(clickData):
+    countries = pd.read_csv("../data/CountriesList.csv")
+
+    if clickData is not None:
+        location = clickData["points"][0]["location"]
+        selection = countries["Country"][countries["Code"] == location].values[
+            0
+        ]
+
+        # if location not in selections:
+        #     selections.add(location)
+        # else:
+        #     selections.remove(location)
+
+        return html.A(
+            [f"Check out the forecast series in the {selection}"],
+            href=f"search/?name={selection}",
+        )
+    else:
+        return ""
+
+
 def _leaderboard():
     return dbc.Row(
         [

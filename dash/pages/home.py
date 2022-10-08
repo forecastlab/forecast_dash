@@ -1,11 +1,12 @@
 ### dash related
-from dash import html, dcc
+from dash import html, dcc, callback, Output, Input
 import dash
 import dash_bootstrap_components as dbc
 
 from urllib.parse import urlencode
 
 import json
+import pandas as pd
 
 ### utils
 from common import (
@@ -70,15 +71,20 @@ def _featured_latest_news(feature_series_title):
                             "World Map of Featured Series",
                             style={"text-align": "center"},
                         ),
-                        html.A(
-                            [
-                                dcc.Graph(
-                                    figure=world_map_of_forecasts(),
-                                    config={"displayModeBar": False},
-                                )
-                            ],
-                            href="/search/",
+                        # html.A(
+                        #     [
+                        html.Div(
+                            dcc.Graph(
+                                figure=world_map_of_forecasts(),
+                                config={"displayModeBar": False},
+                                id="choropleth",
+                            ),
+                            id="myDiv",
                         ),
+                        html.Div(id="LinkOutCountry")
+                        # ],
+                        # href="/search/",
+                        # ),
                     ],
                     lg=8,
                 ),

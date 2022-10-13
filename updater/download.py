@@ -210,24 +210,39 @@ class WorldBankData(DataSource):
 
 
 class COVID_JH(DataSource):
-    # Downloader for COVID data from the John Hopkins github. 
+    # Downloader for COVID data from the John Hopkins github.
     def download(self):
         # Use read_csv to access remote file
         df = pd.read_csv(
             self.url,
         )
-        
-        df = df.drop(['Province/State','Country/Region','Lat','Long'], axis = 1).sum(axis=0).reset_index()
 
-        df['index'] =pd.to_datetime(df['index'], format="%m/%d/%y")
+        df = (
+            df.drop(
+                ["Province/State", "Country/Region", "Lat", "Long"], axis=1
+            )
+            .sum(axis=0)
+            .reset_index()
+        )
 
-        df = df.groupby([pd.Grouper(key='index', freq='W-MON')]).mean().reset_index().sort_values('index')
+        df["index"] = pd.to_datetime(df["index"], format="%m/%d/%y")
 
-        df = pd.DataFrame(
-            df[0].values,
-            index=pd.to_datetime(df['index'], format="%Y-%m-%d"),
-            columns=["value"],
-        ).diff().dropna()
+        df = (
+            df.groupby([pd.Grouper(key="index", freq="W-MON")])
+            .mean()
+            .reset_index()
+            .sort_values("index")
+        )
+
+        df = (
+            pd.DataFrame(
+                df[0].values,
+                index=pd.to_datetime(df["index"], format="%Y-%m-%d"),
+                columns=["value"],
+            )
+            .diff()
+            .dropna()
+        )
 
         return df
 
@@ -289,7 +304,6 @@ def download_data(sources_path, download_path):
                 "WorldBank": WorldBankData,
                 "ABS": ABSData,
                 "COVID_JH": COVID_JH,
-
             }
 
             source_class = all_source_classes[data_source_dict.pop("source")]

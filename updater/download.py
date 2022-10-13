@@ -209,6 +209,29 @@ class WorldBankData(DataSource):
         return df
 
 
+class COVID_JH(DataSource):
+    # Downloader for COVID data from the John Hopkins github. 
+    def download(self):
+        # Use read_csv to access remote file
+        df = pd.read_csv(
+            self.url,
+        )
+        
+        df = df.drop(['Province/State','Country/Region','Lat','Long'], axis = 1).sum(axis=0).reset_index()
+
+        df['index'] =pd.to_datetime(df['index'], format="%m/%d/%y")
+
+        df = df.groupby([pd.Grouper(key='index', freq='W-MON')]).mean().reset_index().sort_values('index')
+
+        df = pd.DataFrame(
+            df[0].values,
+            index=pd.to_datetime(df['index'], format="%Y-%m-%d"),
+            columns=["value"],
+        ).diff().dropna()
+
+        return df
+
+
 class ABSData(DataSource):
     """
     The API data guide is avaialble here: https://www.abs.gov.au/about/data-services/application-programming-interfaces-apis/data-api-user-guide
@@ -265,6 +288,8 @@ def download_data(sources_path, download_path):
                 "Ons": Ons,
                 "WorldBank": WorldBankData,
                 "ABS": ABSData,
+                "COVID_JH": COVID_JH,
+
             }
 
             source_class = all_source_classes[data_source_dict.pop("source")]

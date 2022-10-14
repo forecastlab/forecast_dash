@@ -6,6 +6,7 @@ import os
 import numpy as np
 import pandas as pd
 import base64
+from slugify import slugify
 
 
 def watermark_information():
@@ -207,12 +208,11 @@ def get_static_thumbnail_figure(data_dict, lg=12):
     img_bytes = fig.to_image(format="png")
     encoding = base64.b64encode(img_bytes).decode()
     img_b64 = "data:image/png;base64," + encoding
-    print(f"Writing File: ../data/thumbnails/{title}.pkl")
     return img_b64
 
 
 def get_forecast_data(title):
-    f = open(f"../data/forecasts/{title}.pkl", "rb")
+    f = open(f"../data/forecasts/{slugify(title)}.pkl", "rb")
     data_dict = pickle.load(f)
     return data_dict
 
@@ -239,9 +239,20 @@ def generate_static_thumbnail(sources_path, download_path):
             continue
 
     for item_title in series_titles:
+        try:
+            series_data = forecast_series_dicts[item_title]
+            img_b64 = get_static_thumbnail_figure(series_data)
+            f = open(f"{download_path}/{slugify(item_title)}.pkl", "wb")
+            pickle.dump(img_b64, f)
+            f.close()
+            print(
+                f"Writing File: ../data/thumbnails/{slugify(item_title)}.pkl"
+            )
+        except:
+            print(f"FAILED: {item_title}")
 
-        series_data = forecast_series_dicts[item_title]
-        img_b64 = get_static_thumbnail_figure(series_data)
-        f = open(f"{download_path}/{item_title}.pkl", "wb")
-        pickle.dump(img_b64, f)
-        f.close()
+
+if __name__ == "__main__":
+    generate_static_thumbnail(
+        "../shared_config/data_sources.json", "../data/thumbnails"
+    )

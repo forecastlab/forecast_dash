@@ -443,7 +443,16 @@
   "source": "FuelNSW",
   "url": "None",
   "frequency": "W",
-  "tags": ["Australia", "Economic", "Fuel"]
+  "tags": ["Australia", "Economic", "Fuel"],
+  "data_folder": "NSWFeul"
+},
+{
+  "title": "Australian NSW Fuel Price (Monthly)",
+  "source": "FuelNSW",
+  "url": "None",
+  "frequency": "M",
+  "tags": ["Australia", "Economic", "Fuel"],
+  "data_folder": "NSWFeul"
 },
 {
   "title": "Labour Force Participation Rate (ABS)",

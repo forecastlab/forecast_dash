@@ -14,12 +14,16 @@ from requests.exceptions import HTTPError
 import wbgapi as wb  # for world bank data
 import re
 
+import os
+
 from slugify import slugify
+
+import traceback
 
 
 class DataSource(ABC):
     def __init__(
-        self, download_path, title, url, frequency, tags, short_title=None
+        self, download_path, title, url, frequency, tags, short_title=None, data_folder=None,
     ):
         self.download_path = download_path
         self.title = title
@@ -27,6 +31,7 @@ class DataSource(ABC):
         self.url = url
         self.frequency = frequency
         self.tags = tags
+        self.data_folder = data_folder # handle incremental data
 
         # slugify title
         self.filename = slugify(title)
@@ -51,7 +56,8 @@ class DataSource(ABC):
             pickle.dump(data, f)
             f.close()
             state = "OK"
-        except:
+        except Exception as err:
+            traceback.print_exc()
             state = "FAILED"
         finally:
             print(f"{self.title} - {state}")
@@ -235,7 +241,114 @@ class ABSData(DataSource):
 # not sure the best way to handle fuel dataset
 # the api is hard to use to access all the data
 # the excel files are with different formattings...
-class FuelNSWData(DataSource):
+class IncrementalData(DataSource):
+    
+    @abstractmethod
+    def fetch_download_df(self):
+        """
+        Create a dataframe for the download list
+
+        The dataframe should contain at least following columns:
+        `url`, `filename`
+        """
+        pass
+    
+    # functions for get urls to be downloaded
+    def _check_new_url(self, url, df, url_col="url", status_col="status"):
+        """
+        Check if the given url is new to a given dataframe
+        """
+        url_row = df[df[url_col] == url]
+        return True if len(url_row) == 0 else False
+
+
+    def compare_file_dif(self, new_df=None):
+        """
+        get the difference between the dataframe from `self.fetch_download_df` and the local pickle file
+        """
+        if new_df is None: raise ValueError("File DataFrame is empty...")
+
+        if not os.path.exists(f"{self.download_path}/{self.data_folder}/"):
+            os.makedirs(f"{self.download_path}/{self.data_folder}/")
+
+        download_fname = f"{self.download_path}/{self.data_folder}/download.pkl"
+        if not os.path.exists(download_fname):
+            new_df["status"] = 0
+            return new_df
+
+        old_df = pd.read_pickle(download_fname)
+
+        ### iterate through new_df - check url
+        new_url_bool = [
+            self._check_new_url(row["url"], old_df)
+            for _, row in new_df.iterrows()
+        ]
+
+        new_df = new_df.iloc[new_url_bool].copy(deep=True)
+        new_df["status"] = 0
+
+        return pd.concat([old_df, new_df], ignore_index=True)
+
+    # download the single file
+    def download_single_file(self, url, filename, verbose=True):
+        """
+        Download a file from a given url to a local file with name `filename`
+
+        Could overwrite this function if there is any data cleaning process
+        """
+        if verbose: print(f"Downloading files from {url}...")
+        filepath = f"{self.download_path}/{self.data_folder}/{filename}"
+        r = requests.get(url)
+        with open(filepath, "wb") as fp:
+            fp.write(r.content)
+
+    # download all files and update `download.pkl`
+    def download_files(self, file_df):
+        """
+        Download files from concatenated dataframe 
+        """
+        for i, row in file_df.iterrows():
+            url = row["url"]
+            status = row["status"]
+            filename = row["filename"]
+
+            if status == 0:
+                try:
+                    self.download_single_file(url, filename)
+                    file_df.loc[i, "status"] = 1
+                except Exception as err:
+                    traceback.print_exc()
+        
+        # save download pkl file
+        file_df.to_pickle(f"{self.download_path}/{self.data_folder}/download.pkl")
+    
+
+class FuelNSWData(IncrementalData):
+
+    def _get_filename_from_url(self, url):
+        filename = url.split("/")[-1].split(".")[:-1]
+        return ".".join(filename) + ".pkl"
+        
+
+    def fetch_download_df(self):
+        fuelfiles_json_url = "https://data.nsw.gov.au/data/api/3/action/package_show?id=a97a46fc-2bdd-4b90-ac7f-0cb1e8d7ac3b"
+        fuelfiles_json = requests.get(fuelfiles_json_url).json()
+        fuelfiles_df = pd.DataFrame(fuelfiles_json["result"]["resources"])
+
+        fuelfiles_bool = fuelfiles_df["name"].apply(
+            lambda x: ("price history" in x.lower())
+        )
+
+        fuelfiles_df = fuelfiles_df[fuelfiles_bool].copy(deep=True)
+
+        fuelfiles_name = fuelfiles_df["url"].apply(lambda x:self._get_filename_from_url(x))
+
+        return pd.DataFrame({
+            "url": fuelfiles_df["url"].to_list(),
+            "filename": fuelfiles_name.to_list()
+        })
+
+    # functions to do data cleaning
     def _check_header_row(self, df, key="PriceUpdatedDate", rowlimit=5):
         """find the index of the header row"""
         # check if header is wrong
@@ -252,20 +365,18 @@ class FuelNSWData(DataSource):
                 if value == key:
                     return row + 1
 
-    def _extract_series(self, excel_url, verbose=True):
-        if verbose:
-            print("Downloading fuel data from {} ...".format(excel_url))
-        df = pd.read_excel(excel_url).iloc[:, -3:]
+    def _extract_series(self, excel_path):
+        df = pd.read_excel(excel_path).iloc[:, -3:]
         header_row = self._check_header_row(df)
         # check if there are two extra columns
         if header_row > 0:
-            df = pd.read_excel(excel_url, header=header_row).iloc[:, -3:]
+            df = pd.read_excel(excel_path, header=header_row).iloc[:, -3:]
         return df.dropna().rename(columns={"FuelType": "FuelCode"}), header_row
 
     def _clean_series(
-        self, excel_url, columns=["week", "month"], fueltype="U91"
+        self, excel_path, fueltype="E10"
     ):
-        series, header_row = self._extract_series(excel_url)
+        series, header_row = self._extract_series(excel_path)
         series = series.query("FuelCode == @fueltype").reset_index(drop=True)
         if header_row == 2 and pd.api.types.is_object_dtype(
             series["PriceUpdatedDate"]
@@ -293,21 +404,26 @@ class FuelNSWData(DataSource):
         )
         return series
 
-    def _fetch_file_links(self):
-        fuelfiles_json_url = "https://data.nsw.gov.au/data/api/3/action/package_show?id=a97a46fc-2bdd-4b90-ac7f-0cb1e8d7ac3b"
-        fuelfiles_json = requests.get(fuelfiles_json_url).json()
-        fuelfiles_df = pd.DataFrame(fuelfiles_json["result"]["resources"])
+    # rewrite download_single_file function
+    def download_single_file(self, url, filename, verbose=True):
+        if verbose: print(f"Downloading files from {url}...")
+        filepath = f"{self.download_path}/{self.data_folder}/{filename}"
+        series_df = self._clean_series(url)
+        return series_df.to_pickle(filepath)
 
-        return fuelfiles_df[
-            fuelfiles_df["name"].apply(
-                lambda x: ("price history" in x.lower())
-            )
-        ]["url"].to_list()
 
     def download(self):
-        series_list = [
-            self._clean_series(url) for url in self._fetch_file_links()
-        ]
+        ### download files
+        file_df = self.fetch_download_df()
+        file_df = self.compare_file_dif(new_df=file_df)
+        self.download_files(file_df)
+
+        series_list = []
+        for _, row in file_df.iterrows():
+            if row["status"] == 1:
+                filepath = f"{self.download_path}/{self.data_folder}/{row['filename']}"
+                series_list.append(pd.read_pickle(filepath))
+        
         df = pd.concat(series_list)
         if self.frequency == "M":  # month?
             df = df.groupby("PriceMonth").median()[["Price"]]
@@ -345,4 +461,5 @@ def download_data(sources_path, download_path):
 
 
 if __name__ == "__main__":
-    download_data("../shared_config/data_sources.json", "../data/downloads")
+    # download_data("../shared_config/data_sources.json", "../data/downloads")
+    download_data("../shared_config/testing_data_sources.json", "../data/downloads")

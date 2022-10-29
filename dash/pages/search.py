@@ -83,9 +83,7 @@ def result_layout():
                         [
                             dbc.Row(
                                 [
-                                    dbc.Col(
-                                        [html.H4("Results")],
-                                    ),
+                                    dbc.Col([html.H4("Results")],),
                                     dbc.Col(
                                         [
                                             "Sort by:",
@@ -275,8 +273,7 @@ def add_dropdown_search_options():
 
 
 @callback(
-    Output("filter_panel", "children"),
-    Input("url", "href"),
+    Output("filter_panel", "children"), Input("url", "href"),
 )
 @location_ignore_null([Input("url", "href")], "url")
 def filter_panel(value):
@@ -298,8 +295,7 @@ def filter_panel(value):
 
 
 @callback(
-    Output("url", "search"),
-    inputs=[Input(i, "value") for i in component_ids],
+    Output("url", "search"), inputs=[Input(i, "value") for i in component_ids],
 )
 @dash_kwarg([Input(i, "value") for i in component_ids])
 def update_url_state(**kwargs):
@@ -462,9 +458,4 @@ def make_card(item_title, url_title, thumbnail_figure, best_model):
 
 ### final layout
 def layout(name=None, tags=None, methods=None):
-    return html.Div(
-        [
-            dcc.Location(id="url", refresh=False),
-            result_layout(),
-        ]
-    )
+    return html.Div([dcc.Location(id="url", refresh=False), result_layout(),])

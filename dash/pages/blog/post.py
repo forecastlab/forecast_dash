@@ -19,8 +19,7 @@ from util import (
 markdown_extras = ["cuddled-lists"]
 
 dash.register_page(
-    __name__,
-    title="Post",
+    __name__, title="Post",
 )
 
 
@@ -115,9 +114,4 @@ def update_content(url):
 
 
 def layout(title=None):
-    return html.Div(
-        [
-            dcc.Location(id="url", refresh=False),
-            _post_layout(),
-        ]
-    )
+    return html.Div([dcc.Location(id="url", refresh=False), _post_layout(),])

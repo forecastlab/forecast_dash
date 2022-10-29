@@ -229,9 +229,7 @@ def component_git_version():
 def footer():
     return dbc.Container(
         [
-            dbc.Row(
-                dbc.Col(html.Hr(style={"margin-top": "64px"}), lg=12),
-            ),
+            dbc.Row(dbc.Col(html.Hr(style={"margin-top": "64px"}), lg=12),),
             dbc.Row(
                 [
                     dbc.Col(
@@ -557,15 +555,7 @@ def component_figs_2col(row_title, series_titles):
         raise ValueError("series_titles must have 3 elements")
 
     return dbc.Row(
-        [
-            dbc.Col(
-                [
-                    html.H2(row_title),
-                ],
-                lg=12,
-                className="text-center",
-            ),
-        ]
+        [dbc.Col([html.H2(row_title),], lg=12, className="text-center",),]
         + [
             dbc.Col(
                 [
@@ -596,10 +586,7 @@ def component_figs_3col(row_title, series_titles):
     return dbc.Row(
         [
             dbc.Col(
-                [
-                    html.H3(row_title, style={"text-align": "center"}),
-                ],
-                lg=12,
+                [html.H3(row_title, style={"text-align": "center"}),], lg=12,
             ),
         ]
         + [
@@ -726,12 +713,7 @@ def component_leaderboard_4col(series_list):
     body = []
 
     for index, row in leaderboard_counts.iterrows():
-        body.append(
-            html.Li(
-                index,
-                className="lead",
-            )
-        )
+        body.append(html.Li(index, className="lead",))
 
     return dbc.Col(
         [
@@ -741,10 +723,7 @@ def component_leaderboard_4col(series_list):
                 className="subtitle text-muted",
             ),
             html.Ol(body),
-            html.A(
-                html.P("View full leaderboard"),
-                href="/leaderboard",
-            ),
+            html.A(html.P("View full leaderboard"), href="/leaderboard",),
         ],
         lg=4,
     )

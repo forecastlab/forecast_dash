@@ -32,10 +32,7 @@ def mission_statement():
             dbc.Row(
                 dbc.Col(
                     [
-                        html.H1(
-                            "Our Mission",
-                            className="display-4",
-                        ),
+                        html.H1("Our Mission", className="display-4",),
                         html.Hr(),
                         html.P(
                             html.Ul(
@@ -95,9 +92,7 @@ def _featured_latest_news(feature_series_title):
             [
                 dbc.Col(
                     [
-                        html.H2(
-                            "US Recovery from COVID-19",
-                        ),
+                        html.H2("US Recovery from COVID-19",),
                         html.A(
                             html.H4("View all US forecasts"),
                             href="/search/?name=&tags=US",
@@ -179,10 +174,7 @@ def _leaderboard():
                                             "We backtest every model on every series.",
                                             className="mb-3",
                                         ),
-                                        html.H2(
-                                            "Daily.",
-                                            className="mb-3",
-                                        ),
+                                        html.H2("Daily.", className="mb-3",),
                                         html.A(
                                             html.H4("Go to Leaderboard"),
                                             href="/leaderboard/",
@@ -205,11 +197,7 @@ def _leaderboard():
 
 def _uk_snapshot():
     return component_figs_2col(
-        "UK Snapshot",
-        [
-            "UK Unemployment",
-            "UK Inflation (RPI)",
-        ],
+        "UK Snapshot", ["UK Unemployment", "UK Inflation (RPI)",],
     )
 
 

@@ -55,10 +55,7 @@ def _mission():
                     dbc.Row(
                         dbc.Col(
                             [
-                                html.H1(
-                                    "Our Mission",
-                                    className="display-4",
-                                ),
+                                html.H1("Our Mission", className="display-4",),
                                 html.Hr(),
                                 html.P(
                                     html.Ul(
@@ -123,13 +120,7 @@ def _builtby():
 
 
 def _section_title(title):
-    return dbc.Col(
-        html.H2(
-            title,
-            style={"margin-bottom": "32px"},
-        ),
-        lg=12,
-    )
+    return dbc.Col(html.H2(title, style={"margin-bottom": "32px"},), lg=12,)
 
 
 def parse_people(person_list):
@@ -181,9 +172,7 @@ def parse_people(person_list):
                 if "links" in person_dict
                 else []
             )
-            + [
-                html.P(person_dict["bio"], className="text-justify"),
-            ],
+            + [html.P(person_dict["bio"], className="text-justify"),],
             lg=4,
             sm=6,
             className="text-center mb-5",
@@ -261,12 +250,7 @@ def body_layout():
     return dbc.Container(
         [
             breadcrumb_layout([("Home", "/"), ("About", "")]),
-            dbc.Row(
-                [
-                    _about(),
-                    _mission(),
-                ]
-            ),
+            dbc.Row([_about(), _mission(),]),
             dbc.Row([_builtby()]),
             dbc.Row(_section_title("Active Contributors")),
             dbc.Row(parse_people(active_contributors)),

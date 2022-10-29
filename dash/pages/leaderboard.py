@@ -102,9 +102,4 @@ def update_leaderboard_df(CV_score):
 
 
 ### final layout variable
-layout = html.Div(
-    [
-        dcc.Location(id="url", refresh=False),
-        _cv_table_layout(),
-    ]
-)
+layout = html.Div([dcc.Location(id="url", refresh=False), _cv_table_layout(),])

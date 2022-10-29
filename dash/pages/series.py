@@ -57,10 +57,7 @@ def _forecast_info_layout():
     return dbc.Col(
         [
             dbc.Label("Forecast Method"),
-            dcc.Dropdown(
-                id="model_selector",
-                clearable=False,
-            ),
+            dcc.Dropdown(id="model_selector", clearable=False,),
             html.A(
                 "Download Forecast Data",
                 id="forecast_data_download_link",
@@ -68,40 +65,46 @@ def _forecast_info_layout():
                 href="",
                 target="_blank",
             ),
-            dcc.Loading(
-                html.Div(
-                    id="meta_data_list",
-                    className="py-3",
-                )
-            ),
+            dcc.Loading(html.Div(id="meta_data_list", className="py-3",)),
         ],
         lg=6,
     )
 
 
-def _forecast_performance_layout():
+def _forecast_performance_layout(title=None):
     return dbc.Col(
         [
             dbc.Row(
-                [dbc.Label("Model Cross Validation Scores")],
+                [
+                    html.A(
+                        html.Button(
+                            "Compare to Another Series",
+                            style={
+                                "background-color": "#D5D5D5",
+                                "color": "black",
+                                "border": "none",
+                                "padding": "12px 30px",
+                                "font-weight": "bold",
+                            },
+                        ),
+                        id="chart-builder-button",
+                        href=f"/tools/moreseries?title1={title}&title2=None",
+                    ),
+                ],
+                style={"margin-bottom": "30px"},
             ),
+            dbc.Row([dbc.Label("Model Cross Validation Scores")],),
             dbc.Row(
                 [
                     dbc.Checklist(
-                        options=[
-                            {"label": "Raw Scores", "value": 1},
-                        ],
+                        options=[{"label": "Raw Scores", "value": 1},],
                         value=[0],
                         id="display_scores_input",
                         switch=True,
                     ),
                 ]
             ),
-            dbc.Row(
-                [
-                    dcc.Loading(html.Div(id="CV_scores_table")),
-                ]
-            ),
+            dbc.Row([dcc.Loading(html.Div(id="CV_scores_table")),]),
         ],
         lg=6,
     )
@@ -133,7 +136,7 @@ def _series_layout(title=None):
             dbc.Row(
                 [
                     _forecast_info_layout(),
-                    _forecast_performance_layout(),
+                    _forecast_performance_layout(title=title),
                 ]
             ),
         ]
@@ -418,10 +421,7 @@ def update_series_graph(series_data_dict, **kwargs):
             "displaylogo": False,
             "displayModeBar": True,
             "toImageButtonOptions": dict(
-                filename=f"{model_name}",
-                format="svg",
-                width=1024,
-                height=768,
+                filename=f"{model_name}", format="svg", width=1024, height=768,
             ),
         },
     )
@@ -430,10 +430,7 @@ def update_series_graph(series_data_dict, **kwargs):
 
 
 @callback(
-    [
-        Output("model_selector", "options"),
-        Output("model_selector", "value"),
-    ],
+    [Output("model_selector", "options"), Output("model_selector", "value"),],
     inputs,
 )
 @location_ignore_null(inputs, location_id="url")
@@ -474,12 +471,7 @@ def update_meta_data_list(series_data_dict, **kwargs):
             dbc.ListGroupItem(
                 [
                     html.H4("Model Details"),
-                    html.P(
-                        [
-                            html.P(model_name),
-                            html.P(model_description),
-                        ]
-                    ),
+                    html.P([html.P(model_name), html.P(model_description),]),
                 ]
             ),
             dbc.ListGroupItem(
@@ -642,11 +634,7 @@ def update_sorting_for_table(sort_by, data):
 )
 @location_ignore_null(inputs, location_id="url")
 @series_input(
-    inputs
-    + [
-        Input("model_selector", "value"),
-    ],
-    location_id="url",
+    inputs + [Input("model_selector", "value"),], location_id="url",
 )
 def download_excel(series_data_dict, **kwargs):
     # Create DFs
@@ -676,8 +664,5 @@ def download_excel(series_data_dict, **kwargs):
 
 def layout(title=None):
     return html.Div(
-        [
-            dcc.Location(id="url", refresh=False),
-            _series_layout(title),
-        ]
+        [dcc.Location(id="url", refresh=False), _series_layout(title),]
     )

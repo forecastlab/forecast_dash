@@ -520,6 +520,10 @@ class RModel(ForecastModel, ABC):
                 self.forecast_lib, type(self).r_forecast_model_name
             )
 
+            self.r_generics_lib = importr(
+                "generics"
+            )  # as of forecast 8.17, generics pacakges does the forecasting.
+
     def description(self):
         return self.method
 
@@ -580,7 +584,7 @@ class RDirectForecastModel(RModel):
 class RForecastModel(RModel):
     def get_r_forecast_dict(self):
         return dict(
-            self.forecast_lib.forecast(
+            self.r_generics_lib.forecast(
                 self.fit_results, h=self.h, level=self.r_level
             ).items()
         )
@@ -592,6 +596,26 @@ class RForecastModel(RModel):
         self.fit_results = self.forecast_func(**fit_params)
 
         super().fit(y)
+
+
+class RSmoothForecastModel(RModel):
+    def get_r_forecast_dict(self):
+
+        r_level = [
+            i / 100 for i in self.r_level
+        ]  # CES reads levels as decimals
+
+        return dict(
+            self.forecast_func(y=self.y, h=self.h, level=r_level).items()
+        )
+
+    def fit(self, y):
+
+        self.y = y
+
+        r_forecast_dict = self.get_r_forecast_dict()
+
+        self.method = "CES"
 
 
 class RNaive(RDirectForecastModel):
@@ -705,3 +729,11 @@ class FBProphet(ForecastModel):
 
     def description(self):
         return self.model
+
+
+class RCES(RSmoothForecastModel):
+    name = "Complex Exponential Smoothing"
+
+    r_forecast_lib = "smooth_package.R"
+
+    r_forecast_model_name = "complex_es"

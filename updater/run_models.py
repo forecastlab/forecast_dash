@@ -38,6 +38,7 @@ model_str_list = [
     "LinearRegressionForecast",
     "RNN_M4_benchmark",
     "FBProphet",
+    "RCES",
 ]
 
 # import model classes
@@ -390,13 +391,13 @@ def run_job(job_dict, cv, model_params):
             "forecast_df": forecast_df,
         }
 
-    except:
-        result = {"state": "FAIL"}
-
     # ### Following block was used for debug
     # except Exception as e:
     #     print(f"{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}")
     #     result = {"state": "FAIL"}
+
+    except:
+        result = {"state": "FAIL"}
 
     print(f"{job_dict['title']} - {job_dict['model_cls']} - {result['state']}")
 

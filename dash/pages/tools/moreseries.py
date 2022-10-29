@@ -20,7 +20,7 @@ from common import (
     breadcrumb_layout,
 )
 
-dash.register_page(__name__)
+dash.register_page(__name__, title="Compare a Series")
 
 ### plot function just for the double series case here
 def get_forecast_plot_data(series_df, forecast_df, color_index=0, yaxis="y"):

@@ -68,16 +68,29 @@ def _featured_latest_news(feature_series_title):
                 dbc.Col(
                     [
                         html.H3(
-                            "World Map of Featured Series",
+                            "Series Map",
                             style={"text-align": "center"},
                         ),
-                        # html.A(
-                        #     [
+                        html.H6(
+                            [
+                                "Click on a country to view more. ",
+                                html.A(
+                                    [
+                                        "Or search by name, country, tags and more!"
+                                    ],
+                                    href="/search/",
+                                    className="text-decoration-none",
+                                ),
+                            ],
+                            style={"text-align": "center"},
+                            className="mb-0",
+                        ),
                         html.Div(
                             dcc.Graph(
                                 figure=world_map_of_forecasts(),
                                 config={"displayModeBar": False},
                                 id="choropleth",
+                                # responsive= True,
                             ),
                             id="myDiv",
                         ),
@@ -130,29 +143,11 @@ def _featured_latest_news(feature_series_title):
     ]
 
 
-@callback(
-    Output("LinkOutCountry", "children"), [Input("choropleth", "clickData")]
-)
-def update_figure(clickData):
-    countries = pd.read_csv("../data/CountriesList.csv")
-
-    if clickData is not None:
-        location = clickData["points"][0]["location"]
-        selection = countries["Country"][countries["Code"] == location].values[
-            0
-        ]
-
-        # if location not in selections:
-        #     selections.add(location)
-        # else:
-        #     selections.remove(location)
-
-        return html.A(
-            [f"Check out the forecast series in the {selection}"],
-            href=f"search/?name={selection}",
-        )
-    else:
-        return ""
+@callback(Output("home_url", "href"), [Input("choropleth", "clickData")])
+def demo(clickData):
+    if clickData:
+        country = clickData["points"][0]["customdata"][0]
+        return f"/search/?name={country}"
 
 
 def _leaderboard():
@@ -266,7 +261,7 @@ feature_series_title = "Australian Inflation (CPI)"  # can remove this
 
 layout = html.Div(
     [
-        dcc.Location(id="url", refresh=False),
+        dcc.Location(id="home_url", refresh=True),
         mission_statement(),
         main_body(feature_series_title),
     ]

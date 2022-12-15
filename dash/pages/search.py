@@ -5,7 +5,7 @@ import re
 from urllib.parse import urlencode
 
 import dash_bootstrap_components as dbc
-from dash import dcc, html, callback
+from dash import dcc, html, callback, ctx
 from dash.exceptions import PreventUpdate
 
 import dash
@@ -62,7 +62,7 @@ def sort_filter_results(unique_series_titles, sort_by="a_z", **kwargs):
 
 dash.register_page(__name__, title="Find a Series")
 
-component_ids = ["name"]  # , "tags", "methods"]
+component_ids = ["name", "show"]  # , "tags", "methods"]
 
 # load data source
 with open("../shared_config/data_sources.json") as data_sources_json_file:
@@ -80,60 +80,64 @@ def result_layout():
             dbc.Row(
                 [
                     dbc.Col(
+                        [html.H4("Results")],
+                    ),
+                ],
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(html.Div(id="filter_count"), lg={"size": 2}),
+                    dbc.Col(
                         [
-                            dbc.Row(
-                                [
-                                    dbc.Col(
-                                        [html.H4("Results")],
-                                    ),
-                                    dbc.Col(
-                                        [
-                                            "Sort by:",
-                                            dcc.Dropdown(
-                                                id="results_sort_input",
-                                                clearable=False,
-                                                options=[
-                                                    {
-                                                        "label": "A-Z Ascending",
-                                                        "value": "a_z",
-                                                    },
-                                                    {
-                                                        "label": "A-Z Descending",
-                                                        "value": "z_a",
-                                                    },
-                                                    # {'label': 'MSE Ascending', 'value': 'mse_asc'},
-                                                    # {'label': 'MSE Descending', 'value': 'mse_desc'},
-                                                ],
-                                                value="a_z",
-                                            ),
-                                        ],
-                                        align="left",
-                                        lg=2,
-                                        sm=1,
-                                    ),
+                            "Sort by",
+                        ],
+                        lg={"offset": 7, "size": 1},
+                        className="text-end",
+                    ),
+                    dbc.Col(
+                        [
+                            dcc.Dropdown(
+                                id="results_sort_input",
+                                clearable=False,
+                                options=[
+                                    {
+                                        "label": "A-Z Ascending",
+                                        "value": "a_z",
+                                    },
+                                    {
+                                        "label": "A-Z Descending",
+                                        "value": "z_a",
+                                    },
                                 ],
-                                className="flex-grow-1",
-                            ),
-                            dbc.Row(
-                                [
-                                    dcc.Loading(html.Div(id="filter_results")),
-                                ]
-                            ),
-                            dbc.Row(
-                                [
-                                    html.Button(
-                                        "Load more",
-                                        id="load_new_content",
-                                        n_clicks=0,
-                                        className="fill",
-                                    ),
-                                ]
+                                value="a_z",
                             ),
                         ],
-                        lg=12,
-                        sm=12,
+                        lg={"size": 2},
                     ),
-                ]
+                ],
+                className="mb-3",
+                align="center",
+            ),
+            dbc.Row(
+                [
+                    dcc.Loading(html.Div(id="filter_results")),
+                ],
+                className="mb-3",
+            ),
+            dbc.Row(
+                [
+                    html.Div(
+                        dbc.Button(
+                            "Load more",
+                            id="load_new_content",
+                            n_clicks=0,
+                            disabled=True,
+                            size="lg",
+                            color="light",
+                        ),
+                        className="d-grid gap-2 col-8 mx-auto",
+                    )
+                ],
             ),
         ]
     )
@@ -164,6 +168,10 @@ def filter_panel_children(params):
                 ),
             ],
         ),
+        apply_default_value(params, "data")(dcc.Store)(
+            id="show", storage_type="memory", data=9
+        )
+        # apply_default_value(params, "value")(dcc.Input)(id="show", value=9)
     ]
     return children
 
@@ -174,7 +182,7 @@ def match_names(searchable_details, name_input):
         return set(all_titles)
 
     matched_series_names = []
-    print(name_input)
+    # print(name_input)
     # name_terms = "|".join(name_input.split(" ")) # keep for later use.
     name_terms = name_input  # for single search
     # name_terms = [name_term.replace("(", "\\(") for name_term in name_terms]
@@ -299,9 +307,12 @@ def filter_panel(value):
 
 @callback(
     Output("url", "search"),
-    inputs=[Input(i, "value") for i in component_ids],
+    # inputs=[Input(i, "value") for i in component_ids],
+    Input("name", "value"),
+    Input("show", "data"),
 )
-@dash_kwarg([Input(i, "value") for i in component_ids])
+# @dash_kwarg([Input(i, "value") for i in component_ids])
+@dash_kwarg([Input("name", "value"), Input("show", "data")])
 def update_url_state(**kwargs):
 
     state = urlencode(kwargs, doseq=True)
@@ -310,15 +321,21 @@ def update_url_state(**kwargs):
 
 
 @callback(
+    Output("filter_count", "children"),
     Output("filter_results", "children"),
-    inputs=[Input(i, "value") for i in component_ids]
-    + [Input("results_sort_input", "value")]
-    + [Input("load_new_content", "n_clicks")],
+    Output("load_new_content", "disabled"),
+    Output("show", "data"),
+    Input("name", "value"),
+    Input("results_sort_input", "value"),
+    Input("load_new_content", "n_clicks"),
+    State("show", "data"),
 )
 @dash_kwarg(
-    [Input(i, "value") for i in component_ids]
+    # [Input(i, "value") for i in component_ids]
+    [Input("name", "value")]
     + [Input("results_sort_input", "value")]
     + [Input("load_new_content", "n_clicks")]
+    + [State("show", "data")]
 )
 def filter_results(**kwargs):
 
@@ -329,8 +346,6 @@ def filter_results(**kwargs):
     # Filtering by AND-ing conditions together
 
     forecast_series_dicts = {}
-
-    n_clicks = kwargs["load_new_content"]
 
     filters = {
         "name": match_names,
@@ -354,15 +369,32 @@ def filter_results(**kwargs):
         sort_by=kwargs["results_sort_input"],
     )
 
+    # Check if load more button clicked (triggered)
+    increment = 9
+    show_num = kwargs["show"]
+    if type(show_num) == list:
+        show_num = show_num[0]
+    show_num = int(show_num)
+
+    if ctx.triggered_id == "load_new_content":
+        if show_num < len(unique_series_titles):
+            show_num += increment
+    # elif ctx.triggered_id == "name" and show_num :
+    #     print("setting to increment")
+    #     show_num = increment
+
+    if show_num < len(unique_series_titles):
+        more_available = False
+    else:
+        more_available = True
+
     if len(unique_series_titles) > 0:
 
         n_series = len(unique_series_titles)
 
         results_list = []
 
-        for item_title in unique_series_titles[
-            0 : (30 + (n_clicks + 1) * 9)
-        ]:  # show first thirty nine
+        for item_title in unique_series_titles[0:show_num]:
             try:
                 forecast_series_dicts[item_title] = get_forecast_data(
                     item_title
@@ -400,19 +432,21 @@ def filter_results(**kwargs):
                         md=6,
                         lg=4,
                         xl=4,
+                        className="mb-3",
                     ),
                 )
             except FileNotFoundError:
                 continue
 
+        counts = [f"{n_series} result{'s' if n_series > 1 else ''} found"]
         results = [
-            html.P(f"{n_series} result{'s' if n_series > 1 else ''} found"),
             html.Div(dbc.Row(results_list)),
         ]
     else:
-        results = [html.P("No results found")]
+        counts = ["No results found"]
+        results = []
 
-    return results
+    return counts, results, more_available, show_num
 
 
 def make_card(item_title, url_title, thumbnail_figure, best_model):
@@ -422,7 +456,7 @@ def make_card(item_title, url_title, thumbnail_figure, best_model):
                 [
                     dbc.CardImg(
                         src=thumbnail_figure,
-                        top=True,
+                        bottom=True,
                         style={
                             "opacity": 0.3,
                         },
@@ -432,7 +466,7 @@ def make_card(item_title, url_title, thumbnail_figure, best_model):
                             [
                                 html.H4(
                                     item_title,
-                                    className="card-title align-item-start",
+                                    className="card-title",
                                     style={
                                         "color": "black",
                                         "font-weight": "bold",
@@ -440,15 +474,15 @@ def make_card(item_title, url_title, thumbnail_figure, best_model):
                                     },
                                 ),
                                 # html.P(),
-                                html.H6(
-                                    f"{best_model}",
-                                    className="card-text mt-auto",
-                                    style={
-                                        "color": "black",
-                                        "font-weight": "italic",
-                                        "text-align": "right",
-                                    },
-                                ),
+                                # html.H6(
+                                #     f"{best_model}",
+                                #     className="card-text mt-auto",
+                                #     style={
+                                #         "color": "black",
+                                #         "font-weight": "italic",
+                                #         "text-align": "right",
+                                #     },
+                                # ),
                             ],
                             className="card-img-overlay d-flex flex-column justify-content",
                         ),
@@ -461,7 +495,7 @@ def make_card(item_title, url_title, thumbnail_figure, best_model):
 
 
 ### final layout
-def layout(name=None, tags=None, methods=None):
+def layout(**kwargs):
     return html.Div(
         [
             dcc.Location(id="url", refresh=False),

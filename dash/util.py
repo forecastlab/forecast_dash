@@ -34,11 +34,10 @@ def location_ignore_null(inputs, location_id):
     return accept_func
 
 
-def apply_default_value(params):
+def apply_default_value(params, key="value"):
     def wrapper(func):
         def apply_value(*args, **kwargs):
             if "id" in kwargs and kwargs["id"] in params:
-                key = "value"
                 try:
                     kwargs[key] = ast.literal_eval(params[kwargs["id"]])
                 except Exception:

@@ -175,7 +175,6 @@ def get_static_thumbnail_figure(data_dict, lg=12):
     )
 
     layout = dict(
-        title={"text": title, "xanchor": "auto", "x": 0.5},
         height=480,
         showlegend=False,
         xaxis=dict(
@@ -185,7 +184,7 @@ def get_static_thumbnail_figure(data_dict, lg=12):
         ),
         yaxis=dict(fixedrange=True, gridcolor="rgb(255,255,255)"),
         shapes=shapes,
-        margin={"l": 30, "r": 0, "t": 30},
+        margin={"l": 32, "r": 32, "t": 32, "b": 32},
         annotations=[
             dict(
                 name="watermark",

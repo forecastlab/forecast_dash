@@ -5,7 +5,7 @@ import re
 from urllib.parse import urlencode
 
 import dash_bootstrap_components as dbc
-from dash import dcc, html, callback
+from dash import dcc, html, callback, ctx
 from dash.exceptions import PreventUpdate
 
 import dash
@@ -62,7 +62,7 @@ def sort_filter_results(unique_series_titles, sort_by="a_z", **kwargs):
 
 dash.register_page(__name__, title="Find a Series")
 
-component_ids = ["name"]  # , "tags", "methods"]
+component_ids = ["name", "show"]  # , "tags", "methods"]
 
 # load data source
 with open("../shared_config/data_sources.json") as data_sources_json_file:
@@ -168,6 +168,8 @@ def filter_panel_children(params):
                 ),
             ],
         ),
+        apply_default_value(params, "data")(dcc.Store)(id="show", storage_type='memory', data=9)
+        # apply_default_value(params, "value")(dcc.Input)(id="show", value=9)
     ]
     return children
 
@@ -303,9 +305,15 @@ def filter_panel(value):
 
 @callback(
     Output("url", "search"),
-    inputs=[Input(i, "value") for i in component_ids],
+    # inputs=[Input(i, "value") for i in component_ids],
+    Input("name", "value"),
+    Input("show", "data")
 )
-@dash_kwarg([Input(i, "value") for i in component_ids])
+# @dash_kwarg([Input(i, "value") for i in component_ids])
+@dash_kwarg([
+    Input("name", "value"),
+    Input("show", "data")
+])
 def update_url_state(**kwargs):
 
     state = urlencode(kwargs, doseq=True)
@@ -317,14 +325,18 @@ def update_url_state(**kwargs):
     Output("filter_count", "children"),
     Output("filter_results", "children"),
     Output("load_new_content", "disabled"),
-    inputs=[Input(i, "value") for i in component_ids]
-    + [Input("results_sort_input", "value")]
-    + [Input("load_new_content", "n_clicks")],
+    Output("show", "data"),
+    Input("name", "value"),
+    Input("results_sort_input", "value"),
+    Input("load_new_content", "n_clicks"),
+    State("show", "data")
 )
 @dash_kwarg(
-    [Input(i, "value") for i in component_ids]
+    # [Input(i, "value") for i in component_ids]
+    [Input("name", "value")]
     + [Input("results_sort_input", "value")]
     + [Input("load_new_content", "n_clicks")]
+    + [State("show", "data")]
 )
 def filter_results(**kwargs):
 
@@ -335,8 +347,6 @@ def filter_results(**kwargs):
     # Filtering by AND-ing conditions together
 
     forecast_series_dicts = {}
-
-    n_clicks = kwargs["load_new_content"]
 
     filters = {
         "name": match_names,
@@ -360,17 +370,24 @@ def filter_results(**kwargs):
         sort_by=kwargs["results_sort_input"],
     )
 
-    # show first 18
-    base_num = 9
+    # Check if load more button clicked (triggered)
     increment = 9
-    show_num = base_num + (n_clicks + 1) * increment
+    show_num = kwargs["show"]
+    if type(show_num) == list:
+        show_num = show_num[0]
+    show_num = int(show_num)
+
+    if ctx.triggered_id == "load_new_content":
+        if show_num < len(unique_series_titles):
+            show_num += increment
+    # elif ctx.triggered_id == "name" and show_num :
+    #     print("setting to increment")
+    #     show_num = increment
 
     if show_num < len(unique_series_titles):
         more_available = False
     else:
         more_available = True
-
-    print(show_num, len(unique_series_titles), more_available)
 
     if len(unique_series_titles) > 0:
 
@@ -430,7 +447,7 @@ def filter_results(**kwargs):
         counts = ["No results found"]
         results = []
 
-    return counts, results, more_available
+    return counts, results, more_available, show_num
 
 
 def make_card(item_title, url_title, thumbnail_figure, best_model):
@@ -479,7 +496,7 @@ def make_card(item_title, url_title, thumbnail_figure, best_model):
 
 
 ### final layout
-def layout(name=None, tags=None, methods=None):
+def layout(**kwargs):
     return html.Div(
         [
             dcc.Location(id="url", refresh=False),

@@ -103,7 +103,7 @@ def _featured_latest_news(feature_series_title):
                 ),
                 component_news_4col(),
             ],
-            className = "mb-5"
+            className="mb-5",
         ),
         dbc.Row(
             [

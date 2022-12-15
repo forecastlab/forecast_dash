@@ -168,7 +168,9 @@ def filter_panel_children(params):
                 ),
             ],
         ),
-        apply_default_value(params, "data")(dcc.Store)(id="show", storage_type='memory', data=9)
+        apply_default_value(params, "data")(dcc.Store)(
+            id="show", storage_type="memory", data=9
+        )
         # apply_default_value(params, "value")(dcc.Input)(id="show", value=9)
     ]
     return children
@@ -307,13 +309,10 @@ def filter_panel(value):
     Output("url", "search"),
     # inputs=[Input(i, "value") for i in component_ids],
     Input("name", "value"),
-    Input("show", "data")
+    Input("show", "data"),
 )
 # @dash_kwarg([Input(i, "value") for i in component_ids])
-@dash_kwarg([
-    Input("name", "value"),
-    Input("show", "data")
-])
+@dash_kwarg([Input("name", "value"), Input("show", "data")])
 def update_url_state(**kwargs):
 
     state = urlencode(kwargs, doseq=True)
@@ -329,7 +328,7 @@ def update_url_state(**kwargs):
     Input("name", "value"),
     Input("results_sort_input", "value"),
     Input("load_new_content", "n_clicks"),
-    State("show", "data")
+    State("show", "data"),
 )
 @dash_kwarg(
     # [Input(i, "value") for i in component_ids]

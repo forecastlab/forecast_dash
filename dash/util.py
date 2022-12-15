@@ -49,6 +49,7 @@ def apply_default_value(params, key="value"):
 
     return wrapper
 
+
 def watermark_information():
     current_date = datetime.today().strftime(
         "%Y/%m/%d"

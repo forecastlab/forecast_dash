@@ -80,60 +80,64 @@ def result_layout():
             dbc.Row(
                 [
                     dbc.Col(
+                        [html.H4("Results")],
+                    ),
+                ],
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(html.Div(id="filter_count"), lg={"size": 2}),
+                    dbc.Col(
                         [
-                            dbc.Row(
-                                [
-                                    dbc.Col(
-                                        [html.H4("Results")],
-                                    ),
-                                    dbc.Col(
-                                        [
-                                            "Sort by:",
-                                            dcc.Dropdown(
-                                                id="results_sort_input",
-                                                clearable=False,
-                                                options=[
-                                                    {
-                                                        "label": "A-Z Ascending",
-                                                        "value": "a_z",
-                                                    },
-                                                    {
-                                                        "label": "A-Z Descending",
-                                                        "value": "z_a",
-                                                    },
-                                                    # {'label': 'MSE Ascending', 'value': 'mse_asc'},
-                                                    # {'label': 'MSE Descending', 'value': 'mse_desc'},
-                                                ],
-                                                value="a_z",
-                                            ),
-                                        ],
-                                        align="left",
-                                        lg=2,
-                                        sm=1,
-                                    ),
+                            "Sort by",
+                        ],
+                        lg={"offset": 7, "size": 1},
+                        className="text-end",
+                    ),
+                    dbc.Col(
+                        [
+                            dcc.Dropdown(
+                                id="results_sort_input",
+                                clearable=False,
+                                options=[
+                                    {
+                                        "label": "A-Z Ascending",
+                                        "value": "a_z",
+                                    },
+                                    {
+                                        "label": "A-Z Descending",
+                                        "value": "z_a",
+                                    },
                                 ],
-                                className="flex-grow-1",
-                            ),
-                            dbc.Row(
-                                [
-                                    dcc.Loading(html.Div(id="filter_results")),
-                                ]
-                            ),
-                            dbc.Row(
-                                [
-                                    html.Button(
-                                        "Load more",
-                                        id="load_new_content",
-                                        n_clicks=0,
-                                        className="fill",
-                                    ),
-                                ]
+                                value="a_z",
                             ),
                         ],
-                        lg=12,
-                        sm=12,
+                        lg={"size": 2},
                     ),
-                ]
+                ],
+                className="mb-3",
+                align="center",
+            ),
+            dbc.Row(
+                [
+                    dcc.Loading(html.Div(id="filter_results")),
+                ],
+                className="mb-3",
+            ),
+            dbc.Row(
+                [
+                    html.Div(
+                        dbc.Button(
+                            "Load more",
+                            id="load_new_content",
+                            n_clicks=0,
+                            disabled=True,
+                            size="lg",
+                            color="light",
+                        ),
+                        className="d-grid gap-2 col-8 mx-auto",
+                    )
+                ],
             ),
         ]
     )
@@ -174,7 +178,7 @@ def match_names(searchable_details, name_input):
         return set(all_titles)
 
     matched_series_names = []
-    print(name_input)
+    # print(name_input)
     # name_terms = "|".join(name_input.split(" ")) # keep for later use.
     name_terms = name_input  # for single search
     # name_terms = [name_term.replace("(", "\\(") for name_term in name_terms]
@@ -310,7 +314,9 @@ def update_url_state(**kwargs):
 
 
 @callback(
+    Output("filter_count", "children"),
     Output("filter_results", "children"),
+    Output("load_new_content", "disabled"),
     inputs=[Input(i, "value") for i in component_ids]
     + [Input("results_sort_input", "value")]
     + [Input("load_new_content", "n_clicks")],
@@ -354,15 +360,25 @@ def filter_results(**kwargs):
         sort_by=kwargs["results_sort_input"],
     )
 
+    # show first 18
+    base_num = 9
+    increment = 9
+    show_num = base_num + (n_clicks + 1) * increment
+
+    if show_num < len(unique_series_titles):
+        more_available = False
+    else:
+        more_available = True
+
+    print(show_num, len(unique_series_titles), more_available)
+
     if len(unique_series_titles) > 0:
 
         n_series = len(unique_series_titles)
 
         results_list = []
 
-        for item_title in unique_series_titles[
-            0 : (30 + (n_clicks + 1) * 9)
-        ]:  # show first thirty nine
+        for item_title in unique_series_titles[0:show_num]:
             try:
                 forecast_series_dicts[item_title] = get_forecast_data(
                     item_title
@@ -400,19 +416,21 @@ def filter_results(**kwargs):
                         md=6,
                         lg=4,
                         xl=4,
+                        className="mb-3",
                     ),
                 )
             except FileNotFoundError:
                 continue
 
+        counts = [f"{n_series} result{'s' if n_series > 1 else ''} found"]
         results = [
-            html.P(f"{n_series} result{'s' if n_series > 1 else ''} found"),
             html.Div(dbc.Row(results_list)),
         ]
     else:
-        results = [html.P("No results found")]
+        counts = ["No results found"]
+        results = []
 
-    return results
+    return counts, results, more_available
 
 
 def make_card(item_title, url_title, thumbnail_figure, best_model):
@@ -422,7 +440,7 @@ def make_card(item_title, url_title, thumbnail_figure, best_model):
                 [
                     dbc.CardImg(
                         src=thumbnail_figure,
-                        top=True,
+                        bottom=True,
                         style={
                             "opacity": 0.3,
                         },
@@ -432,7 +450,7 @@ def make_card(item_title, url_title, thumbnail_figure, best_model):
                             [
                                 html.H4(
                                     item_title,
-                                    className="card-title align-item-start",
+                                    className="card-title",
                                     style={
                                         "color": "black",
                                         "font-weight": "bold",
@@ -440,15 +458,15 @@ def make_card(item_title, url_title, thumbnail_figure, best_model):
                                     },
                                 ),
                                 # html.P(),
-                                html.H6(
-                                    f"{best_model}",
-                                    className="card-text mt-auto",
-                                    style={
-                                        "color": "black",
-                                        "font-weight": "italic",
-                                        "text-align": "right",
-                                    },
-                                ),
+                                # html.H6(
+                                #     f"{best_model}",
+                                #     className="card-text mt-auto",
+                                #     style={
+                                #         "color": "black",
+                                #         "font-weight": "italic",
+                                #         "text-align": "right",
+                                #     },
+                                # ),
                             ],
                             className="card-img-overlay d-flex flex-column justify-content",
                         ),

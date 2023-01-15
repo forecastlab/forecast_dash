@@ -785,16 +785,18 @@ def world_map_of_forecasts():
         hover_name="Country",
         color_continuous_scale="burgyl",
         projection="natural earth",
-        hover_data=["Titles"],
+        custom_data=["Country"],
     )
 
     fig.update_layout(
         coloraxis_showscale=False,
         hoverlabel=dict(bgcolor="white", font_size=12, font_family="Rockwell"),
+        dragmode=False,
+        margin={"l": 16, "r": 16, "t": 0, "b": 0},
     )
 
     fig.update_traces(
-        hovertemplate="<b>%{hovertext}</b><br><br><i>Series: %{z}</i><br>%{customdata[0]}<extra></extra>"
+        hovertemplate="<b>%{hovertext}</b><br><i>%{z} Series</i>"
     )
 
     return fig

@@ -444,6 +444,9 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
             if data_source_dict["frequency"] == "Q":
                 offset = pd.offsets.QuarterEnd()
                 series_df.index = series_df.index + offset
+            elif data_source_dict["frequency"] == "M":
+                offset = pd.offsets.MonthEnd()
+                series_df.index = series_df.index + offset
 
             all_forecasts = {}
 

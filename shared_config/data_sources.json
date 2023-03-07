@@ -10,7 +10,7 @@
     ]
   },
   {
-    "title": "Australian Inflation (CPI)",
+    "title": "Australian Quarterly Inflation (CPI)",
     "source": "AusMacroData",
     "url": "http://ausmacrodata.org/Data/6401.0/eegrsrsiaisxseslr.csv",
     "frequency": "Q",
@@ -3962,5 +3962,12 @@
   "url": "https://api.data.abs.gov.au/data/ABS,LF,1.0.0/M12.3.1599.20.AUS.M?format=csv",
   "frequency": "Q",
   "tags": ["Australia", "Labour Force", "Economic", "Pacific" ]
- }
+ },
+ {
+   "title": "Australian Monthly Inflation (CPI)",
+   "source": "ABS",
+   "url": "https://api.data.abs.gov.au/data/ABS,CPI_M,1.0.0/1.10001..50.M?format=csv",
+   "frequency": "M",
+   "tags": ["Australia", "Economic", "Pacific" ]
+  }
 ]

@@ -477,5 +477,5 @@ def download_data(sources_path, download_path):
 if __name__ == "__main__":
     # download_data("../shared_config/data_sources.json", "../data/downloads")
     download_data(
-        "../shared_config/testing_data_sources.json", "../data/downloads"
+        "../shared_config/data_sources.json", "../data/downloads"
     )

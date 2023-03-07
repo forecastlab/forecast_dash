@@ -2305,5 +2305,19 @@
   "url" : "https://api.worldbank.org/v2/country/ZWE/indicator/NY.GDP.MKTP.KD.ZG",
   "frequency" : "AS",
   "tags" : ["Zimbabwe", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{
+    "title": "Global Confirmed COVID-19 Cases",
+    "source": "COVID_JH",
+    "url": "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv",
+    "frequency": "W",
+    "tags": ["World","COVID19", "Health"]
+  },
+{
+    "title": "Global COVID-19 Related Deaths",
+    "source": "COVID_JH",
+    "url": "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv",
+    "frequency": "W",
+    "tags": ["World","COVID19", "Health"]
   }
 ]

@@ -6,7 +6,6 @@ import shutil
 import sys
 
 if __name__ == "__main__":
-
     # # // This is helpful for testing
     # devmode = True if sys.argv[1] == "devmode" else False
     # data_sources = (

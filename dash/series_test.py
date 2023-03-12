@@ -21,6 +21,7 @@ from pages.series import layout as series_layout
 
 app.layout = series_layout
 
+
 ### callback for toggling the collapse on small screens
 @callback(
     Output("navbar-collapse", "is_open"),

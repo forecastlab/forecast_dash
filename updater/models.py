@@ -17,6 +17,7 @@ from prophet import Prophet
 
 import warnings
 
+
 ### functions for the MLP and RNN models ###
 def split_into_train(y, lags):
     """
@@ -495,7 +496,6 @@ class RModel(ForecastModel, ABC):
     forecast_model_params = {}
 
     def __init__(self, h=1, level=[], period=None):
-
         super().__init__(h, level, period)
 
         import rpy2.robjects as robjects
@@ -532,13 +532,11 @@ class RModel(ForecastModel, ABC):
         pass
 
     def fit(self, y):
-
         r_forecast_dict = self.get_r_forecast_dict()
 
         self.method = r_forecast_dict["method"][0]
 
     def predict(self):
-
         r_forecast_dict = self.get_r_forecast_dict()
 
         prediction = r_forecast_dict["mean"]
@@ -546,7 +544,6 @@ class RModel(ForecastModel, ABC):
         return prediction
 
     def predict_withci(self):
-
         r_forecast_dict = self.get_r_forecast_dict()
 
         forecast_dict = {"forecast": r_forecast_dict["mean"]}
@@ -573,7 +570,6 @@ class RDirectForecastModel(RModel):
         )
 
     def fit(self, y):
-
         self.y = y
 
         super().fit(y)
@@ -590,7 +586,6 @@ class RForecastModel(RModel):
         )
 
     def fit(self, y):
-
         fit_params = {"y": y, **type(self).forecast_model_params}
 
         self.fit_results = self.forecast_func(**fit_params)
@@ -600,7 +595,6 @@ class RForecastModel(RModel):
 
 class RSmoothForecastModel(RModel):
     def get_r_forecast_dict(self):
-
         r_level = [
             i / 100 for i in self.r_level
         ]  # CES reads levels as decimals
@@ -610,7 +604,6 @@ class RSmoothForecastModel(RModel):
         )
 
     def fit(self, y):
-
         self.y = y
 
         r_forecast_dict = self.get_r_forecast_dict()

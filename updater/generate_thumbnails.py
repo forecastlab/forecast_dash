@@ -30,7 +30,6 @@ def watermark_information():
 
 
 def get_forecast_plot_data(series_df, forecast_df):
-
     # Plot series history
     line_history = dict(
         type="scatter",
@@ -95,7 +94,6 @@ def get_forecast_plot_data(series_df, forecast_df):
 
 
 def get_plot_shapes(series_df, forecast_df):
-
     shapes = [
         {
             "type": "rect",

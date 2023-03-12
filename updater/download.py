@@ -45,7 +45,6 @@ class DataSource(ABC):
         self.filename = slugify(title)
 
     def fetch(self):
-
         try:
             series_df = self.download()
             self.hashsum = sha256(series_df.to_csv().encode()).hexdigest()
@@ -108,12 +107,10 @@ class AusMacroData(DataSource):
 
 
 class Fred(DataSource):
-
     # Thanks to https://github.com/mortada/fredapi/blob/master/fredapi/fred.py
     # and https://realpython.com/python-requests/
 
     def download(self):
-
         api_key_file = "../shared_config/fred_api_key"
         with open(api_key_file, "r") as kf:
             api_key = kf.readline().strip()
@@ -151,7 +148,6 @@ class Fred(DataSource):
 
 class Ons(DataSource):
     def download(self):
-
         try:
             # ONS currently rejects requests that use the default User-Agent
             # (python-urllib/3.x.y). Set the header manually to pretend to be
@@ -234,7 +230,6 @@ class ABSData(DataSource):
     """
 
     def download(self):
-
         df = pd.read_csv(self.url)
 
         df = pd.DataFrame(
@@ -450,13 +445,10 @@ class FuelNSWData(IncrementalData):
 
 
 def download_data(sources_path, download_path):
-
     with open(sources_path) as data_sources_json_file:
-
         data_sources_list = json.load(data_sources_json_file)
 
         for data_source_dict in data_sources_list:
-
             all_source_classes = {
                 "AusMacroData": AusMacroData,
                 "Fred": Fred,
@@ -476,6 +468,4 @@ def download_data(sources_path, download_path):
 
 if __name__ == "__main__":
     # download_data("../shared_config/data_sources.json", "../data/downloads")
-    download_data(
-        "../shared_config/data_sources.json", "../data/downloads"
-    )
+    download_data("../shared_config/data_sources.json", "../data/downloads")

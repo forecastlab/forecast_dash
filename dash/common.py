@@ -144,7 +144,6 @@ def breadcrumb_layout(crumbs):
 
 
 def component_git_version():
-
     git_hash = ""
     git_shorthash = "Unknown commit"
     git_time = "00:00"
@@ -275,7 +274,6 @@ def markdown_layout(title, markdown_content):
 
 ### model selection & visulisation related
 def get_forecast_plot_data(series_df, forecast_df):
-
     # Plot series history
     line_history = dict(
         type="scatter",
@@ -340,7 +338,6 @@ def get_forecast_plot_data(series_df, forecast_df):
 
 
 def get_plot_shapes(series_df, forecast_df):
-
     shapes = [
         {
             "type": "rect",
@@ -552,7 +549,6 @@ def get_forecast_data(title):
 
 
 def component_figs_2col(row_title, series_titles):
-
     if len(series_titles) != 2:
         raise ValueError("series_titles must have 3 elements")
 
@@ -589,7 +585,6 @@ def component_figs_2col(row_title, series_titles):
 
 
 def component_figs_3col(row_title, series_titles):
-
     if len(series_titles) != 3:
         raise ValueError("series_titles must have 3 elements")
 
@@ -625,7 +620,6 @@ def component_figs_3col(row_title, series_titles):
 
 
 def component_news_4col():
-
     filenames = glob_re(r".*.md", "../blog")
 
     blog_posts = []
@@ -720,7 +714,6 @@ def get_leaderboard_df(series_list, CV_score_function="MSE"):
 
 
 def component_leaderboard_4col(series_list):
-
     leaderboard_counts = get_leaderboard_df(series_list).iloc[:10, :]
 
     body = []

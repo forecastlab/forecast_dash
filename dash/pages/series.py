@@ -20,11 +20,11 @@ from common import (
     get_forecast_data,
 )
 
-
 import io
 import base64
 
-dash.register_page(__name__, title="Series")
+if dash.get_app().use_pages:
+    dash.register_page(__name__, title="Series")
 
 # button style
 white_button_style = {

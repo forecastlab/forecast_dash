@@ -1,4 +1,3504 @@
 [
+  {
+    "title": "Australian GDP Growth",
+    "source": "AusMacroData",
+    "url": "http://ausmacrodata.org/Data/5206.0/gdpcpcknaasaq.csv",
+    "frequency": "Q",
+    "tags": [
+      "Australia",
+      "Economic"
+    ]
+  },
+  {
+    "title": "Australian Quarterly Inflation (CPI)",
+    "source": "AusMacroData",
+    "url": "http://ausmacrodata.org/Data/6401.0/eegrsrsiaisxseslr.csv",
+    "frequency": "Q",
+    "tags": [
+      "Australia",
+      "Economic"
+    ]
+  },
+  {
+    "title": "Australian Unemployment",
+    "source": "AusMacroData",
+    "url": "http://ausmacrodata.org/Data/6202.0/urplfssasam.csv",
+    "frequency": "MS",
+    "tags": [
+      "Australia",
+      "Economic"
+    ]
+  },
+  {
+    "title": "Australian Underemployment",
+    "source": "AusMacroData",
+    "url": "http://ausmacrodata.org/Data/6202.0/urpupassam.csv",
+    "frequency": "MS",
+    "tags": [
+      "Australia",
+      "Economic"
+    ]
+  },
+  {
+    "title": "Australian Real GDP",
+    "source": "AusMacroData",
+    "url": "http://ausmacrodata.org/Data/5206.0/gdpcknaasaq.csv",
+    "frequency": "Q",
+    "tags": [
+      "Australia",
+      "Economic"
+    ]
+  },
+  {
+    "title": "Australian Current Account",
+    "source": "AusMacroData",
+    "url": "http://ausmacrodata.org/Data/5302.0/cabpsqoq.csv",
+    "frequency": "Q",
+    "tags": [
+      "Australia",
+      "Economic"
+    ]
+  },
+  {
+    "title": "Australian Change in House Prices",
+    "source": "AusMacroData",
+    "url": "http://ausmacrodata.org/Data/6416.0/rppipccqpywaeccrppiinpcoq.csv",
+    "frequency": "Q",
+    "tags": [
+      "Australia",
+      "Economic"
+    ]
+  },
+  {
+    "title": "Australian Retail Sales",
+    "source": "AusMacroData",
+    "url": "http://ausmacrodata.org/Data/H3/rsmsamaiol.csv",
+    "frequency": "MS",
+    "tags": [
+      "Australia",
+      "Economic"
+    ]
+  },
+  {
+    "title": "US Unemployment",
+    "source": "Fred",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=UNRATE",
+    "frequency": "MS",
+    "tags": [
+      "United States",
+      "Economic"
+    ]
+  },
+  {
+    "title": "US GDP Growth",
+    "source": "Fred",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=CPGDPAI",
+    "frequency": "Q",
+    "tags": [
+      "United States",
+      "Economic"
+    ]
+  },
+  {
+    "title": "US Personal Consumption Expenditures: Chain-type Price Index (% Change, 1 Year)",
+    "short_title": "US Inflation",
+    "source": "Fred",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=PCEPI&units=pc1",
+    "frequency": "MS",
+    "tags": [
+      "United States",
+      "Economic"
+    ]
+  },
+  {
+    "title": "US Gross Private Domestic Investment",
+    "short_title": "US Investment Growth",
+    "source": "Fred",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=GPDI",
+    "frequency": "MS",
+    "tags": [
+      "United States",
+      "Economic"
+    ]
+  },
+  {
+    "title": "US Personal Consumption Expenditures Excluding Food and Energy (Chain-Type Price Index)",
+    "short_title": "US Consumption Growth",
+    "source": "Fred",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=BPCCRO1Q156NBEA",
+    "frequency": "MS",
+    "tags": [
+      "United States",
+      "Economic"
+    ]
+  },
+  {
+    "title": "US 10-Year Treasury Constant Maturity Rate",
+     "short_title": "US Interest Rates",
+    "source": "Fred",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&frequency=m",
+    "frequency": "MS",
+    "tags": [
+      "United States",
+      "Economic"
+    ]
+  },
+  {
+    "title": "US Real Retail and Food Services Sales",
+    "short_title": "US Retail Sales",
+    "source": "Fred",
+    "url": "https://api.stlouisfed.org/fred/series/observations?series_id=RRSFS&frequency=m",
+    "frequency": "MS",
+    "tags": [
+      "United States",
+      "Economic"
+    ]
+  },
+    {
+    "title": "UK Inflation (RPI)",
+    "source": "Ons",
+    "url": "https://api.ons.gov.uk/timeseries/czbh/dataset/mm23/data",
+    "frequency": "MS",
+    "tags": [
+      "United Kingdom",
+      "Economic"
+    ]
+  },
+  {
+    "title": "UK Unemployment",
+    "source": "Ons",
+    "url": "https://api.ons.gov.uk/timeseries/mgsx/dataset/lms/data",
+    "frequency": "MS",
+    "tags": [
+      "United Kingdom",
+      "Economic"
+    ]
+  },
+  {
+    "title": "UK GDP Growth",
+    "source": "Ons",
+    "url": "https://api.ons.gov.uk/timeseries/ihyq/dataset/qna/data",
+    "frequency": "Q",
+    "tags": [
+      "United Kingdom",
+      "Economic"
+    ]
+  },
+  {
+    "title": "UK Current Account Balance",
+    "source": "Ons",
+    "url": "https://api.ons.gov.uk/timeseries/hbop/dataset/pnbp/data",
+    "frequency": "Q",
+    "tags": [
+      "United Kingdom",
+      "Economic"
+    ]
+  },
+  {
+    "title": "UK Average Weekly Earnings Growth",
+    "source": "Ons",
+    "url": "https://api.ons.gov.uk/timeseries/kac3/dataset/lms/data",
+    "frequency": "MS",
+    "tags": [
+      "United Kingdom",
+      "Economic"
+    ]
+  },
+  {
+    "title": "UK Retail Sales Index",
+    "source": "Ons",
+    "url": "https://api.ons.gov.uk/timeseries/j5c4/dataset/drsi/data",
+    "frequency": "MS",
+    "tags": [
+      "United Kingdom",
+      "Economic"
+    ]
+  },
+   {
+   "title": "GDP for Morocco (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/MAR/indicator/NY.GDP.MKTP.KD.ZG",
+   "frequency": "AS",
+   "tags": ["GDP","Morocco", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "GDP for Algeria (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/DZA/indicator/NY.GDP.MKTP.KD.ZG",
+   "frequency": "AS",
+   "tags": ["GDP","Algeria", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "GDP for Libya (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/LBY/indicator/NY.GDP.MKTP.KD.ZG",
+   "frequency": "AS",
+   "tags": ["GDP","Libya", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "GDP for Egypt (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/EGY/indicator/NY.GDP.MKTP.KD.ZG",
+   "frequency": "AS",
+   "tags": ["GDP","Egypt", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "GDP for South Africa (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/ZAF/indicator/NY.GDP.MKTP.KD.ZG",
+   "frequency": "AS",
+   "tags": ["GDP","Africa", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "GDP for Zambia (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/ZMB/indicator/NY.GDP.MKTP.KD.ZG",
+   "frequency": "AS",
+   "tags": ["GDP","Zambia", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "GDP for Tanzania (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/TZA/indicator/NY.GDP.MKTP.KD.ZG",
+   "frequency": "AS",
+   "tags": ["GDP","Tanzania", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "GDP for Kenya (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/KEN/indicator/NY.GDP.MKTP.KD.ZG",
+   "frequency": "AS",
+   "tags": ["GDP","Kenya", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "GDP for Madagascar (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/MDG/indicator/NY.GDP.MKTP.KD.ZG",
+   "frequency": "AS",
+   "tags": ["GDP","Madagascar", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "GDP for Brazil (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/BRA/indicator/NY.GDP.MKTP.KD.ZG",
+   "frequency": "AS",
+   "tags": ["GDP","Brazil", "Economic","South America", "World Bank" ]
+ },
+ {
+   "title": "GDP for Argentina (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/ARG/indicator/NY.GDP.MKTP.KD.ZG",
+   "frequency": "AS",
+   "tags": ["GDP","Argentina", "Economic","South America", "World Bank" ]
+ },
+ {
+   "title": "GDP for Mexico (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/MEX/indicator/NY.GDP.MKTP.KD.ZG",
+   "frequency": "AS",
+   "tags": ["GDP","Mexico", "Economic","North America", "World Bank" ]
+ },
+ {
+   "title": "GDP for Cuba (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/CUB/indicator/NY.GDP.MKTP.KD.ZG",
+   "frequency": "AS",
+   "tags": ["GDP","Cuba", "Economic","North America", "World Bank" ]
+ },
+ {
+   "title": "GDP for Indonesia (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/IDN/indicator/NY.GDP.MKTP.KD.ZG",
+   "frequency": "AS",
+   "tags": ["GDP","Indonesia", "Economic","Asia & Pacific", "World Bank" ]
+ },
+ {
+   "title": "GDP for Vietnam (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/VNM/indicator/NY.GDP.MKTP.KD.ZG",
+   "frequency": "AS",
+   "tags": ["GDP","Vietnam", "Economic","Asia & Pacific", "World Bank" ]
+ },
+ {
+   "title": "GDP for Thailand (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/THA/indicator/NY.GDP.MKTP.KD.ZG",
+   "frequency": "AS",
+   "tags": ["GDP","Thailand", "Economic","Asia & Pacific", "World Bank" ]
+ },
+ {
+   "title": "GDP for Malaysia (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/MYS/indicator/NY.GDP.MKTP.KD.ZG",
+   "frequency": "AS",
+   "tags": ["GDP","Malaysia", "Economic","Asia & Pacific", "World Bank" ]
+ },
+ {
+   "title": "Inflation for Morocco (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/MAR/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Morocco", "Inflation", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "Inflation for Algeria (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/DZA/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Algeria", "Inflation", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "Inflation for Libya (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/LBY/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Libya", "Inflation", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "Inflation for Egypt (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/EGY/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Egypt", "Inflation", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "Inflation for South Africa (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/ZAF/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Africa", "Inflation", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "Inflation for Zambia (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/ZMB/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Zambia", "Inflation", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "Inflation for Tanzania (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/TZA/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Tanzania", "Inflation", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "Inflation for Kenya (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/KEN/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Kenya", "Inflation", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "Inflation for Madagascar (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/MDG/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Madagascar", "Inflation", "Economic","Africa", "World Bank" ]
+ },
+ {
+   "title": "Inflation for Brazil (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/BRA/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Brazil", "Inflation", "Economic","South America", "World Bank" ]
+ },
+ {
+   "title": "Inflation for Mexico (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/MEX/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Mexico", "Inflation", "Economic","North America", "World Bank" ]
+ },
+ {
+   "title": "Inflation for Indonesia (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/IDN/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Indonesia", "Inflation", "Economic","Asia & Pacific", "World Bank" ]
+ },
+ {
+   "title": "Inflation for Vietnam (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/VNM/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Vietnam", "Inflation", "Economic","Asia & Pacific", "World Bank" ]
+ },
+ {
+   "title": "Inflation for Thailand (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/THA/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Thailand", "Inflation", "Economic","Asia & Pacific", "World Bank" ]
+ },
+ {
+   "title": "Inflation for Malaysia (World Bank)",
+   "source": "WorldBank",
+   "url": "https://api.worldbank.org/v2/country/MYS/indicator/FP.CPI.TOTL.ZG",
+   "frequency": "AS",
+   "tags": ["Malaysia", "Inflation", "Economic","Asia & Pacific", "World Bank" ]
+ },
+ {"title":"Inflation for Afghanistan (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/AFG/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Afghanistan", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Albania (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/ALB/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Albania", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Angola (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/AGO/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Angola", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Antigua and Barbuda (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/ATG/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Antigua and Barbuda", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Armenia (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/ARM/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Armenia", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Aruba (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/ABW/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Aruba", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Australia (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/AUS/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Australia", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Austria (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/AUT/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Austria", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Azerbaijan (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/AZE/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Azerbaijan", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Bahamas, The (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/BHS/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Bahamas, The", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Bahrain (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/BHR/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Bahrain", "Inflation", "Economic", "Arab States", "World Bank" ]
+  },
+{"title":"Inflation for Bangladesh (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/BGD/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Bangladesh", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Barbados (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/BRB/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Barbados", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Belarus (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/BLR/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Belarus", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Belgium (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/BEL/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Belgium", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Benin (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/BEN/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Benin", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Bhutan (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/BTN/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Bhutan", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Bolivia (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/BOL/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Bolivia", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Bosnia and Herzegovina (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/BIH/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Bosnia and Herzegovina", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Botswana (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/BWA/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Botswana", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Brunei Darussalam (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/BRN/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Brunei Darussalam", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Bulgaria (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/BGR/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Bulgaria", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Burkina Faso (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/BFA/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Burkina Faso", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Burundi (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/BDI/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Burundi", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Cambodia (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/KHM/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Cambodia", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Cameroon (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/CMR/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Cameroon", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Canada (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/CAN/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Canada", "Inflation", "Economic", "North America", "World Bank" ]
+  },
+{"title":"Inflation for Central African Republic (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/CAF/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Central African Republic", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Chad (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/TCD/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Chad", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Chile (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/CHL/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Chile", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for China (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/CHN/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["China", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Colombia (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/COL/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Colombia", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+
+
+{"title":"Inflation for Costa Rica (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/CRI/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Costa Rica", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Cote d'Ivoire (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/CIV/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Cote d'Ivoire", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Croatia (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/HRV/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Croatia", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Cyprus (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/CYP/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Cyprus", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Czech Republic (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/CZE/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Czech Republic", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Denmark (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/DNK/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Denmark", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+
+
+{"title":"Inflation for Dominican Republic (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/DOM/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Dominican Republic", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Ecuador (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/ECU/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Ecuador", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Egypt, Arab Rep. (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/EGY/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Egypt, Arab Rep.", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{"title":"Inflation for El Salvador (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/SLV/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["El Salvador", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Equatorial Guinea (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/GNQ/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Equatorial Guinea", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Estonia (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/EST/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Estonia", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Eswatini (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/SWZ/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Eswatini", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Ethiopia (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/ETH/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Ethiopia", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Fiji (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/FJI/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Fiji", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Finland (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/FIN/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Finland", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for France (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/FRA/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["France", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Gabon (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/GAB/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Gabon", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Georgia (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/GEO/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Georgia", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Germany (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/DEU/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Germany", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Ghana (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/GHA/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Ghana", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Greece (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/GRC/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Greece", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Grenada (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/GRD/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Grenada", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Guatemala (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/GTM/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Guatemala", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Guinea (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/GIN/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Guinea", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Guinea-Bissau (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/GNB/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Guinea-Bissau", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Guyana (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/GUY/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Guyana", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Haiti (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/HTI/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Haiti", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Honduras (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/HND/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Honduras", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Hungary (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/HUN/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Hungary", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Iceland (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/ISL/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Iceland", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for India (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/IND/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["India", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Iran, Islamic Rep. (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/IRN/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Iran, Islamic Rep.", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+
+
+{"title":"Inflation for Ireland (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/IRL/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Ireland", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Israel (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/ISR/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Israel", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{"title":"Inflation for Italy (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/ITA/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Italy", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Jamaica (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/JAM/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Jamaica", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Japan (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/JPN/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Japan", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Jordan (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/JOR/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Jordan", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{"title":"Inflation for Kazakhstan (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/KAZ/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Kazakhstan", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Kiribati (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/KIR/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Kiribati", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Kuwait (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/KWT/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Kuwait", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{"title":"Inflation for Latvia (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/LVA/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Latvia", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Lebanon (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/LBN/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Lebanon", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+
+
+{"title":"Inflation for Lithuania (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/LTU/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Lithuania", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Luxembourg (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/LUX/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Luxembourg", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Malawi (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/MWI/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Malawi", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Maldives (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/MDV/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Maldives", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Mali (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/MLI/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Mali", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Malta (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/MLT/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Malta", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Mauritania (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/MRT/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Mauritania", "Inflation", "Economic", "Arab States", "World Bank" ]
+  },
+{"title":"Inflation for Mauritius (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/MUS/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Mauritius", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Moldova (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/MDA/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Moldova", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Mongolia (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/MNG/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Mongolia", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Montenegro (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/MNE/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Montenegro", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Mozambique (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/MOZ/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Mozambique", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Myanmar (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/MMR/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Myanmar", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Namibia (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/NAM/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Namibia", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Nepal (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/NPL/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Nepal", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Netherlands (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/NLD/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Netherlands", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for New Zealand (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/NZL/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["New Zealand", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Nicaragua (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/NIC/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Nicaragua", "Inflation", "Economic", "South/Central America", "World Bank" ]
+  },
+{"title":"Inflation for Niger (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/NER/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Niger", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Nigeria (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/NGA/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Nigeria", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Norway (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/NOR/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Norway", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Oman (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/OMN/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Oman", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{"title":"Inflation for Pakistan (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/PAK/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Pakistan", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Palau (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/PLW/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Palau", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Panama (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/PAN/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Panama", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Papua New Guinea (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/PNG/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Papua New Guinea", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Paraguay (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/PRY/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Paraguay", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Peru (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/PER/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Peru", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Philippines (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/PHL/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Philippines", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Poland (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/POL/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Poland", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Portugal (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/PRT/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Portugal", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Qatar (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/QAT/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Qatar", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{"title":"Inflation for Romania (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/ROU/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Romania", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Russian Federation (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/RUS/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Russian Federation", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+
+
+{"title":"Inflation for Samoa (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/WSM/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Samoa", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Saudi Arabia (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/SAU/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Saudi Arabia", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{"title":"Inflation for Senegal (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/SEN/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Senegal", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Serbia (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/SRB/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Serbia", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Seychelles (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/SYC/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Seychelles", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Sierra Leone (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/SLE/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Sierra Leone", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Singapore (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/SGP/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Singapore", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Slovenia (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/SVN/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Slovenia", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Solomon Islands (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/SLB/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Solomon Islands", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for South Sudan (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/SSD/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["South Sudan", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Spain (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/ESP/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Spain", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Sri Lanka (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/LKA/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Sri Lanka", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Sudan (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/SDN/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Sudan", "Inflation", "Economic", "Arab States", "World Bank" ]
+  },
+{"title":"Inflation for Sweden (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/SWE/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Sweden", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Switzerland (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/CHE/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Switzerland", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for Timor-Leste (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/TLS/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Timor-Leste", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Togo (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/TGO/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Togo", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Tonga (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/TON/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Tonga", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Trinidad and Tobago (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/TTO/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Trinidad and Tobago", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Tunisia (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/TUN/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Tunisia", "Inflation", "Economic", "Arab States", "World Bank" ]
+  },
+{"title":"Inflation for Uganda (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/UGA/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Uganda", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{"title":"Inflation for Ukraine (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/UKR/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Ukraine", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for United Arab Emirates (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/ARE/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["United Arab Emirates", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{"title":"Inflation for United Kingdom (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/GBR/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["United Kingdom", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{"title":"Inflation for United States (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/USA/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["United States", "Inflation", "Economic", "North America", "World Bank" ]
+  },
+{"title":"Inflation for Uruguay (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/URY/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Uruguay", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{"title":"Inflation for Vanuatu (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/VUT/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Vanuatu", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{"title":"Inflation for Zimbabwe (World Bank)",
+  "source":"WorldBank",
+  "url":"https://api.worldbank.org/v2/country/ZWE/indicator/FP.CPI.TOTL.ZG",
+  "frequency" : "AS",
+  "tags" : ["Zimbabwe", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Afghanistan (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/AFG/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Afghanistan", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Albania (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/ALB/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Albania", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+
+
+{ "title" : "GDP for American Samoa (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/ASM/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["American Samoa", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Andorra (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/AND/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Andorra", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Angola (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/AGO/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Angola", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Antigua and Barbuda (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/ATG/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Antigua and Barbuda", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+
+
+{ "title" : "GDP for Armenia (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/ARM/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Armenia", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Aruba (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/ABW/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Aruba", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Australia (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/AUS/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Australia", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Austria (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/AUT/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Austria", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Azerbaijan (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/AZE/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Azerbaijan", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Bahamas, The (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/BHS/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Bahamas, The", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Bahrain (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/BHR/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Bahrain", "Inflation", "Economic", "Arab States", "World Bank" ]
+  },
+{ "title" : "GDP for Bangladesh (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/BGD/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Bangladesh", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Barbados (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/BRB/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Barbados", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Belarus (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/BLR/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Belarus", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Belgium (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/BEL/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Belgium", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Belize (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/BLZ/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Belize", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Benin (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/BEN/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Benin", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Bermuda (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/BMU/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Bermuda", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Bhutan (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/BTN/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Bhutan", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Bolivia (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/BOL/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Bolivia", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Bosnia and Herzegovina (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/BIH/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Bosnia and Herzegovina", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Botswana (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/BWA/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Botswana", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+
+
+{ "title" : "GDP for Brunei Darussalam (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/BRN/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Brunei Darussalam", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Bulgaria (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/BGR/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Bulgaria", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Burkina Faso (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/BFA/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Burkina Faso", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Burundi (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/BDI/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Burundi", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Cambodia (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/KHM/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Cambodia", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Cameroon (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/CMR/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Cameroon", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+
+
+{ "title" : "GDP for Cayman Islands (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/CYM/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Cayman Islands", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Central African Republic (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/CAF/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Central African Republic", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Chad (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/TCD/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Chad", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Chile (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/CHL/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Chile", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for China (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/CHN/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["China", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Colombia (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/COL/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Colombia", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Comoros (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/COM/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Comoros", "Inflation", "Economic", "Arab States", "World Bank" ]
+  },
+{ "title" : "GDP for Congo, Dem. Rep. (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/COD/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Congo, Dem. Rep.", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Congo, Rep. (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/COG/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Congo, Rep.", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{ "title" : "GDP for Costa Rica (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/CRI/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Costa Rica", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Cote d'Ivoire (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/CIV/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Cote d'Ivoire", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Croatia (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/HRV/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Croatia", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+
+
+{ "title" : "GDP for Cyprus (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/CYP/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Cyprus", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Czech Republic (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/CZE/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Czech Republic", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Denmark (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/DNK/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Denmark", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Djibouti (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/DJI/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Djibouti", "Inflation", "Economic", "Arab States", "World Bank" ]
+  },
+{ "title" : "GDP for Dominica (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/DMA/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Dominica", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Dominican Republic (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/DOM/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Dominican Republic", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Ecuador (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/ECU/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Ecuador", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Egypt, Arab Rep. (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/EGY/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Egypt, Arab Rep.", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for El Salvador (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/SLV/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["El Salvador", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Equatorial Guinea (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/GNQ/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Equatorial Guinea", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Estonia (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/EST/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Estonia", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Eswatini (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/SWZ/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Eswatini", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Ethiopia (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/ETH/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Ethiopia", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Euro area (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/EMU/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Euro area", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{ "title" : "GDP for Fiji (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/FJI/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Fiji", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Finland (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/FIN/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Finland", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for France (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/FRA/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["France", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+
+
+{ "title" : "GDP for Gabon (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/GAB/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Gabon", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Georgia (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/GEO/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Georgia", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Germany (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/DEU/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Germany", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Ghana (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/GHA/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Ghana", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Greece (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/GRC/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Greece", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Greenland (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/GRL/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Greenland", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Grenada (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/GRD/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Grenada", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Guam (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/GUM/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Guam", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Guatemala (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/GTM/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Guatemala", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Guinea (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/GIN/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Guinea", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Guinea-Bissau (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/GNB/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Guinea-Bissau", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Guyana (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/GUY/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Guyana", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Haiti (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/HTI/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Haiti", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Honduras (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/HND/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Honduras", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Hungary (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/HUN/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Hungary", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+
+
+{ "title" : "GDP for India (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/IND/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["India", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+
+
+{ "title" : "GDP for Iran, Islamic Rep. (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/IRN/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Iran, Islamic Rep.", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{ "title" : "GDP for Iraq (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/IRQ/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Iraq", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{ "title" : "GDP for Ireland (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/IRL/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Ireland", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Isle of Man (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/IMN/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Isle of Man", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+
+
+{ "title" : "GDP for Italy (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/ITA/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Italy", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Jamaica (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/JAM/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Jamaica", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Japan (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/JPN/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Japan", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Jordan (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/JOR/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Jordan", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{ "title" : "GDP for Kazakhstan (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/KAZ/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Kazakhstan", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+
+
+{ "title" : "GDP for Kiribati (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/KIR/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Kiribati", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Kuwait (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/KWT/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Kuwait", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{ "title" : "GDP for Latvia (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/LVA/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Latvia", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Lebanon (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/LBN/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Lebanon", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{ "title" : "GDP for Lesotho (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/LSO/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Lesotho", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Liberia (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/LBR/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Liberia", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+
+
+{ "title" : "GDP for Lithuania (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/LTU/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Lithuania", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Luxembourg (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/LUX/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Luxembourg", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+
+
+{ "title" : "GDP for Malawi (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/MWI/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Malawi", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+
+
+{ "title" : "GDP for Maldives (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/MDV/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Maldives", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Mali (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/MLI/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Mali", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Malta (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/MLT/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Malta", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Marshall Islands (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/MHL/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Marshall Islands", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Mauritania (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/MRT/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Mauritania", "Inflation", "Economic", "Arab States", "World Bank" ]
+  },
+{ "title" : "GDP for Mauritius (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/MUS/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Mauritius", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+
+
+{ "title" : "GDP for Monaco (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/MCO/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Monaco", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Mongolia (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/MNG/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Mongolia", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Montenegro (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/MNE/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Montenegro", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+
+
+{ "title" : "GDP for Mozambique (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/MOZ/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Mozambique", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Myanmar (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/MMR/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Myanmar", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Namibia (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/NAM/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Namibia", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Nauru (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/NRU/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Nauru", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Nepal (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/NPL/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Nepal", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Netherlands (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/NLD/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Netherlands", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for New Zealand (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/NZL/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["New Zealand", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Nicaragua (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/NIC/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Nicaragua", "Inflation", "Economic", "South/Central America", "World Bank" ]
+  },
+{ "title" : "GDP for Niger (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/NER/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Niger", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Nigeria (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/NGA/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Nigeria", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Northern Mariana Islands (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/MNP/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Northern Mariana Islands", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Norway (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/NOR/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Norway", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Oman (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/OMN/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Oman", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{ "title" : "GDP for Pakistan (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/PAK/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Pakistan", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Palau (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/PLW/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Palau", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Panama (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/PAN/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Panama", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Papua New Guinea (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/PNG/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Papua New Guinea", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Paraguay (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/PRY/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Paraguay", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Peru (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/PER/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Peru", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Philippines (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/PHL/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Philippines", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Poland (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/POL/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Poland", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Portugal (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/PRT/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Portugal", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Puerto Rico (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/PRI/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Puerto Rico", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Qatar (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/QAT/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Qatar", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{ "title" : "GDP for Romania (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/ROU/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Romania", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Russian Federation (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/RUS/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Russian Federation", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Rwanda (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/RWA/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Rwanda", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Samoa (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/WSM/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Samoa", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for San Marino (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/SMR/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["San Marino", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Sao Tome and Principe (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/STP/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Sao Tome and Principe", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Saudi Arabia (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/SAU/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Saudi Arabia", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{ "title" : "GDP for Senegal (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/SEN/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Senegal", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Serbia (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/SRB/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Serbia", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Seychelles (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/SYC/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Seychelles", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Sierra Leone (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/SLE/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Sierra Leone", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Singapore (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/SGP/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Singapore", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Slovenia (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/SVN/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Slovenia", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Solomon Islands (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/SLB/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Solomon Islands", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+
+
+
+
+{ "title" : "GDP for Spain (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/ESP/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Spain", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Sri Lanka (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/LKA/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Sri Lanka", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Sudan (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/SDN/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Sudan", "Inflation", "Economic", "Arab States", "World Bank" ]
+  },
+{ "title" : "GDP for Suriname (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/SUR/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Suriname", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Sweden (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/SWE/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Sweden", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Switzerland (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/CHE/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Switzerland", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for Tajikistan (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/TJK/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Tajikistan", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+
+
+{ "title" : "GDP for Timor-Leste (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/TLS/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Timor-Leste", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Togo (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/TGO/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Togo", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Tonga (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/TON/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Tonga", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Trinidad and Tobago (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/TTO/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Trinidad and Tobago", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Tunisia (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/TUN/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Tunisia", "Inflation", "Economic", "Arab States", "World Bank" ]
+  },
+{ "title" : "GDP for Turkmenistan (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/TKM/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Turkmenistan", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Turks and Caicos Islands (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/TCA/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Turks and Caicos Islands", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Tuvalu (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/TUV/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Tuvalu", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Uganda (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/UGA/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Uganda", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+{ "title" : "GDP for Ukraine (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/UKR/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Ukraine", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for United Arab Emirates (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/ARE/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["United Arab Emirates", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{ "title" : "GDP for United Kingdom (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/GBR/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["United Kingdom", "Inflation", "Economic", "Europe", "World Bank" ]
+  },
+{ "title" : "GDP for United States (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/USA/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["United States", "Inflation", "Economic", "North America", "World Bank" ]
+  },
+{ "title" : "GDP for Uruguay (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/URY/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Uruguay", "Inflation", "Economic", "South/Latin America", "World Bank" ]
+  },
+{ "title" : "GDP for Uzbekistan (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/UZB/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Uzbekistan", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Vanuatu (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/VUT/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Vanuatu", "Inflation", "Economic", "Asia & Pacific", "World Bank" ]
+  },
+{ "title" : "GDP for Yemen, Rep. (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/YEM/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Yemen, Rep.", "Inflation", "Economic", "Middle east", "World Bank" ]
+  },
+{ "title" : "GDP for Zimbabwe (World Bank)",
+  "source" : "WorldBank",
+  "url" : "https://api.worldbank.org/v2/country/ZWE/indicator/NY.GDP.MKTP.KD.ZG",
+  "frequency" : "AS",
+  "tags" : ["Zimbabwe", "Inflation", "Economic", "Africa", "World Bank" ]
+  },
+  {
+    "title": "Labor Force Participation Rate for Africa Eastern and Southern (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/AFE/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Africa Eastern and Southern", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Afghanistan (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/AFG/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Afghanistan", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Africa Western and Central (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/AFW/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Africa Western and Central", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Angola (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/AGO/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Angola", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Albania (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/ALB/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Albania", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Arab World (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/ARB/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Arab World", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for United Arab Emirates (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/ARE/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "United Arab Emirates", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Argentina (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/ARG/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Argentina", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Armenia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/ARM/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Armenia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Australia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/AUS/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Australia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Austria (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/AUT/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Austria", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Azerbaijan (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/AZE/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Azerbaijan", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Burundi (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/BDI/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Burundi", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Belgium (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/BEL/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Belgium", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Benin (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/BEN/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Benin", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Burkina Faso (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/BFA/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Burkina Faso", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Bangladesh (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/BGD/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Bangladesh", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Bulgaria (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/BGR/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Bulgaria", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Bahrain (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/BHR/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Bahrain", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Bahamas, The (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/BHS/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Bahamas, The", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Bosnia and Herzegovina (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/BIH/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Bosnia and Herzegovina", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Belarus (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/BLR/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Belarus", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Belize (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/BLZ/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Belize", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Bolivia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/BOL/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Bolivia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Brazil (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/BRA/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Brazil", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Barbados (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/BRB/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Barbados", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Brunei Darussalam (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/BRN/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Brunei Darussalam", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Bhutan (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/BTN/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Bhutan", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Botswana (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/BWA/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Botswana", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Central African Republic (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/CAF/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Central African Republic", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Canada (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/CAN/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Canada", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Central Europe and the Baltics (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/CEB/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Central Europe and the Baltics", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Switzerland (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/CHE/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Switzerland", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Channel Islands (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/CHI/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Channel Islands", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Chile (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/CHL/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Chile", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for China (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/CHN/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "China", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Cote d'Ivoire (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/CIV/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Cote d'Ivoire", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Cameroon (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/CMR/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Cameroon", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Congo, Dem. Rep. (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/COD/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Congo, Dem. Rep.", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Congo, Rep. (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/COG/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Congo, Rep.", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Colombia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/COL/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Colombia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Comoros (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/COM/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Comoros", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Cabo Verde (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/CPV/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Cabo Verde", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Costa Rica (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/CRI/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Costa Rica", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Caribbean small states (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/CSS/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Caribbean small states", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Cuba (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/CUB/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Cuba", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Cyprus (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/CYP/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Cyprus", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Czech Republic (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/CZE/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Czech Republic", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Germany (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/DEU/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Germany", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Djibouti (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/DJI/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Djibouti", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Denmark (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/DNK/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Denmark", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Dominican Republic (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/DOM/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Dominican Republic", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Algeria (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/DZA/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Algeria", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for East Asia & Pacific (excluding high income) (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/EAP/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "East Asia & Pacific (excluding high income)", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Early-demographic dividend (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/EAR/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Early-demographic dividend", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for East Asia & Pacific (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/EAS/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "East Asia & Pacific", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Europe & Central Asia (excluding high income) (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/ECA/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Europe & Central Asia (excluding high income)", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Europe & Central Asia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/ECS/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Europe & Central Asia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Ecuador (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/ECU/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Ecuador", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Egypt, Arab Rep. (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/EGY/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Egypt, Arab Rep.", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Euro area (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/EMU/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Euro area", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Eritrea (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/ERI/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Eritrea", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Spain (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/ESP/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Spain", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Estonia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/EST/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Estonia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Ethiopia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/ETH/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Ethiopia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for European Union (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/EUU/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "European Union", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Fragile and conflict affected situations (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/FCS/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Fragile and conflict affected situations", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Finland (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/FIN/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Finland", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Fiji (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/FJI/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Fiji", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for France (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/FRA/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "France", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Gabon (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/GAB/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Gabon", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for United Kingdom (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/GBR/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "United Kingdom", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Georgia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/GEO/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Georgia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Ghana (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/GHA/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Ghana", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Guinea (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/GIN/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Guinea", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Gambia, The (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/GMB/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Gambia, The", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Guinea-Bissau (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/GNB/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Guinea-Bissau", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Equatorial Guinea (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/GNQ/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Equatorial Guinea", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Greece (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/GRC/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Greece", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Guatemala (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/GTM/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Guatemala", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Guam (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/GUM/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Guam", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Guyana (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/GUY/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Guyana", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for High income (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/HIC/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "High income", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Hong Kong SAR, China (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/HKG/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Hong Kong SAR, China", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Honduras (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/HND/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Honduras", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Heavily indebted poor countries (HIPC) (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/HPC/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Heavily indebted poor countries (HIPC)", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Croatia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/HRV/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Croatia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Haiti (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/HTI/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Haiti", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Hungary (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/HUN/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Hungary", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for IBRD only (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/IBD/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "IBRD only", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for IDA & IBRD total (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/IBT/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "IDA & IBRD total", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for IDA total (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/IDA/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "IDA total", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for IDA blend (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/IDB/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "IDA blend", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Indonesia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/IDN/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Indonesia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for IDA only (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/IDX/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "IDA only", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for India (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/IND/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "India", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Ireland (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/IRL/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Ireland", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Iran, Islamic Rep. (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/IRN/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Iran, Islamic Rep.", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Iraq (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/IRQ/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Iraq", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Iceland (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/ISL/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Iceland", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Israel (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/ISR/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Israel", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Italy (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/ITA/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Italy", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Jamaica (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/JAM/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Jamaica", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Jordan (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/JOR/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Jordan", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Japan (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/JPN/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Japan", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Kazakhstan (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/KAZ/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Kazakhstan", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Kenya (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/KEN/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Kenya", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Kyrgyz Republic (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/KGZ/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Kyrgyz Republic", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Cambodia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/KHM/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Cambodia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Korea, Rep. (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/KOR/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Korea, Rep.", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Kuwait (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/KWT/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Kuwait", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Latin America & Caribbean (excluding high income) (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/LAC/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Latin America & Caribbean (excluding high income)", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Lao PDR (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/LAO/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Lao PDR", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Lebanon (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/LBN/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Lebanon", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Liberia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/LBR/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Liberia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Libya (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/LBY/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Libya", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for St. Lucia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/LCA/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "St. Lucia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Latin America & Caribbean (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/LCN/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Latin America & Caribbean", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Least developed countries: UN classification (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/LDC/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Least developed countries: UN classification", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Low income (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/LIC/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Low income", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Sri Lanka (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/LKA/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Sri Lanka", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Lower middle income (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/LMC/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Lower middle income", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Low & middle income (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/LMY/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Low & middle income", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Lesotho (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/LSO/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Lesotho", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Late-demographic dividend (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/LTE/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Late-demographic dividend", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Lithuania (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/LTU/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Lithuania", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Luxembourg (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/LUX/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Luxembourg", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Latvia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/LVA/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Latvia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Macao SAR, China (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MAC/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Macao SAR, China", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Morocco (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MAR/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Morocco", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Moldova (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MDA/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Moldova", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Madagascar (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MDG/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Madagascar", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Maldives (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MDV/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Maldives", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Middle East & North Africa (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MEA/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Middle East & North Africa", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Mexico (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MEX/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Mexico", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Middle income (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MIC/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Middle income", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for North Macedonia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MKD/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "North Macedonia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Mali (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MLI/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Mali", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Malta (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MLT/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Malta", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Myanmar (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MMR/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Myanmar", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Middle East & North Africa (excluding high income) (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MNA/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Middle East & North Africa (excluding high income)", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Montenegro (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MNE/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Montenegro", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Mongolia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MNG/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Mongolia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Mozambique (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MOZ/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Mozambique", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Mauritania (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MRT/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Mauritania", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Mauritius (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MUS/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Mauritius", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Malawi (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MWI/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Malawi", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Malaysia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/MYS/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Malaysia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for North America (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/NAC/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "North America", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Namibia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/NAM/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Namibia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for New Caledonia (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/NCL/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "New Caledonia", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Niger (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/NER/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Niger", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Nigeria (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/NGA/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Nigeria", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Nicaragua (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/NIC/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Nicaragua", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Netherlands (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/NLD/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Netherlands", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Norway (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/NOR/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Norway", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Nepal (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/NPL/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Nepal", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for New Zealand (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/NZL/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "New Zealand", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for OECD members (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/OED/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "OECD members", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Oman (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/OMN/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Oman", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Other small states (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/OSS/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Other small states", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Pakistan (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/PAK/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Pakistan", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Panama (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/PAN/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Panama", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Peru (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/PER/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Peru", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Philippines (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/PHL/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Philippines", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Papua New Guinea (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/PNG/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Papua New Guinea", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Poland (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/POL/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Poland", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Pre-demographic dividend (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/PRE/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Pre-demographic dividend", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Puerto Rico (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/PRI/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Puerto Rico", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Korea, Dem. People's Rep. (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/PRK/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Korea, Dem. People's Rep.", "Economic" ]
+ },
+ {
+    "title": "Labor Force Participation Rate for Portugal (World Bank)",
+    "source": "WorldBank",
+    "url": "https://api.worldbank.org/v2/country/PRT/indicator/SL.TLF.CACT.ZS",
+    "frequency": "AS",
+    "tags": ["Labour Force", "Portugal", "Economic" ]
+ },
  {
     "title": "Labor Force Participation Rate for Paraguay (World Bank)",
     "source": "WorldBank",
@@ -443,7 +3943,7 @@
  {
    "title": "Australian Monthly Inflation (CPI)",
    "source": "ABS",
-   "url": "https://api.data.abs.gov.au/data/ABS,CPI_M,1.0.0/1.10001..50.M?format=csv",
+   "url": "https://api.data.abs.gov.au/data/ABS,CPI_M,1.0.0/3.10001.10.50.M?format=csv",
    "frequency": "M",
    "tags": ["Australia", "Economic", "Pacific" ]
   }

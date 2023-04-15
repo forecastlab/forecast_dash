@@ -5,3 +5,4 @@ cd /updater
 /usr/bin/r requirements.R
 /usr/local/bin/python -u update.py
 /usr/local/bin/python -u generate_search_details.py 
+/usr/local/bin/python -u download_domain_housing.py 

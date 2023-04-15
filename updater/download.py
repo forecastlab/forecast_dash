@@ -242,6 +242,30 @@ class ABSData(DataSource):
 
         return df
 
+class Domain_Housing_Data(DataSource):
+
+    def download(self):
+
+        api_key_file = "../shared_config/domain_api_key"
+        with open(api_key_file, "r") as kf:
+            api_key = kf.readline().strip()
+
+        headers = headers = {"X-Api-key": api_key}
+
+        city = self.url.split('/')[-2]
+
+        sales_data = requests.get(self.url, headers = headers)
+        sales_data = pd.DataFrame(sales_data.values(), index = sales_data.keys()).T
+        sales_data['City'] = city
+
+        stored_data = pd.read_csv(f'Domain_data_{city}.csv')
+        stored_data = pd.concat((stored_data, sales_data))
+        stored_data.reset_index(inplace=True)
+        stored_data.tocsv(f'Domain_data_{city}.csv')
+        
+
+
+
 
 # not sure the best way to handle fuel dataset
 # the api is hard to use to access all the data

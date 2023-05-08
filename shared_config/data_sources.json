@@ -3948,56 +3948,56 @@
    "tags": ["Australia", "Economic", "Pacific" ]
  },
  {
-   "title": "Australian (Sydney) Change in House Prices",
+   "title": "Australian (Sydney) Change in Hours Prices",
    "source": "ABS",
    "url": "https://api.data.abs.gov.au/data/ABS,RES_DWELL,1.0.0/3.1GSYD.Q?format=csv",
    "frequency": "M",
    "tags": ["Australia", "Economic", "Pacific", "Sydney" ]
  },
  {
-   "title": "Australian (Melbourne) Change in House Prices",
+   "title": "Australian (Melbourne) Change in Hours Prices",
    "source": "ABS",
    "url": "https://api.data.abs.gov.au/data/ABS,RES_DWELL,1.0.0/3.2GMEL.Q?format=csv",
    "frequency": "M",
    "tags": ["Australia", "Economic", "Pacific", "Melbourne" ]
  },
  {
-   "title": "Australian (Brisbane) Change in House Prices",
+   "title": "Australian (Brisbane) Change in Hours Prices",
    "source": "ABS",
    "url": "https://api.data.abs.gov.au/data/ABS,RES_DWELL,1.0.0/3.3GBRI.Q?format=csv",
    "frequency": "M",
    "tags": ["Australia", "Economic", "Pacific", "Brisbane" ]
    },
  {
-   "title": "Australian (Adelaide) Change in House Prices",
+   "title": "Australian (Adelaide) Change in Hours Prices",
    "source": "ABS",
    "url": "https://api.data.abs.gov.au/data/ABS,RES_DWELL,1.0.0/3.4GADE.Q?format=csv",
    "frequency": "M",
    "tags": ["Australia", "Economic", "Pacific", "Adelaide" ]
  },
  {
-   "title": "Australian (Perth) Change in House Prices",
+   "title": "Australian (Perth) Change in Hours Prices",
    "source": "ABS",
    "url": "https://api.data.abs.gov.au/data/ABS,RES_DWELL,1.0.0/3.5GPER.Q?format=csv",
    "frequency": "M",
    "tags": ["Australia", "Economic", "Pacific", "Perth" ]
  },
  {
-   "title": "Australian (Hobart) Change in House Prices",
+   "title": "Australian (Hobart) Change in Hours Prices",
    "source": "ABS",
    "url": "https://api.data.abs.gov.au/data/ABS,RES_DWELL,1.0.0/3.6GHOB.Q?format=csv",
    "frequency": "M",
    "tags": ["Australia", "Economic", "Pacific", "Hobart" ]
  },
  {
-   "title": "Australian (Darwin) Change in House Prices",
+   "title": "Australian (Darwin) Change in Hours Prices",
    "source": "ABS",
    "url": "https://api.data.abs.gov.au/data/ABS,RES_DWELL,1.0.0/3.7GDAR.Q?format=csv",
    "frequency": "M",
    "tags": ["Australia", "Economic", "Pacific", "Darwin" ]
  },
  {
-   "title": "Australian (Australian Capital Territory) Change in House Prices",
+   "title": "Australian (Australian Capital Territory) Change in Hours Prices",
    "source": "ABS",
    "url": "https://api.data.abs.gov.au/data/ABS,RES_DWELL,1.0.0/3.8ACTE.Q?format=csv",
    "frequency": "M",

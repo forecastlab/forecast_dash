@@ -12,6 +12,9 @@ app = Dash(
     server=server,
     url_base_pathname="/",
     use_pages=True,
+    external_scripts=[
+        "https://www.googletagmanager.com/gtag/js?id=G-4YLTQWQW7F",
+    ],
     external_stylesheets=[
         dbc.themes.BOOTSTRAP,
         "https://use.fontawesome.com/releases/v5.8.1/css/all.css",

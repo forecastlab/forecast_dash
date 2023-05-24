@@ -17,4 +17,3 @@ venv*/
 .DS_Store
 .env
 .idea
-shared_config/domain_api_key

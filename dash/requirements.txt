@@ -17,6 +17,7 @@ dash==2.5.1
 et-xmlfile==1.1.0
 frontmatter==3.0.7
 gunicorn==20.1.0
+holidays==0.24
 humanize==4.1.0
 importlib-metadata==4.11.4
 itsdangerous==2.1.2

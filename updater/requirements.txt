@@ -4,6 +4,7 @@ PyYAML==6.0
 certifi==2022.5.18.1
 cffi==1.15.0
 charset-normalizer==2.0.12
+holidays==0.24
 idna==3.3
 joblib==1.1.0
 kaleido==0.2.1

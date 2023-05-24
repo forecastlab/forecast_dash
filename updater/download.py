@@ -240,6 +240,12 @@ class ABSData(DataSource):
 
         df.index.name = "date"
 
+        if (
+            self.url.find("RES_DWELL") > 0
+        ):  # For the RES_Dwelling Series calcualte the percent change for year on year
+            df["value"] = df["value"].pct_change(4)
+            df.dropna(inplace=True)
+
         return df
 
 

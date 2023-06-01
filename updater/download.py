@@ -234,7 +234,7 @@ class ABSData(DataSource):
 
         df = pd.DataFrame(
             df["OBS_VALUE"].values,
-            index=pd.to_datetime(df["TIME_PERIOD"]),
+            index=pd.to_datetime(df["TIME_PERIOD"]) + pd.offsets.QuarterEnd(0), # Push index to end of the Quarter
             columns=["value"],
         )
 
@@ -242,7 +242,7 @@ class ABSData(DataSource):
 
         if (
             self.url.find("RES_DWELL") > 0
-        ):  # For the RES_Dwelling Series calcualte the percent change for year on year
+        ):  # For the RES_Dwelling Series calculate the percent change for year on year
             df["value"] = df["value"].pct_change(4)
             df.dropna(inplace=True)
 

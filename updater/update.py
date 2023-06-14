@@ -33,7 +33,10 @@ if __name__ == "__main__":
     )
 
     print("Updating search index")
-    generate_search_details("../shared_config/data_sources.json", "../shared_config/search_a_series.json")
+    generate_search_details(
+        "../shared_config/data_sources.json",
+        "../shared_config/search_a_series.json",
+    )
 
     if os.path.isdir("/nginx_cache"):
         print("Clearing Cache")

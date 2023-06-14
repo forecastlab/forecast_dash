@@ -20,7 +20,7 @@ from dash import dcc, html
 import humanize
 import numpy as np
 import pandas as pd
-from frontmatter import Frontmatter
+import frontmatter
 from util import (
     glob_re,
     watermark_information,
@@ -625,13 +625,13 @@ def component_news_4col():
     blog_posts = []
 
     for filename in filenames:
-        fm_dict = Frontmatter.read_file("../blog/" + filename)
+        fm_dict = frontmatter.load("../blog/" + filename)
         fm_dict["filename"] = filename.split(".md")[0]
         blog_posts.append(fm_dict)
 
     # Sort by date
     blog_posts = sorted(
-        blog_posts, key=lambda x: x["attributes"]["date"], reverse=True
+        blog_posts, key=lambda x: x["date"], reverse=True
     )
 
     body = []
@@ -640,7 +640,7 @@ def component_news_4col():
         blog_post = blog_posts[i]
         blog_timedelta = humanize.naturaltime(
             datetime.now()
-            - datetime.strptime(blog_post["attributes"]["date"], "%Y-%m-%d")
+            - datetime.strptime(blog_post["date"], "%Y-%m-%d")
         )
         body.extend(
             [
@@ -648,7 +648,7 @@ def component_news_4col():
                     blog_timedelta, className="subtitle mt-0 text-muted small"
                 ),
                 html.A(
-                    html.P(blog_post["attributes"]["title"], className="lead"),
+                    html.P(blog_post["title"], className="lead"),
                     href=f"/blog/post?title={blog_post['filename']}",
                     className="text-decoration-none",
                 ),

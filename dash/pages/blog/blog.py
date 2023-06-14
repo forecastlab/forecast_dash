@@ -13,7 +13,7 @@ import markdown2
 import humanize
 from common import breadcrumb_layout
 from dash.dependencies import Input, Output
-from frontmatter import Frontmatter
+import frontmatter
 from util import (
     glob_re,
     location_ignore_null,
@@ -57,13 +57,13 @@ def _collect_blog_posts():
     blog_posts = []
 
     for filename in filenames:
-        fm_dict = Frontmatter.read_file("../blog/" + filename)
+        fm_dict = frontmatter.load("../blog/" + filename)
         fm_dict["filename"] = filename.split(".md")[0]
         blog_posts.append(fm_dict)
 
     # Sort by date
     blog_posts = sorted(
-        blog_posts, key=lambda x: x["attributes"]["date"], reverse=True
+        blog_posts, key=lambda x: x["date"], reverse=True
     )
 
     return blog_posts, n_posts
@@ -73,7 +73,7 @@ def _collect_blog_posts():
 def _post_review_title(blog_post):
     return html.A(
         html.H2(
-            blog_post["attributes"]["title"],
+            blog_post["title"],
             style={"padding-top": "8px"},
         ),
         href=f"/blog/post?title={blog_post['filename']}",
@@ -85,12 +85,12 @@ def _post_review_author(blog_post):
     return html.P(
         [
             " by ",
-            blog_post["attributes"]["author"],
+            blog_post["author"],
             ", ",
             humanize.naturaltime(
                 datetime.now()
                 - datetime.strptime(
-                    blog_post["attributes"]["date"],
+                    blog_post["date"],
                     "%Y-%m-%d",
                 )
             ),
@@ -102,15 +102,15 @@ def _post_review_author(blog_post):
 def _post_review_abstract(blog_post):
     # load blog into bs4 format
     if (
-        "type" in blog_post["attributes"]
-        and blog_post["attributes"]["type"] == "html"
+        "type" in blog_post.keys()
+        and blog_post["type"] == "html"
     ):
-        body_html = blog_post["body"]
+        body_html = blog_post
     else:
         body_html = markdown2.markdown(
-            blog_post["body"], extras=markdown_extras
+            blog_post, extras=markdown_extras
         )
-    soup = BeautifulSoup(body_html, "html.parser")
+    soup = BeautifulSoup(str(body_html), "html.parser")
     preview = textwrap.shorten(
         soup.find("p").get_text(), 280, placeholder="..."
     )

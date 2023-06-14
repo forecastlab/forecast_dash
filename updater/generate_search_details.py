@@ -6,11 +6,6 @@ import sys
 from slugify import slugify
 import numpy as np
 
-f = open(f"../shared_config/data_sources.json", "rb")
-data_sources = json.load(f)
-f.close()
-
-
 def select_best_model(data_dict, CV_score_function="MSE"):
     # use the MSE as the default scoring function for identifying the best model.
     # Extract ( model_name, cv_score ) for each model.
@@ -32,8 +27,11 @@ def select_best_model(data_dict, CV_score_function="MSE"):
     model_name = all_models[np.argmin(all_cv_scores)]
     return model_name
 
+def generate_search_details(sources_path, search_path):
+    f = open(sources_path, "rb")
+    data_sources = json.load(f)
+    f.close()
 
-if __name__ == "__main__":
     searchable_details = {}
     for data in data_sources:
         searchable_details[data["title"]] = [data["title"]]
@@ -57,7 +55,8 @@ if __name__ == "__main__":
         else:
             searchable_details[best_method] = [data["title"]]
 
-    with open(
-        "../shared_config/search_a_series.json", "w"
-    ) as searches_json_file:
+    with open( search_path, "w") as searches_json_file:
         searches_json_file.write(json.dumps(searchable_details))
+
+if __name__ == "__main__":
+    generate_search_details("../shared_config/data_sources.json", "../shared_config/search_a_series.json")

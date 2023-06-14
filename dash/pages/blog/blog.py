@@ -62,9 +62,7 @@ def _collect_blog_posts():
         blog_posts.append(fm_dict)
 
     # Sort by date
-    blog_posts = sorted(
-        blog_posts, key=lambda x: x["date"], reverse=True
-    )
+    blog_posts = sorted(blog_posts, key=lambda x: x["date"], reverse=True)
 
     return blog_posts, n_posts
 
@@ -101,15 +99,10 @@ def _post_review_author(blog_post):
 
 def _post_review_abstract(blog_post):
     # load blog into bs4 format
-    if (
-        "type" in blog_post.keys()
-        and blog_post["type"] == "html"
-    ):
+    if "type" in blog_post.keys() and blog_post["type"] == "html":
         body_html = blog_post
     else:
-        body_html = markdown2.markdown(
-            blog_post, extras=markdown_extras
-        )
+        body_html = markdown2.markdown(blog_post, extras=markdown_extras)
     soup = BeautifulSoup(str(body_html), "html.parser")
     preview = textwrap.shorten(
         soup.find("p").get_text(), 280, placeholder="..."

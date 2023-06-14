@@ -630,17 +630,14 @@ def component_news_4col():
         blog_posts.append(fm_dict)
 
     # Sort by date
-    blog_posts = sorted(
-        blog_posts, key=lambda x: x["date"], reverse=True
-    )
+    blog_posts = sorted(blog_posts, key=lambda x: x["date"], reverse=True)
 
     body = []
 
     for i in range(min(len(blog_posts), 5)):
         blog_post = blog_posts[i]
         blog_timedelta = humanize.naturaltime(
-            datetime.now()
-            - datetime.strptime(blog_post["date"], "%Y-%m-%d")
+            datetime.now() - datetime.strptime(blog_post["date"], "%Y-%m-%d")
         )
         body.extend(
             [

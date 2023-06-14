@@ -80,9 +80,7 @@ def _post_author(blog_post):
             ", ",
             humanize.naturaltime(
                 datetime.now()
-                - datetime.strptime(
-                    blog_post["date"], "%Y-%m-%d"
-                )
+                - datetime.strptime(blog_post["date"], "%Y-%m-%d")
             ),
         ],
         className="subtitle mt-0 text-muted small",
@@ -91,11 +89,8 @@ def _post_author(blog_post):
 
 def _post_content(blog_post):
     return (
-        dash_dangerously_set_inner_html.DangerouslySetInnerHTML(
-            str(blog_post)
-        )
-        if "type" in blog_post.keys()
-        and blog_post["type"] == "html"
+        dash_dangerously_set_inner_html.DangerouslySetInnerHTML(str(blog_post))
+        if "type" in blog_post.keys() and blog_post["type"] == "html"
         else dcc.Markdown(blog_post)
     )
 

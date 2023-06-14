@@ -234,7 +234,8 @@ class ABSData(DataSource):
 
         df = pd.DataFrame(
             df["OBS_VALUE"].values,
-            index=pd.to_datetime(df["TIME_PERIOD"]) + pd.offsets.QuarterEnd(0), # Push index to end of the Quarter
+            index=pd.to_datetime(df["TIME_PERIOD"])
+            + pd.offsets.QuarterEnd(0),  # Push index to end of the Quarter
             columns=["value"],
         )
 

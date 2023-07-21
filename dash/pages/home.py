@@ -110,11 +110,11 @@ def _featured_latest_news(feature_series_title):
                 dbc.Col(
                     [
                         html.H2(
-                            "US Recovery from COVID-19",
+                            "US " + "inflation shows strong signs of stabilisation".title(),
                         ),
                         html.A(
                             html.H4("View all US forecasts"),
-                            href="/search/?name=&tags=US",
+                            href=f"/search?{urlencode({'name': 'United States'})}",
                             className="text-decoration-none",
                         ),
                     ],
@@ -127,13 +127,13 @@ def _featured_latest_news(feature_series_title):
                             [
                                 dcc.Graph(
                                     figure=get_thumbnail_figure(
-                                        get_forecast_data("US Unemployment"),
+                                        get_forecast_data("US Personal Consumption Expenditures: Chain-type Price Index (% Change, 1 Year)"),
                                         lg=8,
                                     ),
                                     config={"displayModeBar": False},
                                 )
                             ],
-                            href=f"/series?{urlencode({'title': 'US Unemployment'})}",
+                            href=f"/series?{urlencode({'title': 'US Personal Consumption Expenditures: Chain-type Price Index (% Change, 1 Year)'})}",
                         ),
                     ],
                     lg=8,
@@ -200,13 +200,44 @@ def _leaderboard():
 
 
 def _uk_snapshot():
-    return component_figs_2col(
-        "UK Snapshot",
-        [
-            "UK Unemployment",
-            "UK Inflation (RPI)",
-        ],
-    )
+    return [
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.H2(
+                            "UK " + "struggles to contain inflation".title(),
+                        ),
+                        html.A(
+                            html.H4("View all UK forecasts"),
+                            href=f"/search?{urlencode({'name': 'UK'})}",
+                            className="text-decoration-none",
+                        ),
+                    ],
+                    lg=4,
+                    className="text-center align-self-center",
+                ),
+                dbc.Col(
+                    [
+                        html.A(
+                            [
+                                dcc.Graph(
+                                    figure=get_thumbnail_figure(
+                                        get_forecast_data("UK Inflation (RPI)"),
+                                        lg=8,
+                                    ),
+                                    config={"displayModeBar": False},
+                                )
+                            ],
+                            href=f"/series?{urlencode({'title': 'UK Inflation (RPI)'})}",
+                        ),
+                    ],
+                    lg=8,
+                ),
+            ],
+            className="d-flex",
+        )
+    ]
 
 
 def _link_search():
@@ -245,14 +276,55 @@ def _link_search():
         ]
     )
 
+def _au_snapshot():
+    return [
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.H2(
+                            "Have " + "AU" +" house prices reached the bottom?".title()
+                        ),
+                        html.A(
+                            html.H4("View all Australian forecasts"),
+                            href=f"/search?{urlencode({'name': 'Australia'})}",
+                            className="text-decoration-none",
+                        ),
+                    ],
+                    lg=4,
+                    className="text-center align-self-center",
+                ),
+                dbc.Col(
+                    [
+                        html.A(
+                            [
+                                dcc.Graph(
+                                    figure=get_thumbnail_figure(
+                                        get_forecast_data("Australian (Sydney) Change in House Prices"),
+                                        lg=8,
+                                    ),
+                                    config={"displayModeBar": False},
+                                )
+                            ],
+                            href=f"/series?{urlencode({'title': 'Australian (Sydney) Change in House Prices'})}",
+                        ),
+                    ],
+                    lg=8,
+                ),
+            ],
+            className="d-flex",
+        )
+    ]
+
 
 def main_body(feature_series_title):
     return dbc.Container(
         [
             *_featured_latest_news(feature_series_title),
             _leaderboard(),
-            _uk_snapshot(),
+            *_uk_snapshot(),
             _link_search(),
+            *_au_snapshot(),
         ]
     )
 

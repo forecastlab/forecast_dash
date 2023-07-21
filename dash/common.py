@@ -550,7 +550,7 @@ def get_forecast_data(title):
 
 def component_figs_2col(row_title, series_titles):
     if len(series_titles) != 2:
-        raise ValueError("series_titles must have 3 elements")
+        raise ValueError("series_titles must have 2 elements")
 
     return dbc.Row(
         [

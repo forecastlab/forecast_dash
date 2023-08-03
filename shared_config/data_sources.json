@@ -3943,7 +3943,7 @@
  {
    "title": "Australian Monthly Inflation (CPI)",
    "source": "ABS",
-   "url": "https://api.data.abs.gov.au/data/ABS,CPI_M,1.0.0/3.10001.10.50.M?format=csv",
+   "url": "https://api.data.abs.gov.au/data/ABS,CPI_M,/3.10001..50.M?format=csv",
    "frequency": "M",
    "tags": ["Australia", "Economic", "Pacific" ]
  },

@@ -210,7 +210,7 @@ def _uk_snapshot():
                         ),
                         html.A(
                             html.H4("View all UK forecasts"),
-                            href=f"/search?{urlencode({'name': 'UK'})}",
+                            href=f"/search?{urlencode({'name': 'United Kingdom'})}",
                             className="text-decoration-none",
                         ),
                     ],

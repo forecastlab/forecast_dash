@@ -391,11 +391,14 @@ def filter_results(**kwargs):
 
         for item_title in unique_series_titles[0:show_num]:
             try:
-                forecast_series_dicts[item_title] = get_forecast_data(
+                series_data = get_forecast_data(
                     item_title
                 )
+                if series_data == None:
+                    raise FileNotFoundError
 
-                series_data = forecast_series_dicts[item_title]
+                forecast_series_dicts[item_title] = series_data
+
                 url_title = urlencode({"title": item_title})
 
                 title = (

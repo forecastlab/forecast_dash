@@ -112,6 +112,8 @@ def _forecast_performance_layout():
 def _get_series_title(title):
     try:
         series_data_dict = get_forecast_data(title)
+        if series_data_dict == None:
+            raise Exception
     except:
         return "Series"
 
@@ -361,6 +363,8 @@ def series_input(inputs, location_id="url"):
             if "title" in parse_result:
                 title = parse_result["title"][0]
                 series_data_dict = get_forecast_data(title)
+                if series_data_dict == None:
+                    raise PreventUpdate
 
                 del kwargs_dict[location_id]
                 return func(series_data_dict, **kwargs_dict)

@@ -37,7 +37,7 @@ model_str_list = [
     "RComb",
     "LinearRegressionForecast",
     "RNN_M4_benchmark",
-    "FBProphet",
+    # "FBProphet",
     "RCES",
 ]
 

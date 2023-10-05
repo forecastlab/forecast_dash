@@ -545,10 +545,15 @@ def get_series_figure(data_dict, model_name):
 
 
 def get_forecast_data(title):
-    title = slugify(title)
-    f = open(f"../data/forecasts/{title}.pkl", "rb")
-    data_dict = pickle.load(f)
-    return data_dict
+    try:
+        title = slugify(title)
+        f = open(f"../data/forecasts/{title}.pkl", "rb")
+        data_dict = pickle.load(f)
+        return data_dict
+    except Exception as e:
+        pass
+
+    return None
 
 
 def component_figs_2col(row_title, series_titles):

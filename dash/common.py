@@ -397,6 +397,9 @@ def select_best_model(data_dict, CV_score_function="MSE"):
 
 
 def get_thumbnail_figure(data_dict, lg=12):
+    if data_dict == None:
+        return {}
+        
     watermark_config = (
         watermark_information()
     )  # Grab the watermark text and fontsize information

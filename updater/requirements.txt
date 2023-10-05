@@ -13,7 +13,7 @@ packaging==21.3
 pandas==1.4.2
 patsy==0.5.2
 plotly==5.8.0
-prophet==1.1
+#prophet==1.1
 pycparser==2.21
 pyparsing==3.0.9
 python-dateutil==2.8.2

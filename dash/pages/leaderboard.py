@@ -79,6 +79,9 @@ def update_leaderboard_df(CV_score):
     construct the best model leaderboard based upon user selected scoring function
     """
     # Build leaderboard with chosen CV scoring function
+    data_sources_json_file = open("../shared_config/data_sources.json")
+    series_list = json.load(data_sources_json_file)
+
     counts = get_leaderboard_df(series_list, CV_score)
 
     win_proportion = (

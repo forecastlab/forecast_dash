@@ -1,12 +1,12 @@
 from download import download_data
 from run_models import run_models
 from generate_thumbnails import generate_static_thumbnail
+from generate_search_details import generate_search_details
 import os
 import shutil
 import sys
 
 if __name__ == "__main__":
-
     # # // This is helpful for testing
     # devmode = True if sys.argv[1] == "devmode" else False
     # data_sources = (
@@ -30,6 +30,12 @@ if __name__ == "__main__":
     print("Creating Thumbnails")
     generate_static_thumbnail(
         "../shared_config/data_sources.json", "../data/thumbnails"
+    )
+
+    print("Updating search index")
+    generate_search_details(
+        "../shared_config/data_sources.json",
+        "../shared_config/search_a_series.json",
     )
 
     if os.path.isdir("/nginx_cache"):

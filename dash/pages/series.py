@@ -20,11 +20,11 @@ from common import (
     get_forecast_data,
 )
 
-
 import io
 import base64
 
-dash.register_page(__name__, title="Series")
+if dash.get_app().use_pages:
+    dash.register_page(__name__, title="Series")
 
 # button style
 white_button_style = {
@@ -112,6 +112,8 @@ def _forecast_performance_layout():
 def _get_series_title(title):
     try:
         series_data_dict = get_forecast_data(title)
+        if series_data_dict == None:
+            raise Exception
     except:
         return "Series"
 
@@ -269,7 +271,6 @@ def infer_frequency_from_forecast(series_data_dict, **kwargs):
 
 
 def create_metadata_table(series_data_dict, **kwargs):
-
     model_name = kwargs["model_selector"]
 
     metadata_df = {
@@ -362,6 +363,8 @@ def series_input(inputs, location_id="url"):
             if "title" in parse_result:
                 title = parse_result["title"][0]
                 series_data_dict = get_forecast_data(title)
+                if series_data_dict == None:
+                    raise PreventUpdate
 
                 del kwargs_dict[location_id]
                 return func(series_data_dict, **kwargs_dict)
@@ -398,7 +401,6 @@ inputs = [Input("url", "href")]
 @location_ignore_null(inputs, location_id="url")
 @series_input(inputs + [Input("model_selector", "value")], location_id="url")
 def update_series_graph(series_data_dict, **kwargs):
-
     model_name = kwargs["model_selector"]
 
     series_figure = get_series_figure(series_data_dict, model_name)
@@ -439,7 +441,6 @@ def update_series_graph(series_data_dict, **kwargs):
 @location_ignore_null(inputs, location_id="url")
 @series_input(inputs, location_id="url")
 def update_model_selector(series_data_dict):
-
     best_model_name = select_best_model(series_data_dict)
     all_methods = list(series_data_dict["all_forecasts"].keys())
 
@@ -539,7 +540,6 @@ def update_meta_data_list(series_data_dict, **kwargs):
     location_id="url",
 )
 def update_CV_scores_table(series_data_dict, **kwargs):
-
     best_model_name = kwargs["model_selector"]
     relative_values = True if kwargs["display_scores_input"] == [0] else False
 

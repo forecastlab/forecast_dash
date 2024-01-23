@@ -19,6 +19,7 @@ past_contributors = json.load(open("static_files/profiles.json"))[
     "past_contributors"
 ]
 
+
 ### functions for different part of about us page
 def _about():
     return dbc.Col(
@@ -133,7 +134,6 @@ def _section_title(title):
 
 
 def parse_people(person_list):
-
     icon_map = {
         "home": "fas fa-home",
         "github": "fab fa-github",
@@ -193,7 +193,6 @@ def parse_people(person_list):
 
 
 def parse_poweredby(filepath):
-
     with open(filepath) as poweredby_file:
         poweredby_list = json.load(poweredby_file)
 

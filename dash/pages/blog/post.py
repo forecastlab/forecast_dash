@@ -9,7 +9,7 @@ import humanize
 from common import breadcrumb_layout
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
-from frontmatter import Frontmatter
+import frontmatter
 from util import (
     glob_re,
     location_ignore_null,
@@ -50,7 +50,7 @@ def _find_post_filename(url):
 
 
 def _load_blog_post(filename):
-    blog_post = Frontmatter.read_file("../blog/" + filename)
+    blog_post = frontmatter.load("../blog/" + filename)
     blog_post["filename"] = filename.split(".md")[0]
     return blog_post
 
@@ -61,12 +61,12 @@ def update_breadcrumb(url):
     filename = _find_post_filename(url)
     blog_post = _load_blog_post(filename)
 
-    return blog_post["attributes"]["title"]
+    return blog_post["title"]
 
 
 def _post_title(blog_post):
     return html.A(
-        html.H2(blog_post["attributes"]["title"]),
+        html.H2(blog_post["title"]),
         href=f"/blog?post={blog_post['filename']}",
         id=blog_post["filename"],
     )
@@ -76,13 +76,11 @@ def _post_author(blog_post):
     return html.P(
         [
             " by ",
-            blog_post["attributes"]["author"],
+            blog_post["author"],
             ", ",
             humanize.naturaltime(
                 datetime.now()
-                - datetime.strptime(
-                    blog_post["attributes"]["date"], "%Y-%m-%d"
-                )
+                - datetime.strptime(blog_post["date"], "%Y-%m-%d")
             ),
         ],
         className="subtitle mt-0 text-muted small",
@@ -91,12 +89,9 @@ def _post_author(blog_post):
 
 def _post_content(blog_post):
     return (
-        dash_dangerously_set_inner_html.DangerouslySetInnerHTML(
-            blog_post["body"]
-        )
-        if "type" in blog_post["attributes"]
-        and blog_post["attributes"]["type"] == "html"
-        else dcc.Markdown(blog_post["body"])
+        dash_dangerously_set_inner_html.DangerouslySetInnerHTML(str(blog_post))
+        if "type" in blog_post.keys() and blog_post["type"] == "html"
+        else dcc.Markdown(blog_post)
     )
 
 

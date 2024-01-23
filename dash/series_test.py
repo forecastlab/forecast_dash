@@ -5,29 +5,21 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 from common import header, footer
 
-
 server = Flask(__name__)
 app = Dash(
     __name__,
     server=server,
     url_base_pathname="/",
-    use_pages=True,
-    external_scripts=[
-        "https://www.googletagmanager.com/gtag/js?id=G-4YLTQWQW7F",
-    ],
+    use_pages=False,
     external_stylesheets=[
         dbc.themes.BOOTSTRAP,
         "https://use.fontawesome.com/releases/v5.8.1/css/all.css",
     ],
 )
 
-app.layout = html.Div(
-    [
-        header(),
-        dash.page_container,
-        footer(),
-    ]
-)
+from pages.series import layout as series_layout
+
+app.layout = series_layout
 
 
 ### callback for toggling the collapse on small screens

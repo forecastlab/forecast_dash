@@ -13,9 +13,10 @@ from sklearn.neural_network import MLPRegressor
 
 import torch
 
-from prophet import Prophet
+# from prophet import Prophet
 
 import warnings
+
 
 ### functions for the MLP and RNN models ###
 def split_into_train(y, lags):
@@ -495,7 +496,6 @@ class RModel(ForecastModel, ABC):
     forecast_model_params = {}
 
     def __init__(self, h=1, level=[], period=None):
-
         super().__init__(h, level, period)
 
         import rpy2.robjects as robjects
@@ -532,13 +532,11 @@ class RModel(ForecastModel, ABC):
         pass
 
     def fit(self, y):
-
         r_forecast_dict = self.get_r_forecast_dict()
 
         self.method = r_forecast_dict["method"][0]
 
     def predict(self):
-
         r_forecast_dict = self.get_r_forecast_dict()
 
         prediction = r_forecast_dict["mean"]
@@ -546,7 +544,6 @@ class RModel(ForecastModel, ABC):
         return prediction
 
     def predict_withci(self):
-
         r_forecast_dict = self.get_r_forecast_dict()
 
         forecast_dict = {"forecast": r_forecast_dict["mean"]}
@@ -573,7 +570,6 @@ class RDirectForecastModel(RModel):
         )
 
     def fit(self, y):
-
         self.y = y
 
         super().fit(y)
@@ -590,7 +586,6 @@ class RForecastModel(RModel):
         )
 
     def fit(self, y):
-
         fit_params = {"y": y, **type(self).forecast_model_params}
 
         self.fit_results = self.forecast_func(**fit_params)
@@ -600,7 +595,6 @@ class RForecastModel(RModel):
 
 class RSmoothForecastModel(RModel):
     def get_r_forecast_dict(self):
-
         r_level = [
             i / 100 for i in self.r_level
         ]  # CES reads levels as decimals
@@ -610,7 +604,6 @@ class RSmoothForecastModel(RModel):
         )
 
     def fit(self, y):
-
         self.y = y
 
         r_forecast_dict = self.get_r_forecast_dict()
@@ -688,47 +681,47 @@ class RComb(RDirectForecastModel):
     r_forecast_model_name = "comb"
 
 
-# prophet model
-class FBProphet(ForecastModel):
-    name = "facebook-prophet"
-
-    method = "facebook-prophet"
-
-    def fit(self, y):
-        # rename two column as `date` and `y` per prophet requirement
-        self.y = y.reset_index().rename(columns={"date": "ds", "value": "y"})
-
-        self.model = Prophet().fit(self.y)
-
-    def _make_future(self):
-        """make future dataframe for prediction"""
-        return self.model.make_future_dataframe(periods=self.h).tail(self.h)
-
-    def predict(self):
-        # make future prediction dataframe
-        future = self._make_future()
-        return self.model.predict(future)["yhat"].to_numpy()
-
-    def predict_withci(self):
-        future = self._make_future()
-        forecast_dict = {"forecast": self.predict()}
-
-        for i in range(len(self.level)):
-            self.model.interval_width = self.level[i] * 0.01
-            forecast_df = self.model.predict(future)
-
-            # add intervals
-            forecast_dict[f"LB_{self.level[i]}"] = forecast_df[
-                "yhat_lower"
-            ].to_numpy()
-            forecast_dict[f"UB_{self.level[i]}"] = forecast_df[
-                "yhat_upper"
-            ].to_numpy()
-
-        return forecast_dict
-
-    def description(self):
-        return self.model
+# # prophet model
+# class FBProphet(ForecastModel):
+#     name = "facebook-prophet"
+#
+#     method = "facebook-prophet"
+#
+#     def fit(self, y):
+#         # rename two column as `date` and `y` per prophet requirement
+#         self.y = y.reset_index().rename(columns={"date": "ds", "value": "y"})
+#
+#         self.model = Prophet().fit(self.y)
+#
+#     def _make_future(self):
+#         """make future dataframe for prediction"""
+#         return self.model.make_future_dataframe(periods=self.h).tail(self.h)
+#
+#     def predict(self):
+#         # make future prediction dataframe
+#         future = self._make_future()
+#         return self.model.predict(future)["yhat"].to_numpy()
+#
+#     def predict_withci(self):
+#         future = self._make_future()
+#         forecast_dict = {"forecast": self.predict()}
+#
+#         for i in range(len(self.level)):
+#             self.model.interval_width = self.level[i] * 0.01
+#             forecast_df = self.model.predict(future)
+#
+#             # add intervals
+#             forecast_dict[f"LB_{self.level[i]}"] = forecast_df[
+#                 "yhat_lower"
+#             ].to_numpy()
+#             forecast_dict[f"UB_{self.level[i]}"] = forecast_df[
+#                 "yhat_upper"
+#             ].to_numpy()
+#
+#         return forecast_dict
+#
+#     def description(self):
+#         return self.model
 
 
 class RCES(RSmoothForecastModel):

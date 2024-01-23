@@ -13,7 +13,7 @@ import os
 with open("./shared_config/data_sources.json") as data_sources_json_file:
     data_sources_list = json.load(data_sources_json_file)
 
-#%%
+# %%
 
 results = []
 for data_source in data_sources_list:
@@ -37,10 +37,10 @@ for data_source in data_sources_list:
 
 results = pd.DataFrame(results)
 
-#%%
+# %%
 results.columns = ["Title", "URL", "Status"]
 
-#%%
+# %%
 results_grouped = results["Status"].value_counts().reset_index()
 
 print(

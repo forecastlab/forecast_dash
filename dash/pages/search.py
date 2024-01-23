@@ -29,7 +29,6 @@ from slugify import slugify
 
 
 def sort_filter_results(unique_series_titles, sort_by="a_z", **kwargs):
-
     # Load all the forecast data slows this down. Keep this for now, if you are going to use any sorting by MSE
     # for item_title in unique_series_titles:
     #     series_data = forecast_series_dicts[item_title]
@@ -70,6 +69,7 @@ with open("../shared_config/data_sources.json") as data_sources_json_file:
 
 with open("../shared_config/search_a_series.json") as searches_json_file:
     searchable_details = json.load(searches_json_file)
+
 
 ### result layout
 def result_layout():
@@ -197,7 +197,6 @@ def match_names(searchable_details, name_input):
 
 
 def add_dropdown_search_options():
-
     all_tags = []
 
     for series_dict in series_list:
@@ -288,7 +287,6 @@ def add_dropdown_search_options():
 )
 @location_ignore_null([Input("url", "href")], "url")
 def filter_panel(value):
-
     parse_result = parse_state(value)
 
     # all_tags = []
@@ -314,7 +312,6 @@ def filter_panel(value):
 # @dash_kwarg([Input(i, "value") for i in component_ids])
 @dash_kwarg([Input("name", "value"), Input("show", "data")])
 def update_url_state(**kwargs):
-
     state = urlencode(kwargs, doseq=True)
 
     return f"?{state}"
@@ -338,7 +335,6 @@ def update_url_state(**kwargs):
     + [State("show", "data")]
 )
 def filter_results(**kwargs):
-
     # Fix up name # keep as list now.
     # if type(kwargs["name"]) == list:
     #     kwargs["name"] = "".join(kwargs["name"])
@@ -389,18 +385,20 @@ def filter_results(**kwargs):
         more_available = True
 
     if len(unique_series_titles) > 0:
-
         n_series = len(unique_series_titles)
 
         results_list = []
 
         for item_title in unique_series_titles[0:show_num]:
             try:
-                forecast_series_dicts[item_title] = get_forecast_data(
+                series_data = get_forecast_data(
                     item_title
                 )
+                if series_data == None:
+                    raise FileNotFoundError
 
-                series_data = forecast_series_dicts[item_title]
+                forecast_series_dicts[item_title] = series_data
+
                 url_title = urlencode({"title": item_title})
 
                 title = (
@@ -410,7 +408,6 @@ def filter_results(**kwargs):
                 )
 
                 try:
-
                     thumbnail_figure = open(
                         f"./../data/thumbnails/{slugify(item_title)}.pkl", "rb"
                     )

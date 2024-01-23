@@ -37,7 +37,7 @@ model_str_list = [
     "RComb",
     "LinearRegressionForecast",
     "RNN_M4_benchmark",
-    "FBProphet",
+    # "FBProphet",
     "RCES",
 ]
 
@@ -217,7 +217,6 @@ def forecast_to_df(
 
 class TimeSeriesRollingSplit:
     def __init__(self, h=1, p_to_use=1):
-
         self.h = h
         self.p_to_use = p_to_use
 
@@ -257,12 +256,10 @@ class TimeSeriesRollingSplit:
         positions = np.flip(np.arange(min_position, n_samples - h))
 
         for position in positions:
-
             yield (indices[:position], indices[position : position + h])
 
 
 def cross_val_score(model, y, cv, fit_params={}):
-
     errors = {
         score: []
         for score in ["MSE", "MASE"]
@@ -290,7 +287,9 @@ def cross_val_score(model, y, cv, fit_params={}):
                 errors["MASE"].append(
                     sf.mean_absolute_scaled_error(period=model_period)
                 )
-        except AttributeError:  # otherwise try to compute the periodicity of the training data
+        except (
+            AttributeError
+        ):  # otherwise try to compute the periodicity of the training data
             freq = getattr(y_train.index, "inferred_freq", None)
             period = freq_to_period(freq)
             errors["MASE"].append(sf.mean_absolute_scaled_error(period=period))
@@ -330,7 +329,6 @@ def cross_val_score(model, y, cv, fit_params={}):
 
 # Short-circuit forecasting if hashsums match
 def check_cache(download_pickle, cache_pickle):
-
     # Read local pickle that we created earlier
     f = open(download_pickle, "rb")
     downloaded_dict = pickle.load(f)
@@ -358,7 +356,6 @@ def check_cache(download_pickle, cache_pickle):
 
 
 def run_job(job_dict, cv, model_params):
-
     try:
         series_df = job_dict["downloaded_dict"]["series_df"]
 
@@ -405,7 +402,6 @@ def run_job(job_dict, cv, model_params):
 
 
 def run_models(sources_path, download_dir_path, forecast_dir_path):
-
     # Save statistics
     print("Generating Statistics")
     data = {"models_used": [m.name for m in model_class_list]}
@@ -415,7 +411,6 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
     f.close()
 
     with open(sources_path) as data_sources_json_file:
-
         data_sources_list = json.load(data_sources_json_file)
 
     # Results storage
@@ -427,7 +422,6 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
 
     # Parse JSON and cache
     for data_source_dict in data_sources_list:
-
         # print(data_source_dict["title"])
         data_filename = slugify(data_source_dict["title"])
 
@@ -443,6 +437,9 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
             # Hack to align to the end of the quarter
             if data_source_dict["frequency"] == "Q":
                 offset = pd.offsets.QuarterEnd()
+                series_df.index = series_df.index + offset
+            elif data_source_dict["frequency"] == "M":
+                offset = pd.offsets.MonthEnd()
                 series_df.index = series_df.index + offset
 
             all_forecasts = {}
@@ -461,7 +458,6 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
             )  # seperate TimeSeriesRollingSplit instance for each series to account for differences in frequencies
 
             for model_class in model_class_list:
-
                 model_name = model_class.name
 
                 # Use cached results
@@ -539,7 +535,6 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
 
 
 if __name__ == "__main__":
-
     args_dict = {
         "s": {
             "help": "sources file path",

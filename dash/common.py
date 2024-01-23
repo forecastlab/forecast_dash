@@ -20,7 +20,7 @@ from dash import dcc, html
 import humanize
 import numpy as np
 import pandas as pd
-from frontmatter import Frontmatter
+import frontmatter
 from util import (
     glob_re,
     watermark_information,
@@ -144,7 +144,6 @@ def breadcrumb_layout(crumbs):
 
 
 def component_git_version():
-
     git_hash = ""
     git_shorthash = "Unknown commit"
     git_time = "00:00"
@@ -275,7 +274,6 @@ def markdown_layout(title, markdown_content):
 
 ### model selection & visulisation related
 def get_forecast_plot_data(series_df, forecast_df):
-
     # Plot series history
     line_history = dict(
         type="scatter",
@@ -340,7 +338,6 @@ def get_forecast_plot_data(series_df, forecast_df):
 
 
 def get_plot_shapes(series_df, forecast_df):
-
     shapes = [
         {
             "type": "rect",
@@ -400,6 +397,9 @@ def select_best_model(data_dict, CV_score_function="MSE"):
 
 
 def get_thumbnail_figure(data_dict, lg=12):
+    if data_dict == None:
+        return {}
+        
     watermark_config = (
         watermark_information()
     )  # Grab the watermark text and fontsize information
@@ -545,16 +545,20 @@ def get_series_figure(data_dict, model_name):
 
 
 def get_forecast_data(title):
-    title = slugify(title)
-    f = open(f"../data/forecasts/{title}.pkl", "rb")
-    data_dict = pickle.load(f)
-    return data_dict
+    try:
+        title = slugify(title)
+        f = open(f"../data/forecasts/{title}.pkl", "rb")
+        data_dict = pickle.load(f)
+        return data_dict
+    except Exception as e:
+        pass
+
+    return None
 
 
 def component_figs_2col(row_title, series_titles):
-
     if len(series_titles) != 2:
-        raise ValueError("series_titles must have 3 elements")
+        raise ValueError("series_titles must have 2 elements")
 
     return dbc.Row(
         [
@@ -589,7 +593,6 @@ def component_figs_2col(row_title, series_titles):
 
 
 def component_figs_3col(row_title, series_titles):
-
     if len(series_titles) != 3:
         raise ValueError("series_titles must have 3 elements")
 
@@ -625,28 +628,24 @@ def component_figs_3col(row_title, series_titles):
 
 
 def component_news_4col():
-
     filenames = glob_re(r".*.md", "../blog")
 
     blog_posts = []
 
     for filename in filenames:
-        fm_dict = Frontmatter.read_file("../blog/" + filename)
+        fm_dict = frontmatter.load("../blog/" + filename)
         fm_dict["filename"] = filename.split(".md")[0]
         blog_posts.append(fm_dict)
 
     # Sort by date
-    blog_posts = sorted(
-        blog_posts, key=lambda x: x["attributes"]["date"], reverse=True
-    )
+    blog_posts = sorted(blog_posts, key=lambda x: x["date"], reverse=True)
 
     body = []
 
     for i in range(min(len(blog_posts), 5)):
         blog_post = blog_posts[i]
         blog_timedelta = humanize.naturaltime(
-            datetime.now()
-            - datetime.strptime(blog_post["attributes"]["date"], "%Y-%m-%d")
+            datetime.now() - datetime.strptime(blog_post["date"], "%Y-%m-%d")
         )
         body.extend(
             [
@@ -654,7 +653,7 @@ def component_news_4col():
                     blog_timedelta, className="subtitle mt-0 text-muted small"
                 ),
                 html.A(
-                    html.P(blog_post["attributes"]["title"], className="lead"),
+                    html.P(blog_post["title"], className="lead"),
                     href=f"/blog/post?title={blog_post['filename']}",
                     className="text-decoration-none",
                 ),
@@ -720,7 +719,6 @@ def get_leaderboard_df(series_list, CV_score_function="MSE"):
 
 
 def component_leaderboard_4col(series_list):
-
     leaderboard_counts = get_leaderboard_df(series_list).iloc[:10, :]
 
     body = []

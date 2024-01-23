@@ -110,7 +110,8 @@ def _featured_latest_news(feature_series_title):
                 dbc.Col(
                     [
                         html.H2(
-                            "US " + "inflation shows strong signs of stabilisation".title(),
+                            "US "
+                            + "inflation shows strong signs of stabilisation".title(),
                         ),
                         html.A(
                             html.H4("View all US forecasts"),
@@ -127,7 +128,9 @@ def _featured_latest_news(feature_series_title):
                             [
                                 dcc.Graph(
                                     figure=get_thumbnail_figure(
-                                        get_forecast_data("US Personal Consumption Expenditures: Chain-type Price Index (% Change, 1 Year)"),
+                                        get_forecast_data(
+                                            "US Personal Consumption Expenditures: Chain-type Price Index (% Change, 1 Year)"
+                                        ),
                                         lg=8,
                                     ),
                                     config={"displayModeBar": False},
@@ -223,7 +226,9 @@ def _uk_snapshot():
                             [
                                 dcc.Graph(
                                     figure=get_thumbnail_figure(
-                                        get_forecast_data("UK Inflation (RPI)"),
+                                        get_forecast_data(
+                                            "UK Inflation (RPI)"
+                                        ),
                                         lg=8,
                                     ),
                                     config={"displayModeBar": False},
@@ -276,6 +281,7 @@ def _link_search():
         ]
     )
 
+
 def _au_snapshot():
     return [
         dbc.Row(
@@ -283,7 +289,9 @@ def _au_snapshot():
                 dbc.Col(
                     [
                         html.H2(
-                            "Have " + "AU" +" house prices reached the bottom?".title()
+                            "Have "
+                            + "AU"
+                            + " house prices reached the bottom?".title()
                         ),
                         html.A(
                             html.H4("View all Australian forecasts"),
@@ -300,7 +308,9 @@ def _au_snapshot():
                             [
                                 dcc.Graph(
                                     figure=get_thumbnail_figure(
-                                        get_forecast_data("Australian (Sydney) Change in House Prices"),
+                                        get_forecast_data(
+                                            "Australian (Sydney) Change in House Prices"
+                                        ),
                                         lg=8,
                                     ),
                                     config={"displayModeBar": False},

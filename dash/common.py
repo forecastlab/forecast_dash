@@ -399,7 +399,7 @@ def select_best_model(data_dict, CV_score_function="MSE"):
 def get_thumbnail_figure(data_dict, lg=12):
     if data_dict == None:
         return {}
-        
+
     watermark_config = (
         watermark_information()
     )  # Grab the watermark text and fontsize information
@@ -694,10 +694,16 @@ def get_leaderboard_df(series_list, CV_score_function="MSE"):
     chosen_methods = []
 
     for series_title, forecast_data in forecast_series_dicts.items():
-        model_name = select_best_model(
-            forecast_data, CV_score_function=CV_score_function
-        )
-        chosen_methods.append(model_name)
+        try:
+            model_name = select_best_model(
+                forecast_data, CV_score_function=CV_score_function
+            )
+            chosen_methods.append(model_name)
+        except Exception as e:
+            print(
+                f"{[series_title]} had the following error: {e}"
+            )  # Usually missing forecasts
+            pass
 
     stats_raw = pd.DataFrame({"Method": chosen_methods})
 

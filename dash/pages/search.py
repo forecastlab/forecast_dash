@@ -391,9 +391,7 @@ def filter_results(**kwargs):
 
         for item_title in unique_series_titles[0:show_num]:
             try:
-                series_data = get_forecast_data(
-                    item_title
-                )
+                series_data = get_forecast_data(item_title)
                 if series_data == None:
                     raise FileNotFoundError
 

@@ -206,7 +206,7 @@ def _uk_snapshot():
                 dbc.Col(
                     [
                         html.H2(
-                            "UK " + "still struggles to contain inflation.title(),
+                            "UK " + "still struggles to contain inflation".title(),
                         ),
                         html.A(
                             html.H4("View all UK forecasts"),

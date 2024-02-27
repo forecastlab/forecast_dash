@@ -110,7 +110,7 @@ def _featured_latest_news(feature_series_title):
                 dbc.Col(
                     [
                         html.H2(
-                            "US " + "inflation shows strong signs of stabilisation".title(),
+                            "US " + "inflation stablished".title(),
                         ),
                         html.A(
                             html.H4("View all US forecasts"),
@@ -206,7 +206,7 @@ def _uk_snapshot():
                 dbc.Col(
                     [
                         html.H2(
-                            "UK " + "struggles to contain inflation".title(),
+                            "UK " + "still struggles to contain inflation.title(),
                         ),
                         html.A(
                             html.H4("View all UK forecasts"),
@@ -283,7 +283,7 @@ def _au_snapshot():
                 dbc.Col(
                     [
                         html.H2(
-                            "Have " + "AU" +" house prices reached the bottom?".title()
+                            "Have " + "AU" +" AU House prices are on the rise again".title()
                         ),
                         html.A(
                             html.H4("View all Australian forecasts"),

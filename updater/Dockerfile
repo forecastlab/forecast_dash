@@ -8,7 +8,7 @@
 # line following) will be rebuilt."
 #   (from https://hackernoon.com/tips-to-reduce-docker-image-sizes-876095da3b34)
 #
-FROM python:3.9-bullseye
+FROM python:3.9-bookworm
 
 # Install cron and dependencies
 RUN apt-get update && apt-get -y install cron

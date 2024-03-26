@@ -10,16 +10,6 @@
     ]
   },
   {
-    "title": "Australian Quarterly Inflation (CPI)",
-    "source": "AusMacroData",
-    "url": "http://ausmacrodata.org/Data/6401.0/eegrsrsiaisxseslr.csv",
-    "frequency": "Q",
-    "tags": [
-      "Australia",
-      "Economic"
-    ]
-  },
-  {
     "title": "Australian Unemployment",
     "source": "AusMacroData",
     "url": "http://ausmacrodata.org/Data/6202.0/urplfssasam.csv",
@@ -3946,6 +3936,13 @@
    "url": "https://api.data.abs.gov.au/data/ABS,CPI_M,/3.10001..50.M?format=csv",
    "frequency": "M",
    "tags": ["Australia", "Economic", "Pacific" ]
+ },
+ {
+    "title": "Australian Quarterly Inflation (CPI)",
+    "source": "ABS",
+    "url": "https://api.data.abs.gov.au/data/ABS,CPI,1.1.0/3.10001.10.50.Q?format=csv",
+    "frequency": "Q",
+    "tags": ["Australia", "Economic", "Pacific" ]
  },
  {
    "title": "Australian (Sydney) Change in House Prices",

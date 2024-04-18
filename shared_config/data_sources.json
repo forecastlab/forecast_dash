@@ -1,18 +1,15 @@
 [
   {
     "title": "Australian GDP Growth",
-    "source": "AusMacroData",
-    "url": "http://ausmacrodata.org/Data/5206.0/gdpcpcknaasaq.csv",
+    "source": "ABS",
+    "url": "https://api.data.abs.gov.au/data/ABS,ANA_AGG,1.0.0/M2.GPM.20..Q?format=csv",
     "frequency": "Q",
-    "tags": [
-      "Australia",
-      "Economic"
-    ]
+    "tags": ["Australia", "Economic"]
   },
   {
     "title": "Australian Unemployment",
-    "source": "AusMacroData",
-    "url": "http://ausmacrodata.org/Data/6202.0/urplfssasam.csv",
+    "source": "ABS",
+    "url": "https://api.data.abs.gov.au/data/ABS,LF,1.0.0/M13.3.1599.20.AUS.M?format=csv",
     "frequency": "MS",
     "tags": [
       "Australia",
@@ -31,8 +28,8 @@
   },
   {
     "title": "Australian Real GDP",
-    "source": "AusMacroData",
-    "url": "http://ausmacrodata.org/Data/5206.0/gdpcknaasaq.csv",
+    "source": "ABS",
+    "url": "https://api.data.abs.gov.au/data/ABS,ANA_AGG,1.0.0/M1.GPM.20..Q?format=csv",
     "frequency": "Q",
     "tags": [
       "Australia",
@@ -41,8 +38,8 @@
   },
   {
     "title": "Australian Current Account",
-    "source": "AusMacroData",
-    "url": "http://ausmacrodata.org/Data/5302.0/cabpsqoq.csv",
+    "source": "ABS",
+    "url": "https://api.data.abs.gov.au/data/ABS,BOP,1.0.0/1.100.10.Q?format=csv",
     "frequency": "Q",
     "tags": [
       "Australia",
@@ -61,8 +58,8 @@
   },
   {
     "title": "Australian Retail Sales",
-    "source": "AusMacroData",
-    "url": "http://ausmacrodata.org/Data/H3/rsmsamaiol.csv",
+    "source": "ABS",
+    "url": "https://api.data.abs.gov.au/data/ABS,RT,1.0.0/M1.20.20.AUS.M?format=csv",
     "frequency": "MS",
     "tags": [
       "Australia",

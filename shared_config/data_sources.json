@@ -17,16 +17,6 @@
     ]
   },
   {
-    "title": "Australian Underemployment",
-    "source": "AusMacroData",
-    "url": "http://ausmacrodata.org/Data/6202.0/urpupassam.csv",
-    "frequency": "MS",
-    "tags": [
-      "Australia",
-      "Economic"
-    ]
-  },
-  {
     "title": "Australian Real GDP",
     "source": "ABS",
     "url": "https://api.data.abs.gov.au/data/ABS,ANA_AGG,1.0.0/M1.GPM.20..Q?format=csv",
@@ -40,16 +30,6 @@
     "title": "Australian Current Account",
     "source": "ABS",
     "url": "https://api.data.abs.gov.au/data/ABS,BOP,1.0.0/1.100.10.Q?format=csv",
-    "frequency": "Q",
-    "tags": [
-      "Australia",
-      "Economic"
-    ]
-  },
-  {
-    "title": "Australian Change in House Prices",
-    "source": "AusMacroData",
-    "url": "http://ausmacrodata.org/Data/6416.0/rppipccqpywaeccrppiinpcoq.csv",
     "frequency": "Q",
     "tags": [
       "Australia",

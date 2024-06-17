@@ -238,10 +238,6 @@ class ABSData(DataSource):
             columns=["value"],
         )
 
-        # If quarterly, push to QuarterEnd
-        if self.frequency == "Q":
-            df.index = df.index + pd.offsets.QuarterEnd(0)
-
         df.index.name = "date"
 
         if (

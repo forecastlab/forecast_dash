@@ -25,7 +25,10 @@ def select_best_model(data_dict, CV_score_function="MSE"):
             else:
                 all_cv_scores.append(forecast_dict["cv_score"])
     # Select the best model.
-    model_name = all_models[np.argmin(all_cv_scores)]
+    if len(all_cv_scores) > 0:
+        model_name = all_models[np.argmin(all_cv_scores)]
+    else:
+        model_name = None
     return model_name
 
 

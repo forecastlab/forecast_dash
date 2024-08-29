@@ -170,11 +170,12 @@ class LinearRegressionForecast(ForecastModel):
         return self.method
 
     def fit(self, y):
-        self.y = y
-        self.y_tilde = y.copy()  # detrended and de-seasonalized copy of y
+
+        self.y = y.dropna()
+        self.y_tilde = self.y.copy()  # detrended and de-seasonalized copy of y
         # detrending
         self.a, self.b = detrend(self.y.values)
-        for i in range(len(y)):
+        for i in range(len(self.y)):
             self.y_tilde.iloc[i] = self.y_tilde.iloc[i] - (
                 (self.a * i) + self.b
             )

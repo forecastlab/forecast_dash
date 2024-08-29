@@ -16,6 +16,8 @@ import importlib
 
 from slugify import slugify
 
+import traceback
+
 # number of forecasts to make for series with different frequencies
 # monthly data (freq = 12): 18 forecasts
 # quarterly data (freq = 4): 8 forecasts
@@ -359,7 +361,7 @@ def run_job(job_dict, cv, model_params):
     try:
         series_df = job_dict["downloaded_dict"]["series_df"]
 
-        y = series_df["value"]
+        y = series_df["value"].dropna()
 
         model = job_dict["model_cls"](**model_params)
 
@@ -393,7 +395,9 @@ def run_job(job_dict, cv, model_params):
     #     print(f"{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}")
     #     result = {"state": "FAIL"}
 
-    except:
+    except Exception as e:
+        print("FAILURE running job {job_dict['model_cls']} for {data_source_dict['title']}.")
+        print(traceback.format_exc())
         result = {"state": "FAIL"}
 
     print(f"{job_dict['title']} - {job_dict['model_cls']} - {result['state']}")
@@ -497,8 +501,10 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
                 "forecasted_at": datetime.datetime.now(),
                 "all_forecasts": all_forecasts,
             }
-        except:
+        except Exception as e:
             print(f"FAILED to setup jobs for: '{data_source_dict['title']}'")
+            print(traceback.format_exc())
+
 
     pool = Pool(cpu_count())
     results = pool.starmap(

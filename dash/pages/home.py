@@ -105,42 +105,6 @@ def _featured_latest_news():
             ],
             className="mb-5",
         ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        html.H2(
-                            "US " + "inflation stabilised".title(),
-                        ),
-                        html.A(
-                            html.H4("View all US forecasts"),
-                            href=f"/search?{urlencode({'name': 'United States'})}",
-                            className="text-decoration-none",
-                        ),
-                    ],
-                    lg=4,
-                    className="text-center align-self-center",
-                ),
-                dbc.Col(
-                    [
-                        html.A(
-                            [
-                                dcc.Graph(
-                                    figure=get_thumbnail_figure(
-                                        get_forecast_data("US Personal Consumption Expenditures: Chain-type Price Index (% Change, 1 Year)"),
-                                        lg=8,
-                                    ),
-                                    config={"displayModeBar": False},
-                                )
-                            ],
-                            href=f"/series?{urlencode({'title': 'US Personal Consumption Expenditures: Chain-type Price Index (% Change, 1 Year)'})}",
-                        ),
-                    ],
-                    lg=8,
-                ),
-            ],
-            className="d-flex",
-        ),
     ]
 
 
@@ -199,47 +163,6 @@ def _leaderboard():
     )
 
 
-def _uk_snapshot():
-    return [
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        html.H2(
-                            "UK " + "inflation stabilises".title(),
-                        ),
-                        html.A(
-                            html.H4("View all UK forecasts"),
-                            href=f"/search?{urlencode({'name': 'United Kingdom'})}",
-                            className="text-decoration-none",
-                        ),
-                    ],
-                    lg=4,
-                    className="text-center align-self-center",
-                ),
-                dbc.Col(
-                    [
-                        html.A(
-                            [
-                                dcc.Graph(
-                                    figure=get_thumbnail_figure(
-                                        get_forecast_data("UK Inflation (RPI)"),
-                                        lg=8,
-                                    ),
-                                    config={"displayModeBar": False},
-                                )
-                            ],
-                            href=f"/series?{urlencode({'title': 'UK Inflation (RPI)'})}",
-                        ),
-                    ],
-                    lg=8,
-                ),
-            ],
-            className="d-flex",
-        )
-    ]
-
-
 def _link_search():
     return dbc.Row(
         [
@@ -276,46 +199,66 @@ def _link_search():
         ]
     )
 
-def _au_snapshot():
-    return [
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        html.H2(
-                            "AU" +" House prices are on the rise again".title()
-                        ),
-                        html.A(
-                            html.H4("View all Australian forecasts"),
-                            href=f"/search?{urlencode({'name': 'Australia'})}",
-                            className="text-decoration-none",
-                        ),
-                    ],
-                    lg=4,
-                    className="text-center align-self-center",
-                ),
-                dbc.Col(
-                    [
-                        html.A(
-                            [
-                                dcc.Graph(
-                                    figure=get_thumbnail_figure(
-                                        get_forecast_data("Australian (Sydney) Change in House Prices"),
-                                        lg=8,
-                                    ),
-                                    config={"displayModeBar": False},
-                                )
-                            ],
-                            href=f"/series?{urlencode({'title': 'Australian (Sydney) Change in House Prices'})}",
-                        ),
-                    ],
-                    lg=8,
-                ),
-            ],
-            className="d-flex",
-        )
-    ]
 
+def snapshot(series_name, callout_text, link_text, link_url, direction="left"):
+    
+    text_col = dbc.Col(
+        [
+            html.H2(
+                callout_text
+            ),
+            html.A(
+                html.H4(link_text), #html.H4("View all Australian forecasts"),
+                href=link_url,#f"/search?{urlencode({'name': 'Australia'})}",
+                className="text-decoration-none",
+            ),
+        ],
+        lg=4,
+        className="text-center align-self-center",
+    )
+
+    fig_col = dbc.Col(
+        [
+            html.A(
+                [
+                    dcc.Graph(
+                        figure=get_thumbnail_figure(
+                            get_forecast_data(series_name),
+                            lg=8,
+                        ),
+                        config={"displayModeBar": False},
+                    )
+                ],
+                href=f"/series?{urlencode({'title': series_name})}",
+            ),
+        ],
+        lg=8,
+    )
+
+    if direction == "left":
+        return [
+            dbc.Row(
+                [
+                    text_col,
+                    fig_col
+
+                ],
+                className="d-flex",
+            )
+        ]
+
+    else:
+
+        return [
+            dbc.Row(
+                [
+                    fig_col,
+                    text_col,
+
+                ],
+                className="d-flex",
+            )
+        ]
 
 def layout():
     return html.Div(
@@ -325,12 +268,41 @@ def layout():
             dbc.Container(
                 [
                     *_featured_latest_news(),
-                    _leaderboard(),
-                    *_uk_snapshot(),
                     _link_search(),
-                    *_au_snapshot(),
+                    *snapshot(
+                        "Australian Monthly Inflation (CPI)",
+                        "AU" +" inflation has peaked".title(),
+                        html.H4("View all Inflation forecasts"),
+                        f"/search?{urlencode({'name': 'Inflation'})}",
+                    ),
+                    *snapshot(
+                        "Australian GDP Growth",
+                        "AU GDP " + "growth remains flat".title(),
+                        html.H4("View all GDP forecasts"),
+                        f"/search?{urlencode({'name': 'GDP'})}",
+                        direction="right"
+                    ),
+                    _leaderboard(),
+                    *snapshot(
+                        "US Personal Consumption Expenditures: Chain-type Price Index (% Change, 1 Year)",
+                        "US " + "inflation stabilised".title(),
+                        html.H4("View all US forecasts"),
+                        f"/search?{urlencode({'name': 'United States'})}",
+                    ),
+                    *snapshot(
+                        "UK Inflation (RPI)",
+                        "UK " + "inflation stabilises".title(),
+                        html.H4("View all UK forecasts"),
+                        f"/search?{urlencode({'name': 'United Kingdom'})}",
+                        direction="right"
+                    ),
+                    *snapshot(
+                        "Australian (Sydney) Change in House Prices",
+                        "AU" +" House prices slow down".title(),
+                        html.H4("View all Australian forecasts"),
+                        f"/search?{urlencode({'name': 'Australia'})}",
+                    )
                 ]
             )
         ]
     )
-

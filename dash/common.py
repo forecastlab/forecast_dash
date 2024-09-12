@@ -167,14 +167,6 @@ def component_git_version():
     if len(git_output) >= 5:
         git_hash = git_output[0]
         git_shorthash = git_output[1]
-        git_time = git_output[2]
-
-        natural_time = humanize.naturaltime(
-            datetime.strptime(git_time, "%Y-%m-%d %H:%M:%S %z"),
-            when=datetime.now(tz=pytz.timezone("Australia/Sydney")),
-        )
-    else:
-        natural_time = "Error Loading Timestamp"
 
     github_home_url = "https://github.com/forecastlab/forecast_dash/"
     github_patch_url = github_home_url + "commit/" + git_hash
@@ -195,10 +187,6 @@ def component_git_version():
                                     ),
                                 ],
                                 className="card-title",
-                            ),
-                            html.H6(
-                                f"Committed {natural_time}",
-                                className="card-subtitle mb-2 text-muted",
                             ),
                             html.P(
                                 [

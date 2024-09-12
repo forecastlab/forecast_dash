@@ -61,7 +61,7 @@ def mission_statement():
 
 
 # section 2: main body
-def _featured_latest_news(feature_series_title):
+def _featured_latest_news():
     return [
         dbc.Row(
             [
@@ -317,25 +317,21 @@ def _au_snapshot():
     ]
 
 
-def main_body(feature_series_title):
-    return dbc.Container(
+def layout():
+    return html.Div(
         [
-            *_featured_latest_news(feature_series_title),
-            _leaderboard(),
-            *_uk_snapshot(),
-            _link_search(),
-            *_au_snapshot(),
+            dcc.Location(id="home_url", refresh=True),
+            mission_statement(),
+            dbc.Container(
+                [
+                    *_featured_latest_news(),
+                    _leaderboard(),
+                    *_uk_snapshot(),
+                    _link_search(),
+                    *_au_snapshot(),
+                ]
+            )
         ]
     )
 
-
-### The layout variable
-feature_series_title = "Australian Inflation (CPI)"  # can remove this
-
-layout = html.Div(
-    [
-        dcc.Location(id="home_url", refresh=True),
-        mission_statement(),
-        main_body(feature_series_title),
-    ]
-)
+# layout = layout_fn

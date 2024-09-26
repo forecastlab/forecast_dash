@@ -1,0 +1,8 @@
+[
+  {
+    "id": "deployupdate",
+    "execute-command":"/deployment.sh",
+    "command-working-directory": "/",
+    "response-message": "Pushing new updates to server."
+  }
+]

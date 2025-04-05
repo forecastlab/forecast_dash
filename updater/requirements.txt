@@ -1,7 +1,7 @@
 Jinja2==3.1.2
 MarkupSafe==2.1.1
 PyYAML==6.0
-certifi==2022.5.18.1
+certifi==2022.12.7
 cffi==1.15.0
 charset-normalizer==2.0.12
 holidays==0.24

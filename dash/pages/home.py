@@ -291,7 +291,7 @@ def layout():
                     ),
                     *snapshot(
                         "UK Inflation (RPI)",
-                        "UK " + "inflation stabilises".title(),
+                        "UK " + "inflation stabilised".title(),
                         html.H4("View all UK forecasts"),
                         f"/search?{urlencode({'name': 'United Kingdom'})}",
                         direction="right"

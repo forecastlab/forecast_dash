@@ -6,7 +6,7 @@ cffi==1.15.0
 charset-normalizer==2.0.12
 holidays==0.24
 idna==3.3
-joblib==1.1.0
+joblib==1.2.0
 kaleido==0.2.1
 numpy==1.22.4
 packaging==21.3

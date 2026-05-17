@@ -3907,19 +3907,33 @@
     "frequency": "AS",
     "tags": ["Labour Force", "Zimbabwe", "Economic" ]
  },
- {
-   "title": "Australian Monthly Inflation (CPI)",
+{
+   "title": "Australian Monthly Inflation (CPI, Pre Nov 2025)",
    "source": "ABS",
    "url": "https://api.data.abs.gov.au/data/ABS,CPI_M,/3.10001..50.M?format=csv",
    "frequency": "M",
-   "tags": ["Australia", "Economic", "Pacific" ]
+   "tags": ["Australia", "Economic", "Pacific", "Inflation", "CPI", "Old Methodology" ]
+ },
+ {
+   "title": "Australian Monthly Inflation (CPI)",
+   "source": "ABS",
+   "url": "https://data.api.abs.gov.au/rest/data/ABS,CPI,2.0.0/3.10001.10.50.M?format=csv",
+   "frequency": "M",
+   "tags": ["Australia", "Economic", "Pacific", "Inflation", "CPI", "New Methodology" ]
+ },
+ {
+    "title": "Australian Quarterly Inflation (CPI, Pre Nov 2025)",
+    "source": "ABS",
+    "url": "https://api.data.abs.gov.au/data/ABS,CPI,1.1.0/3.10001.10.50.Q?format=csv",
+    "frequency": "Q",
+    "tags": ["Australia", "Economic", "Pacific", "Inflation", "CPI", "Old Methodology" ]
  },
  {
     "title": "Australian Quarterly Inflation (CPI)",
     "source": "ABS",
-    "url": "https://api.data.abs.gov.au/data/ABS,CPI,1.1.0/3.10001.10.50.Q?format=csv",
+    "url": "https://data.api.abs.gov.au/rest/data/ABS,CPI_Q,1.0.0/3.999901.20.50.Q?format=csv",
     "frequency": "Q",
-    "tags": ["Australia", "Economic", "Pacific" ]
+    "tags": ["Australia", "Economic", "Pacific", "Inflation", "CPI", "New Methodology" ]
  },
  {
    "title": "Australian (Sydney) Change in House Prices",

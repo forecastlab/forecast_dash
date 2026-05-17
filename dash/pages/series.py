@@ -333,6 +333,9 @@ def cv_table_clean_notation(x):
     #     if len(str(int(x))) <= 4
     #     else "{:,.2e}".format(x)
     # )
+    if pd.isna(x):
+        return None
+
     return "{:,.2f}".format(x)  # np.round(x, 2)  #
 
 
@@ -614,8 +617,9 @@ def update_sorting_for_table(sort_by, data):
     """This is an ugly hack, but it seems to work"""
     rounded_dataframe = pd.DataFrame(data)
     for col in rounded_dataframe.columns[1:]:  # first col is the model name
-        rounded_dataframe[col] = rounded_dataframe[col].apply(
-            lambda x: float(str(x).replace(",", ""))
+        rounded_dataframe[col] = pd.to_numeric(
+            rounded_dataframe[col].astype(str).str.replace(",", ""),
+            errors="coerce",
         )
 
     if len(sort_by):

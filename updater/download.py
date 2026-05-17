@@ -237,6 +237,7 @@ class ABSData(DataSource):
             index=pd.to_datetime(df["TIME_PERIOD"]),
             columns=["value"],
         )
+        df.sort_index(inplace=True)
 
         df.index.name = "date"
 

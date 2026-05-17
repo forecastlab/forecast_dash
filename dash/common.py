@@ -470,7 +470,7 @@ def get_series_figure(data_dict, model_name):
             gridcolor="rgb(255,255,255)",
             range=[
                 series_df.index[
-                    -16
+                    max(-16, -len(series_df))
                 ].to_pydatetime(),  # Recent point in history
                 forecast_df.index[-1].to_pydatetime(),  # End of forecast range
             ],

@@ -22,7 +22,9 @@
     "Australian (Perth) Change in House Prices",
     "Australian (Hobart) Change in House Prices",
     "Australian (Darwin) Change in House Prices",
-    "Australian (Australian Capital Territory) Change in House Prices"
+    "Australian (Australian Capital Territory) Change in House Prices",
+    "Australian Monthly Inflation (CPI, New Methodology)",
+    "Australian Quarterly Inflation (CPI, New Methodology)"
   ],
   "Economic": [
     "Australian GDP Growth",
@@ -623,7 +625,9 @@
     "Australian (Perth) Change in House Prices",
     "Australian (Hobart) Change in House Prices",
     "Australian (Darwin) Change in House Prices",
-    "Australian (Australian Capital Territory) Change in House Prices"
+    "Australian (Australian Capital Territory) Change in House Prices",
+    "Australian Monthly Inflation (CPI, New Methodology)",
+    "Australian Quarterly Inflation (CPI, New Methodology)"
   ],
   "Simple Exponential Smoothing (ZNN)": [
     "Australian GDP Growth",
@@ -2231,7 +2235,11 @@
     "GDP for Uzbekistan (World Bank)",
     "GDP for Vanuatu (World Bank)",
     "GDP for Yemen, Rep. (World Bank)",
-    "GDP for Zimbabwe (World Bank)"
+    "GDP for Zimbabwe (World Bank)",
+    "Australian Monthly Inflation (CPI)",
+    "Australian Monthly Inflation (CPI, New Methodology)",
+    "Australian Quarterly Inflation (CPI)",
+    "Australian Quarterly Inflation (CPI, New Methodology)"
   ],
   "Inflation for Algeria (World Bank)": [
     "Inflation for Algeria (World Bank)"
@@ -5373,7 +5381,10 @@
     "Australian (Perth) Change in House Prices",
     "Australian (Hobart) Change in House Prices",
     "Australian (Darwin) Change in House Prices",
-    "Australian (Australian Capital Territory) Change in House Prices"
+    "Australian (Australian Capital Territory) Change in House Prices",
+    "Australian Monthly Inflation (CPI, New Methodology)",
+    "Australian Quarterly Inflation (CPI)",
+    "Australian Quarterly Inflation (CPI, New Methodology)"
   ],
   "Australian (Sydney) Change in House Prices": [
     "Australian (Sydney) Change in House Prices"
@@ -5422,5 +5433,25 @@
   ],
   "Australian Capital Territory": [
     "Australian (Australian Capital Territory) Change in House Prices"
+  ],
+  "CPI": [
+    "Australian Monthly Inflation (CPI)",
+    "Australian Quarterly Inflation (CPI)",
+    "Australian Monthly Inflation (CPI, New Methodology)",
+    "Australian Quarterly Inflation (CPI, New Methodology)"
+  ],
+  "Old Methodology": [
+    "Australian Monthly Inflation (CPI)",
+    "Australian Quarterly Inflation (CPI)"
+  ],
+  "New Methodology": [
+    "Australian Monthly Inflation (CPI, New Methodology)",
+    "Australian Quarterly Inflation (CPI, New Methodology)"
+  ],
+  "Australian Monthly Inflation (CPI, New Methodology)": [
+    "Australian Monthly Inflation (CPI, New Methodology)"
+  ],
+  "Australian Quarterly Inflation (CPI, New Methodology)": [
+    "Australian Quarterly Inflation (CPI, New Methodology)"
   ]
 }

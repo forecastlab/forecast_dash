@@ -3908,9 +3908,9 @@
     "tags": ["Labour Force", "Zimbabwe", "Economic" ]
  },
 {
-   "title": "Australian Monthly Inflation (CPI)",
+   "title": "Australian Monthly Inflation (CPI, Pre Nov 2025)",
    "source": "ABS",
-   "url": "https://data.api.abs.gov.au/rest/data/ABS,CPI,2.0.0/3.10001.10.50.M?format=csv",
+   "url": "https://api.data.abs.gov.au/data/ABS,CPI_M,/3.10001..50.M?format=csv",
    "frequency": "M",
    "tags": ["Australia", "Economic", "Pacific", "Inflation", "CPI", "Old Methodology" ]
  },

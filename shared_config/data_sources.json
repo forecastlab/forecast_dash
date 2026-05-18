@@ -3910,7 +3910,7 @@
 {
    "title": "Australian Monthly Inflation (CPI)",
    "source": "ABS",
-   "url": "https://api.data.abs.gov.au/data/ABS,CPI_M,/3.10001..50.M?format=csv",
+   "url": "https://data.api.abs.gov.au/rest/data/ABS,CPI,2.0.0/3.10001.10.50.M?format=csv",
    "frequency": "M",
    "tags": ["Australia", "Economic", "Pacific", "Inflation", "CPI", "Old Methodology" ]
  },
@@ -3922,7 +3922,7 @@
    "tags": ["Australia", "Economic", "Pacific", "Inflation", "CPI", "New Methodology" ]
  },
  {
-    "title": "Australian Quarterly Inflation (CPI)",
+    "title": "Australian Quarterly Inflation (CPI, Pre Nov 2025)",
     "source": "ABS",
     "url": "https://api.data.abs.gov.au/data/ABS,CPI,1.1.0/3.10001.10.50.Q?format=csv",
     "frequency": "Q",

@@ -4,6 +4,7 @@ services:
     build:
       context: updater
       dockerfile: ./Dockerfile
+    restart: unless-stopped
     volumes:
       - ./updater:/updater
       - ./data:/data
@@ -15,6 +16,7 @@ services:
     build:
       context: dash
       dockerfile: ./Dockerfile
+    restart: unless-stopped
     expose:
       - 80
     networks:
@@ -28,6 +30,7 @@ services:
 
   cache:
     image: nginx
+    restart: unless-stopped
     expose:
       - 80
     networks:
@@ -44,6 +47,7 @@ services:
 
   traefik:
     image: traefik:alpine
+    restart: unless-stopped
     ports:
       - 80:80
       - 443:443

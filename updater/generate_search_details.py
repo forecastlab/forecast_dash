@@ -5,6 +5,7 @@ import json
 import sys
 from slugify import slugify
 import numpy as np
+import os
 
 
 def select_best_model(data_dict, CV_score_function="MSE"):
@@ -50,7 +51,11 @@ def generate_search_details(sources_path, search_path):
                 searchable_details[tag] += [data["title"]]
             else:
                 searchable_details[tag] = [data["title"]]
-        f = open(f"../data/forecasts/{slugify(title)}.pkl", "rb")
+        forecast_path = f"../data/forecasts/{slugify(title)}.pkl"
+        if not os.path.exists(forecast_path):
+            continue
+
+        f = open(forecast_path, "rb")
         downloaded_dict = pickle.load(f)
         f.close()
         best_method = select_best_model(downloaded_dict)
@@ -61,7 +66,7 @@ def generate_search_details(sources_path, search_path):
             searchable_details[best_method] = [data["title"]]
 
     with open(search_path, "w") as searches_json_file:
-        searches_json_file.write(json.dumps(searchable_details))
+        searches_json_file.write(json.dumps(searchable_details, indent=2))
 
 
 if __name__ == "__main__":

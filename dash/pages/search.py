@@ -189,7 +189,7 @@ def match_names(searchable_details, name_input):
     # name_terms = [name_term.replace(")", "\\)") for name_term in name_terms]
 
     for _name in name_terms:
-        result_titles = searchable_details[_name]
+        result_titles = searchable_details.get(_name, [])
         if result_titles is not None:
             matched_series_names += result_titles  # now a list
 

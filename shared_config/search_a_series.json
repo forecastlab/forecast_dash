@@ -4,7 +4,7 @@
   ],
   "Australia": [
     "Australian GDP Growth",
-    "Australian Quarterly Inflation (CPI)",
+    "Australian Quarterly Inflation (CPI, Pre Nov 2025)",
     "Australian Unemployment",
     "Australian Underemployment",
     "Australian Real GDP",
@@ -14,7 +14,7 @@
     "Inflation for Australia (World Bank)",
     "GDP for Australia (World Bank)",
     "Labor Force Participation Rate for Australia (World Bank)",
-    "Australian Monthly Inflation (CPI)",
+    "Australian Monthly Inflation (CPI, Pre Nov 2025)",
     "Australian (Sydney) Change in House Prices",
     "Australian (Melbourne) Change in House Prices",
     "Australian (Brisbane) Change in House Prices",
@@ -23,12 +23,12 @@
     "Australian (Hobart) Change in House Prices",
     "Australian (Darwin) Change in House Prices",
     "Australian (Australian Capital Territory) Change in House Prices",
-    "Australian Monthly Inflation (CPI, New Methodology)",
-    "Australian Quarterly Inflation (CPI, New Methodology)"
+    "Australian Monthly Inflation (CPI, New Methodology Nov 2025)",
+    "Australian Quarterly Inflation (CPI, New Methodology Nov 2025)"
   ],
   "Economic": [
     "Australian GDP Growth",
-    "Australian Quarterly Inflation (CPI)",
+    "Australian Quarterly Inflation (CPI, Pre Nov 2025)",
     "Australian Unemployment",
     "Australian Underemployment",
     "Australian Real GDP",
@@ -617,7 +617,7 @@
     "Labor Force Participation Rate for South Africa (World Bank)",
     "Labor Force Participation Rate for Zambia (World Bank)",
     "Labor Force Participation Rate for Zimbabwe (World Bank)",
-    "Australian Monthly Inflation (CPI)",
+    "Australian Monthly Inflation (CPI, Pre Nov 2025)",
     "Australian (Sydney) Change in House Prices",
     "Australian (Melbourne) Change in House Prices",
     "Australian (Brisbane) Change in House Prices",
@@ -626,8 +626,8 @@
     "Australian (Hobart) Change in House Prices",
     "Australian (Darwin) Change in House Prices",
     "Australian (Australian Capital Territory) Change in House Prices",
-    "Australian Monthly Inflation (CPI, New Methodology)",
-    "Australian Quarterly Inflation (CPI, New Methodology)"
+    "Australian Monthly Inflation (CPI, New Methodology Nov 2025)",
+    "Australian Quarterly Inflation (CPI, New Methodology Nov 2025)"
   ],
   "Simple Exponential Smoothing (ZNN)": [
     "Australian GDP Growth",
@@ -749,11 +749,11 @@
     "Labor Force Participation Rate for Sweden (World Bank)",
     "Australian (Brisbane) Change in House Prices"
   ],
-  "Australian Quarterly Inflation (CPI)": [
-    "Australian Quarterly Inflation (CPI)"
+  "Australian Quarterly Inflation (CPI, Pre Nov 2025)": [
+    "Australian Quarterly Inflation (CPI, Pre Nov 2025)"
   ],
   "Naive": [
-    "Australian Quarterly Inflation (CPI)",
+    "Australian Quarterly Inflation (CPI, Pre Nov 2025)",
     "Australian Unemployment",
     "US Unemployment",
     "US Personal Consumption Expenditures: Chain-type Price Index (% Change, 1 Year)",
@@ -875,7 +875,7 @@
     "Labor Force Participation Rate for Virgin Islands (U.S.) (World Bank)",
     "Labor Force Participation Rate for Vietnam (World Bank)",
     "Labor Force Participation Rate for Vanuatu (World Bank)",
-    "Australian Monthly Inflation (CPI)",
+    "Australian Monthly Inflation (CPI, Pre Nov 2025)",
     "Australian (Perth) Change in House Prices",
     "Australian (Hobart) Change in House Prices"
   ],
@@ -2236,10 +2236,10 @@
     "GDP for Vanuatu (World Bank)",
     "GDP for Yemen, Rep. (World Bank)",
     "GDP for Zimbabwe (World Bank)",
-    "Australian Monthly Inflation (CPI)",
-    "Australian Monthly Inflation (CPI, New Methodology)",
-    "Australian Quarterly Inflation (CPI)",
-    "Australian Quarterly Inflation (CPI, New Methodology)"
+    "Australian Monthly Inflation (CPI, Pre Nov 2025)",
+    "Australian Monthly Inflation (CPI, New Methodology Nov 2025)",
+    "Australian Quarterly Inflation (CPI, Pre Nov 2025)",
+    "Australian Quarterly Inflation (CPI, New Methodology Nov 2025)"
   ],
   "Inflation for Algeria (World Bank)": [
     "Inflation for Algeria (World Bank)"
@@ -5369,11 +5369,11 @@
   "Labor Force Participation Rate for Zimbabwe (World Bank)": [
     "Labor Force Participation Rate for Zimbabwe (World Bank)"
   ],
-  "Australian Monthly Inflation (CPI)": [
-    "Australian Monthly Inflation (CPI)"
+  "Australian Monthly Inflation (CPI, Pre Nov 2025)": [
+    "Australian Monthly Inflation (CPI, Pre Nov 2025)"
   ],
   "Pacific": [
-    "Australian Monthly Inflation (CPI)",
+    "Australian Monthly Inflation (CPI, Pre Nov 2025)",
     "Australian (Sydney) Change in House Prices",
     "Australian (Melbourne) Change in House Prices",
     "Australian (Brisbane) Change in House Prices",
@@ -5382,9 +5382,9 @@
     "Australian (Hobart) Change in House Prices",
     "Australian (Darwin) Change in House Prices",
     "Australian (Australian Capital Territory) Change in House Prices",
-    "Australian Monthly Inflation (CPI, New Methodology)",
-    "Australian Quarterly Inflation (CPI)",
-    "Australian Quarterly Inflation (CPI, New Methodology)"
+    "Australian Monthly Inflation (CPI, New Methodology Nov 2025)",
+    "Australian Quarterly Inflation (CPI, Pre Nov 2025)",
+    "Australian Quarterly Inflation (CPI, New Methodology Nov 2025)"
   ],
   "Australian (Sydney) Change in House Prices": [
     "Australian (Sydney) Change in House Prices"
@@ -5435,23 +5435,23 @@
     "Australian (Australian Capital Territory) Change in House Prices"
   ],
   "CPI": [
-    "Australian Monthly Inflation (CPI)",
-    "Australian Quarterly Inflation (CPI)",
-    "Australian Monthly Inflation (CPI, New Methodology)",
-    "Australian Quarterly Inflation (CPI, New Methodology)"
+    "Australian Monthly Inflation (CPI, Pre Nov 2025)",
+    "Australian Quarterly Inflation (CPI, Pre Nov 2025)",
+    "Australian Monthly Inflation (CPI, New Methodology Nov 2025)",
+    "Australian Quarterly Inflation (CPI, New Methodology Nov 2025)"
   ],
   "Old Methodology": [
-    "Australian Monthly Inflation (CPI)",
-    "Australian Quarterly Inflation (CPI)"
+    "Australian Monthly Inflation (CPI, Pre Nov 2025)",
+    "Australian Quarterly Inflation (CPI, Pre Nov 2025)"
   ],
-  "New Methodology": [
-    "Australian Monthly Inflation (CPI, New Methodology)",
-    "Australian Quarterly Inflation (CPI, New Methodology)"
+  "New Methodology Nov 2025": [
+    "Australian Monthly Inflation (CPI, New Methodology Nov 2025)",
+    "Australian Quarterly Inflation (CPI, New Methodology Nov 2025)"
   ],
-  "Australian Monthly Inflation (CPI, New Methodology)": [
-    "Australian Monthly Inflation (CPI, New Methodology)"
+  "Australian Monthly Inflation (CPI, New Methodology Nov 2025)": [
+    "Australian Monthly Inflation (CPI, New Methodology Nov 2025)"
   ],
-  "Australian Quarterly Inflation (CPI, New Methodology)": [
-    "Australian Quarterly Inflation (CPI, New Methodology)"
+  "Australian Quarterly Inflation (CPI, New Methodology Nov 2025)": [
+    "Australian Quarterly Inflation (CPI, New Methodology Nov 2025)"
   ]
 }

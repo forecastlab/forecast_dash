@@ -270,7 +270,7 @@ def layout():
                     *_featured_latest_news(),
                     _link_search(),
                     *snapshot(
-                        "Australian Monthly Inflation (CPI)",
+                        "Australian Monthly Inflation (CPI, New Methodology Nov 2025)",
                         "AU" +" inflation has peaked".title(),
                         html.H4("View all Inflation forecasts"),
                         f"/search?{urlencode({'name': 'Inflation'})}",
@@ -285,7 +285,7 @@ def layout():
                     _leaderboard(),
                     *snapshot(
                         "US Personal Consumption Expenditures: Chain-type Price Index (% Change, 1 Year)",
-                        "US " + "inflation stabilised".title(),
+                        "US " + "inflation is up".title(),
                         html.H4("View all US forecasts"),
                         f"/search?{urlencode({'name': 'United States'})}",
                     ),

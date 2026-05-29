@@ -2,9 +2,37 @@ from download import download_data
 from run_models import run_models
 from generate_thumbnails import generate_static_thumbnail
 from generate_search_details import generate_search_details
+import json
 import os
 import shutil
 import sys
+from slugify import slugify
+
+
+def cleanup_orphaned_pickles(sources_path, directories):
+    with open(sources_path) as data_sources_json_file:
+        data_sources = json.load(data_sources_json_file)
+
+    expected_files = {
+        f"{slugify(data_source['title'])}.pkl" for data_source in data_sources
+    }
+    expected_files.add("statistics.pkl")
+
+    for directory in directories:
+        if not os.path.isdir(directory):
+            continue
+
+        for filename in os.listdir(directory):
+            filepath = os.path.join(directory, filename)
+            if not os.path.isfile(filepath):
+                continue
+            if not filename.endswith(".pkl"):
+                continue
+            if filename in expected_files:
+                continue
+
+            print(f"Removing orphaned file: {filepath}")
+            os.remove(filepath)
 
 if __name__ == "__main__":
     # # // This is helpful for testing
@@ -30,6 +58,12 @@ if __name__ == "__main__":
     print("Creating Thumbnails")
     generate_static_thumbnail(
         "../shared_config/data_sources.json", "../data/thumbnails"
+    )
+
+    print("Cleaning orphaned forecast and thumbnail files")
+    cleanup_orphaned_pickles(
+        "../shared_config/data_sources.json",
+        ["../data/forecasts", "../data/thumbnails"],
     )
 
     print("Updating search index")

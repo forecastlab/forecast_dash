@@ -270,7 +270,7 @@ def layout():
                     *_featured_latest_news(),
                     _link_search(),
                     *snapshot(
-                        "Australian Monthly Inflation (CPI, New Methodology)",
+                        "Australian Monthly Inflation (CPI, New Methodology Nov 2025)",
                         "AU" +" inflation has peaked".title(),
                         html.H4("View all Inflation forecasts"),
                         f"/search?{urlencode({'name': 'Inflation'})}",

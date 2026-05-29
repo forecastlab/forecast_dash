@@ -285,7 +285,7 @@ def layout():
                     _leaderboard(),
                     *snapshot(
                         "US Personal Consumption Expenditures: Chain-type Price Index (% Change, 1 Year)",
-                        "US " + "inflation stabilised".title(),
+                        "US " + "inflation is up".title(),
                         html.H4("View all US forecasts"),
                         f"/search?{urlencode({'name': 'United States'})}",
                     ),

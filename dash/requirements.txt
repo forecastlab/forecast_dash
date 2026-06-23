@@ -32,5 +32,6 @@ python-slugify==6.1.2
 pytz==2022.1
 six==1.16.0
 soupsieve==2.3.2.post1
+setuptools==68.2.2
 tenacity==8.0.1
 zipp==3.8.0

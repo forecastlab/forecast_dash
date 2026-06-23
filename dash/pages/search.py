@@ -170,7 +170,7 @@ def filter_panel_children(params):
         ),
         apply_default_value(params, "data")(dcc.Store)(
             id="show", storage_type="memory", data=9
-        )
+        ),
         # apply_default_value(params, "value")(dcc.Input)(id="show", value=9)
     ]
     return children
@@ -391,9 +391,7 @@ def filter_results(**kwargs):
 
         for item_title in unique_series_titles[0:show_num]:
             try:
-                series_data = get_forecast_data(
-                    item_title
-                )
+                series_data = get_forecast_data(item_title)
                 if series_data == None:
                     raise FileNotFoundError
 

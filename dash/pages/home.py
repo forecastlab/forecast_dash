@@ -94,7 +94,7 @@ def _featured_latest_news():
                             ),
                             id="myDiv",
                         ),
-                        html.Div(id="LinkOutCountry")
+                        html.Div(id="LinkOutCountry"),
                         # ],
                         # href="/search/",
                         # ),
@@ -201,15 +201,15 @@ def _link_search():
 
 
 def snapshot(series_name, callout_text, link_text, link_url, direction="left"):
-    
+
     text_col = dbc.Col(
         [
-            html.H2(
-                callout_text
-            ),
+            html.H2(callout_text),
             html.A(
-                html.H4(link_text), #html.H4("View all Australian forecasts"),
-                href=link_url,#f"/search?{urlencode({'name': 'Australia'})}",
+                html.H4(
+                    link_text
+                ),  # html.H4("View all Australian forecasts"),
+                href=link_url,  # f"/search?{urlencode({'name': 'Australia'})}",
                 className="text-decoration-none",
             ),
         ],
@@ -238,11 +238,7 @@ def snapshot(series_name, callout_text, link_text, link_url, direction="left"):
     if direction == "left":
         return [
             dbc.Row(
-                [
-                    text_col,
-                    fig_col
-
-                ],
+                [text_col, fig_col],
                 className="d-flex",
             )
         ]
@@ -254,11 +250,11 @@ def snapshot(series_name, callout_text, link_text, link_url, direction="left"):
                 [
                     fig_col,
                     text_col,
-
                 ],
                 className="d-flex",
             )
         ]
+
 
 def layout():
     return html.Div(
@@ -271,7 +267,7 @@ def layout():
                     _link_search(),
                     *snapshot(
                         "Australian Monthly Inflation (CPI, New Methodology Nov 2025)",
-                        "AU" +" inflation has peaked".title(),
+                        "AU" + " inflation has peaked".title(),
                         html.H4("View all Inflation forecasts"),
                         f"/search?{urlencode({'name': 'Inflation'})}",
                     ),
@@ -280,7 +276,7 @@ def layout():
                         "AU GDP " + "growth remains flat".title(),
                         html.H4("View all GDP forecasts"),
                         f"/search?{urlencode({'name': 'GDP'})}",
-                        direction="right"
+                        direction="right",
                     ),
                     _leaderboard(),
                     *snapshot(
@@ -294,15 +290,15 @@ def layout():
                         "UK " + "inflation stabilises".title(),
                         html.H4("View all UK forecasts"),
                         f"/search?{urlencode({'name': 'United Kingdom'})}",
-                        direction="right"
+                        direction="right",
                     ),
                     *snapshot(
                         "Australian (Sydney) Change in House Prices",
-                        "AU" +" House prices slow down".title(),
+                        "AU" + " House prices slow down".title(),
                         html.H4("View all Australian forecasts"),
                         f"/search?{urlencode({'name': 'Australia'})}",
-                    )
+                    ),
                 ]
-            )
+            ),
         ]
     )

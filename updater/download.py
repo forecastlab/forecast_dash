@@ -147,6 +147,50 @@ class Fred(DataSource):
 
 
 class Ons(DataSource):
+    frequency_data_keys = {
+        "MS": "months",
+        "M": "months",
+        "Q": "quarters",
+        "YS": "years",
+        "Y": "years",
+        "AS": "years",
+        "A": "years",
+    }
+
+    def _get_observations(self, json_data):
+        data_key = self.frequency_data_keys.get(self.frequency)
+        if data_key is None:
+            raise ValueError(
+                f"Unsupported ONS frequency '{self.frequency}' for {self.title}."
+            )
+
+        observations = json_data.get(data_key, [])
+        if len(observations) == 0:
+            raise ValueError(
+                f"No ONS {data_key} observations returned for {self.title}."
+            )
+
+        return data_key, observations
+
+    def _parse_dates(self, data_key, observations):
+        dates = [j["date"] for j in observations]
+
+        if data_key == "months":
+            return pd.to_datetime(dates, format="%Y %b")
+
+        if data_key == "quarters":
+            quarter_dates = []
+            for date in dates:
+                year, quarter = date.split()
+                month = (int(quarter[-1]) - 1) * 3 + 1
+                quarter_dates.append(f"{year}-{month:02d}-01")
+            return pd.to_datetime(quarter_dates)
+
+        if data_key == "years":
+            return pd.to_datetime(dates, format="%Y")
+
+        return pd.to_datetime(dates)
+
     def download(self):
         try:
             # ONS currently rejects requests that use the default User-Agent
@@ -166,23 +210,14 @@ class Ons(DataSource):
         # This will raise an exception if JSON decoding fails
         json_data = response.json()
 
-        dates = []
-        values = []
-
-        if self.frequency == "MS":
-            dates = [j["date"] for j in json_data["months"]]
-            values = [float(j["value"]) for j in json_data["months"]]
-
-        elif self.frequency == "Q":
-            # Reformat "YYYY Qn" to "YYYY-Qn" before passing to pd.to_datetime
-            dates = [
-                "-".join(j["date"].split()) for j in json_data["quarters"]
-            ]
-            values = [float(j["value"]) for j in json_data["quarters"]]
-
-        df = pd.DataFrame(
-            values, index=pd.to_datetime(dates), columns=["value"]
+        data_key, observations = self._get_observations(json_data)
+        dates = self._parse_dates(data_key, observations)
+        values = pd.to_numeric(
+            [j["value"] for j in observations], errors="coerce"
         )
+
+        df = pd.DataFrame(values, index=dates, columns=["value"])
+        df = df.dropna().sort_index()
         df.index.name = "date"
 
         # print(df)

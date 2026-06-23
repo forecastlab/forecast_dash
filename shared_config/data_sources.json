@@ -124,7 +124,7 @@
     {
     "title": "UK Inflation (RPI)",
     "source": "Ons",
-    "url": "https://api.ons.gov.uk/timeseries/czbh/dataset/mm23/data",
+    "url": "https://api.beta.ons.gov.uk/v1/data?uri=/economy/inflationandpriceindices/timeseries/czbh/mm23",
     "frequency": "MS",
     "tags": [
       "United Kingdom",
@@ -134,7 +134,7 @@
   {
     "title": "UK Unemployment",
     "source": "Ons",
-    "url": "https://api.ons.gov.uk/timeseries/mgsx/dataset/lms/data",
+    "url": "https://api.beta.ons.gov.uk/v1/data?uri=/employmentandlabourmarket/peoplenotinwork/unemployment/timeseries/mgsx/lms",
     "frequency": "MS",
     "tags": [
       "United Kingdom",
@@ -144,7 +144,7 @@
   {
     "title": "UK GDP Growth",
     "source": "Ons",
-    "url": "https://api.ons.gov.uk/timeseries/ihyq/dataset/qna/data",
+    "url": "https://api.beta.ons.gov.uk/v1/data?uri=/economy/grossdomesticproductgdp/timeseries/ihyq/qna",
     "frequency": "Q",
     "tags": [
       "United Kingdom",
@@ -154,7 +154,7 @@
   {
     "title": "UK Current Account Balance",
     "source": "Ons",
-    "url": "https://api.ons.gov.uk/timeseries/hbop/dataset/pnbp/data",
+    "url": "https://api.beta.ons.gov.uk/v1/data?uri=/economy/nationalaccounts/balanceofpayments/timeseries/hbop/pnbp",
     "frequency": "Q",
     "tags": [
       "United Kingdom",
@@ -164,7 +164,7 @@
   {
     "title": "UK Average Weekly Earnings Growth",
     "source": "Ons",
-    "url": "https://api.ons.gov.uk/timeseries/kac3/dataset/lms/data",
+    "url": "https://api.beta.ons.gov.uk/v1/data?uri=/employmentandlabourmarket/peopleinwork/earningsandworkinghours/timeseries/kac3/lms",
     "frequency": "MS",
     "tags": [
       "United Kingdom",
@@ -174,7 +174,7 @@
   {
     "title": "UK Retail Sales Index",
     "source": "Ons",
-    "url": "https://api.ons.gov.uk/timeseries/j5c4/dataset/drsi/data",
+    "url": "https://api.beta.ons.gov.uk/v1/data?uri=/businessindustryandtrade/retailindustry/timeseries/j5c4/drsi",
     "frequency": "MS",
     "tags": [
       "United Kingdom",

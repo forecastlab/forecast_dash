@@ -1,0 +1,9 @@
+# Normalize text files to Unix line endings in the repository.
+* text=auto eol=lf
+
+# Keep binary assets untouched.
+*.ico binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.pkl binary

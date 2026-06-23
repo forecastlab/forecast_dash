@@ -2,6 +2,7 @@ from flask import Flask
 from dash import Dash, html, callback
 import dash
 import dash_bootstrap_components as dbc
+import os
 from dash.dependencies import Input, Output, State
 from common import header, footer
 
@@ -43,4 +44,5 @@ def toggle_navbar_collapse(n, is_open):
 
 
 if __name__ == "__main__":
-    server.run(host="0.0.0.0", port=80, debug=True)
+    port = int(os.environ.get("PORT", 8050))
+    server.run(host="0.0.0.0", port=port, debug=True)

@@ -505,15 +505,14 @@ def run_models(sources_path, download_dir_path, forecast_dir_path):
             print(f"FAILED to setup jobs for: '{data_source_dict['title']}'")
             print(traceback.format_exc())
 
-
-    pool = Pool(cpu_count())
-    results = pool.starmap(
-        run_job,
-        [
-            [job_list[i], cv_instance_list[i], model_params_list[i]]
-            for i in range(len(job_list))
-        ],
-    )
+    with Pool(cpu_count()) as pool:
+        results = pool.starmap(
+            run_job,
+            [
+                [job_list[i], cv_instance_list[i], model_params_list[i]]
+                for i in range(len(job_list))
+            ],
+        )
 
     # Insert results of jobs into dictionary
     for result in results:
